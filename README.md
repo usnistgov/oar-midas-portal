@@ -117,5 +117,5 @@ The administrators of this repository include:
   * Gretchen Greene (gretchen.greene@nist.gov)
   * Jon Zhang (.zhang@nist.gov)
   * Ray Plante (raymond.plante@nist.gov)
-  * Christopher David (christopher.davis@nist.gov)
+  * Christopher Davis (christopher.davis@nist.gov)
 
