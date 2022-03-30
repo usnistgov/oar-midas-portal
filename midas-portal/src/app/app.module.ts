@@ -12,6 +12,11 @@ import { LandingComponent } from './components/landing/landing.component';
 import { EdiListComponent } from './components/edi-list/edi-list.component';
 import { RecordsComponent } from './components/records/records.component';
 import { DmpListComponent } from './components/dmp-list/dmp-list.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { ReviewComponent } from './components/review/review.component';
+import { DocumentationComponent } from './components/documentation/documentation.component';
+import { FileManagerComponent } from './components/file-manager/file-manager.component';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +25,12 @@ import { DmpListComponent } from './components/dmp-list/dmp-list.component';
     LandingComponent,
     EdiListComponent,
     RecordsComponent,
-    DmpListComponent
+    DmpListComponent,
+    FooterComponent,
+    ReviewComponent,
+    DocumentationComponent,
+    FileManagerComponent,
+    SearchBarComponent
   ],
   imports: [
     BrowserModule,

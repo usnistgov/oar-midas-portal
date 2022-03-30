@@ -3,9 +3,10 @@
     background: #fff;
     border-radius: 10px;
     border: black;
+    padding: 5px;
 }
 
 .scroll {
-    height: 600px;
+    height: 300px;
     overflow-y: auto;
 }
