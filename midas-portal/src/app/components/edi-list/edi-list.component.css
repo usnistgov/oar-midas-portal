@@ -10,3 +10,7 @@
     height: 300px;
     overflow-y: auto;
 }
+
+.test { 
+    float: right;
+}

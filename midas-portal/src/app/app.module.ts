@@ -17,6 +17,7 @@ import { ReviewComponent } from './components/review/review.component';
 import { DocumentationComponent } from './components/documentation/documentation.component';
 import { FileManagerComponent } from './components/file-manager/file-manager.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
     AngularMaterialModule,
     FlexLayoutModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent],
