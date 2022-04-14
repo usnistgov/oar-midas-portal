@@ -6,8 +6,8 @@ import { LogInComponent } from './components/log-in/log-in.component';
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LogInComponent },
-  { path: 'landing', component: LandingComponent },
-  { path: 'edi-list', component: EdiListComponent }
+  { path: 'landing', data: {breadCrumb: 'Home'}, component: LandingComponent },
+  { path: 'edi-list', data: {breadCrumb: 'EDI List'},component: EdiListComponent }
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

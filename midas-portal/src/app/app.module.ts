@@ -20,6 +20,7 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
 import { MatDialogModule } from '@angular/material/dialog';
 import { EdiListModal } from './components/edi-list/edi-list-modal.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BreadcrumbComponent } from './components/breadcrumbs/breadcrumbs.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     DocumentationComponent,
     FileManagerComponent,
     SearchBarComponent,
-    EdiListModal
+    EdiListModal,
+    BreadcrumbComponent
   ],
   imports: [
     BrowserModule,
