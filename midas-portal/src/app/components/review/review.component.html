@@ -1,6 +1,6 @@
 <div class="edi-list" fxLayout="row" fxLayoutAlign="center center">
-    <mat-card (click)="openDialog()">
-        <mat-card-title>EDI List</mat-card-title>
+    <mat-card>
+        <mat-card-title>To Review</mat-card-title>
         <mat-card-content class="scroll">
             <table mat-table [dataSource]="this.data">
                 <ng-container matColumnDef="title">
@@ -20,6 +20,5 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </mat-card-content>
-        <button  class="test" routerLink="/edi-list"><fa-icon [icon]="faSquareArrowUpRight"></fa-icon></button>
     </mat-card>
 </div>

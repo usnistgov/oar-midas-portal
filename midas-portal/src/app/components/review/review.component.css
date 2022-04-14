@@ -3,14 +3,10 @@
     background: #fff;
     border-radius: 10px;
     border: black;
-    padding: 5px;
+    /* width: 200px; */
 }
 
 .scroll {
     height: 300px;
     overflow-y: auto;
-}
-
-.test { 
-    float: right;
 }

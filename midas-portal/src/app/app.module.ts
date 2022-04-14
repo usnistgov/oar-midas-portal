@@ -12,6 +12,15 @@ import { LandingComponent } from './components/landing/landing.component';
 import { EdiListComponent } from './components/edi-list/edi-list.component';
 import { RecordsComponent } from './components/records/records.component';
 import { DmpListComponent } from './components/dmp-list/dmp-list.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { ReviewComponent } from './components/review/review.component';
+import { DocumentationComponent } from './components/documentation/documentation.component';
+import { FileManagerComponent } from './components/file-manager/file-manager.component';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { EdiListModal } from './components/edi-list/edi-list-modal.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BreadcrumbComponent } from './components/breadcrumbs/breadcrumbs.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +29,14 @@ import { DmpListComponent } from './components/dmp-list/dmp-list.component';
     LandingComponent,
     EdiListComponent,
     RecordsComponent,
-    DmpListComponent
+    DmpListComponent,
+    FooterComponent,
+    ReviewComponent,
+    DocumentationComponent,
+    FileManagerComponent,
+    SearchBarComponent,
+    EdiListModal,
+    BreadcrumbComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +45,9 @@ import { DmpListComponent } from './components/dmp-list/dmp-list.component';
     AngularMaterialModule,
     FlexLayoutModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDialogModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent],

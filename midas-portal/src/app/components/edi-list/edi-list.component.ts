@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import { EdiListModal } from './edi-list-modal.component';
+import { faSquareArrowUpRight } from '@fortawesome/free-solid-svg-icons';
 
 export interface Record {
   title: string;
@@ -13,12 +16,14 @@ export interface Record {
 })
 export class EdiListComponent implements OnInit {
 
+  faSquareArrowUpRight = faSquareArrowUpRight;
   public records: any;
   public recordsApi: string;
   public data: any;
   displayedColumns: string[] = ['title', 'publisher', 'date']
+  
 
-  constructor() { 
+  constructor(public dialog: MatDialog) { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'
   }
 
@@ -37,4 +42,17 @@ export class EdiListComponent implements OnInit {
     return this.records = Object(records)
   }
 
+  openDialog(): void {
+    const dialogRef = this.dialog.open(EdiListModal, {
+      minWidth: '400px',
+      maxWidth:'800px',
+      maxHeight: '600px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
 }
+
