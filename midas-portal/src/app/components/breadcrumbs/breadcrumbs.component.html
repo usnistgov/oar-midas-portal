@@ -1,5 +1,11 @@
-<ul> 
+<!-- <ul> 
     <li *ngFor="let breadcrumb of (breadcrumbs$ | async)"> 
       <a [href]="breadcrumb.url">{{ breadcrumb.label }}</a> 
     </li> 
-  </ul> 
+  </ul>  -->
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li *ngFor="let breadcrumb of (breadcrumbs$ | async)" class="breadcrumb-item"><a [href]="breadcrumb.url">{{ breadcrumb.label }}</a></li>
+    </ol>
+  </nav>

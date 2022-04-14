@@ -21,6 +21,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { EdiListModal } from './components/edi-list/edi-list-modal.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BreadcrumbComponent } from './components/breadcrumbs/breadcrumbs.component';
+import { MDBBootstrapModule, MDBRootModule } from 'angular-bootstrap-md';
+import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
 
 @NgModule({
   declarations: [
@@ -47,6 +49,8 @@ import { BreadcrumbComponent } from './components/breadcrumbs/breadcrumbs.compon
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
+    MDBRootModule,
+    MdbFormsModule,
     FontAwesomeModule
   ],
   providers: [],
