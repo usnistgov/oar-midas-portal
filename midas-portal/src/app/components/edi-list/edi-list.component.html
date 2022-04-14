@@ -1,5 +1,5 @@
 <div class="edi-list" fxLayout="row" fxLayoutAlign="center center">
-    <mat-card>
+    <mat-card (click)="openDialog()">
         <mat-card-title>EDI List</mat-card-title>
         <mat-card-content class="scroll">
             <table mat-table [dataSource]="this.data">
@@ -20,6 +20,6 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </mat-card-content>
-        <button class="test" (click)="openDialog()">Test</button>
+        <button  class="test" routerLink="/edi-list"><fa-icon [icon]="faSquareArrowUpRight"></fa-icon></button>
     </mat-card>
 </div>

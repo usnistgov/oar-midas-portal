@@ -18,6 +18,8 @@ import { DocumentationComponent } from './components/documentation/documentation
 import { FileManagerComponent } from './components/file-manager/file-manager.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { EdiListModal } from './components/edi-list/edi-list-modal.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     ReviewComponent,
     DocumentationComponent,
     FileManagerComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    EdiListModal
   ],
   imports: [
     BrowserModule,
@@ -41,7 +44,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    MatDialogModule
+    MatDialogModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent],
