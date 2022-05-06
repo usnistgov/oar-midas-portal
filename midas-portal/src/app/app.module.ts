@@ -23,6 +23,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BreadcrumbComponent } from './components/breadcrumbs/breadcrumbs.component';
 import { MDBBootstrapModule, MDBRootModule } from 'angular-bootstrap-md';
 import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
+import { OverlayModule} from '@angular/cdk/overlay';
 
 @NgModule({
   declarations: [
@@ -51,10 +52,10 @@ import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
     MatDialogModule,
     MDBRootModule,
     MdbFormsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    OverlayModule
   ],
   providers: [],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

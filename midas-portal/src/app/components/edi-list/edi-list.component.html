@@ -1,16 +1,16 @@
 <div class="edi-list" fxLayout="row" fxLayoutAlign="center center">
     <mat-card (click)="openDialog()">
-        <mat-card-title>EDI List</mat-card-title>
+        <mat-card-title>Data and Software Publications</mat-card-title>
         <mat-card-content class="scroll">
             <table mat-table [dataSource]="this.data">
                 <ng-container matColumnDef="title">
                     <th mat-header-cell *matHeaderCellDef> Title </th>
                     <td mat-cell *matCellDef="let item of this.data"> {{item.title}} </td>
                 </ng-container>
-                <ng-container matColumnDef="publisher">
+                <!-- <ng-container matColumnDef="publisher">
                     <th mat-header-cell *matHeaderCellDef> Publisher </th>
                     <td mat-cell *matCellDef="let item of this.data"> {{item.publisher.name}} </td>
-                </ng-container>
+                </ng-container> -->
                 <ng-container matColumnDef="date">
                     <th mat-header-cell *matHeaderCellDef> Date Last Modified </th>
                     <td mat-cell *matCellDef="let item of this.data"> {{item.modified}} </td>
@@ -20,6 +20,5 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </mat-card-content>
-        <button  class="test" routerLink="/edi-list"><fa-icon [icon]="faSquareArrowUpRight"></fa-icon></button>
     </mat-card>
 </div>

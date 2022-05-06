@@ -10,7 +10,7 @@ export class DmpListComponent implements OnInit {
   public records: any;
   public recordsApi: string;
   public data: any;
-  displayedColumns: string[] = ['title', 'publisher', 'date']
+  displayedColumns: string[] = ['title', 'date']
 
   constructor() { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'

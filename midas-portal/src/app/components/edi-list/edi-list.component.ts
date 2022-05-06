@@ -20,7 +20,7 @@ export class EdiListComponent implements OnInit {
   public records: any;
   public recordsApi: string;
   public data: any;
-  displayedColumns: string[] = ['title', 'publisher', 'date']
+  displayedColumns: string[] = ['title', 'date']
   
 
   constructor(public dialog: MatDialog) { 

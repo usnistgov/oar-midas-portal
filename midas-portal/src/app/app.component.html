@@ -3,10 +3,15 @@
   <div style="float: left; padding: 10px;">
     <h3><img src="../assets/path4012.png">MIDAS Dashboard</h3>
   </div>
-  
+
   <span class="nav-tool-items" style="float: right; padding: 20px;">
     <span style="float: left; padding-right: 20px;">
       <app-search-bar></app-search-bar>
+    </span>
+    <span style="float: left; padding-right: 20px;">
+      <button mat-raised-button color="primary" (click)="onSetTheme('default-theme')">Default</button>
+      <button mat-raised-button color="primary" (click)="onSetTheme('dark-theme')">Dark</button>
+      <button mat-raised-button color="primary" (click)="onSetTheme('light-theme')">Light</button>
     </span>
     <a mat-button mat-raised-button routerLink="login" routerLinkActive="active">Login</a>
   </span>
@@ -14,4 +19,4 @@
 
 <app-breadcrumbs></app-breadcrumbs>
 
-<router-outlet></router-outlet>
+<router-outlet class="mat-app-background"></router-outlet>
