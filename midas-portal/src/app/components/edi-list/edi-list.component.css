@@ -1,0 +1,11 @@
+.edi-list {
+    display: block;
+    background: #fff;
+    border-radius: 10px;
+    border: black;
+}
+
+.scroll {
+    height: 600px;
+    overflow-y: auto;
+}
