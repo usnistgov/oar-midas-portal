@@ -2,19 +2,12 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 
-
-export interface Record {
-  title: string;
-  publisher: string;
-  date: number;
-}
-
 @Component({
-  selector: 'app-edi-list',
-  templateUrl: './edi-list.component.html',
-  styleUrls: ['./edi-list.component.css']
+  selector: 'app-review-list',
+  templateUrl: './review-list.component.html',
+  styleUrls: ['./review-list.component.css']
 })
-export class EdiListComponent implements OnInit {
+export class ReviewListComponent implements OnInit {
 
   public records: any;
   public recordsApi: string;

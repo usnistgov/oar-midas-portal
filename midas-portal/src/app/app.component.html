@@ -1,8 +1,11 @@
 <!-- Toolbar -->
-<mat-toolbar color="primary" class="app-header" style="display: block;">
+<!-- <mat-toolbar color="primary" class="app-header" style="display: block;">
   <div style="float: left; padding: 10px;"><h3>MIDAS Dashboard</h3></div>
-  <span class="nav-tool-items" style="float: right; padding: 10px;">
-    <a mat-button mat-raised-button routerLink="login" routerLinkActive="active">Login</a>
-  </span>
-</mat-toolbar>
+</mat-toolbar> -->
+<div>
+  <app-header appVersion="1.0"></app-header>
+</div>
 <router-outlet></router-outlet>
+<div>
+  <app-footer></app-footer>
+</div>

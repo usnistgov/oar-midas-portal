@@ -12,6 +12,9 @@ import { LandingComponent } from './components/landing/landing.component';
 import { EdiListComponent } from './components/edi-list/edi-list.component';
 import { RecordsComponent } from './components/records/records.component';
 import { DmpListComponent } from './components/dmp-list/dmp-list.component';
+import { ReviewListComponent } from './components/review-list/review-list.component';
+import { FileListComponent } from './components/file-list/file-list.component';
+import { OARngModule } from 'oarng';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,9 @@ import { DmpListComponent } from './components/dmp-list/dmp-list.component';
     LandingComponent,
     EdiListComponent,
     RecordsComponent,
-    DmpListComponent
+    DmpListComponent,
+    ReviewListComponent,
+    FileListComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +34,8 @@ import { DmpListComponent } from './components/dmp-list/dmp-list.component';
     AngularMaterialModule,
     FlexLayoutModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    OARngModule
   ],
   providers: [],
   bootstrap: [AppComponent],

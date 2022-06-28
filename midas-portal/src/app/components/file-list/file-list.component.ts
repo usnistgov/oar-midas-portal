@@ -3,18 +3,12 @@ import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 
 
-export interface Record {
-  title: string;
-  publisher: string;
-  date: number;
-}
-
 @Component({
-  selector: 'app-edi-list',
-  templateUrl: './edi-list.component.html',
-  styleUrls: ['./edi-list.component.css']
+  selector: 'app-file-list',
+  templateUrl: './file-list.component.html',
+  styleUrls: ['./file-list.component.css']
 })
-export class EdiListComponent implements OnInit {
+export class FileListComponent implements OnInit {
 
   public records: any;
   public recordsApi: string;

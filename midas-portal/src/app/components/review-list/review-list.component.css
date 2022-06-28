@@ -1,11 +1,10 @@
-.edi-list {
+.review-list {
     display: block;
     background: #fff;
     border-radius: 10px;
     border: black;
     padding: 10px;
     width: 200px;
-    height: 300px;
 }
 
 .scroll {

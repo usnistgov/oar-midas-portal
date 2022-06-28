@@ -1,11 +1,20 @@
-<mat-grid-list cols="2">
+<!-- <div>
+    <app-header appVersion="1.0"></app-header>
+</div>  -->
+<mat-grid-list cols="2" rowHeight="3:2">
     <mat-grid-tile>
-        <app-edi-list></app-edi-list>
+        <app-records></app-records>
     </mat-grid-tile>
     <mat-grid-tile>
-        <div class="stack">
-            <app-records></app-records>
-            <app-dmp-list></app-dmp-list>
-        </div>
+        <app-dmp-list></app-dmp-list>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <app-review-list></app-review-list>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <app-file-list></app-file-list>
     </mat-grid-tile>
   </mat-grid-list>
+<!-- <div>
+    <app-footer></app-footer>
+</div> -->
