@@ -19,8 +19,11 @@
     "target": "es2017",
     "module": "es2020",
     "paths": {
+      "@angular/*": [
+        "./node_modules/@angular/*"
+      ],
       "oarng": [
-        "../lib/dist/oarng"
+        "lib/dist/oarng"
       ]
     },
     "lib": [
