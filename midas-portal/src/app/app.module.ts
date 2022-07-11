@@ -15,6 +15,7 @@ import { DmpListComponent } from './components/dmp-list/dmp-list.component';
 import { ReviewListComponent } from './components/review-list/review-list.component';
 import { FileListComponent } from './components/file-list/file-list.component';
 import { OARngModule } from 'oarng';
+import { FrameModule } from 'oarng';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { OARngModule } from 'oarng';
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    OARngModule
+    OARngModule,
+    FrameModule
   ],
   providers: [],
   bootstrap: [AppComponent],
