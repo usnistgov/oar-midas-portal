@@ -102,8 +102,56 @@ command-line options.
 The `npm` tool can be used in the standard way for [Angular projects](https://angular.io/docs) to
 build and test this software.
 
-[detail commands and instructions]
+Detail commands and instructions:
 
+1. Clone this repository and update Angular library
+    
+    After clone the repository, do the following:
+    
+```
+    cd oar-pdr-angular
+    
+    git submodule update --init --recursive
+    
+    cd lib
+    
+    git checkout integration
+```
+
+Now lib folder should have the latest code of oar-lib-angular.
+    
+2. Build the Angular library 
+
+    While still in lib folder, do the following:
+    
+```    
+    npm i 
+    npm run build oarng 
+    Then delete the node_modules folder.
+```
+    
+3. Build and run your application
+
+    Go to parent folder:
+    
+```
+    cd ..
+```
+
+Then do the following:
+    
+```    
+    git checkout initial-portal-setup02
+    npm i
+    npm run build midas-portal 
+    npm run start midas-portal 
+```
+
+4. Testing your app
+
+```
+    Browse: http://localhost:4200
+```
 
 ## Repository Administration
 
