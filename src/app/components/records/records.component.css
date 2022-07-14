@@ -12,3 +12,8 @@
     height: 300px;
     overflow-y: auto;
 }
+
+.records.table {
+    width: 100%;
+    padding: 50;
+}

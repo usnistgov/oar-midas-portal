@@ -15,6 +15,8 @@ import { DmpListComponent } from './components/dmp-list/dmp-list.component';
 import { ReviewListComponent } from './components/review-list/review-list.component';
 import { FileListComponent } from './components/file-list/file-list.component';
 import { OARngModule } from 'oarng';
+import { MatCardModule } from '@angular/material/card';
+import { MatPaginator } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { OARngModule } from 'oarng';
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    OARngModule
+    OARngModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent],

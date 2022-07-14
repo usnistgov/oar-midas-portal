@@ -1,24 +1,32 @@
-<div class="review-list" fxLayout="row" fxLayoutAlign="center center">
-    <mat-card>
-        <mat-card-title><a (click)="titleClick()">My Reviews</a></mat-card-title>
-        <mat-card-content class="scroll">
-            <table mat-table [dataSource]="this.data" matSort>
-                <ng-container matColumnDef="title">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef> Title </th>
-                    <td mat-cell *matCellDef="let item"> {{item.title}} </td>
-                </ng-container>
-                <ng-container matColumnDef="publisher">
-                    <th mat-header-cell *matHeaderCellDef> Current Reviewer </th>
-                    <td mat-cell *matCellDef="let item"> {{item.publisher.name}} </td>
-                </ng-container>
-                <ng-container matColumnDef="date">
-                    <th mat-header-cell *matHeaderCellDef> Last Action Date </th>
-                    <td mat-cell *matCellDef="let item"> {{item.modified}} </td>
-                </ng-container>
+<mat-card>
+    <mat-card-title><a (click)="titleClick()">My Reviews</a></mat-card-title>
+    <mat-card-content class="scroll">
+        <table mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="title">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Title </th>
+                <td mat-cell *matCellDef="let item"> {{item.title}} </td>
+            </ng-container>
+            <ng-container matColumnDef="owner">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Record Owner </th>
+                <td mat-cell *matCellDef="let item"> {{item.owner}} </td>
+            </ng-container>
+            <ng-container matColumnDef="currentreviewer">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Current Reviewer </th>
+                <td mat-cell *matCellDef="let item"> {{item.currentreviewer}} </td>
+            </ng-container>
+            <ng-container matColumnDef="currentreviewstop">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Review Stop </th>
+                <td mat-cell *matCellDef="let item"> {{item.currentreviewstop}} </td>
+            </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-        </mat-card-content>
-    </mat-card>
-</div>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </mat-card-content>
+    <mat-card-footer>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+            showFirstLastButtons 
+            aria-label="Select page">
+        </mat-paginator>
+    </mat-card-footer>
+</mat-card>
