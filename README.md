@@ -130,18 +130,26 @@ Now lib folder should have the latest code of oar-lib-angular.
     npm i 
 ```    
     
-4. Build the Angular library 
-
-```
-    npm run build oarng --prefix ./lib
-```
-    
 3. Build and run your application
 
-    
+You can build Angular library and your application separately or with one command.
+
+To build Angular library only:
+
 ```    
-    npm run build midas-portal --prefix ./midas-portal
-    npm run start midas-portal --prefix ./midas-portal
+    npm run build-lib
+```
+
+To build your application only:
+
+```    
+    npm run build
+```
+
+To build both lib and your application:
+
+```    
+    npm run build-all
 ```
 
 4. Testing your app
