@@ -152,6 +152,12 @@ To build both lib and your application:
     npm run build-all
 ```
 
+To start your application:
+
+```    
+    npm run start
+```
+
 4. Testing your app
 
 ```
