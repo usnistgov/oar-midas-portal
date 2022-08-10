@@ -4,11 +4,10 @@
     border-radius: 10px;
     border: black;
     padding: 10px;
-    width: 200px;
-    height: 300px;
+    border: 1;
+    width: 100%;
 }
 
-.scroll {
-    height: 300px;
-    overflow-y: auto;
+.records.table {
+    padding: 50;
 }

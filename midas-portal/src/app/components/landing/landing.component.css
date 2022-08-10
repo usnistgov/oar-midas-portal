@@ -1,3 +1,7 @@
+.landing-grid {
+    border: 1;
+}
+
 .mat-grid-tile-content {
     align-items: unset;
     position: inherit;

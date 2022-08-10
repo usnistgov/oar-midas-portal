@@ -18,6 +18,9 @@
     "paths": {
       "oarng": [
         "..lib/dist/oarng"
+      ],
+      "@angular/*": [
+        "../node_modules/@angular/*" 
       ]
     },
     "importHelpers": true,
