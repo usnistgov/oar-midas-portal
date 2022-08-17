@@ -10,3 +10,22 @@
 .stack{
     display: block;
 }
+
+mat-drawer {
+    width: 200px;
+    padding: 10px;
+    border: 1px;
+    background-color: darkgray;
+}
+
+mat-form-field {
+    background-color: lightyellow;
+    width: 20%;
+    text-align: right;
+}
+
+mat-card {
+    width: 100%;
+    align-items: flex-end;
+    text-align: right;
+}

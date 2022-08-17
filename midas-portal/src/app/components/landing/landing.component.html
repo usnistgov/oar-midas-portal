@@ -1,14 +1,60 @@
-<mat-grid-list class="landing-grid" cols="2" rowHeight="2:1" gutterSize="1px">
-    <mat-grid-tile>
-        <app-records></app-records>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <app-dmp-list></app-dmp-list>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <app-review-list></app-review-list>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <app-file-list></app-file-list>
-    </mat-grid-tile>
-  </mat-grid-list>
+<!-- <mat-sidenav-container>
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')" 
+        (closed)="events.push('close!')">
+    Sidenav content
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <p><mat-checkbox [(ngModel)]="opened">sidenav.opened</mat-checkbox></p>
+        <p><button mat-button (click)="sidenav.toggle()">sidenav.toggle()</button></p>
+        <p>Events:</p>
+        <div class="example-events">
+          <div *ngFor="let e of events">{{e}}</div>
+        </div>
+      </mat-sidenav-content>
+</mat-sidenav-container> -->
+
+<mat-drawer-container>
+    <mat-drawer class="mat-sidenav" #drawer mode="side" opened>
+        <ul>
+            <b><u>NIST Links</u></b>
+            <li><a href="https://inet.nist.gov">NIST Intranet</a><br></li>
+            <li><a href="https://data.nist.gov">Public Data Repository</a></li>
+            <li><a href="https://wz4bz7lu7g.search.serialssolutions.com/">NIST Research Library</a></li>
+            <br/>
+            <b><u>Data Publishing Tools</u></b>
+            <li><a href="https://inet.nist.gov">Data Publishing Tool</a></li>
+            <li><a href="https://inet.nist.gov">Data Management Plan Tool</a></li>
+            <li><a href="https://nps.nist.gov">NIST Publication System</a></li>
+            <li><a href="https://nextcloud.nist.gov">NextCloud</a></li>
+            <br/>
+            <b><u>User Guides</u></b>
+            <li><a href="https://userguide.nist.gov">Data Publishing User Guide</a></li>
+            <li><a href="https://npsguide.nist.gov">NPS Reviewers Guide</a></li>
+            <li><a href="https://nextcloudguide.nist.gov">NextCloud User Guide</a></li>
+        </ul>
+    </mat-drawer>
+    <mat-drawer-content>
+        <mat-card>
+            <mat-form-field appearance="fill">
+                <input type="tel" matInput placeholder="Search">
+            </mat-form-field>
+        </mat-card>
+        <mat-grid-list class="landing-grid" cols="2" rowHeight="2:1" gutterSize="1px">
+            <mat-grid-tile>
+                <app-records></app-records>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <app-dmp-list></app-dmp-list>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <app-review-list></app-review-list>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <app-file-list></app-file-list>
+            </mat-grid-tile>
+          </mat-grid-list>
+          <button mat-raised-button (click)="drawer.toggle()">Resources</button>
+    </mat-drawer-content>
+  </mat-drawer-container>
+
