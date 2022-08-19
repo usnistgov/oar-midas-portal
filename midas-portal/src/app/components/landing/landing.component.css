@@ -1,9 +1,5 @@
-.landing-grid {
-    border: 1;
-}
-
 .mat-grid-tile-content {
-    align-items: unset;
+    align-items: center;
     position: inherit;
 }
 
@@ -22,10 +18,28 @@ mat-form-field {
     background-color: lightyellow;
     width: 20%;
     text-align: right;
+    border: solid 1px #000;
 }
 
 mat-card {
-    width: 100%;
+    /* width: 80%; */
     align-items: flex-end;
     text-align: right;
+}
+
+mat-grid {
+    background-color: aquamarine;
+    height: 90%;
+}
+
+mat-grid-tile {
+    padding: 5px;
+}
+
+mat-drawer-content {
+    height: 50%;
+}
+
+mat-card-content {
+    border: 5px;
 }

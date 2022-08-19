@@ -1,13 +1,21 @@
-.file-list {
+/* .file-list {
     display: block;
     background: #fff;
-    border-radius: 0px;
+    border-radius: 10px;
     border: black;
     padding: 10px;
-    width: 200px;
+    border: 1;
+    width: 100%;
 }
 
-.scroll {
-    height: 300px;
-    overflow-y: auto;
+.file-list.table {
+    padding: 50;
+} */
+
+mat-table {
+    border: solid 1px #000;
+}
+
+.file-list.mat-table {
+    width: 100%;
 }

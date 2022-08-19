@@ -11,8 +11,8 @@ export interface NPSReview {
 }
 
 const RECORD_DATA: NPSReview[] = [
-  {title: 'Test Review 1', owner: 'Greene, Gretchen', currentreviewer: "Hanisch, Robert", currentreviewstop: 'Division Chief'},
-  {title: 'Test Review 2', owner: 'Davis, Christopher', currentreviewer: "Tweedy, Romain", currentreviewstop: "OU IT Security Officer"},
+  {title: 'Word pairs in psychology that have been hand-annotated for semantic similarity by psychologists', owner: 'Stanton, Brian', currentreviewer: "Hanisch, Robert", currentreviewstop: 'Division Chief'},
+  {title: 'Commerce Business System, Core Financial System (CBS/CFS)', owner: 'Sell, Sean', currentreviewer: "Tweedy, Romain", currentreviewstop: "OU IT Security Officer"},
 ];
 
 

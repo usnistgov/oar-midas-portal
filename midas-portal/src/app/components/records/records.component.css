@@ -1,13 +1,19 @@
-.edi-list {
-    display: block;
+/*.edi-list {
+    display: contents;
     background: #fff;
     border-radius: 10px;
     border: black;
     padding: 10px;
     border: 1;
     width: 100%;
+    height: fit-content;
 }
 
-.records.table {
+.edi-list.table {
     padding: 50;
+    border: solid 1px #000;
+}*/
+
+mat-table {
+    border: solid 1px #000;
 }
