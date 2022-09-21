@@ -23,14 +23,16 @@ class NPS(Resource):
 
 	def get(self, num):
 		token = self.get_auth_token()
-		doId = num
-		api_url = 'https://tsapps-t.nist.gov/nps/npsapi' + '/api/DataSet/Reviewers?dataSetID=' + str(doId)
+		peopleId = num
+		api_url = 'https://tsapps-t.nist.gov/nps/npsapi' + '/api/DataSet/ReviewsForUser?peopleID=' + str(peopleId)
+		payload = {"nistID", peopleId}
 		print('api_url: ' + api_url)
 
-		api_call_headers = {'Authorization': 'Bearer ' + token}
-		api_call_response = requests.get(api_url, headers=api_call_headers)
+		api_call_headers = {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json', 'Accept': 'text/plain'}
+		api_call_response = requests.post(api_url, headers=api_call_headers, data=str(peopleId))
 
 		print(api_call_response.text)
+		return api_call_response.text
 	
 	def get_auth_token(self):
 

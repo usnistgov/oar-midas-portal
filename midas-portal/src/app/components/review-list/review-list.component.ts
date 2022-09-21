@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 export interface NPSReview {
   title: string;
@@ -34,30 +35,33 @@ export class ReviewListComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor() { 
-    this.recordsApi = 'https://data.nist.gov/rmm/records'
+    this.recordsApi = 'https://localhost:5000/user/208821';
   }
 
   
 
   ngAfterViewInit() {
    
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
     
   }
 
   async ngOnInit() {
-    //await this.getRecords()
-    //this.data = this.records.ResultData
-    this.data = RECORD_DATA;
+    await this.getRecords()
+    this.data = this.records.ResultData
+    //this.data = RECORD_DATA;
     console.log(this.data)
     this.dataSource = new MatTableDataSource(this.data);
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    
     
   }
 
   async getRecords() {
     let records;
+
     await fetch(this.recordsApi).then(r => r.json()).then(function (r) {
+      console.log(r);
       return records = r
     })
 
