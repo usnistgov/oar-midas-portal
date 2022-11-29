@@ -9,5 +9,8 @@
         "build-all": "npm run build oarng --prefix ./lib && npm run build midas-portal --prefix ./midas-portal",
         "build": "npm run build midas-portal --prefix ./midas-portal",
         "start": "npm run start midas-portal --prefix ./midas-portal"
+    },
+    "dependencies": {
+        "@ionic/angular": "^6.3.8"
     }
 }

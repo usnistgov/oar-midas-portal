@@ -15,5 +15,60 @@
 }*/
 
 mat-table {
-    border: solid 1px #000;
+    border: solid 1px rgb(166, 20, 20);
 }
+
+.edi-list {
+    display: block;
+    background: rgb(173, 110, 110);
+    border-radius: 10px;
+    border: black;
+    margin-top: 10px;
+    max-height: auto;
+    padding: 50;
+    overflow: auto;
+    flex-direction: column;
+    position: absolute;
+    /* top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px; */
+}
+
+/* .dashboard-card-content {
+    height: 100%;
+    background-color: red;
+  }
+  
+  .dashboard-card {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+  } */
+
+
+  .mat-card.scrollable-content {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .mat-card.scrollable-content > .mat-card-title-group {
+    display: block;
+  }
+  .mat-card.scrollable-content > .mat-card-content {
+    overflow-y: auto;
+  }
+  
+  .example-viewport {
+    height: 250px;
+    width: auto;
+    border: 1px solid black;
+  }
+  
+  .example-item {
+    height: 50px;
+  }

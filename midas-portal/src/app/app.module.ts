@@ -1,6 +1,5 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LogInComponent } from './components/log-in/log-in.component';
@@ -16,6 +15,10 @@ import { ReviewListComponent } from './components/review-list/review-list.compon
 import { FileListComponent } from './components/file-list/file-list.component';
 import { OARngModule } from 'oarng';
 import { FrameModule } from 'oarng';
+import { PanelModule } from "primeng/panel";
+import { HttpClientModule } from '@angular/common/http';
+
+
 
 @NgModule({
   declarations: [
@@ -37,9 +40,11 @@ import { FrameModule } from 'oarng';
     FormsModule,
     ReactiveFormsModule,
     OARngModule,
-    FrameModule
+    FrameModule,
+    PanelModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [ ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

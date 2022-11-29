@@ -35,7 +35,7 @@ export class ReviewListComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor() { 
-    this.recordsApi = 'https://localhost:5000/user/208821';
+    //this.recordsApi = 'https://localhost:5000/user/208821';
   }
 
   
@@ -46,13 +46,13 @@ export class ReviewListComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.getRecords()
-    this.data = this.records.ResultData
-    //this.data = RECORD_DATA;
-    console.log(this.data)
-    this.dataSource = new MatTableDataSource(this.data);
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    // await this.getRecords()
+    // this.data = this.records.ResultData
+    // //this.data = RECORD_DATA;
+    // console.log(this.data)
+    // this.dataSource = new MatTableDataSource(this.data);
+    // this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
     
     
   }

@@ -1,7 +1,7 @@
-<mat-card>
+<mat-card class="scrollable-content">
     <mat-card-title><a (click)="titleClick()"><b>My Records</b></a><a href="#"> (add new)</a></mat-card-title>
-    <mat-card-content>
-        <mat-table mat-table [dataSource]="dataSource" matSort class="edi-list">
+    <mat-card-content  class="example-viewport">
+        <mat-table mat-table [dataSource]="dataSource" matSort class="">
             <ng-container matColumnDef="title">
                 <th mat-header-cell mat-sort-header="title" *matHeaderCellDef> Title </th>
                 <td mat-cell *matCellDef="let item"> {{item.title}} </td>

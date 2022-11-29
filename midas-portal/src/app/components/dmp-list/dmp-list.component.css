@@ -1,18 +1,33 @@
-/* .dmp-list {
-    display: block;
+.dmp-list {
+    /* display: block;
     background: #fff;
     border-radius: 10px;
     border: black;
     padding: 10px;
-    border: 1;
-    width: 100%;
+    border: 1; */
+    height: 250px;
+    width: auto;
+    border: 1px solid black;
+
 }
 
-.dmp-list.table {
+
+.mat-card.scrollable-content {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .mat-card.scrollable-content > .mat-card-title-group {
+    display: block;
+  }
+  .mat-card.scrollable-content > .mat-card-content {
+    overflow-y: auto;
+  }
+/* .dmp-list.table {
     padding: 50;
-}
- */
+} */
+
  
-mat-table {
+/* mat-table {
     border: solid 1px #000;
-}
+} */

@@ -19,3 +19,8 @@
 
     font-family: sans-serif;
 }
+
+* {
+    font-family: Raleway /* Replace with your custom font */, sans-serif !important; 
+    /* Add !important to overwrite all elements */
+  }

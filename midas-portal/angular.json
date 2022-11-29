@@ -33,6 +33,10 @@
                         ],
                         "styles": [                            
                             "../node_modules/bootstrap/dist/css/bootstrap.css",
+                            "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+                            "../node_modules/primeng/resources/primeng.css",
+                            "../node_modules/primeicons/primeicons.css",
+                            "src/styles/font-awesome/css/font-awesome.min.css",
                             "../lib/libs/oarng/src/styles/font-awesome/css/font-awesome.min.css",
                             "../lib/libs/oarng/src/styles/main.css",
                             "src/styles.css"

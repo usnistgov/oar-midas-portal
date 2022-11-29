@@ -11,7 +11,7 @@ mat-drawer {
     width: 200px;
     padding: 10px;
     border: 1px;
-    background-color: darkgray;
+    background-color: black;
 }
 
 mat-form-field {
@@ -42,4 +42,18 @@ mat-drawer-content {
 
 mat-card-content {
     border: 5px;
+}
+
+.edi-list {
+    display: block;
+    background: rgb(173, 110, 110);
+    border-radius: 10px;
+    border: black;
+    margin-top: 10px;
+    max-height: 10px;
+    overflow: auto;
+}
+
+li  a{
+   color: beige; 
 }

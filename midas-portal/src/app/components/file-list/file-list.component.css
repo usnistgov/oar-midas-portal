@@ -6,10 +6,14 @@
     padding: 10px;
     border: 1;
     width: 100%;
+       height: 250px;
+    width: auto;
+    border: 1px solid black;
 }
 
 .file-list.table {
     padding: 50;
+    
 } */
 
 mat-table {
@@ -18,4 +22,17 @@ mat-table {
 
 .file-list.mat-table {
     width: 100%;
+
 }
+
+.mat-card.scrollable-content {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .mat-card.scrollable-content > .mat-card-title-group {
+    display: block;
+  }
+  .mat-card.scrollable-content > .mat-card-content {
+    overflow-y: auto;
+  }
