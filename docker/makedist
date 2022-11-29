@@ -12,6 +12,7 @@
 #   angular            build only the angular-based distributions
 #   java               build only the java-based distributions 
 #
+echo "********************** makdist in docker"
 prog=`basename $0`
 execdir=`dirname $0`
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
