@@ -3,6 +3,7 @@ import { Observable, of, BehaviorSubject } from 'rxjs';
 import { CustomizationService } from '../auth-service/auth.service';
 import { AuthService, WebAuthService } from '../auth-service/auth.service';
 
+
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
@@ -24,9 +25,7 @@ export class LandingComponent implements OnInit {
     
   }
 
- 
 
- 
   public logintest(){
     alert("Test");
     this.authsvc.getUserInfo();

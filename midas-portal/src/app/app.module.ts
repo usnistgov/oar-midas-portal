@@ -7,29 +7,31 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './angular-material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LandingComponent } from './components/landing/landing.component';
-import { EdiListComponent } from './components/edi-list/edi-list.component';
-import { RecordsComponent } from './components/records/records.component';
-import { DmpListComponent } from './components/dmp-list/dmp-list.component';
-import { ReviewListComponent } from './components/review-list/review-list.component';
-import { FileListComponent } from './components/file-list/file-list.component';
+// import { LandingComponent } from './components/landing/landing.component';
+// import { EdiListComponent } from './components/edi-list/edi-list.component';
+// import { RecordsComponent } from './components/records/records.component';
+// import { DmpListComponent } from './components/dmp-list/dmp-list.component';
+// import { ReviewListComponent } from './components/review-list/review-list.component';
+// import { FileListComponent } from './components/file-list/file-list.component';
 import { OARngModule } from 'oarng';
 import { FrameModule } from 'oarng';
 import { PanelModule } from "primeng/panel";
 import { HttpClientModule } from '@angular/common/http';
-
+// import { AuthService, WebAuthService, CustomizationService } from './components/auth-service/auth.service';
+// import { LandingComponent } from './components/landing/landing.component';
+import { LandingModule } from './components/landing/landing.module';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LogInComponent,
-    LandingComponent,
-    EdiListComponent,
-    RecordsComponent,
-    DmpListComponent,
-    ReviewListComponent,
-    FileListComponent
+    LogInComponent
+    // LandingComponent,
+    // EdiListComponent,
+    // RecordsComponent,
+    // DmpListComponent,
+    // ReviewListComponent,
+    // FileListComponent
   ],
   imports: [
     BrowserModule,
@@ -42,9 +44,10 @@ import { HttpClientModule } from '@angular/common/http';
     OARngModule,
     FrameModule,
     PanelModule,
-    HttpClientModule
+    HttpClientModule,
+    LandingModule
   ],
-  providers: [ ],
+  providers: [  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
