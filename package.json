@@ -11,6 +11,8 @@
         "start": "npm run start midas-portal --prefix ./midas-portal"
     },
     "dependencies": {
-        "@ionic/angular": "^6.3.8"
+        "@ionic/angular": "^6.3.8",
+        "primefaces": "^12.0.0",
+        "primeng": "^13.3.3"
     }
 }
