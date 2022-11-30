@@ -54,8 +54,8 @@ function realpath {
 
 # Update this list with the names of the individual component names
 # 
-DISTNAMES="pdr-publish pdr-lps customization-api"
-angular_dists=":pdr-lps:"
+DISTNAMES="pdr-publish midas-portal customization-api"
+angular_dists=":midas-portal:"
 python_dists=":pdr-publish:"
 java_dists=":customization-api:"
 

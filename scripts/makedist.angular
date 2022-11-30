@@ -57,7 +57,7 @@ BUILD_DIR=$SOURCE_DIR/dist
 
 # Update this list with the names of the individual component names
 # 
-DISTNAMES="pdr-lps"
+DISTNAMES="midas-portal"
 
 # handle command line options
 build_dist=
