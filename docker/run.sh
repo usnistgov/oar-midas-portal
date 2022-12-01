@@ -131,7 +131,7 @@ done
 [ -z "${testcl[@]}" ] || {
     dargs=(${dargs[@]} --env OAR_TEST_INCLUDE=\"${testcl[@]}\")
 }
-echo "*** TEST"
+
 comptypes=`echo $comptypes`
 cmds=`echo $cmds`
 [ -n "$comptypes" ] || comptypes="midas-portal"
@@ -144,7 +144,6 @@ volopt="-v ${codedir}:/dev/oar-midas-portal"
 # check to see if we need to build the docker images; this can't detect
 # changes requiring re-builds.
 # 
-echo "*** TEST 2"
 if [ -z "$dodockbuild" ]; then
     if wordin midas-portal $comptypes; then
         if wordin build $cmds; then
@@ -158,7 +157,7 @@ fi
     echo '#' Building missing docker containers...
     $execdir/dockbuild.sh
 }
-echo "*** TEST3"
+
 # handle angular building and/or testing.  If shell was requested with
 # angular, open the shell in the angular test contatiner (angtest).
 # 
@@ -176,13 +175,16 @@ if wordin midas-portal $comptypes; then
                        "${args[@]}" "${angargs[@]}"
     elif [ -n "$docmds" ]; then
         echo '+' docker run --rm $volopt "${dargs[@]}" --cap-add=SYS_ADMIN \
-                        oar-pdr/angtest $docmds "${args[@]}" "${angargs[@]}"
+                        oar-midas-portal/midas-portal $docmds "${args[@]}" \
+                        "${angargs[@]}"
         if wordin shell $docmds; then
             exec docker run -ti --rm $volopt "${dargs[@]}" --cap-add=SYS_ADMIN \
-                        oar-pdr/angtest $docmds "${args[@]}" "${angargs[@]}"
+                        oar-midas-portal/midas-portal $docmds "${args[@]}"     \
+                        "${angargs[@]}"
         else
             docker run --rm $volopt "${dargs[@]}" --cap-add=SYS_ADMIN \
-                   oar-pdr/angtest $docmds "${args[@]}" "${angargs[@]}"
+                   oar-midas-portal/midas-portal $docmds "${args[@]}" \
+                   "${angargs[@]}"
         fi
     fi
 fi

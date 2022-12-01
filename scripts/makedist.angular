@@ -116,52 +116,43 @@ done
 DIST_DIR=`realpath $DIST_DIR`
 mkdir -p $DIST_DIR $BUILD_DIR
 
-
-
-echo Angular code path: $SOURCE_DIR
-cd $SOURCE_DIR
-
 # set the current version.  This will inject the version into the code, if 
 # needed.
 #
 # don't reset the version unnecessarily as it may have been done by makedist
-# # 
-# [ -z "$VERSION" -a -f "$PACKAGE_DIR/VERSION" ] || {
-#     echo '+' $execdir/setversion.sh $VERSION
-#     $execdir/setversion.sh $VERSION
-# }
-echo "********************** 1"
+# 
+[ -z "$VERSION" -a -f "$PACKAGE_DIR/VERSION" ] || {
+    echo '+' $execdir/setversion.sh $VERSION
+    $execdir/setversion.sh $VERSION
+}
 [ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat $PACKAGE_DIR/VERSION | awk '{print $1}'`
 version=$VERSION
 [ -n "$version" ] || version=`cat $PACKAGE_DIR/VERSION | awk '{print $2}'`
 vers4fn=`echo $version | perl -pe 's#[/ \t]+#_#g'`
-echo "********************** 2"
+
 # install required modules
 nodemodarg=
 [ -z "$CACHE_DIR" ] || nodemodearg="--prefix $CACHE_DIR"
 npmvers=`npm --version`
 echo '+' npm install $nodemodarg
 npm $npmpfx install $nodemodarg
-echo "********************** 3"
+
 echo '#########################'
 echo '#'
 echo "# Building $DISTNAMES"...
 echo '#'
 echo '#########################'
-echo "********************** 4"
-# build the component
-# echo '+' "npm run build:universal "
-# npm run build:ssr
 
-echo '+' " npm run build"
-npm run build
-echo "********************** 5"
+
+echo '+' " npm run build-all"
+npm run build-all
+
 # create the dependency file
-if [ -f "$SOURCE_DIR/package-lock.json" ]; then
+if [ -f "package-lock.json" ]; then
     echo '+' $execdir/record_npm_deps.py $DISTNAMES $version package-lock.json \
              $npmvers \> $DIST_DIR/${DISTNAMES}-${vers4fn}_dep.json
-    # # $execdir/record_npm_deps.py $DISTNAMES $version package-lock.json \
-    #                         $npmvers > $DIST_DIR/${DISTNAMES}-${vers4fn}_dep.json
+    $execdir/record_npm_deps.py $DISTNAMES $version package-lock.json \
+             $npmvers  > $DIST_DIR/${DISTNAMES}-${vers4fn}_dep.json
 else
     echo ${prog}: WARNING: Unable to create dependency file for ${dist}: \
          package-lock.json not found
