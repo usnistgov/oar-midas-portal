@@ -1,5 +1,15 @@
+
+<p-panel header="My Records" styleClass="panel_head">
+    <ng-template pTemplate="icons">
+        <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
+            <!-- <span class="pi pi-cog"></span> -->
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileEdit" size="lg" title="Create New Record"></fa-icon> 
+       
+        </button>
+        <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
+</ng-template>
 <mat-card class="scrollable-content">
-    <mat-card-title><a (click)="titleClick()"><b>My Records</b></a><a href="#"> (add new)</a></mat-card-title>
+    <!-- <mat-card-title><a (click)="titleClick()"><b>My Records</b></a><a href="#"> (add new)</a></mat-card-title> -->
     <mat-card-content  class="example-viewport">
         <mat-table mat-table [dataSource]="dataSource" matSort class="">
             <ng-container matColumnDef="title">
@@ -20,9 +30,13 @@
         </mat-table>
     </mat-card-content>
     <mat-card-footer>
+        <!-- <a href="#"> (add new)</a> -->
         <mat-paginator [pageSizeOptions]="[5]"
             showFirstLastButtons 
             aria-label="Select page">
         </mat-paginator>
     </mat-card-footer>
 </mat-card>
+
+</p-panel>
+

@@ -43,9 +43,9 @@ import { LandingModule } from './components/landing/landing.module';
     ReactiveFormsModule,
     OARngModule,
     FrameModule,
-    PanelModule,
     HttpClientModule,
     LandingModule
+
   ],
   providers: [  ],
   bootstrap: [AppComponent],

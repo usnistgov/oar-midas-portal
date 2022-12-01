@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-
+import {faUsersViewfinder} from '@fortawesome/free-solid-svg-icons';
 export interface NPSReview {
   title: string;
   owner: string;
@@ -24,6 +24,7 @@ const RECORD_DATA: NPSReview[] = [
 })
 export class ReviewListComponent implements OnInit {
 
+  faListCheck=faUsersViewfinder;
   public records: any;
   public recordsApi: string;
   public data: any;
@@ -48,14 +49,16 @@ export class ReviewListComponent implements OnInit {
   async ngOnInit() {
     // await this.getRecords()
     // this.data = this.records.ResultData
-    // //this.data = RECORD_DATA;
-    // console.log(this.data)
-    // this.dataSource = new MatTableDataSource(this.data);
-    // this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
+    this.data = RECORD_DATA;
+    console.log(this.data)
+    this.dataSource = new MatTableDataSource(this.data);
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
     
     
   }
+
+  
 
   async getRecords() {
     let records;

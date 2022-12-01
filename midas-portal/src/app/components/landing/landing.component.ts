@@ -2,26 +2,59 @@ import { Component, OnInit, OnChanges, ViewChild, Input, Output, EventEmitter, H
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { CustomizationService } from '../auth-service/auth.service';
 import { AuthService, WebAuthService } from '../auth-service/auth.service';
+import {MenuModule} from 'primeng/menu';
+import {MenuItem} from 'primeng/api';
+import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch, faFileCirclePlus, faPlus, faDatabase,faBook, faListCheck , faPrint, faPersonCircleQuestion} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
-  styleUrls: ['./landing.component.css']
+  styleUrls: [
+    './landing.component.css'
+
+  ]
 })
 export class LandingComponent implements OnInit {
 
+  faPlus = faPlus;
+  faHouse = faHouse;
+  faUser = faUser;
+  faDashboard =faDashboard;
+  faCloud =faCloud;
+  faClipboardList= faClipboardList;
+  faSearch=faSearch;
+  faFileCirclePlus=faFileCirclePlus;
+  faBook=faBook;
+  faListCheck=faListCheck;
+  faPrint=faPrint;
+  faPersonCircleQuestion=faPersonCircleQuestion;
   private _custsvc: CustomizationService ;
   public username: string;
   events: string[] = [];
   opened: boolean;
-
+  items: MenuItem[];
   public constructor(private authsvc: AuthService) { 
     
   }
 
   ngOnInit(): void {
-    this.startEditing(false);
+    //this.startEditing(true);
+
+    this.items = [{
+      label: 'File',
+      items: [
+          {label: 'New', icon: 'pi pi-fw pi-plus'},
+          {label: 'Download', icon: 'pi pi-fw pi-download'}
+      ]
+  },
+  {
+      label: 'Edit',
+      items: [
+          {label: 'Add User', icon: 'pi pi-fw pi-user-plus'},
+          {label: 'Remove User', icon: 'pi pi-fw pi-user-minus'}
+      ]
+  }];
     
   }
 

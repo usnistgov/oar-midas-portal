@@ -1,5 +1,15 @@
+
+<p-panel header="My Reviews">
+    <ng-template pTemplate="icons">
+        <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
+            <!-- <span class="pi pi-cog"></span> -->
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faListCheck" size="lg" title="Check Reviews"></fa-icon> 
+       
+        </button>
+        <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
+</ng-template>
 <mat-card class="scrollable-content">
-    <mat-card-title><a (click)="titleClick()"><b>My Reviews</b></a></mat-card-title>
+    <!-- <mat-card-title><a (click)="titleClick()"><b>My Reviews</b></a></mat-card-title> -->
     <mat-card-content>
         <mat-table mat-table [dataSource]="dataSource" matSort class="review-list">
             <ng-container matColumnDef="title">
@@ -24,9 +34,11 @@
         </mat-table>
     </mat-card-content>
     <mat-card-footer>
+        <!-- <a href="#"> (add new)</a> -->
         <mat-paginator [pageSizeOptions]="[5]"
             showFirstLastButtons 
             aria-label="Select page">
         </mat-paginator>
     </mat-card-footer>
 </mat-card>
+</p-panel>

@@ -3,6 +3,8 @@ import {MatSort, Sort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 
+import {faListCheck} from '@fortawesome/free-solid-svg-icons';
+
 export interface DMP {
   title: string;
   owner: string;
@@ -42,6 +44,7 @@ const RECORD_DATA: DMP[] = [
 })
 export class DmpListComponent implements OnInit {
 
+  faListCheck=faListCheck;
   public records: any;
   public recordsApi: string;
   public data: any;

@@ -1,5 +1,16 @@
+
+<p-panel header="My DMPs">
+  
+        <ng-template pTemplate="icons">
+            <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
+                <!-- <span class="pi pi-cog"></span> -->
+                <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faListCheck" size="lg" title="Create New Data management plan"></fa-icon> 
+           
+            </button>
+            <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
+    </ng-template>
 <mat-card class="scrollable-content">
-    <mat-card-title><b>My DMPs</b><a href="#"> (add new)</a></mat-card-title>
+    <!-- <mat-card-title><b>My DMPs</b><a href="#"> (add new)</a></mat-card-title> -->
     <mat-card-content class="dmp-list">
         <mat-table mat-table [dataSource]="dataSource" matSort >
             <ng-container matColumnDef="title">
@@ -19,9 +30,11 @@
         </mat-table>
     </mat-card-content>
     <mat-card-footer>
+        <!-- <a href="#"> (add new)</a> -->
         <mat-paginator [pageSizeOptions]="[5]"
             showFirstLastButtons 
             aria-label="Select page">
         </mat-paginator>
     </mat-card-footer>
 </mat-card>
+</p-panel>

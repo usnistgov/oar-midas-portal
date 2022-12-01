@@ -31,3 +31,9 @@
 /* mat-table {
     border: solid 1px #000;
 } */
+
+:host ::ng-deep .p-panel-header
+{
+  background: #d9e8f6;
+  border: 1px solid #908e8e;
+}

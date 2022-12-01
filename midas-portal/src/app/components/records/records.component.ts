@@ -2,6 +2,8 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
+import {MenuItem} from 'primeng/api';
+import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch,faFileCirclePlus, faPlus,faFileEdit } from '@fortawesome/free-solid-svg-icons';
 
 export interface MIDASRecord {
   title: string;
@@ -34,10 +36,23 @@ const RECORD_DATA: MIDASRecord[] = [
 @Component({
   selector: 'app-records',
   templateUrl: './records.component.html',
-  styleUrls: ['./records.component.css']
+  
+
+  styleUrls: [
+    './records.component.css'
+  ]
 })
 export class RecordsComponent implements OnInit {
-  
+  items: MenuItem[];
+  faPlus = faPlus;
+  faHouse = faHouse;
+  faUser = faUser;
+  faDashboard =faDashboard;
+  faCloud =faCloud;
+  faClipboardList= faClipboardList;
+  faSearch=faSearch;
+  faFileCirclePlus=faFileCirclePlus;
+  faFileEdit=faFileEdit;
   public records: any;
   public recordsApi: string;
   public data: any;

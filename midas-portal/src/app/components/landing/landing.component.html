@@ -14,15 +14,102 @@
       </mat-sidenav-content>
 </mat-sidenav-container> -->
 
+
+
+  
+ 
+  
+<p-panel header="deoyani.nandrekar@nist.gov" class="panel-header"  [toggleable]="true" [collapsed]="true" >
+  <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faUser" size="lg"></fa-icon> 
+  
+  <br>  userId: "dsn1"
+  <br>  Name: " Deoyani Nandrekar Heinis" 
+  <br>  Divison: "Office of Data and Informatics", 641 
+  <br>  OU: "Material Measurement Laboratory" 
+
+
+</p-panel>
 <mat-drawer-container>
+
     <mat-drawer class="mat-sidenav" #drawer mode="side" opened>
-        <ul>
-            <b><u>USER Info</u></b>
-            <li><a onclick="UserDetails">NAME</a></li>
+
+      <table class="tablesidebar">
+        <tr  onclick="window.location.href = 'https://inet.nist.gov';">
+          <td>   
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faHouse" size="lg"></fa-icon> 
+          </td>
+          <td>       
+            NIST Intranet
+          </td>
+        </tr>
+        <tr  onclick="window.location.href = 'https://data.nist.gov';">
+          <td>   
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faSearch" size="lg"></fa-icon> 
+          </td>
+          <td> 
+            Public Data Repository
+          </td>
+        </tr>
+        <tr onclick="window.location.href = 'https://library.nist.gov/'" >
+          <td>   
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faBook" size="lg"></fa-icon> 
+          </td>
+          <td> 
+            NIST Research Library
+          </td>
+        </tr>
+        <tr  onclick="window.location.href = 'https://inet.nist.gov'" >
+          <td>   
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faPrint" size="lg"></fa-icon> 
+          </td>
+          <td> 
+            Data Publishing Tool
+          </td>
+        </tr>
+        <tr onclick="window.location.href ='https://inet.nist.gov' ">
+          <td>   
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faListCheck" size="lg"></fa-icon> 
+          </td>
+          <td> 
+            Data Management Plan Tool
+          </td>
+        </tr>
+        <tr onclick="window.location.href ='https://nps.nist.gov' ">
+          <td>   
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faClipboardList" size="lg"></fa-icon> 
+          </td>
+          <td> 
+            NIST Publication System
+          </td>
+        </tr>
+        <tr onclick="window.location.href ='https://nextcloud.nist.gov' ">
+          <td>   
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faCloud" size="lg"></fa-icon> 
+          </td>
+          <td> 
+            NextCloud
+          </td>
+        </tr>
+        <tr onclick="window.location.href ='' ">
+          <td>   
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faPersonCircleQuestion" size="lg"></fa-icon> 
+          </td>
+          <td> 
+            User Guide
+          </td>
+        </tr>
+      </table>
+      <br>
+  
+   
+        <!-- <ul>
+          
             <b><u>NIST Links</u></b>
-            <li><a href="https://inet.nist.gov">NIST Intranet</a><br></li>
-            <li><a href="https://data.nist.gov">Public Data Repository</a></li>
-            <li><a href="https://library.nist.gov/">NIST Research Library</a></li>
+            
+         
+              <i class="fa-solid fa-house"></i><a href="https://inet.nist.gov">NIST Intranet</a><br>
+            <a href="https://data.nist.gov">Public Data Repository</a>
+            <a href="https://library.nist.gov/">NIST Research Library</a>
             <hr/>
             <b><u>Data Publishing Tools</u></b>
             <li><a href="https://inet.nist.gov">Data Publishing Tool</a></li>
@@ -34,14 +121,9 @@
             <li><a href="https://userguide.nist.gov">Data Publishing User Guide</a></li>
             <li><a href="https://npsguide.nist.gov">NPS Reviewers Guide</a></li>
             <li><a href="https://nextcloudguide.nist.gov">NextCloud User Guide</a></li>
-        </ul>
+        </ul> -->
     </mat-drawer>
     <mat-drawer-content>
-        <mat-card>
-            <mat-form-field appearance="fill">
-                <input type="tel" matInput placeholder="Search">
-            </mat-form-field>
-        </mat-card>
         <mat-grid-list cols="2" rowHeight="2:1" gutterSize="1px" style="border: 1px">
             <mat-grid-tile>
                 <app-records></app-records>

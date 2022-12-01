@@ -2,17 +2,17 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
-
+import {faFileImport} from '@fortawesome/free-solid-svg-icons';
 export interface MIDASFile {
   file_name: string;
   file_path: string;
   file_size: string;
-
+  last_modified: string;
 }
 
 const RECORD_DATA: MIDASFile[] = [
-  {file_name: 'Big Data File', file_path: '/fake_path/big_old_file.csv', file_size: '5TB'},
-  {file_name: 'Smaller Data File', file_path: '/fake_path/subdir/normal_file.txt', file_size: '657KB'},
+  {file_name: 'Big Data File', file_path: '/file_dir/fake_path/big_old_file.csv', file_size: '5TB', last_modified: 'Nov 30, 2022 at 4:11:11 PM'},
+  {file_name: 'Smaller Data File', file_path: '/file-dir/fake_path/subdir/normal_file.txt', file_size: '657KB', last_modified: 'Nov 25, 2022 at 9:20:30 AM'},
 ];
 @Component({
   selector: 'app-file-list',
@@ -20,11 +20,11 @@ const RECORD_DATA: MIDASFile[] = [
   styleUrls: ['./file-list.component.css']
 })
 export class FileListComponent implements OnInit {
-
+  faFileImport=faFileImport;
   public records: any;
   public recordsApi: string;
   public data: any;
-  displayedColumns: string[] = ['file_name', 'file_path', 'file_size'];
+  displayedColumns: string[] = ['file_name', 'file_path', 'file_size', 'last_modified'];
   dataSource: any;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
