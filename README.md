@@ -32,7 +32,7 @@ Software in this repository is built using the [Angular](https://angular.io/) ap
 (v13), and, thus, is built and run using `nodejs` and `npm`.  Both become available to your
 development environment when you install,
 
-  * node 14.19.0 or higher
+  * node > 14.19.0 and <= 16.17.1
 
 All prerequisite Javascript modules needed are provided via the `npm` build tool.  See
 `package.json` for a listing of primary dependencies and `package-lock.json` for a
