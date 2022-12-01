@@ -1,5 +1,5 @@
 
-<p-panel header="My Records" styleClass="panel_head">
+<p-panel header="My Data Publications" styleClass="panel_head">
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
@@ -21,7 +21,7 @@
                 <td mat-cell *matCellDef="let item"> {{item.owner}} </td>
             </ng-container>
             <ng-container matColumnDef="lastmodified">
-                <th mat-header-cell mat-sort-header *matHeaderCellDef> Date Last Modified </th>
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Last Modified </th>
                 <td mat-cell *matCellDef="let item"> {{item.lastmodified}} </td>
             </ng-container>
 
