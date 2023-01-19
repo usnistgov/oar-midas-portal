@@ -4,6 +4,8 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {MenuItem} from 'primeng/api';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch,faFileCirclePlus, faPlus,faFileEdit } from '@fortawesome/free-solid-svg-icons';
+import {ScrollPanelModule} from 'primeng/scrollpanel';
+
 
 export interface MIDASRecord {
   title: string;

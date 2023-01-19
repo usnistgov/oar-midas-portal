@@ -4,6 +4,7 @@ import { CustomizationService } from '../auth-service/auth.service';
 import { AuthService, WebAuthService } from '../auth-service/auth.service';
 import {MenuModule} from 'primeng/menu';
 import {MenuItem} from 'primeng/api';
+import { SidebarModule } from 'primeng/sidebar';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch, faFileCirclePlus, faPlus, faDatabase,faBook, faListCheck , faPrint, faPersonCircleQuestion} from '@fortawesome/free-solid-svg-icons';
 
 
@@ -34,6 +35,7 @@ export class LandingComponent implements OnInit {
   events: string[] = [];
   opened: boolean;
   items: MenuItem[];
+  display = false;
   public constructor(private authsvc: AuthService) { 
     
   }

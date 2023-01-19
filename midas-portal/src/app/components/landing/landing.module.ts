@@ -12,11 +12,12 @@ import { ReviewListComponent } from '../review-list/review-list.component';
 import { FileListComponent } from '../file-list/file-list.component';
 
 import { PanelModule } from "primeng/panel";
-import {AccordionModule} from 'primeng/accordion';     //accordion and accordion tab
-import {MenuModule} from 'primeng/menu';
+import { AccordionModule} from 'primeng/accordion';     //accordion and accordion tab
+import { MenuModule} from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SidebarModule } from 'primeng/sidebar';
 
 import {TableModule} from 'primeng/table';
 
@@ -38,7 +39,8 @@ import {TableModule} from 'primeng/table';
          ButtonModule,
          RadioButtonModule,
          FontAwesomeModule,
-         TableModule
+         TableModule,
+         SidebarModule
          
          
     ],

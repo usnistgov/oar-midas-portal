@@ -69,17 +69,17 @@ mat-card-content {
 } */
 
 a{
-   color: beige; 
+   /*color: beige; 
    /* font-family: sans-serif; 
     font-size: 20 px; */
 }
 
 
- tr {
+ /* tr {
     color: beige; 
-    /* padding: 80px; */
+    /* padding: 80px; 
     
-}
+ } */
 
 tr:hover td{
     background-color: transparent;
@@ -88,7 +88,7 @@ tr:hover td{
 
 
  td {
-    color: beige; 
+    /* color: beige;  */
     font-size: 20px;
     padding: 25px;
     
@@ -99,7 +99,7 @@ tr:hover td {
     color: #005ea2;
     font-weight: bold;
    
-}
+} 
 
 .ng-fa-icon:hover {
   color: red;

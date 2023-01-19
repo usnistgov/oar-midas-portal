@@ -16,6 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OARngModule } from 'oarng';
 import { FrameModule } from 'oarng';
 import { PanelModule } from "primeng/panel";
+import {ScrollPanelModule} from 'primeng/scrollpanel';
 import { HttpClientModule } from '@angular/common/http';
 // import { AuthService, WebAuthService, CustomizationService } from './components/auth-service/auth.service';
 // import { LandingComponent } from './components/landing/landing.component';
@@ -44,7 +45,8 @@ import { LandingModule } from './components/landing/landing.module';
     OARngModule,
     FrameModule,
     HttpClientModule,
-    LandingModule
+    LandingModule,
+    ScrollPanelModule
 
   ],
   providers: [  ],
