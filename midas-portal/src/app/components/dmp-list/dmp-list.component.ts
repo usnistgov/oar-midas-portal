@@ -3,7 +3,7 @@ import {MatSort, Sort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 
-import {faListCheck} from '@fortawesome/free-solid-svg-icons';
+import {faListCheck, faCheck,faFileEdit} from '@fortawesome/free-solid-svg-icons';
 
 export interface DMP {
   title: string;
@@ -12,7 +12,7 @@ export interface DMP {
 }
 
 const RECORD_DATA: DMP[] = [
-  {title: 'Characterization and Measurement of Complex Networks', owner: 'Isabel Beichl', lastmodified:'2021-07-03'},
+  {title: 'Characterization and Measurement of Complex Networks and more ', owner: 'Isabel Beichl', lastmodified:'2021-07-03'},
   {title: 'SEM imaging using the JEOL JXA-8500F ', owner: 'Steven A. Buntin', lastmodified:'2022-02-14'},
   {title: 'EPMA WDS using JEOL JXA-8500F ', owner: 'Steven A. Buntin', lastmodified:'2019-05-11'},
   {title: 'EPMA EDS using JEOL JXA-8500F ', owner: 'Steven A. Buntin', lastmodified:'2017-04-20'},
@@ -44,7 +44,9 @@ const RECORD_DATA: DMP[] = [
 })
 export class DmpListComponent implements OnInit {
 
+  faCheck=faCheck;
   faListCheck=faListCheck;
+  faFileEdit=faFileEdit;
   public records: any;
   public recordsApi: string;
   public data: any;

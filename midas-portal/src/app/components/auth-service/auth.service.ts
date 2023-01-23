@@ -178,6 +178,7 @@ import { UserDetails } from './user.interface';
          return new Observable<CustomizationService>(subscriber => {
              this.getAuthorization().subscribe(
                  (info) => {
+                    alert(info)
                     //  this._authcred.token = info.token;
                      this._authcred.userDetails = _deepCopy(info.userDetails);
                      console.log("Userdetails :"+this._authcred.userDetails?.userId)

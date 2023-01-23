@@ -1,11 +1,17 @@
 
-<p-panel header="My Records" styleClass="panel_head">
+<p-panel header="My Data Publications" styleClass="panel_head">
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
             <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileEdit" size="lg" title="Create New Record"></fa-icon> 
        
         </button>
+        <p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<button type="button" (click)="show()" pButton icon="pi pi-info-circle" label="Show">
+    <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faHouse" size="lg" title="Create New Record"></fa-icon> 
+       
+</button>
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
 <mat-card class="scrollable-content">
@@ -21,7 +27,7 @@
                 <td mat-cell *matCellDef="let item"> {{item.owner}} </td>
             </ng-container>
             <ng-container matColumnDef="lastmodified">
-                <th mat-header-cell mat-sort-header *matHeaderCellDef> Date Last Modified </th>
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Last Modified </th>
                 <td mat-cell *matCellDef="let item"> {{item.lastmodified}} </td>
             </ng-container>
 

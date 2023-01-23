@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import {faUsersViewfinder} from '@fortawesome/free-solid-svg-icons';
+import {faUsersViewfinder, faBell} from '@fortawesome/free-solid-svg-icons';
 export interface NPSReview {
   title: string;
   owner: string;
@@ -25,6 +25,7 @@ const RECORD_DATA: NPSReview[] = [
 export class ReviewListComponent implements OnInit {
 
   faListCheck=faUsersViewfinder;
+  faBell=faBell;
   public records: any;
   public recordsApi: string;
   public data: any;

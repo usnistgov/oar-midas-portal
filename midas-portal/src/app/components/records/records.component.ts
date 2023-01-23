@@ -4,6 +4,9 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {MenuItem} from 'primeng/api';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch,faFileCirclePlus, faPlus,faFileEdit } from '@fortawesome/free-solid-svg-icons';
+import {DialogService} from 'primeng/dynamicdialog';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
+import { RecordsList } from './recordslist.component';
 
 export interface MIDASRecord {
   title: string;
@@ -41,6 +44,8 @@ const RECORD_DATA: MIDASRecord[] = [
   styleUrls: [
     './records.component.css'
   ]
+  ,
+  providers: [DialogService]
 })
 export class RecordsComponent implements OnInit {
   items: MenuItem[];
@@ -64,7 +69,7 @@ export class RecordsComponent implements OnInit {
   
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor() { 
+  constructor(public dialogService: DialogService) { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'
   }
 
@@ -97,5 +102,19 @@ export class RecordsComponent implements OnInit {
 
   titleClick() {
     console.log(this);
+  }
+
+
+
+    ref: DynamicDialogRef;
+
+  show() {
+    console.log("show!");
+    this.ref = this.dialogService.open(RecordsList, {
+        header: 'Choose a Product',
+        width: '70%',
+        contentStyle: {"overflow": "auto"},
+        baseZIndex: 10000
+    });
   }
 }

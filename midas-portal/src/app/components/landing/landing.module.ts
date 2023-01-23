@@ -11,6 +11,8 @@ import { DmpListComponent } from '../dmp-list/dmp-list.component';
 import { ReviewListComponent } from '../review-list/review-list.component';
 import { FileListComponent } from '../file-list/file-list.component';
 
+import { RecordsList } from '../records/recordslist.component';
+
 import { PanelModule } from "primeng/panel";
 import {AccordionModule} from 'primeng/accordion';     //accordion and accordion tab
 import {MenuModule} from 'primeng/menu';
@@ -19,6 +21,9 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import {TableModule} from 'primeng/table';
+import {TooltipModule} from 'primeng/tooltip';
+import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
     declarations:[
@@ -28,6 +33,7 @@ import {TableModule} from 'primeng/table';
         DmpListComponent,
         ReviewListComponent,
         FileListComponent,
+        RecordsList
     ],
     imports:[
          HttpClientModule,
@@ -38,7 +44,10 @@ import {TableModule} from 'primeng/table';
          ButtonModule,
          RadioButtonModule,
          FontAwesomeModule,
-         TableModule
+         TableModule,
+         TooltipModule,
+         DynamicDialogModule,
+         ToastModule
          
          
     ],

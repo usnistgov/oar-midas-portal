@@ -11,8 +11,8 @@ export interface MIDASFile {
 }
 
 const RECORD_DATA: MIDASFile[] = [
-  {file_name: 'Big Data File', file_path: '/file_dir/fake_path/big_old_file.csv', file_size: '5TB', last_modified: 'Nov 30, 2022 at 4:11:11 PM'},
-  {file_name: 'Smaller Data File', file_path: '/file-dir/fake_path/subdir/normal_file.txt', file_size: '657KB', last_modified: 'Nov 25, 2022 at 9:20:30 AM'},
+  {file_name: 'Big Data File', file_path: '/file_dir/some_path/big_old_file.csv', file_size: '5TB', last_modified: 'Nov 30, 2022 at 4:11:11 PM'},
+  {file_name: 'Small Data File', file_path: '/file-dir/some_path/subdir-1/subdir-2/small_file.txt', file_size: '657KB', last_modified: 'Nov 25, 2022 at 9:20:30 AM'},
 ];
 @Component({
   selector: 'app-file-list',

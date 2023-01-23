@@ -19,7 +19,7 @@
   
  
   
-<p-panel header="deoyani.nandrekar@nist.gov" class="panel-header"  [toggleable]="true" [collapsed]="true" >
+<p-panel header="deoyani.nandrekarheinis@nist.gov" class="panel-header"  [toggleable]="true" [collapsed]="true" >
   <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faUser" size="lg"></fa-icon> 
   
   <br>  userId: "dsn1"
@@ -34,6 +34,18 @@
     <mat-drawer class="mat-sidenav" #drawer mode="side" opened>
 
       <table class="tablesidebar">
+
+        <tr>
+          <td>   
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faSearch" size="lg"></fa-icon> 
+          </td>
+          <td>
+            <div #container style="display:inline-block;position:relative">
+              <input type="text" pInputText pTooltip="Enter your username" placeholder="Search Publications ..." [appendTo]="container">
+          </div>
+          
+          </td>
+        </tr>
         <tr  onclick="window.location.href = 'https://inet.nist.gov';">
           <td>   
             <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faHouse" size="lg"></fa-icon> 
