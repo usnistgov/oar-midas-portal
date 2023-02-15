@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import {faUsersViewfinder,faBell} from '@fortawesome/free-solid-svg-icons';
 export interface NPSReview {
   title: string;
@@ -36,7 +36,7 @@ export class ReviewListComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor() { 
-    //this.recordsApi = 'https://localhost:5000/user/208821';
+    this.recordsApi = 'https://localhost:5000/user/208821';
   }
 
   
@@ -47,9 +47,9 @@ export class ReviewListComponent implements OnInit {
   }
 
   async ngOnInit() {
-    // await this.getRecords()
-    // this.data = this.records.ResultData
-    this.data = RECORD_DATA;
+    await this.getRecords()
+    this.data = JSON.parse(this.records);
+    //this.data = RECORD_DATA;
     console.log(this.data)
     this.dataSource = new MatTableDataSource(this.data);
     this.dataSource.sort = this.sort;
@@ -63,7 +63,20 @@ export class ReviewListComponent implements OnInit {
   async getRecords() {
     let records;
 
-    await fetch(this.recordsApi).then(r => r.json()).then(function (r) {
+    const headerDict = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Origin': '*',
+      'rejectUnauthorized': 'false'
+    }
+    
+    const requestOptions = {                                                                                                                                                                                 
+      headers: new Headers(headerDict)
+    };
+    
+
+    await fetch(this.recordsApi, requestOptions).then(r => r.json()).then(function (r) {
       console.log(r);
       return records = r
     })
