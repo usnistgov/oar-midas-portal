@@ -21,6 +21,7 @@ export class LandingComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.logintest();
     this.startEditing(false);
     
   }
