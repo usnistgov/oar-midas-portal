@@ -2,7 +2,7 @@ import { Component, OnInit, OnChanges, ViewChild, Input, Output, EventEmitter, H
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { CustomizationService } from '../auth-service/auth.service';
 import { AuthService, WebAuthService } from '../auth-service/auth.service';
-
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-landing',
@@ -16,7 +16,7 @@ export class LandingComponent implements OnInit {
   events: string[] = [];
   opened: boolean;
 
-  public constructor(private authsvc: AuthService) { 
+  public constructor(private authsvc: AuthService, private http: HttpClient) { 
     
   }
 
@@ -28,6 +28,8 @@ export class LandingComponent implements OnInit {
 
   public logintest(){
     alert("Test");
+    this.http.get("https://p932439.nist.gov/sso/auth/_logininfo/", 
+    { headers: { 'X-Requested-With':'XMLHttpRequest' }}).subscribe( (data) => {alert ("Test 2")} )
     this.authsvc.getUserInfo();
   }
     /**
