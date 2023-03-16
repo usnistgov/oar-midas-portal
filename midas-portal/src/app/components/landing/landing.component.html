@@ -1,25 +1,11 @@
-<!-- <mat-sidenav-container>
-    <mat-sidenav #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')" 
-        (closed)="events.push('close!')">
-    Sidenav content
-    </mat-sidenav>
-
-    <mat-sidenav-content>
-        <p><mat-checkbox [(ngModel)]="opened">sidenav.opened</mat-checkbox></p>
-        <p><button mat-button (click)="sidenav.toggle()">sidenav.toggle()</button></p>
-        <p>Events:</p>
-        <div class="example-events">
-          <div *ngFor="let e of events">{{e}}</div>
-        </div>
-      </mat-sidenav-content>
-</mat-sidenav-container> -->
-
-
-
-  
- 
   
 <p-panel header="Welcome, Deoyani! (deoyani.nandrekar@nist.gov)" class="panel-header"  [toggleable]="true" [collapsed]="true" >
+  <ng-template pTemplate="icons">
+    <span class="p-input-icon-left">
+      <input type="text" #filterText pInputText name="filterString" placeholder="Search" 
+       (input)="reviews.filterTable($event); records.filterTable($event); dmps.filterTable($event); files.filterTable($event);"/>
+    </span>
+  </ng-template>
   <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faUser" size="lg"></fa-icon> 
   
   <br>  userId: "dsn1"
@@ -102,27 +88,26 @@
   <tr>
     <td [style]="{'width':'50%'}">
       <div>
-        <app-records></app-records>
+        <app-records #records></app-records>
       </div>
     </td>
     <td [style]="{'width':'50%'}">
       <div>
-        <app-dmp-list></app-dmp-list>
+        <app-dmp-list #dmps></app-dmp-list>
       </div>
     </td>
   </tr>
   <tr>
     <td [style]="{'width':'50%'}">
       <div>
-        <app-review-list></app-review-list>
+        <app-review-list #reviews></app-review-list>
       </div>
     </td>
     <td [style]="{'width':'50%'}">
       <div>
-        <app-file-list></app-file-list>
+        <app-file-list #files></app-file-list>
       </div>
     </td>
   </tr>
 </table>
-
 <p-button type="text" (click)="display = !display" icon="pi pi-plus" label="Resources/Links"></p-button>
