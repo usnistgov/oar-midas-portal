@@ -3,6 +3,9 @@ import {MatSort, Sort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 
+import {faListCheck, faCheck,faFileEdit} from '@fortawesome/free-solid-svg-icons';
+import { Table } from 'primeng/table';
+
 export interface DMP {
   title: string;
   owner: string;
@@ -42,6 +45,9 @@ const RECORD_DATA: DMP[] = [
 })
 export class DmpListComponent implements OnInit {
 
+  faCheck=faCheck;
+  faListCheck=faListCheck;
+  faFileEdit=faFileEdit;
   public records: any;
   public recordsApi: string;
   public data: any;
@@ -49,9 +55,7 @@ export class DmpListComponent implements OnInit {
   displayedColumns: string[] = ['title', 'owner', 'lastmodified'];
   dataSource: any;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('dmptable') dmpTable: Table;
 
   constructor() { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'
@@ -60,10 +64,7 @@ export class DmpListComponent implements OnInit {
   
 
   ngAfterViewInit() {
-   
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    
+
   }
 
   async ngOnInit() {
@@ -71,7 +72,6 @@ export class DmpListComponent implements OnInit {
     //this.data = this.records.ResultData
     this.data = RECORD_DATA;
     console.log(this.data)
-    this.dataSource = new MatTableDataSource(this.data);
     
   }
 
@@ -86,5 +86,9 @@ export class DmpListComponent implements OnInit {
 
   titleClick() {
     console.log(this);
+  }
+
+  filterTable(event: any) {
+    this.dmpTable.filterGlobal(event.target.value, 'contains');
   }
 }

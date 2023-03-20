@@ -11,9 +11,11 @@ from base64 import b64encode, encode
 import binascii
 from flask import Flask, jsonify, request
 from flask_restful import Resource, Api
+from flask_cors import CORS
 
 # creating the flask app
 app = Flask(__name__)
+CORS(app)
 # creating an API object
 api = Api(app)
 
@@ -23,16 +25,18 @@ class NPS(Resource):
 
 	def get(self, num):
 		token = self.get_auth_token()
-		peopleId = num
-		api_url = 'https://tsapps-t.nist.gov/nps/npsapi' + '/api/DataSet/ReviewsForUser?peopleID=' + str(peopleId)
-		payload = {"nistID", peopleId}
+		userid = num
+		api_url = 'https://tsapps-t.nist.gov/nps/npsapi' + '/api/DataSet/ReviewsForUser'
 		print('api_url: ' + api_url)
 
-		api_call_headers = {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json', 'Accept': 'text/plain'}
-		api_call_response = requests.post(api_url, headers=api_call_headers, data=str(peopleId))
+		api_call_headers = {'Authorization': 'Bearer ' + token}
+		api_call_response = requests.post(api_url, json=userid, headers=api_call_headers)
 
 		print(api_call_response.text)
-		return api_call_response.text
+		response = jsonify(api_call_response.text)
+		response.headers.add('Access-Control-Allow-Origin', '*')
+
+		return response
 	
 	def get_auth_token(self):
 

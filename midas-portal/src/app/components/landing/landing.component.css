@@ -1,17 +1,29 @@
-.mat-grid-tile-content {
+:host ::ng-deep .mat-grid-tile-content {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: top;
+    display: block;
     align-items: center;
-    position: inherit;
+    justify-content: left;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    /* background-color: aquamarine; */
 }
+
 
 .stack{
     display: block;
 }
 
 mat-drawer {
-    width: 200px;
+    width: auto;
     padding: 10px;
     border: 1px;
     background-color: black;
+    text-align: left;
 }
 
 mat-form-field {
@@ -23,7 +35,7 @@ mat-form-field {
 
 mat-card {
     /* width: 80%; */
-    align-items: flex-end;
+    /* align-items: flex-end; */
     text-align: right;
 }
 
@@ -33,7 +45,9 @@ mat-grid {
 }
 
 mat-grid-tile {
-    padding: 5px;
+    padding: 0px;
+    align-items: center;
+    
 }
 
 mat-drawer-content {
@@ -44,7 +58,7 @@ mat-card-content {
     border: 5px;
 }
 
-.edi-list {
+/* .edi-list {
     display: block;
     background: rgb(173, 110, 110);
     border-radius: 10px;
@@ -52,8 +66,45 @@ mat-card-content {
     margin-top: 10px;
     max-height: 10px;
     overflow: auto;
+} */
+
+a{
+   /*color: beige; 
+   /* font-family: sans-serif; 
+    font-size: 20 px; */
 }
 
-li  a{
-   color: beige; 
+
+ /* tr {
+    color: beige; 
+    /* padding: 80px; 
+    
+ } */
+
+tr:hover td{
+    background-color: transparent;
+    font-size: 20px;
+}
+
+
+ td {
+    /* color: beige;  */
+    font-size: 20px;
+    padding: 25px;
+    
+}
+
+tr:hover td {
+    background: #dbebde!important;
+    color: #005ea2;
+    font-weight: bold;
+   
+} 
+
+.ng-fa-icon:hover {
+  color: red;
+}
+
+:host ::ng-deep.usertable{
+    color: red;
 }

@@ -2,8 +2,9 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import {faUsersViewfinder,faBell} from '@fortawesome/free-solid-svg-icons';
+import {Table} from 'primeng/table';
 export interface NPSReview {
   title: string;
   owner: string;
@@ -11,64 +12,67 @@ export interface NPSReview {
   currentreviewstop: string;
 }
 
-const RECORD_DATA: NPSReview[] = [
-  {title: 'Word pairs in psychology that have been hand-annotated for semantic similarity by psychologists', owner: 'Stanton, Brian', currentreviewer: "Hanisch, Robert", currentreviewstop: 'Division Chief'},
-  {title: 'Commerce Business System, Core Financial System (CBS/CFS)', owner: 'Sell, Sean', currentreviewer: "Tweedy, Romain", currentreviewstop: "OU IT Security Officer"},
-];
-
-
 @Component({
   selector: 'app-review-list',
   templateUrl: './review-list.component.html',
   styleUrls: ['./review-list.component.css']
 })
 export class ReviewListComponent implements OnInit {
-
+  faBell=faBell;
+  faListCheck=faUsersViewfinder;
   public records: any;
   public recordsApi: string;
   public data: any;
   displayedColumns: string[] = ['title', 'owner', 'currentreviewer', 'currentreviewstop'];
-  dataSource: any;
+  loading: boolean = true;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('reviewtable') reviewTable: Table;
 
   constructor() { 
-    //this.recordsApi = 'https://localhost:5000/user/208821';
+    this.recordsApi = 'https://localhost:5000/user/208821';
   }
 
-  
-
   ngAfterViewInit() {
-   
-    
+       
   }
 
   async ngOnInit() {
-    // await this.getRecords()
-    // this.data = this.records.ResultData
-    // //this.data = RECORD_DATA;
-    // console.log(this.data)
-    // this.dataSource = new MatTableDataSource(this.data);
-    // this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
-    
+    await this.getRecords()
+    this.data = JSON.parse(this.records);
+    console.log("review data loaded")
+    console.log(this.data);
     
   }
 
   async getRecords() {
     let records;
 
-    await fetch(this.recordsApi).then(r => r.json()).then(function (r) {
-      console.log(r);
+    const headerDict = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Origin': '*',
+      'rejectUnauthorized': 'false'
+    }
+    
+    const requestOptions = {                                                                                                                                                                                 
+      headers: new Headers(headerDict)
+    };
+    
+
+    await fetch(this.recordsApi, requestOptions).then(r => r.json()).then(function (r) {
       return records = r
     })
 
+    this.loading = false;
     return this.records = Object(records)
   }
 
   titleClick() {
     console.log(this);
+  }
+
+  filterTable(event: any) {
+    this.reviewTable.filterGlobal(event.target.value, 'contains');
   }
 }

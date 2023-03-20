@@ -11,7 +11,15 @@ import { DmpListComponent } from '../dmp-list/dmp-list.component';
 import { ReviewListComponent } from '../review-list/review-list.component';
 import { FileListComponent } from '../file-list/file-list.component';
 
+import { PanelModule } from "primeng/panel";
+import { AccordionModule} from 'primeng/accordion';     //accordion and accordion tab
+import { MenuModule} from 'primeng/menu';
+import { ButtonModule } from 'primeng/button';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SidebarModule } from 'primeng/sidebar';
 
+import {TableModule} from 'primeng/table';
 
 @NgModule({
     declarations:[
@@ -20,11 +28,21 @@ import { FileListComponent } from '../file-list/file-list.component';
         RecordsComponent,
         DmpListComponent,
         ReviewListComponent,
-        FileListComponent
+        FileListComponent,
     ],
     imports:[
          HttpClientModule,
-         AngularMaterialModule
+         AngularMaterialModule,
+         PanelModule,
+         AccordionModule,
+         MenuModule,
+         ButtonModule,
+         RadioButtonModule,
+         FontAwesomeModule,
+         TableModule,
+         SidebarModule
+         
+         
     ],
     providers:[ HttpClient,
         { provide: AuthService, useFactory: createAuthService, deps: [ HttpClient ] }

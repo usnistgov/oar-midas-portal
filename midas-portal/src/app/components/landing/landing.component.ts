@@ -2,35 +2,70 @@ import { Component, OnInit, OnChanges, ViewChild, Input, Output, EventEmitter, H
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { CustomizationService } from '../auth-service/auth.service';
 import { AuthService, WebAuthService } from '../auth-service/auth.service';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import {MenuModule} from 'primeng/menu';
+import {MenuItem} from 'primeng/api';
+import { SidebarModule } from 'primeng/sidebar';
+import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch, faFileCirclePlus, faPlus, faDatabase,faBook, faListCheck , faPrint, faPersonCircleQuestion} from '@fortawesome/free-solid-svg-icons';
+import { ReviewListComponent } from '../review-list/review-list.component';
+
 
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
-  styleUrls: ['./landing.component.css']
+  styleUrls: [
+    './landing.component.css'
+
+  ]
 })
 export class LandingComponent implements OnInit {
 
+  faPlus = faPlus;
+  faHouse = faHouse;
+  faUser = faUser;
+  faDashboard =faDashboard;
+  faCloud =faCloud;
+  faClipboardList= faClipboardList;
+  faSearch=faSearch;
+  faFileCirclePlus=faFileCirclePlus;
+  faBook=faBook;
+  faListCheck=faListCheck;
+  faPrint=faPrint;
+  faPersonCircleQuestion=faPersonCircleQuestion;
   private _custsvc: CustomizationService ;
   public username: string;
   events: string[] = [];
   opened: boolean;
+  items: MenuItem[];
+  display = false;
+  filterString: string;
 
-  public constructor(private authsvc: AuthService, private http: HttpClient) { 
+  public constructor(private authsvc: AuthService) { 
     
   }
 
   ngOnInit(): void {
-    this.logintest();
-    this.startEditing(false);
+    //this.startEditing(true);
+
+    this.items = [{
+      label: 'File',
+      items: [
+          {label: 'New', icon: 'pi pi-fw pi-plus'},
+          {label: 'Download', icon: 'pi pi-fw pi-download'}
+      ]
+  },
+  {
+      label: 'Edit',
+      items: [
+          {label: 'Add User', icon: 'pi pi-fw pi-user-plus'},
+          {label: 'Remove User', icon: 'pi pi-fw pi-user-minus'}
+      ]
+  }];
     
   }
 
 
   public logintest(){
     alert("Test");
-    this.http.get("https://p932439.nist.gov/sso/auth/_logininfo/", 
-    { headers: { 'X-Requested-With':'XMLHttpRequest' }}).subscribe( (data) => {alert ("Test 2")} )
     this.authsvc.getUserInfo();
   }
     /**
@@ -55,6 +90,10 @@ export class LandingComponent implements OnInit {
           console.log("Authentication failed.");
       }
   );
+  }
+
+  txtSearchChange(event: any) {
+    console.log("search string: " + event.target.value);
   }
 
   /**

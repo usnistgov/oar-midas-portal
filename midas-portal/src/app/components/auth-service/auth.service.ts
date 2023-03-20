@@ -450,7 +450,102 @@ export class NotFoundCustomizationError extends CustomizationError {
 }
  }
 
-
+// /**
+//  * An AuthService intended for development and testing purposes which simulates interaction 
+//  * with a authorization service.
+//  */
+//  @Injectable()
+//  export class MockAuthService extends AuthService {
+//      private resdata: {} = {};
+ 
+//      /**
+//       * construct the authorization service
+//       *
+//       * @param resmd      the original resource metadata 
+//       * @param userid     the ID of the user; default "anon"
+//       */
+//      constructor(userDetails?: UserDetails) {
+//          super();
+//          if (userDetails === undefined) {
+//              this._authcred = {
+//                  userDetails: {
+//                  userId: "anon",
+//                  userName: "Anon",
+//                  userLastName: "Lee",
+//                  userEmail: "Anon.Lee@nist.gov"
+//                  },
+//                  token: 'fake jwt token'
+//              }
+//          }else{
+//              this._authcred = {
+//                  userDetails: userDetails,
+//                  token: 'fake jwt token'
+//              }
+//          }
+         
+//         //  if (!ngenv.testdata)
+//         //      throw new Error("No test data encoded into angular environment");
+//         //  if (Object.keys(ngenv.testdata).length < 0)
+//         //      console.warn("No NERDm records included in the angular environment");
+ 
+//         //  // load resource metadata lookup by ediid
+//         //  for (let key of Object.keys(ngenv.testdata)) {
+//         //      if (ngenv.testdata[key]['ediid'])
+//         //          this.resdata[ngenv.testdata[key]['ediid']] = ngenv.testdata[key];
+//         //  }
+//      }
+ 
+//      /**
+//       * return true if the user is currently authorized to to edit the resource metadata.
+//       * If false, can attempt to gain authorization via a call to authorizeEditing();
+//       */
+//      public isAuthorized(): boolean {
+//          return Boolean(this.userDetails);
+//      }
+ 
+//      /**
+//       * create a CustomizationService that allows the user to edit the resource metadata 
+//       * associated with the given ID.
+//       *
+//       * @param resid     the identifier for the resource to edit
+//       * @param nologin   if false (default) and the user is not logged in, the browser will be redirected 
+//       *                  to the authentication service.  If true, redirection will not occur; instead, 
+//       *                  no user information is set and null is returned if the user is not logged in.  
+//       * @param Observable<CustomizationService>  an observable wrapped CustomizationService that should 
+//       *                  be used to send edits to the customization server.  The service will be null if 
+//       *                  the user is not authorized.  
+//       */
+//      public authorizeEditing( nologin: boolean = false): Observable<CustomizationService> {
+//          // simulate logging in with a redirect 
+//          if (!this.userDetails){ 
+//            this.loginUser();}
+//         //  if (!this.resdata[resid]){
+//         //      return of<CustomizationService>(null);
+//         //  }
+//          return of<CustomizationService>(new InMemCustomizationService());
+//      }
+ 
+//      /**
+//       * redirect the browser to the authentication service, instructing it to return back to 
+//       * the current landing page.  
+//       */
+//      public loginUser(): void {
+//          let redirectURL = window.location.href + "?editEnabled=true";
+//          console.log("Bypassing authentication service; redirecting directly to " + redirectURL);
+//          if (!this._authcred.userDetails){
+//              this._authcred = {
+//                  userDetails: {
+//                  userId: "anon",
+//                  userName: "Anon",
+//                  userLastName: "Lee",
+//                  userEmail: "Anon.Lee@nist.gov"
+//                  },
+//                  token: 'fake jwt token'
+//              }
+//          } 
+//          window.location.assign(redirectURL);
+//      }
+//  }
  /**
  * create an AuthService based on the runtime context.
  * 

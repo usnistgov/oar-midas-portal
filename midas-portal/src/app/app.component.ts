@@ -1,5 +1,4 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +8,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 export class AppComponent {
   title = 'midas-portal';
 
-  constructor(private cdr: ChangeDetectorRef, private http: HttpClient){
+  constructor(private cdr: ChangeDetectorRef){
 
   }
   
@@ -18,9 +17,6 @@ export class AppComponent {
       //Add 'implements OnInit' to the class.
 
       console.log("App started:", this.title);
-    alert("Test");
-    this.http.get("https://p932439.nist.gov/sso/auth/_logininfo/", 
-    { headers: { 'X-Requested-With':'XMLHttpRequest' }}).subscribe( (data) => {alert ("Test 2")} )
       
   }
 
