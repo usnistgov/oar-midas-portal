@@ -15,9 +15,9 @@
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
 <div class="overflow-auto">
-    <p-table class="overflow-auto" [value]="data" [paginator]="true" height="100px" [rows]="5" [scrollable]="true"
+    <p-table #reviewtable class="overflow-auto" [loading]="loading" [value]="data" [paginator]="true" height="100px" [rows]="5" [scrollable]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-        [rowsPerPageOptions]="[5]">
+        [rowsPerPageOptions]="[5]" [globalFilterFields]="['title', 'submitterName', 'currentReviewer']">
         <ng-template pTemplate="header">
             <tr>
                 <th pResizableColumn>Title</th>

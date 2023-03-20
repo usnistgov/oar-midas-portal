@@ -5,6 +5,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MenuItem} from 'primeng/api';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch,faFileCirclePlus, faPlus,faFileEdit } from '@fortawesome/free-solid-svg-icons';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
+import { Table } from 'primeng/table';
 
 
 export interface MIDASRecord {
@@ -16,9 +17,9 @@ export interface MIDASRecord {
 
 
 const RECORD_DATA: MIDASRecord[] = [
-  {title: 'Data for a paper submitted to BERB titled \"On Grid Compressive Sensing for Spherical Field Measurements in Acoustics\" to be submitted to The Journal of the Acoustical Society of America.', owner: 'Yuffa, Alex', lastmodified:'2021-07-06'},
+  {title: 'Data for a paper submitted to BERB', owner: 'Yuffa, Alex', lastmodified:'2021-07-06'},
   {title: 'IEC 61850 Profile for Distributed Energy Resources Supporting IEEE 1547', owner: 'Nguyen, Cuong', lastmodified:'2021-11-14'},
-  {title: 'Data for a paper submitted to BERB titled \"On Grid Compressive Sensing for Spherical Field Measurements in Acoustics\" to be submitted JASA.', owner: 'Yuffa, Alex', lastmodified:'2020-03-06'},
+  {title: 'On Grid Compressive Sensing for Spherical Field Measurements in Acoustics', owner: 'Yuffa, Alex', lastmodified:'2020-03-06'},
   {title: 'NIST Chemical Kinetics Database', owner: 'Muzny, Chris', lastmodified:'2018-01-20'},
   {title: 'NIST Polycyclic Aromatic Hydrocarbon Structure Index - SRD 204', owner: 'Allison, Thomas C.', lastmodified:'2022-02-03'},
   {title: 'NIST Chemistry WebBook - SRD 69', owner: 'Linstrom, Peter', lastmodified:'2022-04-17'},
@@ -62,9 +63,7 @@ export class RecordsComponent implements OnInit {
   displayedColumns: string[] = ['title', 'owner', 'lastmodified'];
   dataSource: any;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('recordsTable') recordsTable: Table;
 
   constructor() { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'
@@ -73,9 +72,6 @@ export class RecordsComponent implements OnInit {
   
 
   ngAfterViewInit() {
-   
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
     
   }
 
@@ -84,7 +80,6 @@ export class RecordsComponent implements OnInit {
     //this.data = this.records.ResultData
     this.data = RECORD_DATA;
     console.log(this.data)
-    this.dataSource = new MatTableDataSource(this.data);
     
   }
 
@@ -99,5 +94,9 @@ export class RecordsComponent implements OnInit {
 
   titleClick() {
     console.log(this);
+  }
+
+  filterTable(event: any) {
+    this.recordsTable.filterGlobal(event.target.value, 'contains');
   }
 }

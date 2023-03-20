@@ -6,6 +6,7 @@ import {MenuModule} from 'primeng/menu';
 import {MenuItem} from 'primeng/api';
 import { SidebarModule } from 'primeng/sidebar';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch, faFileCirclePlus, faPlus, faDatabase,faBook, faListCheck , faPrint, faPersonCircleQuestion} from '@fortawesome/free-solid-svg-icons';
+import { ReviewListComponent } from '../review-list/review-list.component';
 
 
 @Component({
@@ -36,6 +37,8 @@ export class LandingComponent implements OnInit {
   opened: boolean;
   items: MenuItem[];
   display = false;
+  filterString: string;
+
   public constructor(private authsvc: AuthService) { 
     
   }
@@ -87,6 +90,10 @@ export class LandingComponent implements OnInit {
           console.log("Authentication failed.");
       }
   );
+  }
+
+  txtSearchChange(event: any) {
+    console.log("search string: " + event.target.value);
   }
 
   /**

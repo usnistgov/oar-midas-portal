@@ -3,6 +3,7 @@ import {MatSort, Sort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {faFileImport} from '@fortawesome/free-solid-svg-icons';
+import { Table } from 'primeng/table';
 export interface MIDASFile {
   file_name: string;
   file_path: string;
@@ -25,11 +26,8 @@ export class FileListComponent implements OnInit {
   public recordsApi: string;
   public data: any;
   displayedColumns: string[] = ['file_name', 'file_path', 'file_size', 'last_modified'];
-  dataSource: any;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('filetable') fileTable: Table;
 
   constructor() { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'
@@ -38,9 +36,6 @@ export class FileListComponent implements OnInit {
   
 
   ngAfterViewInit() {
-   
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
     
   }
 
@@ -49,7 +44,6 @@ export class FileListComponent implements OnInit {
     //this.data = this.records.ResultData
     this.data = RECORD_DATA;
     console.log(this.data)
-    this.dataSource = new MatTableDataSource(this.data);
     
   }
 
@@ -64,5 +58,9 @@ export class FileListComponent implements OnInit {
 
   titleClick() {
     console.log(this);
+  }
+
+  filterTable(event: any) {
+    this.fileTable.filterGlobal(event.target.value, 'contains');
   }
 }
