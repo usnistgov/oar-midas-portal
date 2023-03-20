@@ -1,11 +1,113 @@
-<mat-grid-list cols="2">
-    <mat-grid-tile>
-        <app-edi-list></app-edi-list>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <div class="stack">
-            <app-records></app-records>
-            <app-dmp-list></app-dmp-list>
-        </div>
-    </mat-grid-tile>
-  </mat-grid-list>
+  
+<p-panel header="Welcome, Deoyani! (deoyani.nandrekar@nist.gov)" class="panel-header"  [toggleable]="true" [collapsed]="true" >
+  <ng-template pTemplate="icons">
+    <span class="p-input-icon-left">
+      <input type="text" #filterText pInputText name="filterString" placeholder="Search" 
+       (input)="reviews.filterTable($event); records.filterTable($event); dmps.filterTable($event); files.filterTable($event);"/>
+    </span>
+  </ng-template>
+  <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faUser" size="lg"></fa-icon> 
+  
+  <br>  userId: "dsn1"
+  <br>  Name: " Deoyani Nandrekar Heinis" 
+  <br>  Divison: "Office of Data and Informatics", 641 
+  <br>  OU: "Material Measurement Laboratory" 
+
+
+</p-panel>
+
+<p-sidebar [(visible)]="display">
+  <table class="tablesidebar">
+    <tr  onclick="window.location.href = 'https://inet.nist.gov';">
+      <td>   
+        <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faHouse" size="lg"></fa-icon> 
+      </td>
+      <td>       
+        NIST Intranet
+      </td>
+    </tr>
+    <tr  onclick="window.location.href = 'https://data.nist.gov';">
+      <td>   
+        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faSearch" size="lg"></fa-icon> 
+      </td>
+      <td> 
+        Public Data Repository
+      </td>
+    </tr>
+    <tr onclick="window.location.href = 'https://library.nist.gov/'" >
+      <td>   
+        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faBook" size="lg"></fa-icon> 
+      </td>
+      <td> 
+        NIST Research Library
+      </td>
+    </tr>
+    <tr  onclick="window.location.href = 'https://inet.nist.gov'" >
+      <td>   
+        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faPrint" size="lg"></fa-icon> 
+      </td>
+      <td> 
+        Data Publishing Tool
+      </td>
+    </tr>
+    <tr onclick="window.location.href ='https://inet.nist.gov' ">
+      <td>   
+        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faListCheck" size="lg"></fa-icon> 
+      </td>
+      <td> 
+        Data Management Plan Tool
+      </td>
+    </tr>
+    <tr onclick="window.location.href ='https://nps.nist.gov' ">
+      <td>   
+        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faClipboardList" size="lg"></fa-icon> 
+      </td>
+      <td> 
+        NIST Publication System
+      </td>
+    </tr>
+    <tr onclick="window.location.href ='https://nextcloud.nist.gov' ">
+      <td>   
+        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faCloud" size="lg"></fa-icon> 
+      </td>
+      <td> 
+        NextCloud
+      </td>
+    </tr>
+    <tr onclick="window.location.href ='' ">
+      <td>   
+        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faPersonCircleQuestion" size="lg"></fa-icon> 
+      </td>
+      <td> 
+        User Guide
+      </td>
+    </tr>
+  </table>
+</p-sidebar>
+<table>
+  <tr>
+    <td [style]="{'width':'50%'}">
+      <div>
+        <app-records #records></app-records>
+      </div>
+    </td>
+    <td [style]="{'width':'50%'}">
+      <div>
+        <app-dmp-list #dmps></app-dmp-list>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td [style]="{'width':'50%'}">
+      <div>
+        <app-review-list #reviews></app-review-list>
+      </div>
+    </td>
+    <td [style]="{'width':'50%'}">
+      <div>
+        <app-file-list #files></app-file-list>
+      </div>
+    </td>
+  </tr>
+</table>
+<p-button type="text" (click)="display = !display" icon="pi pi-plus" label="Resources/Links"></p-button>

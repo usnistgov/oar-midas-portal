@@ -53,3 +53,7 @@ m2repo
 */node_modules
 */.idea**
 
+node_modules
+*.pack
+midas-portal/.angular/cache/
+

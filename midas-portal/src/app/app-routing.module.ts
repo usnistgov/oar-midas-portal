@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { LandingComponent } from './components/landing/landing.component';
 import { LogInComponent } from './components/log-in/log-in.component';
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: '', pathMatch: 'full', redirectTo: 'landing' },
   { path: 'login', component: LogInComponent },
   { path: 'landing', component: LandingComponent}
 ];
