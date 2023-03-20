@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import {MatSort, Sort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
+
 
 export interface Record {
   title: string;
@@ -16,10 +19,19 @@ export class EdiListComponent implements OnInit {
   public records: any;
   public recordsApi: string;
   public data: any;
-  displayedColumns: string[] = ['title', 'publisher', 'date']
+  displayedColumns: string[] = ['title', 'publisher', 'date'];
+  //dataSource = new MatTableDataSource(ELEMENT_DATA);
+
+  //@ViewChild(MatSort) sort: MatSort;
 
   constructor() { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'
+  }
+
+  
+
+  ngAfterViewInit() {
+    //this.records.sort = this.sort;
   }
 
   async ngOnInit() {
@@ -35,6 +47,10 @@ export class EdiListComponent implements OnInit {
     })
 
     return this.records = Object(records)
+  }
+
+  titleClick() {
+    console.log(this);
   }
 
 }

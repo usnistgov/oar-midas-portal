@@ -1,4 +1,5 @@
 #! /bin/bash
+
 #
 # setversion.sh:  build all docker images in this directory
 #

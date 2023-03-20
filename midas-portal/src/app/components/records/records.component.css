@@ -1,13 +1,90 @@
-.edi-list {
-    display: block;
+/*.edi-list {
+    display: contents;
     background: #fff;
     border-radius: 10px;
     border: black;
     padding: 10px;
-    width: 200px;
+    border: 1;
+    width: 100%;
+    height: fit-content;
 }
 
-.scroll {
-    height: 200px;
+.edi-list.table {
+    padding: 50;
+    border: solid 1px #000;
+}*/
+
+mat-table {
+    border: solid 1px rgb(8, 7, 7);
+}
+
+.edi-list {
+    display: block;
+    background: rgb(173, 110, 110);
+    border-radius: 10px;
+    border: black;
+    margin-top: 10px;
+    max-height: auto;
+    padding: 50;
+    overflow: auto;
+    flex-direction: column;
+    position: absolute;
+    width: 400px;
+    /* top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px; */
+}
+
+/* .dashboard-card-content {
+    height: 100%;
+    background-color: red;
+  }
+  
+  .dashboard-card {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+  } */
+
+
+  .mat-card.scrollable-content {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .mat-card.scrollable-content > .mat-card-title-group {
+    display: block;
+  }
+  .mat-card.scrollable-content > .mat-card-content {
     overflow-y: auto;
+  }
+  
+  .example-viewport {
+    height: 250px;
+    width: auto;
+    border: 1px solid black;
+  }
+  
+  .example-item {
+    height: 50px;
+  }
+
+  .p-panel .p-panel-header {
+    border: 1px solid #dee2e6;
+    padding: 1rem;
+    background: #e4f1e6;
+    color: #495057;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+:host ::ng-deep .p-panel-header
+{
+  background: #d9e8f6;
+  border: 1px solid gray;
 }

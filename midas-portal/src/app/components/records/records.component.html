@@ -1,24 +1,34 @@
-<div class="edi-list" fxLayout="row" fxLayoutAlign="center center">
-    <mat-card>
-        <mat-card-title>My Records</mat-card-title>
-        <mat-card-content class="scroll">
-            <table mat-table [dataSource]="this.data">
-                <ng-container matColumnDef="title">
-                    <th mat-header-cell *matHeaderCellDef> Title </th>
-                    <td mat-cell *matCellDef="let item of this.data"> {{item.title}} </td>
-                </ng-container>
-                <ng-container matColumnDef="publisher">
-                    <th mat-header-cell *matHeaderCellDef> Publisher </th>
-                    <td mat-cell *matCellDef="let item of this.data"> {{item.publisher.name}} </td>
-                </ng-container>
-                <ng-container matColumnDef="date">
-                    <th mat-header-cell *matHeaderCellDef> Date Last Modified </th>
-                    <td mat-cell *matCellDef="let item of this.data"> {{item.modified}} </td>
-                </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-        </mat-card-content>
-    </mat-card>
-</div>
+<p-panel header="My Data Publications" styleClass="overflow-auto">
+    <ng-template pTemplate="icons">
+        <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
+            <!-- <span class="pi pi-cog"></span> -->
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileEdit" size="lg" title="Create New Record"></fa-icon> 
+       
+        </button>
+        <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
+    </ng-template>
+
+    <div>
+        <p-table [value]="data" [paginator]="true" height="100px" [rows]="5" [scrollable]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
+            [rowsPerPageOptions]="[5]">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pResizableColumn>Title</th>
+                    <th pResizableColumn>Owner</th>
+                    <th pResizableColumn>Last Modified</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td>{{item.title}}</td>
+                    <td>{{item.owner}}</td>
+                    <td>{{item.lastmodified}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    
+</p-panel>
+
