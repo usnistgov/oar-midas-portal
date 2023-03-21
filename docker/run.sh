@@ -158,12 +158,9 @@ fi
     $execdir/dockbuild.sh
 }
 
-# handle angular building and/or testing.  If shell was requested with
-# angular, open the shell in the angular test contatiner (angtest).
-# 
 if wordin midas-portal $comptypes; then
     docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
-    if { wordin shell $cmds && [ "$comptypes" == "midas-portal" ]; }; then 
+    if { wordin shell $cmds && [ "$comptypes" == "editable" ]; }; then
         docmds="$docmds shell"
     fi
 
@@ -173,18 +170,5 @@ if wordin midas-portal $comptypes; then
                        "${args[@]}" "${angargs[@]}"
         docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
                        "${args[@]}" "${angargs[@]}"
-    elif [ -n "$docmds" ]; then
-        echo '+' docker run --rm $volopt "${dargs[@]}" --cap-add=SYS_ADMIN \
-                        oar-midas-portal/midas-portal $docmds "${args[@]}" \
-                        "${angargs[@]}"
-        if wordin shell $docmds; then
-            exec docker run -ti --rm $volopt "${dargs[@]}" --cap-add=SYS_ADMIN \
-                        oar-midas-portal/midas-portal $docmds "${args[@]}"     \
-                        "${angargs[@]}"
-        else
-            docker run --rm $volopt "${dargs[@]}" --cap-add=SYS_ADMIN \
-                   oar-midas-portal/midas-portal $docmds "${args[@]}" \
-                   "${angargs[@]}"
-        fi
     fi
 fi
