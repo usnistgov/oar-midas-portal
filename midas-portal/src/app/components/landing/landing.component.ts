@@ -7,6 +7,9 @@ import {MenuItem} from 'primeng/api';
 import { SidebarModule } from 'primeng/sidebar';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch, faFileCirclePlus, faPlus, faDatabase,faBook, faListCheck , faPrint, faPersonCircleQuestion} from '@fortawesome/free-solid-svg-icons';
 import { ReviewListComponent } from '../review-list/review-list.component';
+import { AppConfig } from 'src/app/config/app.config';
+import { UserDetails } from '../auth-service/user.interface';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -39,7 +42,14 @@ export class LandingComponent implements OnInit {
   display = false;
   filterString: string;
 
-  public constructor(private authsvc: AuthService) { 
+  authAPI: string;
+  authRedirect: string;
+
+  userDetails: UserDetails;
+
+  public constructor(private authsvc: AuthService,
+                    private appConfig: AppConfig,
+                    private http: HttpClient) { 
     
   }
 
@@ -52,21 +62,42 @@ export class LandingComponent implements OnInit {
           {label: 'New', icon: 'pi pi-fw pi-plus'},
           {label: 'Download', icon: 'pi pi-fw pi-download'}
       ]
-  },
-  {
-      label: 'Edit',
-      items: [
-          {label: 'Add User', icon: 'pi pi-fw pi-user-plus'},
-          {label: 'Remove User', icon: 'pi pi-fw pi-user-minus'}
-      ]
-  }];
+    },
+    {
+        label: 'Edit',
+        items: [
+            {label: 'Add User', icon: 'pi pi-fw pi-user-plus'},
+            {label: 'Remove User', icon: 'pi pi-fw pi-user-minus'}
+        ]
+    }];
+
+    //test config
+    this.appConfig.getRemoteConfig().subscribe(config => {
+      this.authAPI = config.authAPI;
+      this.authRedirect = config.authRedirect;
+
+      this.getUserInfo();
+
+    });
     
+  }
+
+  public getUserInfo() {
+    console.log('authAPI: ' + this.authAPI);
+    console.log('authRedirect: ' + this.authRedirect);
+
+    //make the call to the auth service
+    this.http.get<UserDetails>(this.authAPI, { headers: { 'Content-Type': 'application/json' }}).subscribe(data=> {
+      console.log('userDetails: ' + data);
+      this.userDetails = data;
+      
+    });
   }
 
 
   public logintest(){
     alert("Test");
-    this.authsvc.getUserInfo();
+    //this.authsvc.getUserInfo();
   }
     /**
      * return true if the user is currently authorized to to edit the resource metadata.
@@ -90,10 +121,6 @@ export class LandingComponent implements OnInit {
           console.log("Authentication failed.");
       }
   );
-  }
-
-  txtSearchChange(event: any) {
-    console.log("search string: " + event.target.value);
   }
 
   /**

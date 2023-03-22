@@ -1,0 +1,5 @@
+{
+    "authAPI": "https://mdsdev.nist.gov/sso/auth/_logininfo",
+    "authRedirect": "https://mdsdev.nist.gov/sso/saml/login?redirectTo=https://inet.nist.gov",
+    "NPSAPI": "https://tsapps-t.nist.gov/nps/npsapi/api/DataSet/ReviewsForUser"
+}
