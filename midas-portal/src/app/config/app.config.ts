@@ -97,6 +97,9 @@ export class AppConfig implements AppConfigInterface{
     appVersion: string;
     gaCode     : string;
     metricsAPI: string;
+    dmpAPI: string;
+    dapAPI: string;
+    groupAPI: string;
 
   
        /**

@@ -53,6 +53,17 @@ export class LandingComponent implements OnInit {
     
   }
 
+  private testData = {
+    "userId": "cnd7",
+    "userName": "Christopher",
+    "userLastName": "Davis",
+    "userEmail": "christopher.davis@nist.gov",
+    "userGroup": "Domain Users",
+    "userDiv": "Applications Systems Division",
+    "userDivNum": "183",
+    "userOU": "Office of Information Systems Management"
+    }
+
   ngOnInit(): void {
     //this.startEditing(true);
 
@@ -73,10 +84,8 @@ export class LandingComponent implements OnInit {
 
     //test config
     this.appConfig.getRemoteConfig().subscribe(config => {
-      this.authAPI = config.authAPI;
-      this.authRedirect = config.authRedirect;
-
-      this.getUserInfo();
+    this.authAPI = config.authAPI;
+    this.authRedirect = config.authRedirect;
 
     });
     
@@ -87,9 +96,19 @@ export class LandingComponent implements OnInit {
     console.log('authRedirect: ' + this.authRedirect);
 
     //make the call to the auth service
-    this.http.get<UserDetails>(this.authAPI, { headers: { 'Content-Type': 'application/json' }}).subscribe(data=> {
-      console.log('userDetails: ' + data);
-      this.userDetails = data;
+    this.http.get(this.authAPI, { observe: 'response', headers: { 'Content-Type': 'application/json' }}).subscribe(response => {
+      console.log('response code: ' + response.status);
+      console.log('user details: ' + response.body);
+      if(response.status > 400) {
+        //redirect to authentication URL
+        console.log("Redirecting to " + this.authRedirect + " to authenticate user");
+        window.location.assign(this.authRedirect);        
+      }
+      else {
+        this.username = JSON.parse(JSON.stringify(response.body)).userId;
+        console.log('username: ' + this.username);
+      }
+      //this.userDetails = response.body;
       
     });
   }
