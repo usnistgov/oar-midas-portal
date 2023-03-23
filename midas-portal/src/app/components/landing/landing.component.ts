@@ -84,9 +84,9 @@ export class LandingComponent implements OnInit {
 
     //test config
     this.appConfig.getRemoteConfig().subscribe(config => {
-    this.authAPI = config.authAPI;
-    this.authRedirect = config.authRedirect;
-
+      this.authAPI = config.authAPI;
+      this.authRedirect = config.authRedirect;
+      this.getUserInfo();
     });
     
   }
