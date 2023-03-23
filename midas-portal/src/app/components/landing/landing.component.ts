@@ -7,6 +7,9 @@ import {MenuItem} from 'primeng/api';
 import { SidebarModule } from 'primeng/sidebar';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch, faFileCirclePlus, faPlus, faDatabase,faBook, faListCheck , faPrint, faPersonCircleQuestion} from '@fortawesome/free-solid-svg-icons';
 import { ReviewListComponent } from '../review-list/review-list.component';
+import { AppConfig } from 'src/app/config/app.config';
+import { UserDetails } from '../auth-service/user.interface';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -39,9 +42,27 @@ export class LandingComponent implements OnInit {
   display = false;
   filterString: string;
 
-  public constructor(private authsvc: AuthService) { 
+  authAPI: string;
+  authRedirect: string;
+
+  userDetails: UserDetails;
+
+  public constructor(private authsvc: AuthService,
+                    private appConfig: AppConfig,
+                    private http: HttpClient) { 
     
   }
+
+  private testData = {
+    "userId": "cnd7",
+    "userName": "Christopher",
+    "userLastName": "Davis",
+    "userEmail": "christopher.davis@nist.gov",
+    "userGroup": "Domain Users",
+    "userDiv": "Applications Systems Division",
+    "userDivNum": "183",
+    "userOU": "Office of Information Systems Management"
+    }
 
   ngOnInit(): void {
     //this.startEditing(true);
@@ -52,21 +73,50 @@ export class LandingComponent implements OnInit {
           {label: 'New', icon: 'pi pi-fw pi-plus'},
           {label: 'Download', icon: 'pi pi-fw pi-download'}
       ]
-  },
-  {
-      label: 'Edit',
-      items: [
-          {label: 'Add User', icon: 'pi pi-fw pi-user-plus'},
-          {label: 'Remove User', icon: 'pi pi-fw pi-user-minus'}
-      ]
-  }];
+    },
+    {
+        label: 'Edit',
+        items: [
+            {label: 'Add User', icon: 'pi pi-fw pi-user-plus'},
+            {label: 'Remove User', icon: 'pi pi-fw pi-user-minus'}
+        ]
+    }];
+
+    //test config
+    this.appConfig.getRemoteConfig().subscribe(config => {
+    this.authAPI = config.authAPI;
+    this.authRedirect = config.authRedirect;
+
+    });
     
+  }
+
+  public getUserInfo() {
+    console.log('authAPI: ' + this.authAPI);
+    console.log('authRedirect: ' + this.authRedirect);
+
+    //make the call to the auth service
+    this.http.get(this.authAPI, { observe: 'response', headers: { 'Content-Type': 'application/json' }}).subscribe(response => {
+      console.log('response code: ' + response.status);
+      console.log('user details: ' + response.body);
+      if(response.status > 400) {
+        //redirect to authentication URL
+        console.log("Redirecting to " + this.authRedirect + " to authenticate user");
+        window.location.assign(this.authRedirect);        
+      }
+      else {
+        this.username = JSON.parse(JSON.stringify(response.body)).userId;
+        console.log('username: ' + this.username);
+      }
+      //this.userDetails = response.body;
+      
+    });
   }
 
 
   public logintest(){
     alert("Test");
-    this.authsvc.getUserInfo();
+    //this.authsvc.getUserInfo();
   }
     /**
      * return true if the user is currently authorized to to edit the resource metadata.
@@ -90,10 +140,6 @@ export class LandingComponent implements OnInit {
           console.log("Authentication failed.");
       }
   );
-  }
-
-  txtSearchChange(event: any) {
-    console.log("search string: " + event.target.value);
   }
 
   /**

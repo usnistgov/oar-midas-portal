@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   useAuthService: false,
-   
+  config_url: "assets/environment.json"
 };
 
 /*

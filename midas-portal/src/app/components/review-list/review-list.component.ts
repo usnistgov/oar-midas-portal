@@ -5,6 +5,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import {faUsersViewfinder,faBell} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
+import { AppConfig } from 'src/app/config/app.config';
 export interface NPSReview {
   title: string;
   owner: string;
@@ -21,15 +22,15 @@ export class ReviewListComponent implements OnInit {
   faBell=faBell;
   faListCheck=faUsersViewfinder;
   public records: any;
-  public recordsApi: string;
+  public NPSAPI: string;
   public data: any;
   displayedColumns: string[] = ['title', 'owner', 'currentreviewer', 'currentreviewstop'];
   loading: boolean = true;
 
   @ViewChild('reviewtable') reviewTable: Table;
 
-  constructor() { 
-    this.recordsApi = 'https://localhost:5000/user/208821';
+  constructor(private appConfig: AppConfig) { 
+    
   }
 
   ngAfterViewInit() {
@@ -37,14 +38,24 @@ export class ReviewListComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.getRecords()
-    this.data = JSON.parse(this.records);
-    console.log("review data loaded")
-    console.log(this.data);
+
+    let promise = new Promise((resolve) => {
+      this.appConfig.getRemoteConfig().subscribe(config => {
+        this.NPSAPI = config.NPSAPI;
+        resolve(this.NPSAPI);
+      });
+    });
+    promise.then(async ()=> {
+        await this.getRecords();
+    }
+    ).then(() => {
+      this.data = JSON.parse(this.records);
+    });
     
   }
 
-  async getRecords() {
+  async getRecords(){
+    
     let records;
 
     const headerDict = {
@@ -59,13 +70,12 @@ export class ReviewListComponent implements OnInit {
       headers: new Headers(headerDict)
     };
     
-
-    await fetch(this.recordsApi, requestOptions).then(r => r.json()).then(function (r) {
+    await fetch(this.NPSAPI, requestOptions).then(r => r.json()).then(function (r) {
       return records = r
     })
 
     this.loading = false;
-    return this.records = Object(records)
+    return this.records = Object(records);
   }
 
   titleClick() {

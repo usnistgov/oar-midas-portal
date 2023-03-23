@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+import { Observable } from 'rxjs';
+import * as rxjs from 'rxjs';
+import * as rxjsop from 'rxjs/operators';
+
+import { environment } from 'src/environments/environment';
+
+
 
 /**
  * URLs to remote locations used as links in templates
@@ -77,25 +84,37 @@ import { HttpClient } from '@angular/common/http';
     [propName: string]: any;
 }
 
+@Injectable({
+    providedIn: 'root'
+})
 export class AppConfig implements AppConfigInterface{
  
     locations: WebLocations;
     metadataAPI: string;
     authAPI: string;
+    authRedirect: string;
+    NPSAPI: string;
     appVersion: string;
     gaCode     : string;
     metricsAPI: string;
+    dmpAPI: string;
+    dapAPI: string;
+    groupAPI: string;
 
   
        /**
      * create an AppConfig directly from an AppConfigInterface
      * @param params   the input data
      */
-        constructor(params: AppConfigInterface) {
+        constructor(private http: HttpClient) {
 
-            // for (var key in params)
-            // this[key] = params[key];
-            this.inferMissingValues();
+            this.getRemoteConfig().subscribe(data => {
+                if (data.authAPI) this.authAPI = data.authAPI;
+                if (data.authRedirect) this.authRedirect = data.authRedirect;
+                if (data.NPSAPI) this.NPSAPI = data.NPSAPI;
+                //set defaults for any missing values
+                this.inferMissingValues();
+            });
         }
 
         /*
@@ -103,19 +122,21 @@ export class AppConfig implements AppConfigInterface{
     * set.  
     */
     private inferMissingValues(): void {
-        if (!this.locations.portalBase) {
-        this.locations.portalBase = this.locations.orgHome;
-        if (!this.locations.portalBase.endsWith('/'))
-            this.locations.portalBase += '/';
-        this.locations.portalBase += '/';
-        }
+        //if (!this.locations.portalBase) {
+        //this.locations.portalBase = this.locations.orgHome;
+        //if (!this.locations.portalBase.endsWith('/'))
+        //    this.locations.portalBase += '/';
+        //this.locations.portalBase += '/';
+        //}
 
-        if(!this.locations.taxonomyService)
-            this.locations.taxonomyService = this.locations.portalBase + "rmm/taxonomy";
+        //if(!this.locations.taxonomyService)
+        //    this.locations.taxonomyService = this.locations.portalBase + "rmm/taxonomy";
        
 
-        if (!this.metadataAPI) this.metadataAPI = "";
-        if (!this.authAPI) this.authAPI = "https://mdsdev.nist.gov/sso/";
+        //if (!this.metadataAPI) this.metadataAPI = "";
+        if (!this.authAPI) this.authAPI = "https://mdsdev.nist.gov/sso/auth/_logininfo";
+        if (!this.authRedirect) this.authRedirect = "https://mdsdev.nist.gov/sso/saml/login?redirectTo=https://inet.nist.gov";
+        if (!this.NPSAPI) this.NPSAPI = "https://tsapps-t.nist.gov/nps/npsapi/api/DataSet/ReviewsForUser";
         if (!this.metricsAPI) this.metricsAPI = "";
 
         // Set default Google Analytic code to dev
@@ -134,4 +155,32 @@ export class AppConfig implements AppConfigInterface{
         return (val != undefined) ? val : defval;
     }
 
+    getRemoteConfig(srcurl?: string): Observable<any> {
+
+        if(!srcurl) srcurl = environment.config_url;
+
+        return this.http.get(srcurl);
+
+        /*return this.http.get(srcurl).pipe(
+            rxjsop.map<AppConfigInterface, AppConfigInterface>((resp:AppConfigInterface) => {
+                var cfg: AppConfigInterface = withDefaults(resp as AppConfigInterface);
+                return cfg;
+            }),
+            rxjsop.catchError(err => {
+                console.error("Failed to download configuration: " + JSON.stringify(err));
+                return rxjs.throwError(err);
+            })
+        );*/
+    }
+
+}
+
+export function withDefaults(config: AppConfigInterface): AppConfigInterface {
+
+    let out: AppConfigInterface = JSON.parse(JSON.stringify(config));
+
+    //define application defaults here
+
+    return out;
+        
 }
