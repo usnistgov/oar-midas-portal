@@ -81,11 +81,12 @@ export class LandingComponent implements OnInit {
             {label: 'Remove User', icon: 'pi pi-fw pi-user-minus'}
         ]
     }];
-
+    console.log('******** authAPI: ' + this.authAPI);
     //test config
     this.appConfig.getRemoteConfig().subscribe(config => {
       this.authAPI = config.authAPI;
       this.authRedirect = config.authRedirect;
+      console.log('********** calll userinfor ');
       this.getUserInfo();
     });
     
