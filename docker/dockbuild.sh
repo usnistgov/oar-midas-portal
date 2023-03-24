@@ -41,7 +41,5 @@ log_intro   # record start of build into log
 
 echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal midas-portal
 docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal midas-portal 2>&1
-
-
-echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal nps
-docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal nps 2>&1
+#echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal nps
+#docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal nps 2>&1
