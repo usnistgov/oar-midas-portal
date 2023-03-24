@@ -22,7 +22,7 @@ PACKAGE_NAME=oar-midas-portal
 ## containers to be built.  List them in dependency order (where a latter one
 ## depends the former ones).  
 #
-DOCKER_IMAGE_DIRS="pymongo jqfromsrc ejsonschema midas-portal"
+DOCKER_IMAGE_DIRS="pymongo jqfromsrc ejsonschema midas-portal nps"
 
 . $codedir/oar-build/_dockbuild.sh
 
@@ -41,3 +41,7 @@ log_intro   # record start of build into log
 
 echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal midas-portal
 docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal midas-portal 2>&1
+
+
+echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal nps
+docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal nps 2>&1
