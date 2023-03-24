@@ -1,5 +1,5 @@
 {
-    "authAPI": "https://mdsdev.nist.gov/sso/auth/_logininfo",
+    "authAPI": "https://mdsdev.nist.gov/sso/auth/_tokeninfo",
     "authRedirect": "https://mdsdev.nist.gov/sso/saml/login?redirectTo=https://mdsdev.nist.gov/portal",
     "NPSAPI": "https://localhost:5000/user/208821",
     "dmpAPI": "https://mdsdev.nist.gov/midas/dmp/mdm1",
