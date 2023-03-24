@@ -1,8 +1,8 @@
 {
-    "authAPI": "https://mdsdev.nist.gov/sso/auth/_logininfo",
-    "authRedirect": "https://mdsdev.nist.gov/sso/saml/login?redirectTo=https://mdsdev.nist.gov/portal",
+    "authAPI": "https://p932439.nist.gov/sso/auth/_logininfo",
+    "authRedirect": "https://p932439.nist.gov/sso/saml/login?redirectTo=https://p932439.nist.gov/portal",
     "NPSAPI": "https://localhost:5000/user/208821",
-    "dmpAPI": "https://mdsdev.nist.gov/midas/dmp/mdm1",
-    "dapAPI": "https://mdsdev.nist.gov/midas/dap/mds3",
+    "dmpAPI": "https://mdsdev.nist.gov/dmpui/new",
+    "dapAPI": "https://mdsdev.nist.gov/dapui/",
     "groupAPI": "https://mdsdev.nist.gov/midas/groups"
 }
