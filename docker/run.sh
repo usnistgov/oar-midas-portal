@@ -166,9 +166,9 @@ if wordin midas-portal $comptypes; then
 
     if [ "$docmds" == "build" ]; then
         # build only
-        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
+        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal build --platform=linux/arm64 \
                        "${args[@]}" "${angargs[@]}"
-        docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
+        docker run --rm  $volopt "${dargs[@]}" oar-midas-portal/midas-portal build --platform=linux/arm64  \
                        "${args[@]}" "${angargs[@]}"
     fi
 fi
