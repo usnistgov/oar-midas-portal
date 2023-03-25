@@ -42,6 +42,13 @@ export class LandingComponent implements OnInit {
   display = false;
   filterString: string;
 
+  userLastName : string;
+  userName: string;
+  userEmail: string;
+  userId: string;
+  userOU: string;
+  userDiv: string;
+
   authAPI: string;
   authRedirect: string;
 
@@ -106,7 +113,13 @@ export class LandingComponent implements OnInit {
         window.location.assign(this.authRedirect);        
       }
       else {
-        this.username = JSON.parse(JSON.stringify(response.body)).userId;
+         var userDetails = JSON.parse(JSON.stringify(response.body));
+        this.username = userDetails.userId;
+         this.userLastName = userDetails.userLastName;
+         this.userEmail = userDetails.userEmail;
+         this.userId = userDetails.userId;
+         this.userOU = userDetails.userOU;
+         this.userDiv = userDetails.userDiv + " , "+ userDetails.userDivNum;
         console.log('username: ' + this.username);
       }
       //this.userDetails = response.body;
