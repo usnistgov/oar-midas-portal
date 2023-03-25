@@ -1,5 +1,5 @@
   
-<p-panel header="Welcome, Deoyani! (deoyani.nandrekar@nist.gov)" class="panel-header"  [toggleable]="true" [collapsed]="true" >
+<p-panel header="Welcome, {{userName}}" class="panel-header"  [toggleable]="true" [collapsed]="true" >
   <ng-template pTemplate="icons">
     <span class="p-input-icon-left">
       <input type="text" #filterText pInputText name="filterString" placeholder="Search" 
@@ -8,10 +8,10 @@
   </ng-template>
   <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faUser" size="lg"></fa-icon> 
   
-  <br>  userId: "dsn1"
-  <br>  Name: " Deoyani Nandrekar Heinis" 
-  <br>  Divison: "Office of Data and Informatics", 641 
-  <br>  OU: "Material Measurement Laboratory" 
+  <br>  userId: {{userId}}
+  <br>  Name: {{userName}}
+  <br>  Divison: {{userDiv}}
+  <br>  OU: {{userOU}}
 
 
 </p-panel>
