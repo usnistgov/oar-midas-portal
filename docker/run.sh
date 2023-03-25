@@ -168,25 +168,25 @@ if wordin midas-portal $comptypes; then
         # build only
         echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
                        "${args[@]}" "${angargs[@]}"
-        docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
+        docker run --rm  $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
                        "${args[@]}" "${angargs[@]}"
     fi
 fi
 
-if wordin nps $comptypes; then
-    docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
-    if { wordin shell $cmds && [ "$comptypes" == "nps" ]; }; then
-        docmds="$docmds shell"
-    fi
+# if wordin nps $comptypes; then
+#     docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
+#     if { wordin shell $cmds && [ "$comptypes" == "nps" ]; }; then
+#         docmds="$docmds shell"
+#     fi
 
-    if [ "$docmds" == "build" ]; then
-        # build only
-        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/nps build \
-                       "${args[@]}" "${angargs[@]} -p 5000:5000"
-        docker run --rm $volopt "${dargs[@]}" -p 5000:5000 oar-midas-portal/nps build \
-                       "${args[@]}" "${angargs[@]}" 
-    fi
-fi
+#     if [ "$docmds" == "build" ]; then
+#         # build only
+#         echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/nps build \
+#                        "${args[@]}" "${angargs[@]} -p 5000:5000"
+#         docker run --rm $volopt "${dargs[@]}" -p 5000:5000 oar-midas-portal/nps build \
+#                        "${args[@]}" "${angargs[@]}" 
+#     fi
+# fi
 
 # if wordin pdpserver $cmds; then
 #         echo '+' docker run -ti --rm $volopt "${dargs[@]}" "${envargs[@]}" -p 9090:9090 $PKGNAME/pdpserver \
