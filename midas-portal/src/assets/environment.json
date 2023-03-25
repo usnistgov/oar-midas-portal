@@ -1,8 +1,10 @@
 {
-    "authAPI": "https://p932439.nist.gov/sso/auth/_logininfo",
+
+    "authAPI": "https://p932439.nist.gov/sso/auth/_tokeninfo",
     "authRedirect": "https://p932439.nist.gov/sso/saml/login?redirectTo=https://p932439.nist.gov/portal",
     "NPSAPI": "https://p932439.nist.gov/nps/user/208821",
     "dmpAPI": "https://p932439.nist.gov/midas/dmp/mdm1",
     "dapAPI": "https://p932439.nist.gov/midas/dap/mds3",
     "groupAPI": "https://p932439.nist.gov/midas/groups"
+
 }
