@@ -23,6 +23,7 @@ export class ReviewListComponent implements OnInit {
   faListCheck=faUsersViewfinder;
   public records: any;
   public NPSAPI: string;
+  public npsUI: string;
   public data: any;
   displayedColumns: string[] = ['title', 'owner', 'currentreviewer', 'currentreviewstop'];
   loading: boolean = true;
@@ -42,6 +43,7 @@ export class ReviewListComponent implements OnInit {
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.NPSAPI = config.NPSAPI;
+        this.npsUI = config.npsUI;
         resolve(this.NPSAPI);
       });
     });
