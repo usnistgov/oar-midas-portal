@@ -107,24 +107,59 @@ export class LandingComponent implements OnInit {
     this.http.get(this.authAPI, { observe: 'response', headers: { 'Content-Type': 'application/json' }}).subscribe(response => {
       console.log('response code: ' + response.status);
       console.log('user details: ' + response.body);
-      if(response.status > 400) {
+      if(response.status != 200) {
         //redirect to authentication URL
+
         console.log("Redirecting to " + this.authRedirect + " to authenticate user");
         window.location.assign(this.authRedirect);        
       }
       else {
-         var userDetails = JSON.parse(JSON.stringify(response.body));
-        this.username = userDetails.userId;
+
+         console.log(" userDetails ::"+JSON.parse(JSON.stringify(response.body)))
+         var testToken =  JSON.parse(JSON.stringify(response.body)).token;
+         console.log(" TOKEN ::"+testToken)
+         let userDetails = JSON.parse(JSON.stringify(response.body)).userDetails;
+         console.log(" userDetails ::"+userDetails)
+         
+         this.userName = userDetails.userName;
          this.userLastName = userDetails.userLastName;
          this.userEmail = userDetails.userEmail;
          this.userId = userDetails.userId;
          this.userOU = userDetails.userOU;
          this.userDiv = userDetails.userDiv + " , "+ userDetails.userDivNum;
-        console.log('username: ' + this.username);
+        console.log('username: ' + this.userName);
+
       }
       //this.userDetails = response.body;
       
-    });
+    },
+    httperr => {
+      if (httperr.status == 401) {
+        console.log("Redirecting to " + this.authRedirect + " to authenticate user");
+        window.location.assign(this.authRedirect);  
+     }
+     else if (httperr.status < 100 && httperr.error) {
+       
+         let msg = "Service connection error"
+         if (httperr['message'])
+             msg += ": " + httperr.message
+         if (httperr.error.message)
+             msg += ": " + httperr.error.message
+         if (httperr.status == 0 && httperr.statusText.includes('Unknown'))
+             msg += " (possibly due to CORS restriction?)";
+         alert(msg)
+     }
+     else  {
+        
+         // URL returned some other error status
+         let msg = "Unexpected error during authorization";
+         // TODO: can we get at body of message when an error occurs?
+         // msg += (httperr.body['message']) ? httperr.body['message'] : httperr.statusText;
+         msg += " (" + httperr.status.toString() + " " + httperr.statusText + ")"
+         alert(msg);
+     }
+    }
+    );
   }
 
 

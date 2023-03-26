@@ -1,5 +1,5 @@
   
-<p-panel header="Welcome, {{userName}}" class="panel-header"  [toggleable]="true" [collapsed]="true" >
+<p-panel header="Welcome,{{userName}}" class="panel-header"  [toggleable]="true" [collapsed]="true" >
   <ng-template pTemplate="icons">
     <span class="p-input-icon-left">
       <input type="text" #filterText pInputText name="filterString" placeholder="Search" 
@@ -9,11 +9,9 @@
   <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faUser" size="lg"></fa-icon> 
   
   <br>  userId: {{userId}}
-  <br>  Name: {{userName}}
+  <br>  Name: {{userName}} {{userLastName}}
   <br>  Divison: {{userDiv}}
   <br>  OU: {{userOU}}
-
-
 </p-panel>
 
 <p-sidebar [(visible)]="display">
