@@ -100,6 +100,10 @@ export class AppConfig implements AppConfigInterface{
     dmpAPI: string;
     dapAPI: string;
     groupAPI: string;
+    dmpUI: string;
+    dapUI: string;
+    nextcloudUI: string;
+    npsUI: string;
 
  
   
@@ -113,6 +117,12 @@ export class AppConfig implements AppConfigInterface{
                 if (data.authAPI) this.authAPI = data.authAPI;
                 if (data.authRedirect) this.authRedirect = data.authRedirect;
                 if (data.NPSAPI) this.NPSAPI = data.NPSAPI;
+                if (data.dmpAPI) this.dmpAPI = data.dmpAPI;
+                if (data.dapAPI) this.dapAPI = data.dapAPI;
+                if (data.dmpUI) this.dmpUI = data.dmpUI;
+                if (data.dapUI) this.dapUI = data.dapUI;
+                if (data.npsUI) this.npsUI = data.npsUI;
+                if (data.nextcloudUI) this.nextcloudUI = data.nextcloudUI;
                 //set defaults for any missing values
                 this.inferMissingValues();
             });

@@ -81,10 +81,10 @@ a{
     
  } */
 
-tr:hover td{
+/*tr:hover td{
     background-color: transparent;
     font-size: 20px;
-}
+}*/
 
 
  td {
@@ -94,12 +94,12 @@ tr:hover td{
     
 }
 
-tr:hover td {
+/*tr:hover td {
     background: #dbebde!important;
     color: #005ea2;
     font-weight: bold;
    
-} 
+} */
 
 .ng-fa-icon:hover {
   color: red;

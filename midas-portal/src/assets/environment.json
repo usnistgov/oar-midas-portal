@@ -5,6 +5,9 @@
     "NPSAPI": "https://mdsdev.nist.gov/nps/user/208821",
     "dmpAPI": "https://mdsdev.nist.gov/midas/dmp/mdm1",
     "dapAPI": "https://mdsdev.nist.gov/midas/dap/mds3",
-    "groupAPI": "https://mdsdev.nist.gov/midas/groups"
-
+    "groupAPI": "https://mdsdev.nist.gov/midas/groups",
+    "dmpUI": "https://mdsdev.nist.gov/dmpui/new",
+    "dapUI": "https://mdsdev.nist.gov/dapui/new",
+    "npsUI": "https://tsapps-t.nist.gov/nps/npsui",
+    "nextcloudUI": "https://nextcloud-dev.nist.gov"
 }

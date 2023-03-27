@@ -41,8 +41,9 @@ export class RecordsComponent implements OnInit {
   public data: any;
   loading: boolean = true;
   dapAPI: string;
+  dapUI: string;
 
-  displayedColumns: string[] = ['name', 'owner', 'lastmodified'];
+  displayedColumns: string[] = ['name', 'owner', 'modifiedDate'];
   dataSource: any;
 
   @ViewChild('recordsTable') recordsTable: Table;
@@ -61,6 +62,7 @@ export class RecordsComponent implements OnInit {
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.dapAPI = config.dapAPI;
+        this.dapUI = config.dapUI;
         resolve(this.dapAPI);
       });
     });
@@ -68,6 +70,8 @@ export class RecordsComponent implements OnInit {
         await this.getRecords();
     }
     ).then(() => {
+      console.log('DAP data retrieved');
+      console.log('data: ' + this.records);
       this.data = JSON.parse(this.records);
     });
     

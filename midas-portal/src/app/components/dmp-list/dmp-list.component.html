@@ -5,7 +5,7 @@
             <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'green'}" [icon]="faCheck" size="lg" title="All DMPs completed."></fa-icon> 
         </button>
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
-            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileEdit" size="lg" title="Create New Data management plan"></fa-icon> 
+            <a href={{dmpUI}} target="blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileEdit" size="lg" title="Create New Data management plan"></fa-icon> </a>
         </button>
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
@@ -24,7 +24,7 @@
             <tr>
                 <td>{{item.name}}</td>
                 <td>{{item.owner}}</td>
-                <td>{{item.status.lastmodified}}</td>
+                <td>{{item.status.modifiedDate}}</td>
             </tr>
         </ng-template>
     </p-table>

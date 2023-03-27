@@ -3,12 +3,12 @@
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
-            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'orange'}" [icon]="faBell" size="lg" title="You have new Records to review."></fa-icon> 
+            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'orange'}" [icon]="faBell" size="lg" title="You have new Records to review."></fa-icon>
        
         </button>
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
-            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faListCheck" size="lg" title="Check Reviews"></fa-icon> 
+            <a href={{npsUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faListCheck" size="lg" title="Check Reviews"></fa-icon></a>
        
         </button>
         

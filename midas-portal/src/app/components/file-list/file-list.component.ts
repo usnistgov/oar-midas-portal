@@ -4,6 +4,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {faFileImport} from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
+import { AppConfig } from 'src/app/config/app.config';
 export interface MIDASFile {
   file_name: string;
   file_path: string;
@@ -25,11 +26,12 @@ export class FileListComponent implements OnInit {
   public records: any;
   public recordsApi: string;
   public data: any;
+  public nextcloudUI: string;
   displayedColumns: string[] = ['file_name', 'file_path', 'file_size', 'last_modified'];
 
   @ViewChild('filetable') fileTable: Table;
 
-  constructor() { 
+  constructor(private appConfig: AppConfig) { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'
   }
 
@@ -40,6 +42,11 @@ export class FileListComponent implements OnInit {
   }
 
   async ngOnInit() {
+
+    this.appConfig.getRemoteConfig().subscribe(config => {
+      this.nextcloudUI = config.nextcloudUI;
+    });
+    
     //await this.getRecords()
     //this.data = this.records.ResultData
     this.data = RECORD_DATA;

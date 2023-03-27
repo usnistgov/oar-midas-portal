@@ -54,9 +54,10 @@ export class DmpListComponent implements OnInit {
   public data: any;
   loading: boolean = true;
   dmpAPI: string;
+  dmpUI: string;
 
 
-  displayedColumns: string[] = ['name', 'owner', 'lastmodified'];
+  displayedColumns: string[] = ['name', 'owner', 'modifiedDate'];
   dataSource: any;
 
   @ViewChild('dmptable') dmpTable: Table;
@@ -75,6 +76,7 @@ export class DmpListComponent implements OnInit {
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.dmpAPI = config.dmpAPI;
+        this.dmpUI = config.dmpUI;
         resolve(this.dmpAPI);
       });
     });
