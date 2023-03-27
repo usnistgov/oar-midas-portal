@@ -70,6 +70,8 @@ export class RecordsComponent implements OnInit {
         await this.getRecords();
     }
     ).then(() => {
+      console.log('DAP data retrieved');
+      console.log('data: ' + this.records);
       this.data = JSON.parse(this.records);
     });
     
