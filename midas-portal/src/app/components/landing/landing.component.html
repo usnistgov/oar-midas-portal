@@ -1,5 +1,5 @@
   
-<p-panel header="Welcome,{{userName}}" class="panel-header"  [toggleable]="true" [collapsed]="true" >
+<p-panel header="Welcome, {{userName}}! ({{userEmail}})" class="panel-header"  [toggleable]="true" [collapsed]="true" >
   <ng-template pTemplate="icons">
     <span class="p-input-icon-left">
       <input type="text" #filterText pInputText name="filterString" placeholder="Search" 
@@ -32,7 +32,7 @@
         Public Data Repository
       </td>
     </tr>
-    <tr onclick="window.location.href = 'https://library.nist.gov/'" >
+    <tr onclick="window.location.href = 'https://inet.nist.gov/mr/library'" >
       <td>   
         <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faBook" size="lg"></fa-icon> 
       </td>
@@ -40,7 +40,7 @@
         NIST Research Library
       </td>
     </tr>
-    <tr  onclick="window.location.href = 'https://inet.nist.gov'" >
+    <tr  onclick="window.location.href = 'https://mdsdev.nist.gov/dapui/new'" >
       <td>   
         <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faPrint" size="lg"></fa-icon> 
       </td>
@@ -48,7 +48,7 @@
         Data Publishing Tool
       </td>
     </tr>
-    <tr onclick="window.location.href ='https://inet.nist.gov' ">
+    <tr onclick="window.location.href ='https://mdsdev.nist.gov/dmpui/new' ">
       <td>   
         <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faListCheck" size="lg"></fa-icon> 
       </td>
@@ -56,7 +56,7 @@
         Data Management Plan Tool
       </td>
     </tr>
-    <tr onclick="window.location.href ='https://nps.nist.gov' ">
+    <tr onclick="window.location.href ='https://tsapps-t.nist.gov/nps/npsui' ">
       <td>   
         <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faClipboardList" size="lg"></fa-icon> 
       </td>
@@ -64,7 +64,7 @@
         NIST Publication System
       </td>
     </tr>
-    <tr onclick="window.location.href ='https://nextcloud.nist.gov' ">
+    <tr onclick="window.location.href ='https://nextcloud-dev.nist.gov' ">
       <td>   
         <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faCloud" size="lg"></fa-icon> 
       </td>
