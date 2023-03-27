@@ -43,7 +43,7 @@ export class RecordsComponent implements OnInit {
   dapAPI: string;
   dapUI: string;
 
-  displayedColumns: string[] = ['name', 'owner', 'lastmodified'];
+  displayedColumns: string[] = ['name', 'owner', 'modifiedDate'];
   dataSource: any;
 
   @ViewChild('recordsTable') recordsTable: Table;

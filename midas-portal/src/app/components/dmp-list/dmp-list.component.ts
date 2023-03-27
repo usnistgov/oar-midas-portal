@@ -57,7 +57,7 @@ export class DmpListComponent implements OnInit {
   dmpUI: string;
 
 
-  displayedColumns: string[] = ['name', 'owner', 'lastmodified'];
+  displayedColumns: string[] = ['name', 'owner', 'modifiedDate'];
   dataSource: any;
 
   @ViewChild('dmptable') dmpTable: Table;
