@@ -93,7 +93,7 @@ export class RecordsComponent implements OnInit {
       headers: new Headers(headerDict)
     };
     
-    await fetch(this.dapAPI, requestOptions).then(r => r.json()).then(function (r) {
+    await fetch(this.dapAPI).then(r => r.json()).then(function (r) {
       return records = r
     })
 
