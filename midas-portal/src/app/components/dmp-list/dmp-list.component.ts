@@ -105,7 +105,7 @@ export class DmpListComponent implements OnInit {
       headers: new Headers(headerDict)
     };
     
-    await fetch(this.dmpAPI, requestOptions).then(r => r.json()).then(function (r) {
+    await fetch(this.dmpAPI).then(r => r.json()).then(function (r) {
       return records = r
     })
 
