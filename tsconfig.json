@@ -8,4 +8,15 @@
         "path": "./midas-portal/tsconfig.ref.json"
       },
     ],
-  }
+    "compilerOptions": {
+        "experimentalDecorators": true,
+    },
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "typeRoots": [
+        "node_modules/@types"
+    ],
+    "types": [
+        "jest", "node"
+    ]
+}
