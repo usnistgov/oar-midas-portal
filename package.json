@@ -8,7 +8,8 @@
         "build-lib": "npm run build oarng --prefix ./lib",
         "build-all": "npm run build oarng --prefix ./lib && npm run build midas-portal --prefix ./midas-portal",
         "build": "npm run build midas-portal --prefix ./midas-portal",
-        "start": "npm run start midas-portal --prefix ./midas-portal"
+        "start": "npm run start midas-portal --prefix ./midas-portal",
+        "test": "jest --config ./midas-portal/jest.config.js --silent"
     },
     "dependencies": {
         "@fortawesome/angular-fontawesome": "^0.10.2",
@@ -17,5 +18,11 @@
         "@ionic/angular": "^6.3.8",
         "primefaces": "^12.0.0",
         "primeng": "^13.3.3"
+    },
+    "devDependencies": {
+        "@types/jest": "^29.5.0",
+        "jest": "^29.5.0",
+        "jest-preset-angular": "^13.0.1",
+        "ts-jest": "^29.1.0"
     }
 }
