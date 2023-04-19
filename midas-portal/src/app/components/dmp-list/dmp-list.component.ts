@@ -5,6 +5,7 @@ import {MatTableDataSource} from '@angular/material/table';
 
 import {faListCheck, faCheck,faFileEdit} from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
+import { AppConfig } from 'src/app/config/app.config';
 
 export interface DMP {
   title: string;
@@ -51,14 +52,18 @@ export class DmpListComponent implements OnInit {
   public records: any;
   public recordsApi: string;
   public data: any;
+  loading: boolean = true;
+  dmpAPI: string;
+  dmpUI: string;
 
-  displayedColumns: string[] = ['title', 'owner', 'lastmodified'];
+
+  displayedColumns: string[] = ['name', 'owner', 'modifiedDate'];
   dataSource: any;
 
   @ViewChild('dmptable') dmpTable: Table;
 
-  constructor() { 
-    this.recordsApi = 'https://data.nist.gov/rmm/records'
+  constructor(private appConfig: AppConfig) { 
+    //this.recordsApi = 'https://data.nist.gov/rmm/records'
   }
 
   
@@ -68,20 +73,44 @@ export class DmpListComponent implements OnInit {
   }
 
   async ngOnInit() {
-    //await this.getRecords()
-    //this.data = this.records.ResultData
-    this.data = RECORD_DATA;
-    console.log(this.data)
+    let promise = new Promise((resolve) => {
+      this.appConfig.getRemoteConfig().subscribe(config => {
+        this.dmpAPI = config.dmpAPI;
+        this.dmpUI = config.dmpUI;
+        resolve(this.dmpAPI);
+      });
+    });
+    promise.then(async ()=> {
+        await this.getRecords();
+    }
+    ).then(() => {
+      this.data = JSON.parse(this.records);
+    });
     
   }
 
-  async getRecords() {
+  async getRecords(){
+    
     let records;
-    await fetch(this.recordsApi).then(r => r.json()).then(function (r) {
+
+    const headerDict = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Origin': '*',
+      'rejectUnauthorized': 'false'
+    }
+    
+    const requestOptions = {                                                                                                                                                                                 
+      headers: new Headers(headerDict)
+    };
+    
+    await fetch(this.dmpAPI).then(r => r.json()).then(function (r) {
       return records = r
     })
 
-    return this.records = Object(records)
+    this.loading = false;
+    return this.records = Object(records);
   }
 
   titleClick() {
