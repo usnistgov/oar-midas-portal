@@ -1,0 +1,20 @@
+[
+    {
+    "file_name": "Big Data File",
+    "file_path": "/file_dir/some_path/big_old_file.csv",
+    "file_size": "5TB", 
+    "last_modified": "Nov 30, 2022 at 4:11:11 PM"
+        },
+    {
+    "file_name": "Small Data File",
+    "file_path": "/file-dir/some_path/sub_dir1/sub_dir2/small_file.txt", 
+    "file_size": "657KB",
+    "last_modified": "Nov 25, 2022 at 9:20:30 AM"
+    },
+    {
+    "file_name": "Medium Data File",
+    "file_path": "/file-dir/some_path/sub_dir1/sub_dir2/test_file.txt", 
+    "file_size": "1TB",
+    "last_modified": "Nov 25, 2022 at 9:20:30 AM"
+    }
+  ]
