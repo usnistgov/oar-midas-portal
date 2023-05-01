@@ -1,16 +1,15 @@
-
-<p-panel header="My Data Publications" styleClass="overflow-auto">
+<h2 data-role="test">Test</h2>
+<p-panel  header="My Data Publications" styleClass="overflow-auto">
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
             <a href={{dapUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileEdit" size="lg" title="Create New Record"></fa-icon></a> 
        
         </button>
-        <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
     </ng-template>
 
     <div>
-        <p-table #recordsTable name="recordtable" [value]="data" [paginator]="true" height="100px" [rows]="5" [scrollable]="true"
+        <p-table data-role="Name" #recordsTable name="recordtable" [value]="data" [paginator]="true" height="100px" [rows]="5" [scrollable]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
             [rowsPerPageOptions]="[5]" [globalFilterFields]="['name', 'owner']" >
             <ng-template pTemplate="header">
@@ -22,7 +21,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td>{{item.name}}</td>
+                    <td >{{item.name}}</td>
                     <td>{{item.owner}}</td>
                     <td>{{item.status.modifiedDate}}</td>
                 </tr>

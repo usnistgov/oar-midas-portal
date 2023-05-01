@@ -1,20 +1,11 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import {MatSort, Sort} from '@angular/material/sort';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatTableDataSource} from '@angular/material/table';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch,faFileCirclePlus, faPlus,faFileEdit } from '@fortawesome/free-solid-svg-icons';
-import {ScrollPanelModule} from 'primeng/scrollpanel';
 import { Table } from 'primeng/table';
-import { AppConfig } from 'src/app/config/app.config';
-
-
-export interface MIDASRecord {
-  name: string;
-  owner: string;
-  lastmodified: string;
-}
-
+import { AppConfig } from '../../config/app.config'
+//import { AppConfig } from 'src/app/config/app.config';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-records',
@@ -26,30 +17,20 @@ export interface MIDASRecord {
   ]
 })
 export class RecordsComponent implements OnInit {
-  items: MenuItem[];
-  faPlus = faPlus;
-  faHouse = faHouse;
-  faUser = faUser;
-  faDashboard =faDashboard;
-  faCloud =faCloud;
-  faClipboardList= faClipboardList;
-  faSearch=faSearch;
-  faFileCirclePlus=faFileCirclePlus;
   faFileEdit=faFileEdit;
   public records: any;
-  public recordsApi: string;
   public data: any;
   loading: boolean = true;
   dapAPI: string;
   dapUI: string;
+  pre: string;
+  after:string;
 
-  displayedColumns: string[] = ['name', 'owner', 'modifiedDate'];
   dataSource: any;
 
   @ViewChild('recordsTable') recordsTable: Table;
 
-  constructor(private appConfig: AppConfig) { 
-    //this.recordsApi = 'https://data.nist.gov/rmm/records'
+  constructor(private appConfig: AppConfig, private http: HttpClient) { 
   }
 
   
@@ -59,13 +40,18 @@ export class RecordsComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.pre="pre"
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.dapAPI = config.dapAPI;
-        this.dapUI = config.dapUI;
         resolve(this.dapAPI);
+        //GET method to get data
+        this.fetchRecords(this.dapAPI);
       });
     });
+    this.after="after"
+    // Retrieving data using fetch functions 
+    /*
     promise.then(async ()=> {
         await this.getRecords();
     }
@@ -74,6 +60,7 @@ export class RecordsComponent implements OnInit {
       console.log(this.records);
       this.data = this.records;
     });
+    */
     
   }
 
@@ -99,6 +86,15 @@ export class RecordsComponent implements OnInit {
 
     this.loading = false;
     return this.records = Object(records);
+  }
+
+  public fetchRecords(url:string){
+    this.http.get(url)
+    .pipe(map((responseData: any)  => {
+      return responseData
+    })). subscribe(records => {
+      this.data = records
+    })
   }
 
   titleClick() {

@@ -82,30 +82,28 @@
     </tr>
   </table>
 </p-sidebar>
-<table>
-  <tr>
-    <td [style]="{'width':'50%'}">
-      <div>
+<div class="style">
+  <div class="row">
+    <div class="col-lg-6 col-md-4 col-sm-3">
+      <div class="table-dashboard">
         <app-records #records></app-records>
       </div>
-    </td>
-    <td [style]="{'width':'50%'}">
-      <div>
+    </div>
+    <div class="col-lg-6 col-md-4 col-sm-3">
+      <div class="table-dashboard">
         <app-dmp-list #dmps></app-dmp-list>
       </div>
-    </td>
-  </tr>
-  <tr>
-    <td [style]="{'width':'50%'}">
-      <div>
+    </div>
+    <div class="col-lg-6 col-md-4 col-sm-3">
+      <div class="table-dashboard">
         <app-review-list #reviews></app-review-list>
-      </div>
-    </td>
-    <td [style]="{'width':'50%'}">
-      <div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-4 col-sm-3">
+      <div class="table-dashboard">
         <app-file-list #files></app-file-list>
       </div>
-    </td>
-  </tr>
-</table>
+    </div>
+  </div>
+</div>
 <p-button type="text" (click)="display = !display" icon="pi pi-plus" label="Resources/Links"></p-button>

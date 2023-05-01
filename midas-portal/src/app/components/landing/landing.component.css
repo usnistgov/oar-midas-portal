@@ -108,3 +108,6 @@ a{
 :host ::ng-deep.usertable{
     color: red;
 }
+.table-dashboard{
+    padding: 3% 2%;
+}

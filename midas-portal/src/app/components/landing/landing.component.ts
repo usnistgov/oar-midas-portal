@@ -1,12 +1,8 @@
-import { Component, OnInit, OnChanges, ViewChild, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { CustomizationService } from '../auth-service/auth.service';
-import { AuthService, WebAuthService } from '../auth-service/auth.service';
-import {MenuModule} from 'primeng/menu';
-import {MenuItem} from 'primeng/api';
-import { SidebarModule } from 'primeng/sidebar';
-import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch, faFileCirclePlus, faPlus, faDatabase,faBook, faListCheck , faPrint, faPersonCircleQuestion} from '@fortawesome/free-solid-svg-icons';
-import { ReviewListComponent } from '../review-list/review-list.component';
+import { AuthService } from '../auth-service/auth.service';
+import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch, faFileCirclePlus, faPlus,faBook, faListCheck , faPrint, faPersonCircleQuestion} from '@fortawesome/free-solid-svg-icons';
 import { AppConfig } from 'src/app/config/app.config';
 import { UserDetails } from '../auth-service/user.interface';
 import { HttpClient } from '@angular/common/http';
@@ -38,7 +34,6 @@ export class LandingComponent implements OnInit {
   public username: string;
   events: string[] = [];
   opened: boolean;
-  items: MenuItem[];
   display = false;
   filterString: string;
 
@@ -73,21 +68,7 @@ export class LandingComponent implements OnInit {
 
   ngOnInit(): void {
     //this.startEditing(true);
-
-    this.items = [{
-      label: 'File',
-      items: [
-          {label: 'New', icon: 'pi pi-fw pi-plus'},
-          {label: 'Download', icon: 'pi pi-fw pi-download'}
-      ]
-    },
-    {
-        label: 'Edit',
-        items: [
-            {label: 'Add User', icon: 'pi pi-fw pi-user-plus'},
-            {label: 'Remove User', icon: 'pi pi-fw pi-user-minus'}
-        ]
-    }];
+    
     console.log('******** authAPI: ' + this.authAPI);
     //test config
     this.appConfig.getRemoteConfig().subscribe(config => {

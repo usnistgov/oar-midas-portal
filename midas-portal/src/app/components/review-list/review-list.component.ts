@@ -1,17 +1,10 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import {MatSort, Sort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {faUsersViewfinder,faBell} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
 import { AppConfig } from 'src/app/config/app.config';
-export interface NPSReview {
-  title: string;
-  owner: string;
-  currentreviewer: string;
-  currentreviewstop: string;
-}
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-review-list',
@@ -25,12 +18,12 @@ export class ReviewListComponent implements OnInit {
   public NPSAPI: string;
   public npsUI: string;
   public data: any;
-  displayedColumns: string[] = ['title', 'owner', 'currentreviewer', 'currentreviewstop'];
-  loading: boolean = true;
+
+  loading: boolean = false;
 
   @ViewChild('reviewtable') reviewTable: Table;
 
-  constructor(private appConfig: AppConfig) { 
+  constructor(private appConfig: AppConfig,private http: HttpClient) { 
     
   }
 
@@ -45,15 +38,18 @@ export class ReviewListComponent implements OnInit {
         this.NPSAPI = config.NPSAPI;
         this.npsUI = config.npsUI;
         resolve(this.NPSAPI);
+        //GET Using fake backend
+        this.fetchRecords(this.NPSAPI);
       });
     });
+    /* using fetch to retrieve data
     promise.then(async ()=> {
         await this.getRecords();
     }
     ).then(() => {
       this.data = JSON.parse(this.records);
     });
-    
+    */
   }
 
   async getRecords(){
@@ -78,6 +74,15 @@ export class ReviewListComponent implements OnInit {
 
     this.loading = false;
     return this.records = Object(records);
+  }
+
+  private fetchRecords(url:string){
+    this.http.get(url)
+    .pipe(map((responseData: any)  => {
+      return responseData
+    })). subscribe(records => {
+      this.data = records
+    })
   }
 
   titleClick() {

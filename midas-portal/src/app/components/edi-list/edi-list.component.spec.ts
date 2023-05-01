@@ -13,13 +13,26 @@ describe('EdiListComponent', () => {
     .compileComponents();
   });
 
-  beforeEach(() => {
+  beforeEach( () => {
     fixture = TestBed.createComponent(EdiListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    
+    
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should exist',()=>{
+    expect(component).toBeDefined();
+  })
+
+  it('should exist',()=>{
+    const comp = new EdiListComponent
+    console.log(comp.data)
+    expect(comp.data).toBe('as')
+  })
 });

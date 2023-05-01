@@ -1,13 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import {MatSort, Sort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-
-
-export interface Record {
-  title: string;
-  publisher: string;
-  date: number;
-}
+import { Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-edi-list',
@@ -18,10 +9,7 @@ export class EdiListComponent implements OnInit {
 
   public records: any;
   public recordsApi: string;
-  public data: any;
-  displayedColumns: string[] = ['title', 'publisher', 'date'];
-  //dataSource = new MatTableDataSource(ELEMENT_DATA);
-
+  public data: string;
   //@ViewChild(MatSort) sort: MatSort;
 
   constructor() { 
@@ -36,7 +24,7 @@ export class EdiListComponent implements OnInit {
 
   async ngOnInit() {
     await this.getRecords()
-    this.data = this.records.ResultData
+    this.data = "test"
     console.log(this.data)
   }
 

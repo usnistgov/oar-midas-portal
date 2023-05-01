@@ -1,4 +1,5 @@
 
+<div class="dmp">
 <p-panel header="My Data Management Plans">
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()" >
@@ -10,9 +11,9 @@
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
 <div class="overflow-auto">
-    <p-table #dmptable class="overflow-auto" [value]="data" [paginator]="true" height="100px" [rows]="5" [scrollable]="true"
+    <p-table #dmptable class="overflow-auto" [value]="data" [paginator]="true" height="100px" [rows]="2" [scrollable]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-        [rowsPerPageOptions]="[5]" [globalFilterFields]="['name', 'owner']">
+        [rowsPerPageOptions]="[2]" [globalFilterFields]="['name', 'owner']">
         <ng-template pTemplate="header">
             <tr>
                 <th pResizableColumn>Name</th>
@@ -30,3 +31,5 @@
     </p-table>
 </div>
 </p-panel>
+    
+</div>
