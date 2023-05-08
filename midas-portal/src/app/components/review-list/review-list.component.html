@@ -14,8 +14,10 @@
         
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
-<div class="overflow-auto">
-    <p-table #reviewtable class="overflow-auto" [loading]="loading" [value]="data" [paginator]="true" height="100px" [rows]="5" [scrollable]="true"
+<div class="">
+    <p-table #reviewtable class="overflow-auto" [loading]="loading" [rowHover]="true"[value]="data"
+        [paginator]="true" [rows]="5" [scrollable]="true"
+        [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
         [rowsPerPageOptions]="[5]" [globalFilterFields]="['title', 'submitterName', 'currentReviewer']">
         <ng-template pTemplate="header">
@@ -24,16 +26,16 @@
                 <th pResizableColumn>Owner</th>
                 <th pResizableColumn>Current Reviewer</th>
                 <th pResizableColumn>Status</th>
-                <th pResizableColumn>deadline</th>
+                <th pResizableColumn>Deadline</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>
-            <tr>
-                <td>{{item.title}}</td>
-                <td>{{item.owner}}</td>
-                <td>{{item.reviewer}}</td>
-                <td>{{item.status}}</td>
-                <td>{{item.deadline}}</td>
+            <tr class="tr-class">
+                <td class="td-class">{{item.title}}</td>
+                <td class="td-class">{{item.owner}}</td>
+                <td class="td-class">{{item.reviewer}}</td>
+                <td class="td-class"><p-tag [value]="item.status" [severity]="getStatus(item.status)"></p-tag></td>
+                <td class="td-class">{{item.deadline}}</td>
             </tr>
         </ng-template>
     </p-table>

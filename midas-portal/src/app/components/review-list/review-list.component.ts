@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {faUsersViewfinder,faBell} from '@fortawesome/free-solid-svg-icons';
+import { TagModule } from 'primeng/tag';
 import {Table} from 'primeng/table';
 import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
@@ -83,6 +84,18 @@ export class ReviewListComponent implements OnInit {
     })). subscribe(records => {
       this.data = records
     })
+  }
+
+  getStatus(status: string) {
+    switch (status) {
+        case 'Done':
+            return 'success';
+        case 'In Progress':
+            return 'warning';
+        case 'Pending':
+            return 'danger';
+    }
+    return ""
   }
 
   titleClick() {

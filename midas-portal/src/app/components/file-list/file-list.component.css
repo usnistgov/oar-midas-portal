@@ -1,45 +1,11 @@
-/* .file-list {
-    display: block;
-    background: #fff;
-    border-radius: 10px;
-    border: black;
-    padding: 10px;
-    border: 1;
-    width: 100%;
-       height: 250px;
-    width: auto;
-    border: 1px solid black;
-}
-
-.file-list.table {
-    padding: 50;
-    
-} */
-
-mat-table {
-    border: solid 1px #000;
-
-}
-
-.file-list {
-    width: 100%;
-
-}
-
-.mat-card.scrollable-content {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column; 
-  }
-  .mat-card.scrollable-content > .mat-card-title-group {
-    display: block;
-  }
-  .mat-card.scrollable-content > .mat-card-content {
-    overflow-y: auto;
-  }
-
   :host ::ng-deep .p-panel-header
 {
   background: #d9e8f6;
   border: 1px solid #908e8e;
+}
+
+.td-class {
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
 }

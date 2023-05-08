@@ -18,6 +18,7 @@ import { ButtonModule } from 'primeng/button';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SidebarModule } from 'primeng/sidebar';
+import { TagModule } from 'primeng/tag';
 
 import {TableModule} from 'primeng/table';
 
@@ -40,6 +41,7 @@ import {TableModule} from 'primeng/table';
          RadioButtonModule,
          FontAwesomeModule,
          TableModule,
+         TagModule,
          SidebarModule
          
          

@@ -1,4 +1,3 @@
-<h2 data-role="test">Test</h2>
 <p-panel  header="My Data Publications" styleClass="overflow-auto">
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
@@ -9,7 +8,9 @@
     </ng-template>
 
     <div>
-        <p-table data-role="Name" #recordsTable name="recordtable" [value]="data" [paginator]="true" height="100px" [rows]="5" [scrollable]="true"
+        <p-table data-role="Name" #recordsTable name="recordtable" [value]="data" [paginator]="true"
+            height="100px" [rows]="5" [scrollable]="true"
+            [showCurrentPageReport]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
             [rowsPerPageOptions]="[5]" [globalFilterFields]="['name', 'owner']" >
             <ng-template pTemplate="header">
@@ -23,7 +24,7 @@
                 <tr>
                     <td >{{item.name}}</td>
                     <td>{{item.owner}}</td>
-                    <td>{{item.status.modifiedDate}}</td>
+                    <td>{{dateformat(item.status.modifiedDate)}}</td>
                 </tr>
             </ng-template>
         </p-table>

@@ -62,6 +62,17 @@ export class FileListComponent implements OnInit {
     })
   }
 
+  dateformat(date:string){
+    if(date.length==19){
+      var tmp = date.substring(0,10)
+      var split = tmp.split("-")
+      var newdate = split[1].concat("/",split[2],"/",split[0])
+      return newdate
+    }else{
+      return date
+    }
+  }
+
   titleClick() {
     console.log(this);
   }
