@@ -1,4 +1,4 @@
-<p-panel  header="My Data Publications" styleClass="overflow-auto">
+<p-panel  header="My Data Publications">
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
@@ -6,8 +6,6 @@
        
         </button>
     </ng-template>
-
-    <div>
         <p-table data-role="Name" #recordsTable name="recordtable" [value]="data" [paginator]="true"
             height="100px" [rows]="5" [scrollable]="true"
             [showCurrentPageReport]="true"
@@ -28,7 +26,5 @@
                 </tr>
             </ng-template>
         </p-table>
-    </div>
-    
 </p-panel>
 

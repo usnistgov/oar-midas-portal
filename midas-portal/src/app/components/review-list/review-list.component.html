@@ -15,7 +15,7 @@
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
 <div class="">
-    <p-table #reviewtable class="overflow-auto" [loading]="loading" [rowHover]="true"[value]="data"
+    <p-table #reviewtable [loading]="loading" [rowHover]="true"[value]="data"
         [paginator]="true" [rows]="5" [scrollable]="true"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
