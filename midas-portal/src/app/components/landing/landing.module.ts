@@ -19,8 +19,10 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SidebarModule } from 'primeng/sidebar';
 import { TagModule } from 'primeng/tag';
-
 import {TableModule} from 'primeng/table';
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
     declarations:[
@@ -42,12 +44,14 @@ import {TableModule} from 'primeng/table';
          FontAwesomeModule,
          TableModule,
          TagModule,
-         SidebarModule
+         DropdownModule,
+         SidebarModule,
+         FormsModule
          
          
     ],
     providers:[ HttpClient,
-        { provide: AuthService, useFactory: createAuthService, deps: [ HttpClient ] }
+        { provide: AuthService, useFactory: createAuthService, deps: [ HttpClient ] },DatePipe
 ]
 })
 export class LandingModule {}

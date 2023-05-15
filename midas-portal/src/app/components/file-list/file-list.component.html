@@ -14,10 +14,10 @@
         [rowsPerPageOptions]="[5]" [globalFilterFields]="['file_name', 'file_path']">
         <ng-template pTemplate="header">
             <tr>
-                <th pResizableColumn>File Name</th>
+                <th pResizableColumn pSortableColumn="file_name">File Name <p-sortIcon field="file_name"></p-sortIcon></th>
                 <th pResizableColumn>File Path</th>
-                <th pResizableColumn>File Size</th>
-                <th pResizableColumn>Last Modified</th>
+                <th pResizableColumn pSortableColumn="file_size">File Size<p-sortIcon field="file_size"></p-sortIcon></th>
+                <th pResizableColumn pSortableColumn="last_modified"> Last Modified<p-sortIcon field="last_modified"></p-sortIcon></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>

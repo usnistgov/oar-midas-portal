@@ -9,3 +9,11 @@
   word-break: break-all;
   white-space: normal;
 }
+
+.filter{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: nowrap;
+}

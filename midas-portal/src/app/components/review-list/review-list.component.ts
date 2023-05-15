@@ -1,11 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {faUsersViewfinder,faBell} from '@fortawesome/free-solid-svg-icons';
-import { TagModule } from 'primeng/tag';
 import {Table} from 'primeng/table';
 import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-review-list',
@@ -19,12 +18,14 @@ export class ReviewListComponent implements OnInit {
   public NPSAPI: string;
   public npsUI: string;
   public data: any;
+  statuses:any[];
+
 
   loading: boolean = false;
 
   @ViewChild('reviewtable') reviewTable: Table;
 
-  constructor(private appConfig: AppConfig,private http: HttpClient) { 
+  constructor(private appConfig: AppConfig,private http: HttpClient,public datepipe:DatePipe) { 
     
   }
 
@@ -41,6 +42,10 @@ export class ReviewListComponent implements OnInit {
         resolve(this.NPSAPI);
         //GET Using fake backend
         this.fetchRecords(this.NPSAPI);
+        for (let i = 0; i<this.data.length;i++){
+          this.data[i].deadline = new Date(this.data[i].deadline)
+          //this.data[i].deadline = this.datepipe.transform(this.data[i].deadline,'MM/dd/yyyy')
+        }
       });
     });
     /* using fetch to retrieve data
@@ -51,6 +56,12 @@ export class ReviewListComponent implements OnInit {
       this.data = JSON.parse(this.records);
     });
     */
+
+    this.statuses = [
+      { label: 'Pending', value: 'Pending' },
+      { label: 'Done', value: 'Done' },
+      { label: 'In Progress', value: 'In Progress' }
+  ];
   }
 
   async getRecords(){
@@ -85,6 +96,10 @@ export class ReviewListComponent implements OnInit {
       this.data = records
     })
   }
+
+  clear(table: Table) {
+    table.clear();
+}
 
   getStatus(status: string) {
     switch (status) {
