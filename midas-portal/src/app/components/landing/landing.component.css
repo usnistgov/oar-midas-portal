@@ -1,113 +1,154 @@
-:host ::ng-deep .mat-grid-tile-content {
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    position: top;
-    display: block;
-    align-items: center;
-    justify-content: left;
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    /* background-color: aquamarine; */
-}
-
-
-.stack{
-    display: block;
-}
-
-mat-drawer {
-    width: auto;
-    padding: 10px;
-    border: 1px;
-    background-color: black;
-    text-align: left;
-}
-
-mat-form-field {
-    background-color: lightyellow;
-    width: 20%;
-    text-align: right;
-    border: solid 1px #000;
-}
-
-mat-card {
-    /* width: 80%; */
-    /* align-items: flex-end; */
-    text-align: right;
-}
-
-mat-grid {
-    background-color: aquamarine;
-    height: 90%;
-}
-
-mat-grid-tile {
-    padding: 0px;
-    align-items: center;
-    
-}
-
-mat-drawer-content {
-    height: 50%;
-}
-
-mat-card-content {
-    border: 5px;
-}
-
-/* .edi-list {
-    display: block;
-    background: rgb(173, 110, 110);
-    border-radius: 10px;
-    border: black;
-    margin-top: 10px;
-    max-height: 10px;
-    overflow: auto;
-} */
-
-a{
-   /*color: beige; 
-   /* font-family: sans-serif; 
-    font-size: 20 px; */
-}
-
-
- /* tr {
-    color: beige; 
-    /* padding: 80px; 
-    
- } */
-
-/*tr:hover td{
-    background-color: transparent;
-    font-size: 20px;
-}*/
-
-
- td {
-    /* color: beige;  */
-    font-size: 20px;
-    padding: 25px;
-    
-}
-
-/*tr:hover td {
-    background: #dbebde!important;
-    color: #005ea2;
-    font-weight: bold;
-   
-} */
-
-.ng-fa-icon:hover {
-  color: red;
-}
-
-:host ::ng-deep.usertable{
-    color: red;
-}
 .table-dashboard{
-    padding: 3% 2%;
+    padding: 1% 1%;
+    height: auto;
+}
+
+:host ::ng-deep .p-panel-header
+{
+  background: #EFF6FB;
+  border: 1px solid #005ea2;
+  padding: 0.2rem;
+  color:#005ea2;
+}
+
+:host ::ng-deep .p-panel-content
+{
+  padding: 0.2rem;
+}
+
+:host ::ng-deep .p-paginator-bottom
+{
+  padding: 0.2rem;
+}
+
+:host ::ng-deep .p-datatable-tbody > tr > td {
+  padding: 0.3rem;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th 
+{
+  padding: 0.3rem;
+}
+
+.td-class {
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
+  padding: 0.2rem;
+}
+
+#body-row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#sidebar-container {
+    min-height: 100vh;
+    background-color: #333;
+    padding: 0;
+}
+
+/* Sidebar sizes when expanded and expanded */
+.sidebar-expanded {
+    width: 200px;
+}
+
+.sidebar-collapsed {
+    width: 60px;
+}
+
+/* Menu item*/
+#sidebar-container .list-group a {
+    height: 50px;
+    color: white;
+}
+
+/* Submenu item*/
+#sidebar-container .list-group .sidebar-submenu a {
+    height: 45px;
+    padding-left: 30px;
+}
+
+.sidebar-submenu {
+    font-size: 0.9rem;
+}
+
+/* Separators */
+.sidebar-separator-title {
+    background-color: #005ea2;
+    height: 50px;
+    color: #fff;
+
+}
+
+.sidebar-separator {
+    background-color: #333;
+    height: 25px;
+}
+
+.logo-separator {
+    background-color: #333;
+    height: 60px;
+}
+
+/* Closed submenu icon */
+#sidebar-container .list-group .list-group-item[aria-expanded="false"] .submenu-icon::after {
+    content: " \f0d7";
+    font-family: FontAwesome;
+    display: inline;
+    text-align: right;
+    padding-left: 10px;
+}
+
+/* Opened submenu icon */
+#sidebar-container .list-group .list-group-item[aria-expanded="true"] .submenu-icon::after {
+    content: " \f0da";
+    font-family: FontAwesome;
+    display: inline;
+    text-align: right;
+    padding-left: 10px;
+}
+
+#sidebar-container .list-group .list-group-item {
+    color: #005ea2;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: center;
+    align-items: center;
+}
+
+#sidebar-container .list-group-header{
+    color: red;
+    
+
+}
+
+#sidebar-container .list-group .list-group-item:hover {
+    background-color:#005ea2;
+    color: white;
+    font-style:italic;
+    
+}
+
+.Menu-Title{
+    color:#EFF6FB;
+    padding-left: 2rem;
+    size: 2.5rem;
+}
+
+.links{
+    color: #005ea2;
+    background: #EFF6FB;
+    border: none;
+}
+
+.contact{
+    background-color: #eff6fb;
+    font-size: 1rem;
+    color:#005ea2;
+
 }

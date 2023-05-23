@@ -4,7 +4,7 @@ import { Table } from 'primeng/table';
 import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-file-list',
@@ -21,7 +21,7 @@ export class FileListComponent implements OnInit {
 
   @ViewChild('filetable') fileTable: Table;
 
-  constructor(private appConfig: AppConfig,private http:HttpClient) { 
+  constructor(private appConfig: AppConfig,private http:HttpClient,public datepipe:DatePipe) { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'
   }
 
@@ -34,6 +34,9 @@ export class FileListComponent implements OnInit {
         resolve(this.nextcloudUI);
         //GET method to get data
         this.fetchRecords(this.nextcloudUI);
+        for (let i = 0; i<this.data.length;i++){
+          this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
+        }
       });
     });
     
@@ -62,16 +65,10 @@ export class FileListComponent implements OnInit {
     })
   }
 
-  dateformat(date:string){
-    if(date.length==19){
-      var tmp = date.substring(0,10)
-      var split = tmp.split("-")
-      var newdate = split[1].concat("/",split[2],"/",split[0])
-      return newdate
-    }else{
-      return date
-    }
-  }
+
+  clear(table: Table) {
+    table.clear();
+}
 
   titleClick() {
     console.log(this);

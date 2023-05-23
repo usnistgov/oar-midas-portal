@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { CustomizationService } from '../auth-service/auth.service';
 import { AuthService } from '../auth-service/auth.service';
-import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch, faFileCirclePlus, faPlus,faBook, faListCheck , faPrint, faPersonCircleQuestion} from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faUser, faDashboard, faCloud, faClipboardList,
+faSearch, faFileCirclePlus, faPlus,faBook, faListCheck,faLink,faAddressBook
+ ,faCircle, faPrint, faPersonCircleQuestion, faBuilding} from '@fortawesome/free-solid-svg-icons';
 import { AppConfig } from 'src/app/config/app.config';
 import { UserDetails } from '../auth-service/user.interface';
 import { HttpClient } from '@angular/common/http';
@@ -17,7 +19,10 @@ import { HttpClient } from '@angular/common/http';
   ]
 })
 export class LandingComponent implements OnInit {
-
+  faAddressBook=faAddressBook;
+  faLink = faLink;
+  faCircle = faCircle;
+  faBuilding = faBuilding;
   faPlus = faPlus;
   faHouse = faHouse;
   faUser = faUser;

@@ -6,6 +6,7 @@ import { AppConfig } from '../../config/app.config'
 //import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-records',
@@ -25,12 +26,13 @@ export class RecordsComponent implements OnInit {
   dapUI: string;
   pre: string;
   after:string;
+  statuses:any[];
 
   dataSource: any;
 
   @ViewChild('recordsTable') recordsTable: Table;
 
-  constructor(private appConfig: AppConfig, private http: HttpClient) { 
+  constructor(private appConfig: AppConfig, private http: HttpClient,public datepipe:DatePipe) { 
   }
 
   
@@ -47,6 +49,9 @@ export class RecordsComponent implements OnInit {
         resolve(this.dapAPI);
         //GET method to get data
         this.fetchRecords(this.dapAPI);
+        for (let i = 0; i<this.data.length;i++){
+          this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
+        }
       });
     });
     this.after="after"
@@ -61,6 +66,12 @@ export class RecordsComponent implements OnInit {
       this.data = this.records;
     });
     */
+    this.statuses = [
+      { label: 'published', value: 'published' },
+      { label: 'edit', value: 'edit' },
+      { label: 'reviewed', value: 'reviewed' }
+  ];
+  
     
   }
 
@@ -97,15 +108,21 @@ export class RecordsComponent implements OnInit {
     })
   }
 
-  dateformat(date:string){
-    if(date.length==19){
-      var tmp = date.substring(0,10)
-      var split = tmp.split("-")
-      var newdate = split[1].concat("/",split[2],"/",split[0])
-      return newdate
-    }else{
-      return date
+
+  clear(table: Table) {
+    table.clear();
+}
+
+  getStatus(status: string) {
+    switch (status) {
+        case 'published':
+            return 'success';
+        case 'edit':
+            return 'warning';
+        case 'reviewed':
+            return 'danger';
     }
+    return ""
   }
 
   titleClick() {

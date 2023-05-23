@@ -4,7 +4,7 @@ import { Table } from 'primeng/table';
 import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -27,7 +27,7 @@ export class DmpListComponent implements OnInit {
 
   @ViewChild('dmptable') dmpTable: Table;
 
-  constructor(private appConfig: AppConfig,private http: HttpClient) { 
+  constructor(private appConfig: AppConfig,private http: HttpClient, public datepipe:DatePipe) { 
   }
 
   async ngOnInit() {
@@ -37,6 +37,9 @@ export class DmpListComponent implements OnInit {
         resolve(this.dmpAPI);
         //GET method to get data
         this.fetchRecords(this.dmpAPI);
+        for (let i = 0; i<this.data.length;i++){
+          this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
+        }
       });
     });
 
@@ -83,17 +86,10 @@ export class DmpListComponent implements OnInit {
       this.data = records
     })
   }
+  clear(table: Table) {
+    table.clear();
+}
 
-  dateformat(date:string){
-    if(date.length==19){
-      var tmp = date.substring(0,10)
-      var split = tmp.split("-")
-      var newdate = split[1].concat("/",split[2],"/",split[0])
-      return newdate
-    }else{
-      return date
-    }
-  }
 
   titleClick() {
     console.log(this);

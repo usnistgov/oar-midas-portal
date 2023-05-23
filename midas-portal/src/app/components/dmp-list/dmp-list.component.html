@@ -14,19 +14,31 @@
         height="100px" [rows]="5" [scrollable]="true"
         [showCurrentPageReport] = "true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-        [rowsPerPageOptions]="[5]" [globalFilterFields]="['name', 'owner']">
+        [rowsPerPageOptions]="[5]" [globalFilterFields]="['name', 'owner','nist']">
         <ng-template pTemplate="header">
             <tr>
-                <th pResizableColumn>Name</th>
-                <th pResizableColumn>Owner</th>
-                <th pResizableColumn>Last Modified</th>
+                <th pResizableColumn pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon></th>
+                <th pResizableColumn pSortableColumn="owner">Owner<p-sortIcon field="owner"></p-sortIcon></th>
+                <th pResizableColumn pSortableColumn="nist">Primary NIST Contact<p-sortIcon field="nist"></p-sortIcon></th>
+                <th pResizableColumn>Last Modified
+                    <p-columnFilter title="Filter by date" type="date" field="status.modifiedDate" display="menu"></p-columnFilter>
+                </th>
             </tr>
+        </ng-template>
+        <ng-template pTemplate="caption">
+            <div class="filter">
+                <span class="p-input-icon-right ml-auto" style="margin-right: 2%;">
+                    <input pInputText type="text" (input)="dmptable.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+                </span>
+                <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(dmptable)"></button>
+            </div>
         </ng-template>
         <ng-template pTemplate="body" let-item>
             <tr>
                 <td>{{item.name}}</td>
                 <td>{{item.owner}}</td>
-                <td>{{dateformat(item.status.modifiedDate)}}</td>
+                <td>{{item.data.primary_NIST_contact.firstName+' '+item.data.primary_NIST_contact.lastName}}</td>
+                <td>{{this.datepipe.transform(item.status.modifiedDate,'MM/dd/yyyy')}}</td>
             </tr>
         </ng-template>
     </p-table>

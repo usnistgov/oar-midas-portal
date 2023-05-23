@@ -1,20 +1,5 @@
-  
-<p-panel header="Welcome, {{userName}}! ({{userEmail}})" class="panel-header"  [toggleable]="true" [collapsed]="true" >
-  <ng-template pTemplate="icons">
-    <span class="p-input-icon-left">
-      <input type="text" #filterText pInputText name="filterString" placeholder="Search" 
-       (input)="reviews.filterTable($event); records.filterTable($event); dmps.filterTable($event); files.filterTable($event);"/>
-    </span>
-  </ng-template>
-  <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faUser" size="lg"></fa-icon> 
-  
-  <br>  userId: {{userId}}
-  <br>  Name: {{userName}} {{userLastName}}
-  <br>  Divison: {{userDiv}}
-  <br>  OU: {{userOU}}
-</p-panel>
-
-<p-sidebar [(visible)]="display">
+<!--   
+<p-sidebar [(visible)]="display" [modal]="false">
   <table class="tablesidebar">
     <tr  onclick="window.location.href = 'https://inet.nist.gov/adlp/open-access-research-oar';">
       <td>   
@@ -82,6 +67,7 @@
     </tr>
   </table>
 </p-sidebar>
+<p-button type="text" (click)="display = !display" icon="pi pi-plus" label="Resources/Links"></p-button>
 <div class="style">
   <div class="row">
     <div class="col-lg-6 col-md-4 col-sm-3">
@@ -106,4 +92,128 @@
     </div>
   </div>
 </div>
-<p-button type="text" (click)="display = !display" icon="pi pi-plus" label="Resources/Links"></p-button>
+-->
+<!-- Bootstrap row -->
+<div class="row" id="body-row">
+  <!-- Sidebar -->
+  <div id="sidebar-container" class="sidebar-expanded d-none d-md-block">
+      <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
+      <!-- Bootstrap List Group -->
+      <ul class="list-group">
+        <li class="list-group-header sidebar-separator-title d-flex align-items-center menu-collapsed">
+          <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faAddressBook"></fa-icon>User</span >
+        </li>
+         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005ea2'}" [icon]="faUser"></fa-icon><strong>userId:</strong> cnd7</span>
+         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005ea2'}" [icon]="faUser"></fa-icon><strong>Name:</strong> Davis Christopher</span>
+         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005ea2'}" [icon]="faBuilding"></fa-icon><strong>Divison:</strong> Applications Systems Division (183)</span>
+         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005ea2'}" [icon]="faHouse"></fa-icon><strong>OU:</strong> Office of Information Systems Management</span>
+          <!-- Separator with title -->
+          <li class="list-group-header sidebar-separator-title d-flex align-items-center menu-collapsed">
+              <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faLink"></fa-icon>Resource/links</span >
+          </li>
+          <!-- /END Separator -->
+          <a href="#" class="list-group-item list-group-item-action links">
+              <div class="d-flex w-100 justify-content-start align-items-center">
+                  <span class="menu-collapsed">NIST OAR Intranet</span>
+              </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action links">
+              <div class="d-flex w-100 justify-content-start align-items-center">
+                  <span class="menu-collapsed">Public Data Repository</span>
+              </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action links">
+            <div class="d-flex w-100 justify-content-start align-items-center">
+                <span class="menu-collapsed">NIST Research Library</span>
+            </div>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action links">
+            <div class="d-flex w-100 justify-content-start align-items-center">
+                <span class="menu-collapsed">Data Publishing Tool</span>
+            </div>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action links">
+          <div class="d-flex w-100 justify-content-start align-items-center">
+              <span class="menu-collapsed">Data Management Plan Tool</span>
+          </div>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action links">
+          <div class="d-flex w-100 justify-content-start align-items-center">
+              <span class="menu-collapsed">NIST Publication System</span>
+          </div>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+            <span class="menu-collapsed">NextCloud</span>
+        </div>
+    </a>
+    <a href="#" class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+            <span class="menu-collapsed">User Guide</span>
+        </div>
+    </a>
+          <!-- Separator without title -->
+          <li class="list-group-item sidebar-separator menu-collapsed"></li>
+          <!-- /END Separator -->
+      </ul><!-- List Group END-->
+  </div><!-- sidebar-container END -->
+  <!-- MAIN -->
+  <div class="col p-4">
+    <div class="row">
+      <div class="col-lg-6 col-md-4 col-sm-3">
+        <div class="table-dashboard">
+          <app-records #records></app-records>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-4 col-sm-3">
+        <div class="table-dashboard">
+          <app-dmp-list #dmps></app-dmp-list>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-4 col-sm-3">
+        <div class="table-dashboard">
+          <app-review-list #reviews></app-review-list>
+          </div>
+      </div>
+      <div class="col-lg-6 col-md-4 col-sm-3">
+        <div class="table-dashboard">
+          <app-file-list #files></app-file-list>
+        </div>
+      </div>
+    </div>
+    
+  </div><!-- Main Col END -->
+</div><!-- body-row END -->
+
+
+
+<script>
+  // Hide submenus
+$('#body-row .collapse').collapse('hide'); 
+
+// Collapse/Expand icon
+$('#collapse-icon').addClass('fa-angle-double-left'); 
+
+// Collapse click
+$('[data-toggle=sidebar-colapse]').click(function() {
+    SidebarCollapse();
+});
+
+function SidebarCollapse () {
+    $('.menu-collapsed').toggleClass('d-none');
+    $('.sidebar-submenu').toggleClass('d-none');
+    $('.submenu-icon').toggleClass('d-none');
+    $('#sidebar-container').toggleClass('sidebar-expanded sidebar-collapsed');
+    
+    // Treating d-flex/d-none on separators with title
+    var SeparatorTitle = $('.sidebar-separator-title');
+    if ( SeparatorTitle.hasClass('d-flex') ) {
+        SeparatorTitle.removeClass('d-flex');
+    } else {
+        SeparatorTitle.addClass('d-flex');
+    }
+    
+    // Collapse/Expand icon
+    $('#collapse-icon').toggleClass('fa-angle-double-left fa-angle-double-right');
+}
+</script>
