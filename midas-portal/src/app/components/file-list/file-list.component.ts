@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {faFileImport} from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { AppConfig } from 'src/app/config/app.config';
@@ -6,26 +6,31 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 
+
 @Component({
   selector: 'app-file-list',
   templateUrl: './file-list.component.html',
   styleUrls: ['./file-list.component.css']
 })
 export class FileListComponent implements OnInit {
+
   faFileImport=faFileImport;
   public records: any;
   public recordsApi: string;
   public data: any;
   public nextcloudUI: string;
   
+  
 
   @ViewChild('filetable') fileTable: Table;
 
   constructor(private appConfig: AppConfig,private http:HttpClient,public datepipe:DatePipe) { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'
+    
   }
 
-
+  
+  
 
   async ngOnInit() {
     let promise = new Promise((resolve) => {
@@ -69,6 +74,7 @@ export class FileListComponent implements OnInit {
   clear(table: Table) {
     table.clear();
 }
+
 
   titleClick() {
     console.log(this);

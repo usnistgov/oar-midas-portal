@@ -10,6 +10,8 @@ import { RecordsComponent } from '../records/records.component';
 import { DmpListComponent } from '../dmp-list/dmp-list.component';
 import { ReviewListComponent } from '../review-list/review-list.component';
 import { FileListComponent } from '../file-list/file-list.component';
+import { ToastModule } from 'primeng/toast';
+import { BrowserModule } from '@angular/platform-browser';
 
 import { PanelModule } from "primeng/panel";
 import { AccordionModule} from 'primeng/accordion';     //accordion and accordion tab
@@ -46,7 +48,9 @@ import { DatePipe } from '@angular/common';
          TagModule,
          DropdownModule,
          SidebarModule,
-         FormsModule
+         FormsModule,
+         ToastModule,
+         BrowserModule
          
          
     ],

@@ -13,6 +13,7 @@
     <p-table #dmptable [value]="data" [paginator]="true" 
         height="100px" [rows]="5" [scrollable]="true"
         [showCurrentPageReport] = "true"
+        [rowHover]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
         [rowsPerPageOptions]="[5]" [globalFilterFields]="['name', 'owner','nist']">
         <ng-template pTemplate="header">

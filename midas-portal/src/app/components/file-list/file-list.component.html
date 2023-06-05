@@ -3,13 +3,14 @@
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
             <a href={{nextcloudUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileImport" size="lg" title="Add or update files"></fa-icon></a>
-       
         </button>
+
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
     <p-table #filetable [value]="data" [paginator]="true"
         [rows]="5" [scrollable]="true"
         [showCurrentPageReport]="true"
+        [rowHover]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
         [rowsPerPageOptions]="[5]" [globalFilterFields]="['file_name', 'file_path']">
         <ng-template pTemplate="header">

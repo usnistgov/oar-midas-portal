@@ -152,30 +152,30 @@
             <span class="menu-collapsed">User Guide</span>
         </div>
     </a>
-          <!-- Separator without title -->
-          <li class="list-group-item sidebar-separator menu-collapsed"></li>
           <!-- /END Separator -->
       </ul><!-- List Group END-->
   </div><!-- sidebar-container END -->
   <!-- MAIN -->
   <div class="col p-4">
     <div class="row">
-      <div class="col-lg-6 col-md-4 col-sm-3">
+      <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
+          <p-toast></p-toast>
+<p-button (click)="show()" icon="pi pi-info-circle" label="Show"></p-button>
           <app-records #records></app-records>
         </div>
       </div>
-      <div class="col-lg-6 col-md-4 col-sm-3">
+      <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
           <app-dmp-list #dmps></app-dmp-list>
         </div>
       </div>
-      <div class="col-lg-6 col-md-4 col-sm-3">
+      <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
           <app-review-list #reviews></app-review-list>
           </div>
       </div>
-      <div class="col-lg-6 col-md-4 col-sm-3">
+      <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
           <app-file-list #files></app-file-list>
         </div>

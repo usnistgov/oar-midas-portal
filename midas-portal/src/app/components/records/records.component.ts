@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild,Input } from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch,faFileCirclePlus, faPlus,faFileEdit } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
@@ -7,6 +7,7 @@ import { AppConfig } from '../../config/app.config'
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-records',
@@ -18,6 +19,8 @@ import { DatePipe } from '@angular/common';
   ]
 })
 export class RecordsComponent implements OnInit {
+  @Input() openedAsDialog: boolean = false;
+
   faFileEdit=faFileEdit;
   public records: any;
   public data: any;

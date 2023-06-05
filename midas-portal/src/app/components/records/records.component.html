@@ -7,10 +7,11 @@
         </button>
     </ng-template>
         <p-table #recordsTable name="recordtable" [value]="data" [paginator]="true"
-            height="100px" [rows]="5" [scrollable]="true"
+            height="100px" [rows]="4" [scrollable]="true"
             [showCurrentPageReport]="true"
+            [rowHover]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-            [rowsPerPageOptions]="[5]" [globalFilterFields]="['name', 'owner']" >
+            [globalFilterFields]="['name', 'owner']" >
             <ng-template pTemplate="header">
                 <tr>
                     <th pResizableColumn pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon></th>
