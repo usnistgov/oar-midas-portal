@@ -9,6 +9,7 @@ import { AppConfig } from 'src/app/config/app.config';
 import { UserDetails } from '../auth-service/user.interface';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
+import { MatDialogRef } from '@angular/material/dialog';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { RecordsComponent } from '../records/records.component';
 
@@ -45,14 +46,12 @@ export class LandingComponent implements OnInit {
   opened: boolean;
   display = false;
   filterString: string;
-  ref: DynamicDialogRef;
   userLastName : string;
   userName: string;
   userEmail: string;
   userId: string;
   userOU: string;
   userDiv: string;
-  dialog:boolean;
 
   authAPI: string;
   authRedirect: string;
@@ -77,15 +76,9 @@ export class LandingComponent implements OnInit {
     "userOU": "Office of Information Systems Management"
     }
 
-    async ngOnDestroy(){
-      if (this.ref) {
-        this.ref.close();
-    }
-  }
 
   ngOnInit(): void {
     //this.startEditing(true);
-    this.dialog=false;
     
     console.log('******** authAPI: ' + this.authAPI);
     //test config
@@ -98,17 +91,6 @@ export class LandingComponent implements OnInit {
     
   }
 
-  show() {
-      this.dialog=true;
-    this.ref = this.dialogService.open(RecordsComponent, {
-        data: {
-          dialog: true
-          },  
-        width: '75%',
-        contentStyle: { overflow: 'auto' },
-        baseZIndex: 10000,
-    });
-  }
 
   public getUserInfo() {
     console.log('authAPI: ' + this.authAPI);

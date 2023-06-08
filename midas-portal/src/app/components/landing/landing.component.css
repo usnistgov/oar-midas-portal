@@ -11,6 +11,10 @@
   color:#005ea2;
 }
 
+:host ::ng-deep .p-dialog-header{
+    padding:0.3rem;
+}
+
 :host ::ng-deep .p-panel-content
 {
   padding: 0.2rem;

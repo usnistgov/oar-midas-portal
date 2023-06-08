@@ -12,7 +12,6 @@ import { ReviewListComponent } from '../review-list/review-list.component';
 import { FileListComponent } from '../file-list/file-list.component';
 import { ToastModule } from 'primeng/toast';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { PanelModule } from "primeng/panel";
 import { AccordionModule} from 'primeng/accordion';     //accordion and accordion tab
 import { MenuModule} from 'primeng/menu';
@@ -25,6 +24,7 @@ import {TableModule} from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { RecordsExtComponent } from '../ext/records/records-ext.component';
 
 @NgModule({
     declarations:[
@@ -34,6 +34,7 @@ import { DatePipe } from '@angular/common';
         DmpListComponent,
         ReviewListComponent,
         FileListComponent,
+        RecordsExtComponent
     ],
     imports:[
          HttpClientModule,

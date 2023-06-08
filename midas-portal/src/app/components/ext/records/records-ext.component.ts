@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild,Input } from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import { faFileEdit,faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { AppConfig } from '../../config/app.config'
+import { AppConfig } from '../../../config/app.config'
 //import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -10,20 +10,19 @@ import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { MatDialogRef } from '@angular/material/dialog';
-import { RecordsExtComponent } from '../ext/records/records-ext.component';
 
 
 @Component({
-  selector: 'app-records',
-  templateUrl: './records.component.html',
+  selector: 'app-records-ext',
+  templateUrl: './records-ext.component.html',
   providers:[DialogService,MessageService],
   
 
   styleUrls: [
-    './records.component.css'
+    './records-ext.component.css'
   ]
 })
-export class RecordsComponent implements OnInit {
+export class RecordsExtComponent implements OnInit {
   @Input() openedAsDialog: boolean = false;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   faFileEdit=faFileEdit;
@@ -52,7 +51,6 @@ export class RecordsComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.pre="pre"
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.dapAPI = config.dapAPI;
@@ -64,7 +62,7 @@ export class RecordsComponent implements OnInit {
         }
       });
     });
-    this.after="after"
+    
     // Retrieving data using fetch functions 
     /*
     promise.then(async ()=> {
@@ -85,13 +83,6 @@ export class RecordsComponent implements OnInit {
     
   }
 
-  show() {
-    this.ref = this.dialogService.open(RecordsExtComponent, {
-        width: '80%',
-        contentStyle: { overflow: 'auto' },
-        baseZIndex: 10000,
-    });
-  }
 
   async getRecords(){
     
