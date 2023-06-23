@@ -9,10 +9,9 @@ import { AppConfig } from 'src/app/config/app.config';
 import { UserDetails } from '../auth-service/user.interface';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { MatDialogRef } from '@angular/material/dialog';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
-import { RecordsComponent } from '../records/records.component';
-
+import { ToastModule } from 'primeng/toast';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -52,9 +51,10 @@ export class LandingComponent implements OnInit {
   userId: string;
   userOU: string;
   userDiv: string;
-
+  public dap: any;
   authAPI: string;
   authRedirect: string;
+  dapAPI: string;
 
   userDetails: UserDetails;
 
@@ -78,19 +78,27 @@ export class LandingComponent implements OnInit {
 
 
   ngOnInit(): void {
-    //this.startEditing(true);
+    let promise = new Promise((resolve) => {
+      //this.startEditing(true);
     
     console.log('******** authAPI: ' + this.authAPI);
-    //test config
-    this.appConfig.getRemoteConfig().subscribe(config => {
-      this.authAPI = config.authAPI;
-      this.authRedirect = config.authRedirect;
-      console.log('********** calll userinfor ');
+      this.appConfig.getRemoteConfig().subscribe(config => {
+        this.authAPI = config.authAPI;
+        this.authRedirect = config.authRedirect;
+        console.log('********** calll userinfor ');
       this.getUserInfo();
-    });
-    
+      });
+    })
   }
 
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+        this.messageService.addAll([
+            { severity: 'success', summary: 'NIST MIDAS Portal', detail: 'Connected as cnd7'}
+        ]);
+    })
+}
 
   public getUserInfo() {
     console.log('authAPI: ' + this.authAPI);
@@ -113,7 +121,7 @@ export class LandingComponent implements OnInit {
          console.log(" TOKEN ::"+testToken)
          let userDetails = JSON.parse(JSON.stringify(response.body)).userDetails;
          console.log(" userDetails ::"+userDetails)
-         
+         /*
          this.userName = userDetails.userName;
          this.userLastName = userDetails.userLastName;
          this.userEmail = userDetails.userEmail;
@@ -121,7 +129,7 @@ export class LandingComponent implements OnInit {
          this.userOU = userDetails.userOU;
          this.userDiv = userDetails.userDiv + " , "+ userDetails.userDivNum;
         console.log('username: ' + this.userName);
-
+*/
       }
       //this.userDetails = response.body;
       
@@ -153,6 +161,15 @@ export class LandingComponent implements OnInit {
      }
     }
     );
+  }
+
+  public fetchRecords(url:string){
+    this.http.get(url)
+    .pipe(map((responseData: any)  => {
+      return responseData
+    })). subscribe(records => {
+      this.dap = records
+    })
   }
 
 

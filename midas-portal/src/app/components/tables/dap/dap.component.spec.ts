@@ -1,27 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RecordsComponent } from './records.component';
+import { DapComponent } from './dap.component';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { SharedModule } from 'primeng/api';
 import dapData from 'src/assets/json/dap.json'
 
 describe('RecordsComponent', () => {
-  let component: RecordsComponent;
-  let fixture: ComponentFixture<RecordsComponent>;
+  let component: DapComponent;
+  let fixture: ComponentFixture<DapComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports:[SharedModule],
-      declarations: [ RecordsComponent ],
+      declarations: [ DapComponent ],
       providers:[HttpClient,HttpHandler]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RecordsComponent);
+    fixture = TestBed.createComponent(DapComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    component.records=dapData;
+    component.data=dapData;
   });
 
   it('should create', () => {

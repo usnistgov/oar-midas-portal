@@ -17,7 +17,7 @@
 
 :host ::ng-deep .p-panel-content
 {
-  padding: 0.2rem;
+  padding: 0.5rem;
 }
 
 :host ::ng-deep .p-paginator-bottom

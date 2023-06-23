@@ -2,38 +2,35 @@ import { Component, OnInit, ViewChild,Input } from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import { faFileEdit,faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { AppConfig } from '../../config/app.config'
+import { AppConfig } from '../../../config/app.config'
 //import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
-import { MatDialogRef } from '@angular/material/dialog';
-import { RecordsExtComponent } from '../ext/records/records-ext.component';
+import { DapModalComponent } from '../../modals/dap/dap.component';
 
 
 @Component({
-  selector: 'app-records',
-  templateUrl: './records.component.html',
+  selector: 'app-dap',
+  templateUrl: './dap.component.html',
   providers:[DialogService,MessageService],
   
 
   styleUrls: [
-    './records.component.css'
+    './dap.component.css'
   ]
 })
-export class RecordsComponent implements OnInit {
+export class DapComponent implements OnInit {
   @Input() openedAsDialog: boolean = false;
+  @Input() parent:any;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   faFileEdit=faFileEdit;
-  public records: any;
   public data: any;
   loading: boolean = true;
   dapAPI: string;
   dapUI: string;
-  pre: string;
-  after:string;
   statuses:any[];
   ref: DynamicDialogRef;
 
@@ -52,7 +49,6 @@ export class RecordsComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.pre="pre"
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.dapAPI = config.dapAPI;
@@ -64,7 +60,6 @@ export class RecordsComponent implements OnInit {
         }
       });
     });
-    this.after="after"
     // Retrieving data using fetch functions 
     /*
     promise.then(async ()=> {
@@ -86,7 +81,8 @@ export class RecordsComponent implements OnInit {
   }
 
   show() {
-    this.ref = this.dialogService.open(RecordsExtComponent, {
+    this.ref = this.dialogService.open(DapModalComponent, {
+      data: this.data,
         width: '80%',
         contentStyle: { overflow: 'auto' },
         baseZIndex: 10000,
@@ -114,7 +110,7 @@ export class RecordsComponent implements OnInit {
     })
 
     this.loading = false;
-    return this.records = Object(records);
+   // return this.records = Object(records);
   }
 
   public fetchRecords(url:string){

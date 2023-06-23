@@ -1,10 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {faUsersViewfinder,faBell} from '@fortawesome/free-solid-svg-icons';
+import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
 import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
+import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
+import { MessageService } from 'primeng/api';
+import { ReviewListModalComponent } from '../../modals/review-list/review-list.component';
 
 @Component({
   selector: 'app-review-list',
@@ -12,6 +15,7 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./review-list.component.css']
 })
 export class ReviewListComponent implements OnInit {
+  faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   faBell=faBell;
   faListCheck=faUsersViewfinder;
   public records: any;
@@ -19,13 +23,14 @@ export class ReviewListComponent implements OnInit {
   public npsUI: string;
   public data: any;
   statuses:any[];
-
+  ref: DynamicDialogRef;
 
   loading: boolean = false;
 
   @ViewChild('reviewtable') reviewTable: Table;
 
-  constructor(private appConfig: AppConfig,private http: HttpClient,public datepipe:DatePipe) { 
+  constructor(private appConfig: AppConfig,private http: HttpClient,public datepipe:DatePipe,public dialogService: DialogService
+    , public messageService: MessageService) { 
     
   }
 
@@ -75,6 +80,8 @@ export class ReviewListComponent implements OnInit {
       'Access-Control-Allow-Origin': '*',
       'rejectUnauthorized': 'false'
     }
+
+    
     
     const requestOptions = {                                                                                                                                                                                 
       headers: new Headers(headerDict)
@@ -99,6 +106,15 @@ export class ReviewListComponent implements OnInit {
 
   clear(table: Table) {
     table.clear();
+}
+
+show() {
+  this.ref = this.dialogService.open(ReviewListModalComponent, {
+      data:this.data,
+      width: '80%',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+  });
 }
 
   getStatus(status: string) {

@@ -1,88 +1,73 @@
-import { Component, OnInit, ViewChild,Input } from '@angular/core';
-import {MenuItem} from 'primeng/api';
-import { faFileEdit,faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {faCheck,faFileEdit,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { AppConfig } from '../../../config/app.config'
-//import { AppConfig } from 'src/app/config/app.config';
+import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { MatDialogRef } from '@angular/material/dialog';
-
+import { DmpListModalComponent } from '../../modals/dmp-list/dmp-list.component';
 
 @Component({
-  selector: 'app-records-ext',
-  templateUrl: './records-ext.component.html',
-  providers:[DialogService,MessageService],
-  
-
-  styleUrls: [
-    './records-ext.component.css'
-  ]
+  selector: 'app-dmp-list',
+  templateUrl: './dmp-list.component.html',
+  styleUrls: ['./dmp-list.component.css']
 })
-export class RecordsExtComponent implements OnInit {
-  @Input() openedAsDialog: boolean = false;
+export class DmpListComponent implements OnInit {
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
+  faCheck=faCheck;
   faFileEdit=faFileEdit;
   public records: any;
+  public recordsApi: string;
   public data: any;
   loading: boolean = true;
-  dapAPI: string;
-  dapUI: string;
-  pre: string;
-  after:string;
-  statuses:any[];
+  dmpAPI: string;
+  dmpUI: string;
   ref: DynamicDialogRef;
+
 
   dataSource: any;
 
-  @ViewChild('recordsTable') recordsTable: Table;
+  @ViewChild('dmptable') dmpTable: Table;
 
-  constructor(private appConfig: AppConfig, private http: HttpClient,public datepipe:DatePipe,public dialogService: DialogService
-                    , public messageService: MessageService) { 
-  }
-
-  
-
-  ngAfterViewInit() {
-    
+  constructor(private appConfig: AppConfig,private http: HttpClient, public datepipe:DatePipe,public dialogService: DialogService
+    , public messageService: MessageService) { 
   }
 
   async ngOnInit() {
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
-        this.dapAPI = config.dapAPI;
-        resolve(this.dapAPI);
+        this.dmpAPI = config.dmpAPI;
+        resolve(this.dmpAPI);
         //GET method to get data
-        this.fetchRecords(this.dapAPI);
+        this.fetchRecords(this.dmpAPI);
         for (let i = 0; i<this.data.length;i++){
           this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
         }
       });
     });
     
+
     // Retrieving data using fetch functions 
     /*
     promise.then(async ()=> {
         await this.getRecords();
     }
     ).then(() => {
-      console.log('DAP data retrieved');
-      console.log(this.records);
-      this.data = this.records;
+      this.data = JSON.parse(this.records);
     });
     */
-    this.statuses = [
-      { label: 'published', value: 'published' },
-      { label: 'edit', value: 'edit' },
-      { label: 'reviewed', value: 'reviewed' }
-  ];
-  
-    
   }
-
+  show() {
+    this.ref = this.dialogService.open(DmpListModalComponent, {
+        data:this.data,
+        width: '80%',
+        contentStyle: { overflow: 'auto' },
+        baseZIndex: 10000,
+    });
+  }
 
   async getRecords(){
     
@@ -100,7 +85,7 @@ export class RecordsExtComponent implements OnInit {
       headers: new Headers(headerDict)
     };
     
-    await fetch(this.dapAPI).then(r => r.json()).then(function (r) {
+    await fetch(this.dmpAPI).then(r => r.json()).then(function (r) {
       return records = r
     })
 
@@ -108,7 +93,7 @@ export class RecordsExtComponent implements OnInit {
     return this.records = Object(records);
   }
 
-  public fetchRecords(url:string){
+  private fetchRecords(url:string){
     this.http.get(url)
     .pipe(map((responseData: any)  => {
       return responseData
@@ -116,29 +101,16 @@ export class RecordsExtComponent implements OnInit {
       this.data = records
     })
   }
-
-
   clear(table: Table) {
     table.clear();
 }
 
-  getStatus(status: string) {
-    switch (status) {
-        case 'published':
-            return 'success';
-        case 'edit':
-            return 'warning';
-        case 'reviewed':
-            return 'danger';
-    }
-    return ""
-  }
 
   titleClick() {
     console.log(this);
   }
 
   filterTable(event: any) {
-    this.recordsTable.filterGlobal(event.target.value, 'contains');
+    this.dmpTable.filterGlobal(event.target.value, 'contains');
   }
 }

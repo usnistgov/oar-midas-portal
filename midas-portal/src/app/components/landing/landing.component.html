@@ -1,101 +1,8 @@
-<!--   
-<p-sidebar [(visible)]="display" [modal]="false">
-  <table class="tablesidebar">
-    <tr  onclick="window.location.href = 'https://inet.nist.gov/adlp/open-access-research-oar';">
-      <td>   
-        <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'white'}" [icon]="faHouse" size="lg"></fa-icon> 
-      </td>
-      <td>       
-        NIST OAR Intranet
-      </td>
-    </tr>
-    <tr  onclick="window.location.href = 'https://data.nist.gov';">
-      <td>   
-        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faSearch" size="lg"></fa-icon> 
-      </td>
-      <td> 
-        Public Data Repository
-      </td>
-    </tr>
-    <tr onclick="window.location.href = 'https://inet.nist.gov/mr/library'" >
-      <td>   
-        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faBook" size="lg"></fa-icon> 
-      </td>
-      <td> 
-        NIST Research Library
-      </td>
-    </tr>
-    <tr  onclick="window.location.href = 'https://mdsdev.nist.gov/dapui/new'" >
-      <td>   
-        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faPrint" size="lg"></fa-icon> 
-      </td>
-      <td> 
-        Data Publishing Tool
-      </td>
-    </tr>
-    <tr onclick="window.location.href ='https://mdsdev.nist.gov/dmpui/new' ">
-      <td>   
-        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faListCheck" size="lg"></fa-icon> 
-      </td>
-      <td> 
-        Data Management Plan Tool
-      </td>
-    </tr>
-    <tr onclick="window.location.href ='https://tsapps-t.nist.gov/nps/npsui' ">
-      <td>   
-        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faClipboardList" size="lg"></fa-icon> 
-      </td>
-      <td> 
-        NIST Publication System
-      </td>
-    </tr>
-    <tr onclick="window.location.href ='https://nextcloud-dev.nist.gov' ">
-      <td>   
-        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faCloud" size="lg"></fa-icon> 
-      </td>
-      <td> 
-        NextCloud
-      </td>
-    </tr>
-    <tr onclick="window.location.href ='' ">
-      <td>   
-        <fa-icon [style]="{display: 'inline-block', color: 'white'}" [icon]="faPersonCircleQuestion" size="lg"></fa-icon> 
-      </td>
-      <td> 
-        User Guide
-      </td>
-    </tr>
-  </table>
-</p-sidebar>
-<p-button type="text" (click)="display = !display" icon="pi pi-plus" label="Resources/Links"></p-button>
-<div class="style">
-  <div class="row">
-    <div class="col-lg-6 col-md-4 col-sm-3">
-      <div class="table-dashboard">
-        <app-records #records></app-records>
-      </div>
-    </div>
-    <div class="col-lg-6 col-md-4 col-sm-3">
-      <div class="table-dashboard">
-        <app-dmp-list #dmps></app-dmp-list>
-      </div>
-    </div>
-    <div class="col-lg-6 col-md-4 col-sm-3">
-      <div class="table-dashboard">
-        <app-review-list #reviews></app-review-list>
-        </div>
-    </div>
-    <div class="col-lg-6 col-md-4 col-sm-3">
-      <div class="table-dashboard">
-        <app-file-list #files></app-file-list>
-      </div>
-    </div>
-  </div>
-</div>
--->
+
 <!-- Bootstrap row -->
 <div class="row" id="body-row">
   <!-- Sidebar -->
+  <p-toast></p-toast>
   <div id="sidebar-container" class="sidebar-expanded d-none d-md-block">
       <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
       <!-- Bootstrap List Group -->
@@ -103,11 +10,14 @@
         <li class="list-group-header sidebar-separator-title d-flex align-items-center menu-collapsed">
           <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faAddressBook"></fa-icon>User</span >
         </li>
-         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005ea2'}" [icon]="faUser"></fa-icon><strong>userId:</strong> cnd7</span>
-         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005ea2'}" [icon]="faUser"></fa-icon><strong>Name:</strong> Davis Christopher</span>
-         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005ea2'}" [icon]="faBuilding"></fa-icon><strong>Divison:</strong> Applications Systems Division (183)</span>
-         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005ea2'}" [icon]="faHouse"></fa-icon><strong>OU:</strong> Office of Information Systems Management</span>
-          <!-- Separator with title -->
+         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005EA2'}" [icon]="faUser"></fa-icon><strong>userId:</strong> cnd7</span>
+         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005EA2'}" [icon]="faUser"></fa-icon><strong>Name:</strong> Davis Christopher</span>
+         <ul class="collapse show nav flex-column ms-1" id=""></ul>
+         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005EA2'}" [icon]="faBuilding"></fa-icon><strong>Divison:</strong> Applications Systems Division (183)</span>
+         <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005EA2'}" [icon]="faHouse"></fa-icon><strong>OU:</strong> Office of Information Systems Management</span>
+             
+         
+         <!-- Separator with title -->
           <li class="list-group-header sidebar-separator-title d-flex align-items-center menu-collapsed">
               <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faLink"></fa-icon>Resource/links</span >
           </li>
@@ -160,22 +70,22 @@
     <div class="row">
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
-          <app-records #records></app-records>
+          <app-dap></app-dap>
         </div>
       </div>
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
-          <app-dmp-list #dmps></app-dmp-list>
+          <app-dmp-list ></app-dmp-list>
         </div>
       </div>
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
-          <app-review-list #reviews></app-review-list>
+          <app-review-list ></app-review-list>
           </div>
       </div>
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
-          <app-file-list #files></app-file-list>
+          <app-file-list ></app-file-list>
         </div>
       </div>
     </div>

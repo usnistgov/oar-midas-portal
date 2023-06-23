@@ -8,6 +8,7 @@
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <a href={{dmpUI}} target="blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileEdit" size="lg" title="Create New Data management plan"></fa-icon> </a>
         </button>
+        <p-toast></p-toast>
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
     <p-table #dmptable [value]="data" [paginator]="true" 

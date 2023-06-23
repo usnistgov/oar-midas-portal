@@ -11,7 +11,7 @@
             <a href={{npsUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faListCheck" size="lg" title="Check Reviews"></fa-icon></a>
        
         </button>
-        
+        <p-toast></p-toast>      
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
 <div class="">
@@ -20,14 +20,6 @@
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
         [rowsPerPageOptions]="[5]" [globalFilterFields]="['title', 'submittername', 'currentreviewer','reviewstep']">
-        <ng-template pTemplate="caption">
-            <div class="filter">
-                <span class="p-input-icon-right ml-auto" style="margin-right: 2%;">
-                    <input pInputText type="text" (input)="reviewtable.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
-                </span>
-                <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(reviewtable)"></button>
-            </div>
-        </ng-template>
         <ng-template pTemplate="header">
             <tr>
                 <th style="width:20%" pSortableColumn="title">Title <p-sortIcon field="title"></p-sortIcon></th>
@@ -36,6 +28,15 @@
                 <th style="width:20%" pSortableColumn="reviewstep">Current Review Step <p-sortIcon field="reviewstep"></p-sortIcon></th>
             </tr>
         </ng-template>
+        <ng-template pTemplate="caption">
+            <div class="filter">
+                <span class="p-input-icon-right ml-auto" style="margin-right: 2%;">
+                    <input pInputText type="text" (input)="reviewtable.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+                </span>
+                <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(reviewtable)"></button>
+            </div>
+        </ng-template>
+
         <ng-template pTemplate="body" let-item>
             <tr class="tr-class">
                 <td class="td-class">{{item.title}}</td>
