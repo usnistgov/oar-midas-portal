@@ -36,6 +36,7 @@ export class DapModalComponent implements OnInit {
   after:string;
   statuses:any[];
   ref: DynamicDialogRef;
+  public count: any;
 
   dataSource: any;
 
@@ -58,6 +59,7 @@ export class DapModalComponent implements OnInit {
         this.dapAPI = config.dapAPI;
         resolve(this.dapAPI);
         this.data=this.config.data
+        this.count=this.data.length
         //GET method to get data
         //this.fetchRecords(this.dapAPI);
         //for (let i = 0; i<this.data.length;i++){

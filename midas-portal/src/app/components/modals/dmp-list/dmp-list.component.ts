@@ -26,6 +26,7 @@ export class DmpListModalComponent implements OnInit {
   dmpAPI: string;
   dmpUI: string;
   ref: DynamicDialogRef;
+  public count:any;
 
 
   dataSource: any;
@@ -39,6 +40,7 @@ export class DmpListModalComponent implements OnInit {
   async ngOnInit() {
     let promise = new Promise((resolve) => {
       this.data=this.config.data
+      this.count=this.data.length
     });
     
 

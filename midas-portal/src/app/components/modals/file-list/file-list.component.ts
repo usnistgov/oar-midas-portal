@@ -27,6 +27,7 @@ export class FileListModalComponent implements OnInit {
   public nextcloudUI: string;
   public display:boolean;
   ref: DynamicDialogRef;
+  public count:any;
   
   
 
@@ -45,6 +46,7 @@ export class FileListModalComponent implements OnInit {
     this.display=true;
     let promise = new Promise((resolve) => {
       this.data=this.config.data;
+      this.count=this.data.length
     });
     
   }

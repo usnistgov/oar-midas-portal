@@ -23,6 +23,7 @@ export class ReviewListModalComponent implements OnInit {
   public data: any;
   statuses:any[];
   ref: DynamicDialogRef;
+  public count:any;
 
   loading: boolean = false;
 
@@ -41,6 +42,7 @@ export class ReviewListModalComponent implements OnInit {
 
     let promise = new Promise((resolve) => {
       this.data=this.config.data
+      this.count=this.data.length
     });
  
 
@@ -62,7 +64,7 @@ export class ReviewListModalComponent implements OnInit {
     }
     return ""
   }
-  
+
   clear(table: Table) {
     table.clear();
 }
