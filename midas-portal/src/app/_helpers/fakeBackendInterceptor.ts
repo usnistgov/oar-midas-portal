@@ -24,6 +24,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       return of(new HttpResponse({ status: 200, body: reviewData }));
     }else if (request.url.indexOf('cloud') > -1 && request.method === 'GET') {
     return of(new HttpResponse({ status: 200, body: midasData }));
+    //return of(new HttpResponse({ status: 200}));
     }else if (request.url.indexOf('auth') > -1 && request.method === 'GET') {
       console.log("Fake back end so no authentication")
       return of(new HttpResponse({ status: 200, body: "" }));
