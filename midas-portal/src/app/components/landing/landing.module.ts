@@ -27,6 +27,7 @@ import { DapModalComponent } from '../modals/dap/dap.component';
 import { FileListModalComponent } from '../modals/file-list/file-list.component';
 import { DmpListModalComponent } from '../modals/dmp-list/dmp-list.component';
 import { ReviewListModalComponent } from '../modals/review-list/review-list.component';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
     declarations:[
@@ -55,7 +56,8 @@ import { ReviewListModalComponent } from '../modals/review-list/review-list.comp
          SidebarModule,
          FormsModule,
          ToastModule,
-         BrowserModule
+         BrowserModule,
+         MultiSelectModule
          
          
     ],

@@ -32,3 +32,12 @@
 :host ::ng-deep .p-datatable .p-datatable-header{
     padding:0.55rem 0.55rem;
 }
+
+.filter{
+  display: flex;
+  justify-content: space-between;
+}
+
+.search{
+display:flex;
+}

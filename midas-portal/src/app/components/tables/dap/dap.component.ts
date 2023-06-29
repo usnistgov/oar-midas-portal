@@ -83,10 +83,11 @@ export class DapComponent implements OnInit {
   show() {
     this.ref = this.dialogService.open(DapModalComponent, {
       data: this.data,
-        width: '80%',
-        contentStyle: { overflow: 'auto' },
+        width: '90%',
+        contentStyle: {'overflow-y': 'auto', 'overflow-x': 'hidden', 
+        'max-height': '80vh','min-height':'250px' },
         baseZIndex: 10000,
-    });
+    }); 
   }
 
   async getRecords(){

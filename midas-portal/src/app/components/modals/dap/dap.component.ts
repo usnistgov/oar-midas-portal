@@ -11,7 +11,10 @@ import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import {DynamicDialogConfig} from 'primeng/dynamicdialog';
 
-
+interface Column {
+  field: string;
+  header: string;
+}
 
 @Component({
   selector: 'app-dap-modal',
@@ -23,20 +26,24 @@ import {DynamicDialogConfig} from 'primeng/dynamicdialog';
     './dap.component.css'
   ]
 })
+
+
 export class DapModalComponent implements OnInit {
   @Input() openedAsDialog: boolean = false;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   faFileEdit=faFileEdit;
   public records: any;
-  public data: any;
+  public data: any=[];
   loading: boolean = true;
   dapAPI: string;
   dapUI: string;
-  pre: string;
-  after:string;
   statuses:any[];
   ref: DynamicDialogRef;
   public count: any;
+
+  cols!: Column[];
+
+    _selectedColumns!: Column[];
 
   dataSource: any;
 
@@ -60,33 +67,37 @@ export class DapModalComponent implements OnInit {
         resolve(this.dapAPI);
         this.data=this.config.data
         this.count=this.data.length
-        //GET method to get data
-        //this.fetchRecords(this.dapAPI);
-        //for (let i = 0; i<this.data.length;i++){
-          //this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
-       // }
+
+        this.cols = [
+          { field: 'name', header: 'Name' },
+          { field: 'owner', header: 'Owner' },
+          { field: "title", header: 'Title' },
+          { field: 'type', header: 'Type' },
+          { field: 'id', header: 'ID'},
+          { field: 'doi', header: 'DOI'}
+      ];
+
+      this._selectedColumns = this.cols;
+
       });
     });
-    
-    // Retrieving data using fetch functions 
-    /*
-    promise.then(async ()=> {
-        await this.getRecords();
-    }
-    ).then(() => {
-      console.log('DAP data retrieved');
-      console.log(this.records);
-      this.data = this.records;
-    });
-    */
+
     this.statuses = [
       { label: 'published', value: 'published' },
       { label: 'edit', value: 'edit' },
       { label: 'reviewed', value: 'reviewed' }
   ];
   
-    
   }
+
+    @Input() get selectedColumns(): any[] {
+      return this._selectedColumns;
+  }
+
+  set selectedColumns(val: any[]) {
+      //restore original order
+      this._selectedColumns = this.cols.filter((col) => val.includes(col));
+  } 
 
 
   async getRecords(){
