@@ -71,10 +71,12 @@ export class DapModalComponent implements OnInit {
         this.cols = [
           { field: 'name', header: 'Name' },
           { field: 'owner', header: 'Owner' },
+          { field: 'file_count', header: 'Files Associated'},
           { field: "title", header: 'Title' },
-          { field: 'type', header: 'Type' },
+          { field: 'resourceType', header: 'Type' },
           { field: 'id', header: 'ID'},
           { field: 'doi', header: 'DOI'}
+          
       ];
 
       this._selectedColumns = this.cols;

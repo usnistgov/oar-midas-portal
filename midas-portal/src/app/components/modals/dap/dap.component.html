@@ -12,11 +12,11 @@
             [columns]="selectedColumns"
             [scrollable]="true" scrollHeight="600px" 
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-            [globalFilterFields]="['name','owner','id','type','title']" >
+            [globalFilterFields]="['name','owner','id','resourceType','title','doi']" >
             <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <th *ngFor="let col of columns">
-                        {{col.header}}
+                    <th *ngFor="let col of columns" pResizableColumn pSortableColumn={{col.field}}>
+                        {{col.header}}<p-sortIcon field={{col.field}}></p-sortIcon>
                     </th>
                     <th pResizableColumn>
                         <p-columnFilter field="status.state" matchMode="equals" [showMenu]="false" [showClearButton]="false">
@@ -52,8 +52,8 @@
             <ng-template pTemplate="body" let-item let-columns="columns">
                 <tr>
                     <td *ngFor="let col of columns">
-                        <div *ngIf="col.field==='type' || col.field==='title' || col.field==='doi';else other_content">
-                            <div *ngIf="col.field=='type'">
+                        <div *ngIf="col.field==='resourceType' || col.field==='title' || col.field==='doi' || col.field==='file_count';else other_content">
+                            <div *ngIf="col.field=='resourceType'">
                                 {{item.meta['resourceType']}}
                             </div>
                             <div *ngIf="col.field=='title'">
@@ -61,6 +61,9 @@
                             </div>
                             <div *ngIf="col.field=='doi'">
                                 {{item.data['doi']}}
+                            </div>
+                            <div *ngIf="col.field=='file_count'">
+                                {{item.data['file_count']}}
                             </div>
                         </div>
                         <ng-template #other_content>

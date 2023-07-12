@@ -84,7 +84,7 @@ export class DapComponent implements OnInit {
     this.ref = this.dialogService.open(DapModalComponent, {
       data: this.data,
         width: '90%',
-        contentStyle: {'overflow-y': 'auto', 'overflow-x': 'hidden', 
+        contentStyle: {'overflow-y': 'hidden', 'overflow-x': 'hidden', 
         'max-height': '80vh','min-height':'250px' },
         baseZIndex: 10000,
     }); 
