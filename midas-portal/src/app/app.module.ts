@@ -15,6 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { FileListComponent } from './components/file-list/file-list.component';
 import { OARngModule } from 'oarng';
 import { FrameModule } from 'oarng';
+import { DropdownModule } from 'primeng/dropdown';
 import { PanelModule } from "primeng/panel";
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import { HttpClientModule } from '@angular/common/http';
@@ -22,6 +23,7 @@ import { HttpClientModule } from '@angular/common/http';
 // import { LandingComponent } from './components/landing/landing.component';
 import { LandingModule } from './components/landing/landing.module';
 import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
+
 
 
 @NgModule({
@@ -47,8 +49,8 @@ import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
     FrameModule,
     HttpClientModule,
     LandingModule,
-    ScrollPanelModule
-
+    ScrollPanelModule,
+    DropdownModule
   ],
   providers: [ fakeBackendProvider ],
   bootstrap: [AppComponent],

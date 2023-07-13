@@ -1,27 +1,32 @@
-import { Component, OnInit, OnChanges, ViewChild, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { CustomizationService } from '../auth-service/auth.service';
-import { AuthService, WebAuthService } from '../auth-service/auth.service';
-import {MenuModule} from 'primeng/menu';
-import {MenuItem} from 'primeng/api';
-import { SidebarModule } from 'primeng/sidebar';
-import { faHouse, faUser, faDashboard, faCloud, faClipboardList, faSearch, faFileCirclePlus, faPlus, faDatabase,faBook, faListCheck , faPrint, faPersonCircleQuestion} from '@fortawesome/free-solid-svg-icons';
-import { ReviewListComponent } from '../review-list/review-list.component';
+import { AuthService } from '../auth-service/auth.service';
+import { faHouse, faUser, faDashboard, faCloud, faClipboardList,
+faSearch, faFileCirclePlus, faPlus,faBook, faListCheck,faLink,faAddressBook
+ ,faCircle, faPrint, faPersonCircleQuestion, faBuilding} from '@fortawesome/free-solid-svg-icons';
 import { AppConfig } from 'src/app/config/app.config';
 import { UserDetails } from '../auth-service/user.interface';
 import { HttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
+import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ToastModule } from 'primeng/toast';
+import { map } from 'rxjs/operators';
 
 
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
+  providers:[DialogService,MessageService],
   styleUrls: [
     './landing.component.css'
-
   ]
 })
 export class LandingComponent implements OnInit {
-
+  faAddressBook=faAddressBook;
+  faLink = faLink;
+  faCircle = faCircle;
+  faBuilding = faBuilding;
   faPlus = faPlus;
   faHouse = faHouse;
   faUser = faUser;
@@ -38,25 +43,25 @@ export class LandingComponent implements OnInit {
   public username: string;
   events: string[] = [];
   opened: boolean;
-  items: MenuItem[];
   display = false;
   filterString: string;
-
   userLastName : string;
   userName: string;
   userEmail: string;
   userId: string;
   userOU: string;
   userDiv: string;
-
+  public dap: any;
   authAPI: string;
   authRedirect: string;
+  dapAPI: string;
 
   userDetails: UserDetails;
 
   public constructor(private authsvc: AuthService,
                     private appConfig: AppConfig,
-                    private http: HttpClient) { 
+                    private http: HttpClient,public dialogService: DialogService
+                    , public messageService: MessageService) { 
     
   }
 
@@ -71,33 +76,29 @@ export class LandingComponent implements OnInit {
     "userOU": "Office of Information Systems Management"
     }
 
-  ngOnInit(): void {
-    //this.startEditing(true);
 
-    this.items = [{
-      label: 'File',
-      items: [
-          {label: 'New', icon: 'pi pi-fw pi-plus'},
-          {label: 'Download', icon: 'pi pi-fw pi-download'}
-      ]
-    },
-    {
-        label: 'Edit',
-        items: [
-            {label: 'Add User', icon: 'pi pi-fw pi-user-plus'},
-            {label: 'Remove User', icon: 'pi pi-fw pi-user-minus'}
-        ]
-    }];
-    console.log('******** authAPI: ' + this.authAPI);
-    //test config
-    this.appConfig.getRemoteConfig().subscribe(config => {
-      this.authAPI = config.authAPI;
-      this.authRedirect = config.authRedirect;
-      console.log('********** calll userinfor ');
-      this.getUserInfo();
-    });
+  ngOnInit(): void {
+    let promise = new Promise((resolve) => {
+      //this.startEditing(true);
     
+    console.log('******** authAPI: ' + this.authAPI);
+      this.appConfig.getRemoteConfig().subscribe(config => {
+        this.authAPI = config.authAPI;
+        this.authRedirect = config.authRedirect;
+        console.log('********** calll userinfor ');
+      this.getUserInfo();
+      });
+    })
   }
+
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+        this.messageService.addAll([
+            { severity: 'success', summary: 'NIST MIDAS Portal', detail: 'Connected as cnd7'}
+        ]);
+    })
+}
 
   public getUserInfo() {
     console.log('authAPI: ' + this.authAPI);
@@ -120,7 +121,7 @@ export class LandingComponent implements OnInit {
          console.log(" TOKEN ::"+testToken)
          let userDetails = JSON.parse(JSON.stringify(response.body)).userDetails;
          console.log(" userDetails ::"+userDetails)
-         
+         /*
          this.userName = userDetails.userName;
          this.userLastName = userDetails.userLastName;
          this.userEmail = userDetails.userEmail;
@@ -128,7 +129,7 @@ export class LandingComponent implements OnInit {
          this.userOU = userDetails.userOU;
          this.userDiv = userDetails.userDiv + " , "+ userDetails.userDivNum;
         console.log('username: ' + this.userName);
-
+*/
       }
       //this.userDetails = response.body;
       
@@ -160,6 +161,15 @@ export class LandingComponent implements OnInit {
      }
     }
     );
+  }
+
+  public fetchRecords(url:string){
+    this.http.get(url)
+    .pipe(map((responseData: any)  => {
+      return responseData
+    })). subscribe(records => {
+      this.dap = records
+    })
   }
 
 

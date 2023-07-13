@@ -5,12 +5,12 @@ import { LandingComponent } from './landing.component';
 import {HttpClientModule}   from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { AngularMaterialModule } from '../../angular-material.module';
-import { EdiListComponent } from '../edi-list/edi-list.component';
-import { RecordsComponent } from '../records/records.component';
-import { DmpListComponent } from '../dmp-list/dmp-list.component';
-import { ReviewListComponent } from '../review-list/review-list.component';
-import { FileListComponent } from '../file-list/file-list.component';
-
+import { DapComponent } from '../tables/dap/dap.component';
+import { DmpListComponent } from '../tables/dmp-list/dmp-list.component';
+import { ReviewListComponent } from '../tables/review-list/review-list.component';
+import { FileListComponent } from '../tables/file-list/file-list.component';
+import { ToastModule } from 'primeng/toast';
+import { BrowserModule } from '@angular/platform-browser';
 import { PanelModule } from "primeng/panel";
 import { AccordionModule} from 'primeng/accordion';     //accordion and accordion tab
 import { MenuModule} from 'primeng/menu';
@@ -18,17 +18,28 @@ import { ButtonModule } from 'primeng/button';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SidebarModule } from 'primeng/sidebar';
-
+import { TagModule } from 'primeng/tag';
 import {TableModule} from 'primeng/table';
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { DapModalComponent } from '../modals/dap/dap.component';
+import { FileListModalComponent } from '../modals/file-list/file-list.component';
+import { DmpListModalComponent } from '../modals/dmp-list/dmp-list.component';
+import { ReviewListModalComponent } from '../modals/review-list/review-list.component';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
     declarations:[
         LandingComponent,
-        EdiListComponent,
-        RecordsComponent,
+        DapComponent,
         DmpListComponent,
         ReviewListComponent,
         FileListComponent,
+        DapModalComponent,
+        FileListModalComponent,
+        DmpListModalComponent,
+        ReviewListModalComponent
     ],
     imports:[
          HttpClientModule,
@@ -40,12 +51,18 @@ import {TableModule} from 'primeng/table';
          RadioButtonModule,
          FontAwesomeModule,
          TableModule,
-         SidebarModule
+         TagModule,
+         DropdownModule,
+         SidebarModule,
+         FormsModule,
+         ToastModule,
+         BrowserModule,
+         MultiSelectModule
          
          
     ],
     providers:[ HttpClient,
-        { provide: AuthService, useFactory: createAuthService, deps: [ HttpClient ] }
+        { provide: AuthService, useFactory: createAuthService, deps: [ HttpClient ] },DatePipe
 ]
 })
 export class LandingModule {}

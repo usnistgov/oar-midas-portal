@@ -1,0 +1,305 @@
+[
+  {
+    "id": "mdm1:0004",
+    "name": "Tes  Record",
+    "acls": {
+      "read": [
+        "anonymous"
+      ],
+      "write": [
+        "anonymous"
+      ],
+      "admin": [
+        "anonymous"
+      ],
+      "delete": [
+        "anonymous"
+      ]
+    },
+    "owner": "anonymous",
+    "deactivated": null,
+    "status": {
+      "created": 1679968910.6703978,
+      "state": "edit",
+      "action": "create",
+      "since": 1679968910.6705174,
+      "modified": 1679968910.6716325,
+      "message": "draft created",
+      "createdDate": "2023-03-28T02:01:50",
+      "modifiedDate": "2023-03-28T02:01:50",
+      "sinceDate": "2023-03-28T02:01:50"
+    },
+    "data": {
+      "title": "Test Title",
+      "startDate": "2023-03-28",
+      "endDate": "2023-03-31",
+      "dmpSearchable": "yes",
+      "funding": {
+        "grant_source": "Grant Number",
+        "grant_id": ""
+      },
+      "projectDescription": "sfjsdjfsdfjdsk",
+      "primary_NIST_contact": {
+        "firstName": "Niksa",
+        "lastName": "Blonder"
+      },
+      "contributors": [],
+      "keyWords": [],
+      "dataSize": 0,
+      "sizeUnit": "GB",
+      "softwareDevelopment": {
+        "development": "no",
+        "softwareUse": "",
+        "softwareDatabase": "",
+        "softwareWebsite": ""
+      },
+      "technicalResources": [],
+      "ethical_issues": {
+        "ethical_issues_exist": "no",
+        "ethical_issues_description": "",
+        "ethical_issues_report": "",
+        "dmp_PII": "no"
+      },
+      "dataDescription": "",
+      "dataCategories": [],
+      "preservationDescription": "",
+      "pathsURLs": []
+    },
+    "meta": {},
+    "curators": [],
+    "type": "dmp"
+  },
+  {
+    "id": "mdm1:0002",
+    "name": "rec34",
+    "acls": {
+      "read": [
+        "anonymous"
+      ],
+      "write": [
+        "anonymous"
+      ],
+      "admin": [
+        "anonymous"
+      ],
+      "delete": [
+        "anonymous"
+      ]
+    },
+    "owner": "anonymous",
+    "deactivated": null,
+    "status": {
+      "created": 1679938185.5213704,
+      "state": "edit",
+      "action": "update",
+      "since": 1679938185.5214846,
+      "modified": 1679938291.605689,
+      "message": "",
+      "createdDate": "2023-03-27T17:29:45",
+      "modifiedDate": "2023-03-27T17:31:31",
+      "sinceDate": "2023-03-27T17:29:45"
+    },
+    "data": {
+      "title": "",
+      "startDate": "",
+      "endDate": "",
+      "dmpSearchable": "yes",
+      "funding": {
+        "grant_source": "Grant Number",
+        "grant_id": ""
+      },
+      "projectDescription": "",
+      "primary_NIST_contact": {
+        "firstName": "",
+        "lastName": ""
+      },
+      "contributors": [],
+      "keyWords": [],
+      "dataSize": "100",
+      "sizeUnit": "GB",
+      "softwareDevelopment": {
+        "development": "yes",
+        "softwareUse": "external",
+        "softwareDatabase": "no",
+        "softwareWebsite": "yes"
+      },
+      "technicalResources": [],
+      "ethical_issues": {
+        "ethical_issues_exist": "no",
+        "ethical_issues_description": "",
+        "ethical_issues_report": "",
+        "dmp_PII": "no"
+      },
+      "dataDescription": "",
+      "dataCategories": [],
+      "preservationDescription": "",
+      "pathsURLs": []
+    },
+    "meta": {},
+    "curators": [],
+    "type": "dmp"
+  },
+  {
+    "id": "mdm1:0001",
+    "name": "test33",
+    "acls": {
+      "read": [
+        "anonymous"
+      ],
+      "write": [
+        "anonymous"
+      ],
+      "admin": [
+        "anonymous"
+      ],
+      "delete": [
+        "anonymous"
+      ]
+    },
+    "owner": "anonymous",
+    "deactivated": null,
+    "status": {
+      "created": 1679937341.2386823,
+      "state": "edit",
+      "action": "update",
+      "since": 1679937341.2388124,
+      "modified": 1679938224.1292193,
+      "message": "",
+      "createdDate": "2023-03-27T17:15:41",
+      "modifiedDate": "2023-03-27T17:30:24",
+      "sinceDate": "2023-03-27T17:15:41"
+    },
+    "data": {
+      "title": "test title",
+      "startDate": "2023-03-28",
+      "endDate": "2023-03-28",
+      "dmpSearchable": "yes",
+      "funding": {
+        "grant_source": "Grant Number",
+        "grant_id": "124"
+      },
+      "projectDescription": "test destcritpion",
+      "primary_NIST_contact": {
+        "firstName": "Niksa",
+        "lastName": "Blonder"
+      },
+      "contributors": [
+        {
+          "contributor": {
+            "firstName": "Jon",
+            "lastName": "Smith"
+          },
+          "e_mail": "example@example.com",
+          "instituion": "example",
+          "role": "Researcher"
+        },
+        {
+          "contributor": {
+            "firstName": "Gretchen",
+            "lastName": "Greene"
+          },
+          "e_mail": "gretchen@nist.gov",
+          "instituion": "NIST",
+          "role": "Supervisor"
+        }
+      ],
+      "keyWords": [
+        "key word example"
+      ],
+      "dataSize": "100",
+      "sizeUnit": "MB",
+      "softwareDevelopment": {
+        "development": "yes",
+        "softwareUse": "internal",
+        "softwareDatabase": "",
+        "softwareWebsite": ""
+      },
+      "technicalResources": [],
+      "ethical_issues": {
+        "ethical_issues_exist": "no",
+        "ethical_issues_description": "",
+        "ethical_issues_report": "",
+        "dmp_PII": "no"
+      },
+      "dataDescription": "",
+      "dataCategories": [],
+      "preservationDescription": "",
+      "pathsURLs": []
+    },
+    "meta": {},
+    "curators": [],
+    "type": "dmp"
+  },
+  {
+    "id": "mdm1:0003",
+    "name": "First Test Record",
+    "acls": {
+      "read": [
+        "anonymous"
+      ],
+      "write": [
+        "anonymous"
+      ],
+      "admin": [
+        "anonymous"
+      ],
+      "delete": [
+        "anonymous"
+      ]
+    },
+    "owner": "anonymous",
+    "deactivated": null,
+    "status": {
+      "created": 1679941024.7381175,
+      "state": "edit",
+      "action": "create",
+      "since": 1679941024.7382662,
+      "modified": 1679941024.7392905,
+      "message": "draft created",
+      "createdDate": "2023-03-27T18:17:04",
+      "modifiedDate": "2023-03-27T18:17:04",
+      "sinceDate": "2023-03-27T18:17:04"
+    },
+    "data": {
+      "title": "First DMP record",
+      "startDate": "",
+      "endDate": "",
+      "dmpSearchable": "yes",
+      "funding": {
+        "grant_source": "Grant Number",
+        "grant_id": ""
+      },
+      "projectDescription": "",
+      "primary_NIST_contact": {
+        "firstName": "",
+        "lastName": ""
+      },
+      "contributors": [],
+      "keyWords": [],
+      "dataSize": 0,
+      "sizeUnit": "GB",
+      "softwareDevelopment": {
+        "development": "no",
+        "softwareUse": "",
+        "softwareDatabase": "",
+        "softwareWebsite": ""
+      },
+      "technicalResources": [],
+      "ethical_issues": {
+        "ethical_issues_exist": "no",
+        "ethical_issues_description": "",
+        "ethical_issues_report": "",
+        "dmp_PII": "no"
+      },
+      "dataDescription": "",
+      "dataCategories": [
+        "Published Results and SRD"
+      ],
+      "preservationDescription": "",
+      "pathsURLs": []
+    },
+    "meta": {},
+    "curators": [],
+    "type": "dmp"
+  }
+]

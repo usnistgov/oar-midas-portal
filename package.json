@@ -16,6 +16,6 @@
         "@fortawesome/free-solid-svg-icons": "^6.2.1",
         "@ionic/angular": "^6.3.8",
         "primefaces": "^12.0.0",
-        "primeng": "^13.3.3"
+        "primeng": "^13.4.1"
     }
 }
