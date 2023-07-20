@@ -16,7 +16,8 @@
 </ng-template>
 <div class="">
     <p-table #reviewtable [loading]="loading" [rowHover]="true"[value]="data"
-        [paginator]="true" [rows]="5" [scrollable]="true"
+        height="100px" [rows]="1000"
+        [paginator]="true" [scrollable]="true"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
         [rowsPerPageOptions]="[5]" [globalFilterFields]="['title', 'submittername', 'currentreviewer','reviewstep']">
