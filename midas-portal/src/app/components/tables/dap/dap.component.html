@@ -35,7 +35,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td>{{item.name}}</td>
+                    <td><a href="https://google.com" target="_blank">{{item.name}}</a></td>
                     <td>{{item.owner}}</td>
                     <td class="td-class"><p-tag [value]="item.status.state" [severity]="getStatus(item.status.state)"></p-tag></td>
                     <td class="td-class">{{this.datepipe.transform(item.status.modifiedDate,'MM/dd/yyyy')}}</td>
