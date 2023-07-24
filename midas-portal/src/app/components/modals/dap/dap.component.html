@@ -52,7 +52,7 @@
             <ng-template pTemplate="body" let-item let-columns="columns">
                 <tr>
                     <td *ngFor="let col of columns">
-                        <div *ngIf="col.field==='resourceType' || col.field==='title' || col.field==='doi' || col.field==='file_count';else other_content">
+                        <div *ngIf="col.field==='resourceType' || col.field==='title' || col.field==='doi' || col.field==='file_count'|| col.field==='name';else other_content">
                             <div *ngIf="col.field=='resourceType'">
                                 {{item.meta['resourceType']}}
                             </div>
@@ -65,6 +65,10 @@
                             <div *ngIf="col.field=='file_count'">
                                 {{item.data['file_count']}}
                             </div>
+                            <div *ngIf="col.field=='name'">
+                                <a href="https://google.com" target="_blank">{{item.name}}</a>
+                            </div>
+                            
                         </div>
                         <ng-template #other_content>
                             {{item[col.field]}}

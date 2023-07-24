@@ -39,11 +39,11 @@
         </ng-template>
         <ng-template pTemplate="body" let-item let-expanded="expanded">
             <tr>
-                <td>{{item.name}}</td>
+                <td><a href="www.google.com" target="_blank">{{item.name}}</a></td>
                 <td>{{item.owner}}</td>
-                <td>NA</td>
+                <td>{{item.data.organization[0].ORG_ID}}</td>
                 <td>{{item.data.primary_NIST_contact.firstName+' '+item.data.primary_NIST_contact.lastName}}</td>
-                <td>{{this.datepipe.transform(item.status.modifiedDate,'MM/dd/yyyy')}}</td>
+                <td>{{this.datepipe.transform(item.status.modified,'MM/dd/yyyy')}}</td>
                 <td style="max-width:150px">
                     <button
                       type="button"

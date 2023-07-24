@@ -1,305 +1,484 @@
 [
   {
-    "id": "mdm1:0004",
-    "name": "Tes  Record",
+    "id": "mdm1:0027",
+    "name": "Superconductor Metrology",
     "acls": {
-      "read": [
-        "anonymous"
-      ],
-      "write": [
-        "anonymous"
-      ],
-      "admin": [
-        "anonymous"
-      ],
-      "delete": [
-        "anonymous"
-      ]
+        "read": [
+            "anonymous"
+        ],
+        "write": [
+            "anonymous"
+        ],
+        "admin": [
+            "anonymous"
+        ],
+        "delete": [
+            "anonymous"
+        ]
     },
     "owner": "anonymous",
     "deactivated": null,
     "status": {
-      "created": 1679968910.6703978,
+        "created": 1689021185.5037804,
+        "state": "edit",
+        "action": "create",
+        "since": 1689021185.5038593,
+        "modified": 1689021185.5050585,
+        "message": "draft created"
+    },
+    "data": {
+        "title": "Superconductor Metrology",
+        "startDate": "2021-07-08 19:03:27",
+        "endDate": "",
+        "dmpSearchable": "Y",
+        "funding": {
+            "grant_source": "Grant Number",
+            "grant_id": ""
+        },
+        "projectDescription": "Investigate various aspects of metrology for superconductors including: the comparison of unified scaling models, the computation of a sample's irreversible strain limit, and investigate the correlation among measurements at various temperatures and fields. The volume of data anticipated for this project is in the range of 25 - 50 MB. Collaborators include J. Ekin (687 guest researcher), L. Goodrich (CU), and N. Cheggour (CU).",
+        "organization": [
+            {
+                "ORG_ID": 776,
+                "name": "Statistical Engineering Division"
+            }
+        ],
+        "primary_NIST_contact": {
+            "firstName": "Jolene D.",
+            "lastName": "Splett"
+        },
+        "contributors": [
+            {
+                "contributor": {
+                    "firstName": "Jolene D.",
+                    "lastName": "Splett"
+                },
+                "e_mail": "jolene.splett@nist.gov",
+                "instituion": "NIST",
+                "role": "Principal Investigator"
+            }
+        ],
+        "keyWords": [
+            "superconductor metrology"
+        ],
+        "dataStorage": [],
+        "dataSize": null,
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+            "development": "no",
+            "softwareUse": "",
+            "softwareDatabase": "",
+            "softwareWebsite": ""
+        },
+        "technicalResources": [],
+        "ethical_issues": {
+            "ethical_issues_exist": "no",
+            "ethical_issues_description": "",
+            "ethical_issues_report": "",
+            "dmp_PII": "no"
+        },
+        "dataDescription": "No additional requirements Not available to the public",
+        "dataCategories": [
+            "Derived Data",
+            "Working Data"
+        ],
+        "preservationDescription": "Working Data; Derived Data; : Files types for this project include: text, Excel, Word, and PDF.",
+        "pathsURLs": []
+    },
+    "meta": {},
+    "curators": []
+},
+{
+  "id": "mdm1:0026",
+  "name": "Standard Reference Materials",
+  "acls": {
+      "read": [
+          "anonymous"
+      ],
+      "write": [
+          "anonymous"
+      ],
+      "admin": [
+          "anonymous"
+      ],
+      "delete": [
+          "anonymous"
+      ]
+  },
+  "owner": "anonymous",
+  "deactivated": null,
+  "status": {
+      "created": 1689021182.820267,
       "state": "edit",
       "action": "create",
-      "since": 1679968910.6705174,
-      "modified": 1679968910.6716325,
-      "message": "draft created",
-      "createdDate": "2023-03-28T02:01:50",
-      "modifiedDate": "2023-03-28T02:01:50",
-      "sinceDate": "2023-03-28T02:01:50"
-    },
-    "data": {
-      "title": "Test Title",
-      "startDate": "2023-03-28",
-      "endDate": "2023-03-31",
-      "dmpSearchable": "yes",
-      "funding": {
-        "grant_source": "Grant Number",
-        "grant_id": ""
-      },
-      "projectDescription": "sfjsdjfsdfjdsk",
-      "primary_NIST_contact": {
-        "firstName": "Niksa",
-        "lastName": "Blonder"
-      },
-      "contributors": [],
-      "keyWords": [],
-      "dataSize": 0,
-      "sizeUnit": "GB",
-      "softwareDevelopment": {
-        "development": "no",
-        "softwareUse": "",
-        "softwareDatabase": "",
-        "softwareWebsite": ""
-      },
-      "technicalResources": [],
-      "ethical_issues": {
-        "ethical_issues_exist": "no",
-        "ethical_issues_description": "",
-        "ethical_issues_report": "",
-        "dmp_PII": "no"
-      },
-      "dataDescription": "",
-      "dataCategories": [],
-      "preservationDescription": "",
-      "pathsURLs": []
-    },
-    "meta": {},
-    "curators": [],
-    "type": "dmp"
+      "since": 1689021182.8203456,
+      "modified": 1689021182.8212953,
+      "message": "draft created"
   },
-  {
-    "id": "mdm1:0002",
-    "name": "rec34",
-    "acls": {
-      "read": [
-        "anonymous"
-      ],
-      "write": [
-        "anonymous"
-      ],
-      "admin": [
-        "anonymous"
-      ],
-      "delete": [
-        "anonymous"
-      ]
-    },
-    "owner": "anonymous",
-    "deactivated": null,
-    "status": {
-      "created": 1679938185.5213704,
-      "state": "edit",
-      "action": "update",
-      "since": 1679938185.5214846,
-      "modified": 1679938291.605689,
-      "message": "",
-      "createdDate": "2023-03-27T17:29:45",
-      "modifiedDate": "2023-03-27T17:31:31",
-      "sinceDate": "2023-03-27T17:29:45"
-    },
-    "data": {
-      "title": "",
-      "startDate": "",
+  "data": {
+      "title": "Standard Reference Materials",
+      "startDate": "2021-07-08 19:03:27",
       "endDate": "",
-      "dmpSearchable": "yes",
+      "dmpSearchable": "Y",
       "funding": {
-        "grant_source": "Grant Number",
-        "grant_id": ""
+          "grant_source": "Grant Number",
+          "grant_id": ""
       },
-      "projectDescription": "",
+      "projectDescription": "Division-wide project to provide statistical support for the NIST Standard Reference Materials program. SED work on this project includes design and analysis of experiments for a wide range of reference materials. Data sets based on measurement results received from NIST scientists and researchers external to NIST will be compiled and analyzed. Simulation data may also be generated to derive results. The anticipated data volume for this project is 200 MB/year.",
+      "organization": [
+          {
+              "ORG_ID": 776,
+              "name": "Statistical Engineering Division"
+          }
+      ],
       "primary_NIST_contact": {
-        "firstName": "",
-        "lastName": ""
-      },
-      "contributors": [],
-      "keyWords": [],
-      "dataSize": "100",
-      "sizeUnit": "GB",
-      "softwareDevelopment": {
-        "development": "yes",
-        "softwareUse": "external",
-        "softwareDatabase": "no",
-        "softwareWebsite": "yes"
-      },
-      "technicalResources": [],
-      "ethical_issues": {
-        "ethical_issues_exist": "no",
-        "ethical_issues_description": "",
-        "ethical_issues_report": "",
-        "dmp_PII": "no"
-      },
-      "dataDescription": "",
-      "dataCategories": [],
-      "preservationDescription": "",
-      "pathsURLs": []
-    },
-    "meta": {},
-    "curators": [],
-    "type": "dmp"
-  },
-  {
-    "id": "mdm1:0001",
-    "name": "test33",
-    "acls": {
-      "read": [
-        "anonymous"
-      ],
-      "write": [
-        "anonymous"
-      ],
-      "admin": [
-        "anonymous"
-      ],
-      "delete": [
-        "anonymous"
-      ]
-    },
-    "owner": "anonymous",
-    "deactivated": null,
-    "status": {
-      "created": 1679937341.2386823,
-      "state": "edit",
-      "action": "update",
-      "since": 1679937341.2388124,
-      "modified": 1679938224.1292193,
-      "message": "",
-      "createdDate": "2023-03-27T17:15:41",
-      "modifiedDate": "2023-03-27T17:30:24",
-      "sinceDate": "2023-03-27T17:15:41"
-    },
-    "data": {
-      "title": "test title",
-      "startDate": "2023-03-28",
-      "endDate": "2023-03-28",
-      "dmpSearchable": "yes",
-      "funding": {
-        "grant_source": "Grant Number",
-        "grant_id": "124"
-      },
-      "projectDescription": "test destcritpion",
-      "primary_NIST_contact": {
-        "firstName": "Niksa",
-        "lastName": "Blonder"
+          "firstName": "William F.",
+          "lastName": "Guthrie"
       },
       "contributors": [
-        {
-          "contributor": {
-            "firstName": "Jon",
-            "lastName": "Smith"
-          },
-          "e_mail": "example@example.com",
-          "instituion": "example",
-          "role": "Researcher"
-        },
-        {
-          "contributor": {
-            "firstName": "Gretchen",
-            "lastName": "Greene"
-          },
-          "e_mail": "gretchen@nist.gov",
-          "instituion": "NIST",
-          "role": "Supervisor"
-        }
+          {
+              "contributor": {
+                  "firstName": "William F.",
+                  "lastName": "Guthrie"
+              },
+              "e_mail": "william.guthrie@nist.gov",
+              "instituion": "NIST",
+              "role": "Principal Investigator"
+          }
       ],
       "keyWords": [
-        "key word example"
+          "standard reference materials"
       ],
-      "dataSize": "100",
-      "sizeUnit": "MB",
-      "softwareDevelopment": {
-        "development": "yes",
-        "softwareUse": "internal",
-        "softwareDatabase": "",
-        "softwareWebsite": ""
-      },
-      "technicalResources": [],
-      "ethical_issues": {
-        "ethical_issues_exist": "no",
-        "ethical_issues_description": "",
-        "ethical_issues_report": "",
-        "dmp_PII": "no"
-      },
-      "dataDescription": "",
-      "dataCategories": [],
-      "preservationDescription": "",
-      "pathsURLs": []
-    },
-    "meta": {},
-    "curators": [],
-    "type": "dmp"
-  },
-  {
-    "id": "mdm1:0003",
-    "name": "First Test Record",
-    "acls": {
-      "read": [
-        "anonymous"
-      ],
-      "write": [
-        "anonymous"
-      ],
-      "admin": [
-        "anonymous"
-      ],
-      "delete": [
-        "anonymous"
-      ]
-    },
-    "owner": "anonymous",
-    "deactivated": null,
-    "status": {
-      "created": 1679941024.7381175,
-      "state": "edit",
-      "action": "create",
-      "since": 1679941024.7382662,
-      "modified": 1679941024.7392905,
-      "message": "draft created",
-      "createdDate": "2023-03-27T18:17:04",
-      "modifiedDate": "2023-03-27T18:17:04",
-      "sinceDate": "2023-03-27T18:17:04"
-    },
-    "data": {
-      "title": "First DMP record",
-      "startDate": "",
-      "endDate": "",
-      "dmpSearchable": "yes",
-      "funding": {
-        "grant_source": "Grant Number",
-        "grant_id": ""
-      },
-      "projectDescription": "",
-      "primary_NIST_contact": {
-        "firstName": "",
-        "lastName": ""
-      },
-      "contributors": [],
-      "keyWords": [],
-      "dataSize": 0,
+      "dataStorage": [],
+      "dataSize": null,
       "sizeUnit": "GB",
       "softwareDevelopment": {
-        "development": "no",
-        "softwareUse": "",
-        "softwareDatabase": "",
-        "softwareWebsite": ""
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
       },
       "technicalResources": [],
       "ethical_issues": {
-        "ethical_issues_exist": "no",
-        "ethical_issues_description": "",
-        "ethical_issues_report": "",
-        "dmp_PII": "no"
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": "",
+          "dmp_PII": "no"
       },
-      "dataDescription": "",
+      "dataDescription": "No additional requirements: Preliminary working and derived dataData must be backed up using a tested/automated process: Final working and derived data used to generate publishable results will be stored on centrally accessible and backed up Division file systems.Not available to the public: Working and derived dataNot available to the public (when NIST Enterprise Data Inventory system is available): Publishable resultsMade available to the public as described below: Published results will be made available via the SRM Program web site.",
       "dataCategories": [
-        "Published Results and SRD"
+          "Derived Data",
+          "Working Data",
+          "Published Results & SRD",
+          "Publishable Results"
       ],
-      "preservationDescription": "",
+      "preservationDescription": "Working Data; Derived Data; Publishable Results; Published Results: File types used in this project will be primarily text files containing numeric results, but some spectra and image data may also be generated.",
       "pathsURLs": []
-    },
-    "meta": {},
-    "curators": [],
-    "type": "dmp"
-  }
+  },
+  "meta": {},
+  "curators": []
+},
+{
+  "id": "mdm1:0025",
+  "name": "Supplementary material for:",
+  "acls": {
+      "read": [
+          "anonymous"
+      ],
+      "write": [
+          "anonymous"
+      ],
+      "admin": [
+          "anonymous"
+      ],
+      "delete": [
+          "anonymous"
+      ]
+  },
+  "owner": "anonymous",
+  "deactivated": null,
+  "status": {
+      "created": 1689021178.207318,
+      "state": "edit",
+      "action": "create",
+      "since": 1689021178.2074027,
+      "modified": 1689021178.2083783,
+      "message": "draft created"
+  },
+  "data": {
+      "title": "Supplementary material for: The detection of carbon dioxide leaks using quasi-tomographic laser absorption spectroscopy",
+      "startDate": "2021-07-08 19:03:27",
+      "endDate": "",
+      "dmpSearchable": "Y",
+      "funding": {
+          "grant_source": "Grant Number",
+          "grant_id": ""
+      },
+      "projectDescription": "The purpose is to satisfy a requirement of the journal Atmospheric Measurement Techniques that the published data be publicly available.  The data concerns the detection of carbon dioxide leaks at sequestration sites.",
+      "organization": [
+          {
+              "ORG_ID": 685,
+              "name": "Sensor Science Division"
+          }
+      ],
+      "primary_NIST_contact": {
+          "firstName": "Zachary H.",
+          "lastName": "Levine"
+      },
+      "contributors": [
+          {
+              "contributor": {
+                  "firstName": "Michael",
+                  "lastName": "Braun"
+              },
+              "e_mail": "",
+              "instituion": "Harris Corp.",
+              "role": ""
+          },
+          {
+              "contributor": {
+                  "firstName": "Timothy",
+                  "lastName": "Pernini"
+              },
+              "e_mail": "",
+              "instituion": "Atmospheric and Environmental Research, Inc.",
+              "role": ""
+          },
+          {
+              "contributor": {
+                  "firstName": "Jeremy",
+                  "lastName": "Dobler"
+              },
+              "e_mail": "",
+              "instituion": "Harris Corp.",
+              "role": ""
+          },
+          {
+              "contributor": {
+                  "firstName": "Nathan",
+                  "lastName": "Blume"
+              },
+              "e_mail": "",
+              "instituion": "Harris Corp.",
+              "role": ""
+          },
+          {
+              "contributor": {
+                  "firstName": "Zachary H.",
+                  "lastName": "Levine"
+              },
+              "e_mail": "zachary.levine@nist.gov",
+              "instituion": "NIST",
+              "role": "Principal Investigator"
+          }
+      ],
+      "keyWords": [
+          "carbon sequestration",
+          "laser absorption spectroscopy"
+      ],
+      "dataStorage": [],
+      "dataSize": null,
+      "sizeUnit": "GB",
+      "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+      },
+      "technicalResources": [],
+      "ethical_issues": {
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": "",
+          "dmp_PII": "no"
+      },
+      "dataDescription": "The data includes two parts:  experimental observations and simulation data.  The data are self-described ASCII files.",
+      "dataCategories": [
+          "Published Results & SRD"
+      ],
+      "preservationDescription": "NIST institutional mangement",
+      "pathsURLs": [
+          "nike.nist.gov   SEARCH G2016-0163 for amt-2015-291-suppl.zip"
+      ]
+  },
+  "meta": {},
+  "curators": []
+},
+{
+  "id": "mdm1:0024",
+  "name": "GitHub Page Template",
+  "acls": {
+      "read": [
+          "anonymous"
+      ],
+      "write": [
+          "anonymous"
+      ],
+      "admin": [
+          "anonymous"
+      ],
+      "delete": [
+          "anonymous"
+      ]
+  },
+  "owner": "anonymous",
+  "deactivated": null,
+  "status": {
+      "created": 1689021173.6844378,
+      "state": "edit",
+      "action": "create",
+      "since": 1689021173.6845205,
+      "modified": 1689021173.68544,
+      "message": "draft created"
+  },
+  "data": {
+      "title": "GitHub Page Template",
+      "startDate": "2021-07-08 19:03:27",
+      "endDate": "",
+      "dmpSearchable": "Y",
+      "funding": {
+          "grant_source": "Grant Number",
+          "grant_id": ""
+      },
+      "projectDescription": "This template will be available to NIST employees who wish to create a GitHub backed website and place it on NIST pages (pages.nist.gov).",
+      "organization": [
+          {
+              "ORG_ID": 641,
+              "name": "Office of Data and Informatics"
+          }
+      ],
+      "primary_NIST_contact": {
+          "firstName": "Casey",
+          "lastName": "Hume"
+      },
+      "contributors": [
+          {
+              "contributor": {
+                  "firstName": "Casey",
+                  "lastName": "Hume"
+              },
+              "e_mail": "casey.hume@nist.gov",
+              "instituion": "NIST",
+              "role": "Principal Investigator"
+          }
+      ],
+      "keyWords": [
+          "GitHub pages template"
+      ],
+      "dataStorage": [],
+      "dataSize": null,
+      "sizeUnit": "GB",
+      "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+      },
+      "technicalResources": [],
+      "ethical_issues": {
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": "",
+          "dmp_PII": "no"
+      },
+      "dataDescription": "Code is developed in python, html, css, xml and javascript and shared via GitHub's USNISTGOV organization.",
+      "dataCategories": [
+          "Working Data"
+      ],
+      "preservationDescription": "The primary working storage is on a local virtual machine, with primary backup storage on a network drive.  Additional backups are in the GitHub cloud.",
+      "pathsURLs": [
+          "https://github.com/usnistgov/Pages-Template"
+      ]
+  },
+  "meta": {},
+  "curators": []
+},
+{
+  "id": "mdm1:0023",
+  "name": "GitHub Page Template",
+  "acls": {
+      "read": [
+          "anonymous"
+      ],
+      "write": [
+          "anonymous"
+      ],
+      "admin": [
+          "anonymous"
+      ],
+      "delete": [
+          "anonymous"
+      ]
+  },
+  "owner": "anonymous",
+  "deactivated": null,
+  "status": {
+      "created": 1689021029.7902553,
+      "state": "edit",
+      "action": "create",
+      "since": 1689021029.790362,
+      "modified": 1689021029.7912178,
+      "message": "draft created"
+  },
+  "data": {
+      "title": "GitHub Page Template",
+      "startDate": "2021-07-08 19:03:27",
+      "endDate": "",
+      "dmpSearchable": "Y",
+      "funding": {
+          "grant_source": "Grant Number",
+          "grant_id": ""
+      },
+      "projectDescription": "This template will be available to NIST employees who wish to create a GitHub backed website and place it on NIST pages (pages.nist.gov).",
+      "organization": [
+          {
+              "ORG_ID": 641,
+              "name": "Office of Data and Informatics"
+          }
+      ],
+      "primary_NIST_contact": {
+          "firstName": "Casey",
+          "lastName": "Hume"
+      },
+      "contributors": [
+          {
+              "contributor": {
+                  "firstName": "Casey",
+                  "lastName": "Hume"
+              },
+              "e_mail": "casey.hume@nist.gov",
+              "instituion": "NIST",
+              "role": "Principal Investigator"
+          }
+      ],
+      "keyWords": [
+          "GitHub pages template"
+      ],
+      "dataStorage": [],
+      "dataSize": null,
+      "sizeUnit": "GB",
+      "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+      },
+      "technicalResources": [],
+      "ethical_issues": {
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": "",
+          "dmp_PII": "no"
+      },
+      "dataDescription": "Code is developed in python, html, css, xml and javascript and shared via GitHub's USNISTGOV organization.",
+      "dataCategories": [
+          "Working Data"
+      ],
+      "preservationDescription": "The primary working storage is on a local virtual machine, with primary backup storage on a network drive.  Additional backups are in the GitHub cloud.",
+      "pathsURLs": [
+          "https://github.com/usnistgov/Pages-Template"
+      ]
+  },
+  "meta": {},
+  "curators": []
+}
 ]
