@@ -47,9 +47,11 @@ export class ReviewListComponent implements OnInit {
         resolve(this.NPSAPI);
         //GET Using fake backend
         this.fetchRecords(this.NPSAPI);
-        for (let i = 0; i<this.data.length;i++){
-          this.data[i].deadline = new Date(this.data[i].deadline)
-          //this.data[i].deadline = this.datepipe.transform(this.data[i].deadline,'MM/dd/yyyy')
+        if(typeof this.data !== 'undefined') {
+          for (let i = 0; i<this.data.length;i++){
+            this.data[i].deadline = new Date(this.data[i].deadline)
+            //this.data[i].deadline = this.datepipe.transform(this.data[i].deadline,'MM/dd/yyyy')
+          }
         }
       });
     });

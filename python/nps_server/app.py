@@ -9,7 +9,7 @@ import binascii#Needed for create_signature function
 # using flask_restful
 from base64 import b64encode, encode
 import binascii
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, json
 from flask_restful import Resource, Api
 from flask_cors import CORS
 
@@ -23,17 +23,27 @@ api = Api(app)
 # resource to get NPS records for user
 class NPS(Resource):
 
-	def get(self, num):
+	def get(self, username):
 		token = self.get_auth_token()
-		userid = num
+		userid = username
 		api_url = 'https://tsapps-t.nist.gov/nps/npsapi' + '/api/DataSet/ReviewsForUser'
 		print('api_url: ' + api_url)
 
 		api_call_headers = {'Authorization': 'Bearer ' + token}
-		api_call_response = requests.post(api_url, json=userid, headers=api_call_headers)
+		payload = {
+			"nistId": 0,
+			"userName": username
+		}
+		api_call_response = requests.post(api_url, json=payload, headers=api_call_headers)
 
 		print(api_call_response.text)
-		response = jsonify(api_call_response.text)
+
+		response = app.response_class(
+     	   	response=api_call_response.text,
+        	status=200,
+        	mimetype='application/json'
+    	)
+		#response = jsonify(api_call_response.text)
 		response.headers.add('Access-Control-Allow-Origin', '*')
 
 		return response
@@ -55,7 +65,7 @@ class NPS(Resource):
 
 
 # adding the defined resources along with their corresponding urls
-api.add_resource(NPS, '/user/<int:num>')
+api.add_resource(NPS, '/user/<string:username>')
 
 
 # driver function

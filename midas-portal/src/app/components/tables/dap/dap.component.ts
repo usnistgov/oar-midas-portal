@@ -55,8 +55,10 @@ export class DapComponent implements OnInit {
         resolve(this.dapAPI);
         //GET method to get data
         this.fetchRecords(this.dapAPI);
-        for (let i = 0; i<this.data.length;i++){
-          this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
+        if(typeof this.data !== 'undefined') {
+          for (let i = 0; i<this.data.length;i++){
+            this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
+          }
         }
       });
     });
