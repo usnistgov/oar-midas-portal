@@ -64,6 +64,7 @@ export class DapModalComponent implements OnInit {
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.dapAPI = config.dapAPI;
+        this.dapUI = config.dapUI;
         resolve(this.dapAPI);
         this.data=this.config.data
         this.count=this.data.length
@@ -124,6 +125,10 @@ export class DapModalComponent implements OnInit {
 
     this.loading = false;
     return this.records = Object(records);
+  }
+
+  linkto(item:string){
+    return this.dapAPI.concat(item.toString());
   }
 
 

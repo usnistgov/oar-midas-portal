@@ -38,12 +38,21 @@ export class DmpListModalComponent implements OnInit {
   }
 
   async ngOnInit() {
+    
     let promise = new Promise((resolve) => {
+      this.appConfig.getRemoteConfig().subscribe(config => {
+      this.dmpAPI=config.dmpAPI
+      this.dmpUI = config.dmpUI;
       this.data=this.config.data
       this.count=this.data.length
+      })
     });
     
 
+  }
+
+  linkto(item:string){
+    this.dmpAPI.concat(item.toString())
   }
 
 

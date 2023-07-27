@@ -70,6 +70,10 @@ export class ReviewListComponent implements OnInit {
   ];
   }
 
+  linkto(item:string){
+    this.NPSAPI.concat(item.toString())
+  }
+
   async getRecords(){
     
     let records;

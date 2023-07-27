@@ -39,6 +39,7 @@ export class DmpListComponent implements OnInit {
 
   async ngOnInit() {
     let promise = new Promise((resolve) => {
+        this.dmpUI = this.configSvc.getConfig()['dmpAPI'];
         this.dmpAPI = this.configSvc.getConfig()['dmpAPI'];
         resolve(this.dmpAPI);
         //GET method to get data
@@ -48,7 +49,6 @@ export class DmpListComponent implements OnInit {
             this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
           }
         }
-    });
     
 
     // Retrieving data using fetch functions 
@@ -68,6 +68,10 @@ export class DmpListComponent implements OnInit {
         contentStyle: { overflow: 'auto' },
         baseZIndex: 10000,
     });
+  }
+
+  linkto(item:string){
+    this.dmpAPI.concat(item.toString())
   }
 
   async getRecords(){

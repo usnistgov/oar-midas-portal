@@ -51,6 +51,7 @@ export class DapComponent implements OnInit {
 
   async ngOnInit() {
     let promise = new Promise((resolve) => {
+        this.dapUI = this.configSvc.getConfig()['dapUI'];
         this.dapAPI = this.configSvc.getConfig()['dapAPI'];
         resolve(this.dapAPI);
         //GET method to get data
@@ -59,8 +60,7 @@ export class DapComponent implements OnInit {
           for (let i = 0; i<this.data.length;i++){
             this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
           }
-        }
-    });
+    };
     // Retrieving data using fetch functions 
     /*
     promise.then(async ()=> {
@@ -89,6 +89,10 @@ export class DapComponent implements OnInit {
         'max-height': '80vh','min-height':'250px' },
         baseZIndex: 10000,
     }); 
+  }
+
+  linkto(item:string){
+    return this.dapAPI.concat(item.toString());
   }
 
   async getRecords(){
