@@ -10,6 +10,7 @@ import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { DapModalComponent } from '../../modals/dap/dap.component';
+import { ConfigurationService } from 'oarng';
 
 
 @Component({
@@ -38,7 +39,7 @@ export class DapComponent implements OnInit {
 
   @ViewChild('recordsTable') recordsTable: Table;
 
-  constructor(private appConfig: AppConfig, private http: HttpClient,public datepipe:DatePipe,public dialogService: DialogService
+  constructor(private configSvc: ConfigurationService, private http: HttpClient,public datepipe:DatePipe,public dialogService: DialogService
                     , public messageService: MessageService) { 
   }
 
@@ -50,8 +51,7 @@ export class DapComponent implements OnInit {
 
   async ngOnInit() {
     let promise = new Promise((resolve) => {
-      this.appConfig.getRemoteConfig().subscribe(config => {
-        this.dapAPI = config.dapAPI;
+        this.dapAPI = this.configSvc.getConfig()['dapAPI'];
         resolve(this.dapAPI);
         //GET method to get data
         this.fetchRecords(this.dapAPI);
@@ -60,7 +60,6 @@ export class DapComponent implements OnInit {
             this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
           }
         }
-      });
     });
     // Retrieving data using fetch functions 
     /*
@@ -77,7 +76,7 @@ export class DapComponent implements OnInit {
       { label: 'published', value: 'published' },
       { label: 'edit', value: 'edit' },
       { label: 'reviewed', value: 'reviewed' }
-  ];
+    ];
   
     
   }
