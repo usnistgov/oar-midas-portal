@@ -2,7 +2,7 @@
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
-            <a href={{dapUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileEdit" size="lg" title="Create New Record"></fa-icon></a> 
+            <a href="{{dapUI}}" target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileEdit" size="lg" title="Create New Record"></fa-icon></a> 
         </button>
         <p-toast></p-toast>
 <button pButton class="p-panel-header-icon p-link" (click)="show()"><fa-icon [style]="{display: 'inline-block', color: '#005EA2'}" [icon]="faUpRightAndDownLeftFromCenter" size="lg" title="Expand"></fa-icon></button>
@@ -35,7 +35,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td><a href="https://google.com" target="_blank">{{item.name}}</a></td>
+                    <td><a href={{linkto(item.name)}} target="_blank">{{item.name}}</a></td>
                     <td>{{item.owner}}</td>
                     <td class="td-class"><p-tag [value]="item.status.state" [severity]="getStatus(item.status.state)"></p-tag></td>
                     <td class="td-class">{{this.datepipe.transform(item.status.modifiedDate,'MM/dd/yyyy')}}</td>

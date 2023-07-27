@@ -39,7 +39,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-item let-expanded="expanded">
             <tr>
-                <td><a href="www.google.com" target="_blank">{{item.name}}</a></td>
+                <td><a href={{linkto(item.name)}} target="_blank">{{item.name}}</a></td>
                 <td>{{item.owner}}</td>
                 <td>{{item.data.organization[0].ORG_ID}}</td>
                 <td>{{item.data.primary_NIST_contact.firstName+' '+item.data.primary_NIST_contact.lastName}}</td>

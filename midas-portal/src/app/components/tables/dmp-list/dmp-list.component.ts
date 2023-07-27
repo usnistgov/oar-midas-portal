@@ -40,6 +40,7 @@ export class DmpListComponent implements OnInit {
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.dmpAPI = config.dmpAPI;
+        this.dmpUI = config.dmpUI;
         resolve(this.dmpAPI);
         //GET method to get data
         this.fetchRecords(this.dmpAPI);
@@ -67,6 +68,10 @@ export class DmpListComponent implements OnInit {
         contentStyle: { overflow: 'auto' },
         baseZIndex: 10000,
     });
+  }
+
+  linkto(item:string){
+    this.dmpAPI.concat(item.toString())
   }
 
   async getRecords(){

@@ -41,9 +41,16 @@ export class ReviewListModalComponent implements OnInit {
   async ngOnInit() {
 
     let promise = new Promise((resolve) => {
-      this.data=this.config.data
-      this.count=this.data.length
+      this.appConfig.getRemoteConfig().subscribe(config => {
+        this.NPSAPI = config.NPSAPI;
+        this.npsUI = config.npsUI;
+        this.data=this.config.data
+        this.count=this.data.length
+      })
     });
+
+
+    
  
 
     this.statuses = [
@@ -51,6 +58,10 @@ export class ReviewListModalComponent implements OnInit {
       { label: 'Done', value: 'Done' },
       { label: 'In Progress', value: 'In Progress' }
   ];
+  }
+
+  linkto(item:string){
+    this.NPSAPI.concat(item.toString())
   }
 
   getStatus(status: string) {

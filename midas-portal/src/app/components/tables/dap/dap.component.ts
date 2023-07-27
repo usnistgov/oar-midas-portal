@@ -52,6 +52,7 @@ export class DapComponent implements OnInit {
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.dapAPI = config.dapAPI;
+        this.dapUI = config.dapUI;
         resolve(this.dapAPI);
         //GET method to get data
         this.fetchRecords(this.dapAPI);
@@ -88,6 +89,10 @@ export class DapComponent implements OnInit {
         'max-height': '80vh','min-height':'250px' },
         baseZIndex: 10000,
     }); 
+  }
+
+  linkto(item:string){
+    return this.dapAPI.concat(item.toString());
   }
 
   async getRecords(){
