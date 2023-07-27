@@ -57,3 +57,4 @@ node_modules
 *.pack
 midas-portal/.angular/cache/
 
+package-lock.json

@@ -9,6 +9,7 @@ import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DmpListModalComponent } from '../../modals/dmp-list/dmp-list.component';
+import { ConfigurationService } from 'oarng';
 
 @Component({
   selector: 'app-dmp-list',
@@ -32,23 +33,22 @@ export class DmpListComponent implements OnInit {
 
   @ViewChild('dmptable') dmpTable: Table;
 
-  constructor(private appConfig: AppConfig,private http: HttpClient, public datepipe:DatePipe,public dialogService: DialogService
+  constructor(private configSvc: ConfigurationService ,private http: HttpClient, public datepipe:DatePipe,public dialogService: DialogService
     , public messageService: MessageService) { 
   }
 
   async ngOnInit() {
     let promise = new Promise((resolve) => {
-      this.appConfig.getRemoteConfig().subscribe(config => {
-        this.dmpAPI = config.dmpAPI;
-        this.dmpUI = config.dmpUI;
+        this.dmpUI = this.configSvc.getConfig()['dmpAPI'];
+        this.dmpAPI = this.configSvc.getConfig()['dmpAPI'];
         resolve(this.dmpAPI);
         //GET method to get data
         this.fetchRecords(this.dmpAPI);
-        for (let i = 0; i<this.data.length;i++){
-          this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
+        if(typeof this.data !== 'undefined') {
+          for (let i = 0; i<this.data.length;i++){
+            this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
+          }
         }
-      });
-    });
     
 
     // Retrieving data using fetch functions 

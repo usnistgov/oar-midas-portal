@@ -16,21 +16,29 @@ export class FakeBackendInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
       console.log("request.url", request.url);
+      /*
       if (request.url.indexOf('dap') > -1 && request.method === 'GET') {
         return of(new HttpResponse({ status: 200, body: dapData }));
-    }else if (request.url.indexOf('dmp') > -1 && request.method === 'GET') {
+      }
+      */
+     /*else if (request.url.indexOf('dmp') > -1 && request.method === 'GET') {
         return of(new HttpResponse({ status: 200, body: dmpData }));
-    }else if (request.url.indexOf('nps') > -1 && request.method === 'GET') {
-      return of(new HttpResponse({ status: 200, body: reviewData }));
-    }else if (request.url.indexOf('cloud') > -1 && request.method === 'GET') {
-    return of(new HttpResponse({ status: 200, body: midasData }));
-    //return of(new HttpResponse({ status: 200}));
-    }else if (request.url.indexOf('auth') > -1 && request.method === 'GET') {
-      console.log("Fake back end so no authentication")
-      return of(new HttpResponse({ status: 200, body: "" }));
+      }
+      */
+     /*else if (request.url.indexOf('nps') > -1 && request.method === 'GET') {
+        return of(new HttpResponse({ status: 200, body: reviewData }));
+      }
+      */
+     if (request.url.indexOf('cloud') > -1 && request.method === 'GET') {
+        return of(new HttpResponse({ status: 200, body: midasData }));
+        //return of(new HttpResponse({ status: 200}));
+      }
+      /*else if (request.url.indexOf('auth') > -1 && request.method === 'GET') {
+        console.log("Fake back end so no authentication")
+        return of(new HttpResponse({ status: 200, body: "" }));
+      }*/
+        return next.handle(request)
     }
-      return next.handle(request)
-}
 }
 
 export let fakeBackendProvider = {
