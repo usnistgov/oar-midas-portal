@@ -8,6 +8,7 @@ import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { ReviewListModalComponent } from '../../modals/review-list/review-list.component';
+import { ConfigurationService } from 'oarng';
 
 @Component({
   selector: 'app-review-list',
@@ -29,7 +30,7 @@ export class ReviewListComponent implements OnInit {
 
   @ViewChild('reviewtable') reviewTable: Table;
 
-  constructor(private appConfig: AppConfig,private http: HttpClient,public datepipe:DatePipe,public dialogService: DialogService
+  constructor(private configSvc: ConfigurationService ,private http: HttpClient,public datepipe:DatePipe,public dialogService: DialogService
     , public messageService: MessageService) { 
     
   }
@@ -41,9 +42,8 @@ export class ReviewListComponent implements OnInit {
   async ngOnInit() {
 
     let promise = new Promise((resolve) => {
-      this.appConfig.getRemoteConfig().subscribe(config => {
-        this.NPSAPI = config.NPSAPI;
-        this.npsUI = config.npsUI;
+        this.NPSAPI = this.configSvc.getConfig()['NPSAPI'];
+        this.npsUI = this.configSvc.getConfig()['npsUI'];
         resolve(this.NPSAPI);
         //GET Using fake backend
         this.fetchRecords(this.NPSAPI);
@@ -53,7 +53,6 @@ export class ReviewListComponent implements OnInit {
             //this.data[i].deadline = this.datepipe.transform(this.data[i].deadline,'MM/dd/yyyy')
           }
         }
-      });
     });
     /* using fetch to retrieve data
     promise.then(async ()=> {

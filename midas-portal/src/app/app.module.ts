@@ -15,6 +15,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { FileListComponent } from './components/file-list/file-list.component';
 import { OARngModule } from 'oarng';
 import { FrameModule } from 'oarng';
+import { ConfigModule } from 'oarng';
+import { CONFIG_URL } from 'oarng';
 import { DropdownModule } from 'primeng/dropdown';
 import { PanelModule } from "primeng/panel";
 import {ScrollPanelModule} from 'primeng/scrollpanel';
@@ -50,9 +52,10 @@ import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
     HttpClientModule,
     LandingModule,
     ScrollPanelModule,
-    DropdownModule
+    DropdownModule,
+    ConfigModule
   ],
-  providers: [ fakeBackendProvider ],
+  providers: [ fakeBackendProvider, { provide: CONFIG_URL, useValue: "assets/environment.json" }, ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
