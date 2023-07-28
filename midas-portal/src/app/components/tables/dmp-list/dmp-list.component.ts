@@ -39,14 +39,14 @@ export class DmpListComponent implements OnInit {
 
   async ngOnInit() {
     let promise = new Promise((resolve) => {
-        this.dmpUI = this.configSvc.getConfig()['dmpAPI'];
+        this.dmpUI = this.configSvc.getConfig()['dmpUI'];
         this.dmpAPI = this.configSvc.getConfig()['dmpAPI'];
         resolve(this.dmpAPI);
         //GET method to get data
         this.fetchRecords(this.dmpAPI);
         if(typeof this.data !== 'undefined') {
           for (let i = 0; i<this.data.length;i++){
-            this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
+            this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate*1000)
           }
         }
     
@@ -60,7 +60,8 @@ export class DmpListComponent implements OnInit {
       this.data = JSON.parse(this.records);
     });
     */
-  }
+  })
+}
   show() {
     this.ref = this.dialogService.open(DmpListModalComponent, {
         data:this.data,

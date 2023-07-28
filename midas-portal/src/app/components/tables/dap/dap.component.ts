@@ -79,7 +79,7 @@ export class DapComponent implements OnInit {
     ];
   
     
-  }
+  })}
 
   show() {
     this.ref = this.dialogService.open(DapModalComponent, {
