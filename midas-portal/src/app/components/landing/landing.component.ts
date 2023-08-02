@@ -109,7 +109,8 @@ export class LandingComponent implements OnInit {
          console.log(" userDetails ::"+JSON.parse(JSON.stringify(response.body)))
          var testToken =  JSON.parse(JSON.stringify(response.body)).token;
          console.log(" TOKEN ::"+testToken)
-         let userDetails = JSON.parse(JSON.stringify(response.body)).userDetails;
+         let responseString = response.body as string;
+         let userDetails = JSON.parse(responseString).userDetails;
          console.log(" userDetails ::"+userDetails)
          
          this.userName = userDetails.userName;
@@ -117,7 +118,7 @@ export class LandingComponent implements OnInit {
          this.userEmail = userDetails.userEmail;
          this.userId = userDetails.userId;
          this.userOU = userDetails.userOU;
-         this.userDiv = userDetails.userDiv + " , "+ userDetails.userDivNum;
+         this.userDiv = userDetails.userDiv + " ("+ userDetails.userDivNum + ")";
         console.log('username: ' + this.userName);
       }
       //this.userDetails = response.body;
