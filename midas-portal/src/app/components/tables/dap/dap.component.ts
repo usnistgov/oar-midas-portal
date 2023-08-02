@@ -52,6 +52,7 @@ export class DapComponent implements OnInit {
   async ngOnInit() {
     let promise = new Promise((resolve) => {
         this.dapAPI = this.configSvc.getConfig()['dapAPI'];
+        this.dapUI = this.configSvc.getConfig()['dapUI'];
         resolve(this.dapAPI);
         //GET method to get data
         this.fetchRecords(this.dapAPI);

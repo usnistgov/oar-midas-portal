@@ -40,6 +40,7 @@ export class DmpListComponent implements OnInit {
   async ngOnInit() {
     let promise = new Promise((resolve) => {
         this.dmpAPI = this.configSvc.getConfig()['dmpAPI'];
+        this.dmpUI = this.configSvc.getConfig()['dmpUI'];
         resolve(this.dmpAPI);
         //GET method to get data
         this.fetchRecords(this.dmpAPI);
