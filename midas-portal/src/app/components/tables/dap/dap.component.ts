@@ -53,6 +53,7 @@ export class DapComponent implements OnInit {
     let promise = new Promise((resolve) => {
         this.dapUI = this.configSvc.getConfig()['dapUI'];
         this.dapAPI = this.configSvc.getConfig()['dapAPI'];
+        this.dapUI = this.configSvc.getConfig()['dapUI'];
         resolve(this.dapAPI);
         //GET method to get data
         this.fetchRecords(this.dapAPI);

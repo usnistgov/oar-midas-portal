@@ -41,6 +41,7 @@ export class DmpListComponent implements OnInit {
     let promise = new Promise((resolve) => {
         this.dmpUI = this.configSvc.getConfig()['dmpUI'];
         this.dmpAPI = this.configSvc.getConfig()['dmpAPI'];
+        this.dmpUI = this.configSvc.getConfig()['dmpUI'];
         resolve(this.dmpAPI);
         //GET method to get data
         this.fetchRecords(this.dmpAPI);
