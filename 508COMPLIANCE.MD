@@ -4,8 +4,8 @@ Section 508, which aligns with WCAG 2.0 Level AA, sets the legal standard for th
 
 ### Table header
 #### Title
--  Foreground Color : #005EA2\
--  Background Color : #EFF6FB\
+-  Foreground Color : #005EA2
+-  Background Color : #EFF6FB
 -  Contrast Ratio: 6.2:1
 
 #### Icon
