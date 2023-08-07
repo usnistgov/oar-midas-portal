@@ -99,20 +99,20 @@ export class LandingComponent implements OnInit {
         ]);
     })
 
-    let collection = document.getElementsByTagName("p-columnfilter");
+    let filter = document.getElementsByTagName("p-columnfilter");
 
     // regular for loop
-    var arr = Array.prototype.slice.call(collection)
-    for (let i of arr) {
+    var Ar_filter = Array.prototype.slice.call(filter)
+    for (let i of Ar_filter) {
       i.children[0].children[0].ariaLabel="Last Modified"
       
     }
 
-    let coll = document.getElementsByTagName("p-paginator");
+    let paginator = document.getElementsByTagName("p-paginator");
 
     // regular for loop
-    var arrr = Array.prototype.slice.call(coll)
-    for (let i of arrr) {
+    var Ar_paginator = Array.prototype.slice.call(paginator)
+    for (let i of Ar_paginator) {
         i.children[0].children[1].ariaLabel="First page"
         i.children[0].children[2].ariaLabel="Previous page"
         i.children[0].children[4].ariaLabel="Next page"
