@@ -98,6 +98,31 @@ export class LandingComponent implements OnInit {
             { severity: 'success', summary: 'NIST MIDAS Portal', detail: 'Connected as cnd7'}
         ]);
     })
+
+    let collection = document.getElementsByTagName("p-columnfilter");
+
+    // regular for loop
+    var arr = Array.prototype.slice.call(collection)
+    for (let i of arr) {
+      i.children[0].children[0].ariaLabel="Last Modified"
+      
+    }
+
+    let coll = document.getElementsByTagName("p-paginator");
+
+    // regular for loop
+    var arrr = Array.prototype.slice.call(coll)
+    for (let i of arrr) {
+        i.children[0].children[1].ariaLabel="First page"
+        i.children[0].children[2].ariaLabel="Previous page"
+        i.children[0].children[4].ariaLabel="Next page"
+        i.children[0].children[5].ariaLabel="Last page"
+
+    }
+
+
+    
+
 }
 
   public getUserInfo() {
