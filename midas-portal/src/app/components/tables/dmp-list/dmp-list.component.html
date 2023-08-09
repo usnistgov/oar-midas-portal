@@ -14,7 +14,7 @@
         [showCurrentPageReport] = "true"
         [rowHover]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-        [rowsPerPageOptions]="[5]" [globalFilterFields]="['name', 'owner','nist']">
+        [globalFilterFields]="['name', 'owner','nist']">
         <ng-template pTemplate="header">
             <tr>
                 <th pResizableColumn pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon></th>

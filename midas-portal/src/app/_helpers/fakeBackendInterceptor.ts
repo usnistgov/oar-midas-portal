@@ -26,19 +26,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       }
       */
      /*else if (request.url.indexOf('nps') > -1 && request.method === 'GET') {
+      // change environment.json => to make fakebackendprovider work with NPS "NPSAPI": "https://mdsdev.nist.gov/nps/user/208821",
         return of(new HttpResponse({ status: 200, body: reviewData }));
       }
       */
      if (request.url.indexOf('cloud') > -1 && request.method === 'GET') {
-        return of(new HttpResponse({ status: 200, body: midasData }));
-        //return of(new HttpResponse({ status: 200}));
-      }
-      /*else if (request.url.indexOf('auth') > -1 && request.method === 'GET') {
-        console.log("Fake back end so no authentication")
-        return of(new HttpResponse({ status: 200, body: "" }));
-      }*/
-        return next.handle(request)
+      return of(new HttpResponse({ status: 200, body: midasData }));
+      //return of(new HttpResponse({ status: 200}));
     }
+    /*else if (request.url.indexOf('auth') > -1 && request.method === 'GET') {
+      console.log("Fake back end so no authentication")
+      return of(new HttpResponse({ status: 200, body: "" }));
+    }*/
+      return next.handle(request)
+  }
 }
 
 export let fakeBackendProvider = {

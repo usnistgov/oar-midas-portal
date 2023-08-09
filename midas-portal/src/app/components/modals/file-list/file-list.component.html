@@ -13,7 +13,7 @@
         [showCurrentPageReport]="true"
         [rowHover]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-        [rowsPerPageOptions]="[5]" [globalFilterFields]="['file_name', 'file_path']">
+        [globalFilterFields]="['file_name', 'file_path']">
         <ng-template pTemplate="header">
             <tr>
                 <th pResizableColumn pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>

@@ -15,7 +15,7 @@
         [paginator]="true" [scrollable]="true"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-        [rowsPerPageOptions]="[5]" [globalFilterFields]="['title', 'submittername', 'currentreviewer','reviewstep']">
+        [globalFilterFields]="['title', 'submittername', 'currentreviewer','reviewstep']">
         <ng-template pTemplate="header">
             <tr>
                 <th style="width:20%" pSortableColumn="title">Title <p-sortIcon field="title"></p-sortIcon></th>
