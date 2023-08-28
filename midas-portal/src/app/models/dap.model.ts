@@ -6,5 +6,6 @@ export class dap {
     id: string;
     doi: string;
     state: string;
-    last_modified: Date;
+    modifiedDate: Date;
+    type: string;
 }

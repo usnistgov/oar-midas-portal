@@ -1,15 +1,15 @@
-import { Component, OnInit, ViewChild,Input } from '@angular/core';
-import {MenuItem} from 'primeng/api';
-import { faFileEdit,faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { MenuItem } from 'primeng/api';
+import { faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { AppConfig } from '../../../config/app.config'
 //import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
-import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
-import {DynamicDialogConfig} from 'primeng/dynamicdialog';
+import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 interface Column {
   field: string;
@@ -19,8 +19,8 @@ interface Column {
 @Component({
   selector: 'app-dap-modal',
   templateUrl: './dap.component.html',
-  providers:[DialogService,MessageService],
-  
+  providers: [DialogService, MessageService],
+
 
   styleUrls: [
     './dap.component.css'
@@ -30,30 +30,30 @@ interface Column {
 
 export class DapModalComponent implements OnInit {
   @Input() openedAsDialog: boolean = false;
-  faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
-  faFileEdit=faFileEdit;
+  faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
+  faFileEdit = faFileEdit;
   public records: any;
-  public data: any=[];
+  public data: any = [];
   loading: boolean = true;
   dapAPI: string;
   dapUI: string;
-  statuses:any[];
+  statuses: any[];
   ref: DynamicDialogRef;
   public count: any;
 
   cols!: Column[];
 
-    _selectedColumns!: Column[];
+  _selectedColumns!: Column[];
 
   dataSource: any;
 
   @ViewChild('recordsTable') recordsTable: Table;
 
-  constructor(private appConfig: AppConfig, private http: HttpClient,public datepipe:DatePipe,public dialogService: DialogService
-                    , public messageService: MessageService, public config: DynamicDialogConfig) { 
+  constructor(private appConfig: AppConfig, private http: HttpClient, public datepipe: DatePipe, public dialogService: DialogService
+    , public messageService: MessageService, public config: DynamicDialogConfig) {
   }
 
-  
+
 
   ngAfterViewInit() {
     let filter = document.getElementsByTagName("p-columnfilter");
@@ -61,8 +61,8 @@ export class DapModalComponent implements OnInit {
     // regular for loop
     var Ar_filter = Array.prototype.slice.call(filter)
     for (let i of Ar_filter) {
-      i.children[0].children[0].ariaLabel="Last Modified"
-      
+      i.children[0].children[0].ariaLabel = "Last Modified"
+
     }
 
     let paginator = document.getElementsByTagName("p-paginator");
@@ -70,51 +70,51 @@ export class DapModalComponent implements OnInit {
     // regular for loop
     var Ar_paginator = Array.prototype.slice.call(paginator)
     for (let i of Ar_paginator) {
-        i.children[0].children[1].ariaLabel="First page"
-        i.children[0].children[2].ariaLabel="Previous page"
-        i.children[0].children[4].ariaLabel="Next page"
-        i.children[0].children[5].ariaLabel="Last page"
+      i.children[0].children[1].ariaLabel = "First page"
+      i.children[0].children[2].ariaLabel = "Previous page"
+      i.children[0].children[4].ariaLabel = "Next page"
+      i.children[0].children[5].ariaLabel = "Last page"
 
     }
 
     let dialog = document.getElementsByTagName("p-dynamicdialog");
-    
+
     var Ar_dialog = Array.prototype.slice.call(dialog)
-    for(let i of Ar_dialog){
-      i.children[0].children[0].children[0].children[1].children[0].ariaLabel="exit"
+    for (let i of Ar_dialog) {
+      i.children[0].children[0].children[0].children[1].children[0].ariaLabel = "exit"
     }
 
     let multiselect = document.getElementsByTagName("p-multiselect");
-    
+
     var Ar_multiselect = Array.prototype.slice.call(multiselect)
-    for(let i of Ar_multiselect){
-      i.children[0].children[0].children[0].ariaLabel="Rows Selected"
+    for (let i of Ar_multiselect) {
+      i.children[0].children[0].children[0].ariaLabel = "Rows Selected"
     }
-    
+
   }
 
   async ngOnInit() {
-    
+
     let promise = new Promise((resolve) => {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.dapAPI = config.dapAPI;
         this.dapUI = config.dapUI;
         resolve(this.dapAPI);
-        this.data=this.config.data
-        this.count=this.data.length
+        this.data = this.config.data
+        this.count = this.data.length
 
         this.cols = [
           { field: 'name', header: 'Name' },
           { field: 'owner', header: 'Owner' },
-          { field: 'file_count', header: 'Files Associated'},
+          { field: 'file_count', header: 'Files Associated' },
           { field: "title", header: 'Title' },
-          { field: 'resourceType', header: 'Type' },
-          { field: 'id', header: 'ID'},
-          { field: 'doi', header: 'DOI'}
-          
-      ];
+          { field: 'type', header: 'Type' },
+          { field: 'id', header: 'ID' },
+          { field: 'doi', header: 'DOI' }
 
-      this._selectedColumns = this.cols;
+        ];
+
+        this._selectedColumns = this.cols;
 
       });
     });
@@ -123,22 +123,22 @@ export class DapModalComponent implements OnInit {
       { label: 'published', value: 'published' },
       { label: 'edit', value: 'edit' },
       { label: 'reviewed', value: 'reviewed' }
-  ];
-  
+    ];
+
   }
 
-    @Input() get selectedColumns(): any[] {
-      return this._selectedColumns;
+  @Input() get selectedColumns(): any[] {
+    return this._selectedColumns;
   }
 
   set selectedColumns(val: any[]) {
-      //restore original order
-      this._selectedColumns = this.cols.filter((col) => val.includes(col));
-  } 
+    //restore original order
+    this._selectedColumns = this.cols.filter((col) => val.includes(col));
+  }
 
 
-  async getRecords(){
-    
+  async getRecords() {
+
     let records;
 
     const headerDict = {
@@ -148,11 +148,11 @@ export class DapModalComponent implements OnInit {
       'Access-Control-Allow-Origin': '*',
       'rejectUnauthorized': 'false'
     }
-    
-    const requestOptions = {                                                                                                                                                                                 
+
+    const requestOptions = {
       headers: new Headers(headerDict)
     };
-    
+
     await fetch(this.dapAPI).then(r => r.json()).then(function (r) {
       return records = r
     })
@@ -161,7 +161,7 @@ export class DapModalComponent implements OnInit {
     return this.records = Object(records);
   }
 
-  linkto(item:string){
+  linkto(item: string) {
     return this.dapAPI.concat(item.toString());
   }
 
@@ -169,16 +169,16 @@ export class DapModalComponent implements OnInit {
 
   clear(table: Table) {
     table.clear();
-}
+  }
 
   getStatus(status: string) {
     switch (status) {
-        case 'published':
-            return 'success';
-        case 'edit':
-            return 'warning';
-        case 'reviewed':
-            return 'danger';
+      case 'published':
+        return 'success';
+      case 'edit':
+        return 'warning';
+      case 'reviewed':
+        return 'danger';
     }
     return ""
   }
