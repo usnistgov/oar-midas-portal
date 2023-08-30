@@ -2,85 +2,92 @@
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
-            <a href={{dapUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileEdit" size="lg" title="Create New Record"></fa-icon></a> 
+            <a href={{dapUI}} target="_blank"><fa-icon
+                    [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faFileEdit" size="lg"
+                    title="Create New Record"></fa-icon></a>
         </button>
     </ng-template>
-        <p-table #recordsTable name="recordtable" [value]="data" [paginator]="true"
-            height="100px" [rows]="1000" [scrollable]="true"
-            [showCurrentPageReport]="true"
-            [rowHover]="true"
-            [columns]="selectedColumns"
-            [scrollable]="true" scrollHeight="600px" 
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-            [globalFilterFields]="['name','owner','id','resourceType','title','doi']" >
-            <ng-template pTemplate="header" let-columns>
-                <tr>
-                    <th *ngFor="let col of columns" pResizableColumn pSortableColumn={{col.field}}>
-                        {{col.header}}<p-sortIcon field={{col.field}}></p-sortIcon>
-                    </th>
-                    <th pResizableColumn>
-                        <p-columnFilter field="status.state" matchMode="equals" [showMenu]="false" [showClearButton]="false">
-                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="State" [showClear]="true">
-                                    <ng-template let-option pTemplate="item">
-                                        {{option.value}}
-                                    </ng-template>
-                                </p-dropdown>
-                            </ng-template>
-                        </p-columnFilter>
-                    </th>
-                    <th pResizableColumn>Last Modified
-                        <p-columnFilter title="Filter by date" type="date" field="status.modifiedDate" display="menu"></p-columnFilter>
-                    </th>
-                    <!--<th pResizableColumn pSortableColumn="id">ID<p-sortIcon field="id"></p-sortIcon></th>
+    <p-table #recordsTable name="recordtable" [value]="data" [paginator]="true" height="100px" [rows]="1000"
+        [scrollable]="true" [showCurrentPageReport]="true" [rowHover]="true" [columns]="selectedColumns"
+        [scrollable]="true" scrollHeight="600px"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [globalFilterFields]="['name','owner','id','resourceType','title','doi']">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" pResizableColumn pSortableColumn={{col.field}}>
+                    {{col.header}}<p-sortIcon field={{col.field}}></p-sortIcon>
+                </th>
+                <th pResizableColumn>
+                    <p-columnFilter field="status.state" matchMode="equals" [showMenu]="false"
+                        [showClearButton]="false">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)"
+                                placeholder="State" [showClear]="true">
+                                <ng-template let-option pTemplate="item">
+                                    {{option.value}}
+                                </ng-template>
+                            </p-dropdown>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>
+                <th pResizableColumn>Last Modified
+                    <p-columnFilter title="Filter by date" type="date" field="status.modifiedDate"
+                        display="menu"></p-columnFilter>
+                </th>
+                <!--<th pResizableColumn pSortableColumn="id">ID<p-sortIcon field="id"></p-sortIcon></th>
                     <th pResizableColumn pSortableColumn="title">Title<p-sortIcon field="title"></p-sortIcon></th>
                     <th pResizableColumn pSortableColumn="type">Type<p-sortIcon field="type"></p-sortIcon></th>-->
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="caption">
-                <div class="filter">
-                        <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                        selectedItemsLabel="{0} columns selected" [style]="{'min-width': '200px'}" placeholder="Columns"></p-multiSelect>
-                        <div class="search">
-                        <span class="p-input-icon-right ml-auto" style="margin-right: 2%;">
-                            <input pInputText type="text" (input)="recordsTable.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
-                        </span>
-                        <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(recordsTable)"></button>
-                    </div>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="caption">
+            <div class="filter">
+                <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+                    selectedItemsLabel="{0} columns selected" [style]="{'min-width': '200px'}"
+                    placeholder="Columns"></p-multiSelect>
+                <div class="search">
+                    <span class="p-input-icon-right ml-auto" style="margin-right: 2%;">
+                        <input pInputText type="text"
+                            (input)="recordsTable.filterGlobal($any($event.target).value, 'contains')"
+                            placeholder="Search keyword" />
+                    </span>
+                    <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                        (click)="clear(recordsTable)"></button>
                 </div>
-            </ng-template>
-            <ng-template pTemplate="body" let-item let-columns="columns">
-                <tr>
-                    <td *ngFor="let col of columns">
-                        <div *ngIf="col.field==='resourceType' || col.field==='title' || col.field==='doi' || col.field==='file_count'|| col.field==='name';else other_content">
-                            <div *ngIf="col.field=='resourceType'">
-                                {{item.meta['resourceType']}}
-                            </div>
-                            <div *ngIf="col.field=='title'">
-                                {{item.data['title']}}
-                            </div>
-                            <div *ngIf="col.field=='doi'">
-                                {{item.data['doi']}}
-                            </div>
-                            <div *ngIf="col.field=='file_count'">
-                                {{item.data['file_count']}}
-                            </div>
-                            <div *ngIf="col.field=='name'">
-                                <a href="https://google.com" target="_blank">{{item.name}}</a>
-                            </div>
-                            
+            </div>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-columns="columns">
+            <tr>
+                <td *ngFor="let col of columns">
+                    <div
+                        *ngIf="col.field==='resourceType' || col.field==='title' || col.field==='doi' || col.field==='file_count'|| col.field==='name';else other_content">
+                        <div *ngIf="col.field=='resourceType'">
+                            {{item.meta['resourceType']}}
                         </div>
-                        <ng-template #other_content>
-                            {{item[col.field]}}
-                        </ng-template>
-                    </td>
-                    <td class="td-class"><p-tag [value]="item.status.state" [severity]="getStatus(item.status.state)"></p-tag></td>
-                    <td class="td-class">{{this.datepipe.transform(item.status.modifiedDate,'MM/dd/yyyy')}}</td>
-                    <!--<td>{{item.data['@id']}}</td>
+                        <div *ngIf="col.field=='title'">
+                            {{item.data['title']}}
+                        </div>
+                        <div *ngIf="col.field=='doi'">
+                            {{item.data['doi']}}
+                        </div>
+                        <div *ngIf="col.field=='file_count'">
+                            {{item.data['file_count']}}
+                        </div>
+                        <div *ngIf="col.field=='name'">
+                            <a href={{linkto(item.id)}} target="_blank">{{item.name}}</a>
+                        </div>
+
+                    </div>
+                    <ng-template #other_content>
+                        {{item[col.field]}}
+                    </ng-template>
+                </td>
+                <td class="td-class"><p-tag [value]="item.status.state"
+                        [severity]="getStatus(item.status.state)"></p-tag></td>
+                <td class="td-class">{{this.datepipe.transform(item.status.modifiedDate,'MM/dd/yyyy')}}</td>
+                <!--<td>{{item.data['@id']}}</td>
                     <td>{{item.data['title']}}</td>
                     <td>{{item.meta['resourceType']}}</td>-->
-                </tr>
-            </ng-template>
-        </p-table>
+            </tr>
+        </ng-template>
+    </p-table>
 </p-panel>
-

@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {faCheck,faFileEdit,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
-import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DmpListModalComponent } from '../../modals/dmp-list/dmp-list.component';
@@ -17,15 +17,16 @@ import { ConfigurationService } from 'oarng';
   styleUrls: ['./dmp-list.component.css']
 })
 export class DmpListComponent implements OnInit {
-  faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
-  faCheck=faCheck;
-  faFileEdit=faFileEdit;
+  faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
+  faCheck = faCheck;
+  faFileEdit = faFileEdit;
   public records: any;
   public recordsApi: string;
   public data: any;
   loading: boolean = true;
   dmpAPI: string;
   dmpUI: string;
+  dmpEDIT: string;
   ref: DynamicDialogRef;
 
 
@@ -33,45 +34,52 @@ export class DmpListComponent implements OnInit {
 
   @ViewChild('dmptable') dmpTable: Table;
 
-  constructor(private configSvc: ConfigurationService ,private http: HttpClient, public datepipe:DatePipe,public dialogService: DialogService
-    , public messageService: MessageService) { 
+  constructor(private configSvc: ConfigurationService, private http: HttpClient, public datepipe: DatePipe, public dialogService: DialogService
+    , public messageService: MessageService) {
   }
 
   async ngOnInit() {
     let promise = new Promise((resolve) => {
-        this.dmpAPI = this.configSvc.getConfig()['dmpAPI'];
-        resolve(this.dmpAPI);
-        //GET method to get data
-        this.fetchRecords(this.dmpAPI);
-        if(typeof this.data !== 'undefined') {
-          for (let i = 0; i<this.data.length;i++){
-            this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
-          }
+      this.dmpUI = this.configSvc.getConfig()['dmpUI'];
+      this.dmpAPI = this.configSvc.getConfig()['dmpAPI'];
+      this.dmpEDIT = this.configSvc.getConfig()['dmpEDIT'];
+      resolve(this.dmpAPI);
+      //GET method to get data
+      this.fetchRecords(this.dmpAPI);
+      if (typeof this.data !== 'undefined') {
+        for (let i = 0; i < this.data.length; i++) {
+          this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate * 1000)
         }
-    });
-    
+      }
 
-    // Retrieving data using fetch functions 
-    /*
-    promise.then(async ()=> {
-        await this.getRecords();
-    }
-    ).then(() => {
-      this.data = JSON.parse(this.records);
-    });
-    */
+
+      // Retrieving data using fetch functions 
+      /*
+      promise.then(async ()=> {
+          await this.getRecords();
+      }
+      ).then(() => {
+        this.data = JSON.parse(this.records);
+      });
+      */
+    })
   }
   show() {
     this.ref = this.dialogService.open(DmpListModalComponent, {
-        data:this.data,
-        width: '80%',
-        contentStyle: { overflow: 'auto' },
-        baseZIndex: 10000,
+      data: this.data,
+      width: '80%',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
     });
   }
 
-  async getRecords(){
-    
+  linkto(item: string) {
+    //https://localhost/dmpui/edit/mdm1:0001
+    return this.dmpEDIT.concat(item.toString())
+  }
+
+  async getRecords() {
+
     let records;
 
     const headerDict = {
@@ -81,11 +89,11 @@ export class DmpListComponent implements OnInit {
       'Access-Control-Allow-Origin': '*',
       'rejectUnauthorized': 'false'
     }
-    
-    const requestOptions = {                                                                                                                                                                                 
+
+    const requestOptions = {
       headers: new Headers(headerDict)
     };
-    
+
     await fetch(this.dmpAPI).then(r => r.json()).then(function (r) {
       return records = r
     })
@@ -94,17 +102,17 @@ export class DmpListComponent implements OnInit {
     return this.records = Object(records);
   }
 
-  private fetchRecords(url:string){
+  private fetchRecords(url: string) {
     this.http.get(url)
-    .pipe(map((responseData: any)  => {
-      return responseData
-    })). subscribe(records => {
-      this.data = records
-    })
+      .pipe(map((responseData: any) => {
+        return responseData
+      })).subscribe(records => {
+        this.data = records
+      })
   }
   clear(table: Table) {
     table.clear();
-}
+  }
 
 
   titleClick() {

@@ -2,7 +2,7 @@
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
-            <a href={{nextcloudUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faFileImport" size="lg" title="Add or update files"></fa-icon></a>
+            <a href={{nextcloudUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faFileImport" size="lg" title="Add or update files"></fa-icon></a>
         </button>
         <p-toast></p-toast>
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
@@ -13,7 +13,7 @@
         [showCurrentPageReport]="true"
         [rowHover]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-        [rowsPerPageOptions]="[5]" [globalFilterFields]="['file_name', 'file_path']">
+        [globalFilterFields]="['file_name', 'file_path']">
         <ng-template pTemplate="header">
             <tr>
                 <th pResizableColumn pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
@@ -36,7 +36,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-item>
             <tr>
-                <td class="td-class">{{item.name}}</td>
+                <td class="td-class"><a href="" target="_blank">{{item.name}}</a></td>
                 <td class="td-class">{{item.owner}}</td>
                 <td class="td-class">{{item.access}}</td>
                 <td class="td-class">{{item.space_used}}</td>

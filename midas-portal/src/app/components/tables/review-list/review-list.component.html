@@ -3,12 +3,7 @@
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
             <!-- <span class="pi pi-cog"></span> -->
-            <fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'orange'}" [icon]="faBell" size="lg" title="You have new Records to review."></fa-icon>
-       
-        </button>
-        <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
-            <!-- <span class="pi pi-cog"></span> -->
-            <a href={{npsUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: 'grey'}" [icon]="faListCheck" size="lg" title="Check Reviews"></fa-icon></a>
+            <a href={{npsUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faListCheck" size="lg" title="Check Reviews"></fa-icon></a>
        
         </button>
         <p-toast></p-toast>
@@ -21,7 +16,7 @@
         [paginator]="true" [rows]="5" [scrollable]="true"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-        [rowsPerPageOptions]="[5]" [globalFilterFields]="['title', 'submittername', 'currentreviewer','reviewstep']">
+        [globalFilterFields]="['title', 'submittername', 'currentreviewer','reviewstep']">
         <ng-template pTemplate="header">
             <tr>
                 <th style="width:20%" pSortableColumn="title">Title <p-sortIcon field="title"></p-sortIcon></th>
@@ -32,7 +27,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-item>
             <tr class="tr-class">
-                <td class="td-class"><a href="www.google.com" target="_blank">{{item.title}}</a></td>
+                <td class="td-class"><a href={{linkto(item.name)}} target="_blank">{{item.title}}</a></td>
                 <td class="td-class">{{item.submitterName}}</td>
                 <td class="td-class">{{item.currentReviewer}}</td>
                 <td class="td-class">{{item.currentReviewStep}}</td>
