@@ -11,15 +11,14 @@
         [scrollable]="true" [showCurrentPageReport]="true" [rowHover]="true" [columns]="selectedColumns"
         [scrollable]="true" scrollHeight="600px"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [globalFilterFields]="['name','owner','id','resourceType','title','doi','file_count']">
+        [globalFilterFields]="['name','owner','id','type','title','doi','file_count']">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" pResizableColumn pSortableColumn={{col.field}}>
                     {{col.header}}<p-sortIcon field={{col.field}}></p-sortIcon>
                 </th>
                 <th pResizableColumn>
-                    <p-columnFilter field="status.state" matchMode="equals" [showMenu]="false"
-                        [showClearButton]="false">
+                    <p-columnFilter field="state" matchMode="equals" [showMenu]="false" [showClearButton]="false">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                             <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)"
                                 placeholder="State" [showClear]="true">
@@ -31,7 +30,7 @@
                     </p-columnFilter>
                 </th>
                 <th pResizableColumn>Last Modified
-                    <p-columnFilter title="Filter by date" type="date" field="status.modifiedDate"
+                    <p-columnFilter title="Filter by date" type="date" field="modifiedDate"
                         display="menu"></p-columnFilter>
                 </th>
                 <!--<th pResizableColumn pSortableColumn="id">ID<p-sortIcon field="id"></p-sortIcon></th>
