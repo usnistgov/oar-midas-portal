@@ -27,6 +27,7 @@ export class DmpListComponent implements OnInit {
   loading: boolean = true;
   dmpAPI: string;
   dmpUI: string;
+  dmpEDIT: string;
   ref: DynamicDialogRef;
   public DMP: any[] = [];
 
@@ -43,7 +44,7 @@ export class DmpListComponent implements OnInit {
     let promise = new Promise((resolve) => {
       this.dmpUI = this.configSvc.getConfig()['dmpUI'];
       this.dmpAPI = this.configSvc.getConfig()['dmpAPI'];
-      this.dmpUI = this.configSvc.getConfig()['dmpUI'];
+      this.dmpEDIT = this.configSvc.getConfig()['dmpEDIT'];
       resolve(this.dmpAPI);
       //GET method to get data
       this.fetchRecords(this.dmpAPI);
@@ -59,7 +60,8 @@ export class DmpListComponent implements OnInit {
   }
 
   linkto(item: string) {
-    this.dmpAPI.concat(item.toString())
+    //https://localhost/dmpui/edit/mdm1:0001
+    return this.dmpEDIT.concat(item.toString())
   }
 
   async getRecords() {

@@ -33,6 +33,7 @@ export class DapComponent implements OnInit {
   loading: boolean = true;
   dapAPI: string;
   dapUI: string;
+  dapEDIT: string;
   statuses: any[];
   ref: DynamicDialogRef;
   public DAP: any[] = [];
@@ -55,7 +56,7 @@ export class DapComponent implements OnInit {
     let promise = new Promise((resolve) => {
       this.dapUI = this.configSvc.getConfig()['dapUI'];
       this.dapAPI = this.configSvc.getConfig()['dapAPI'];
-      this.dapUI = this.configSvc.getConfig()['dapUI'];
+      this.dapEDIT = this.configSvc.getConfig()['dapEDIT'];
       resolve(this.dapAPI);
       this.fetchRecords(this.dapAPI);
       this.statuses = [
@@ -81,7 +82,7 @@ export class DapComponent implements OnInit {
   }
 
   linkto(item: string) {
-    return this.dapAPI.concat(item.toString());
+    return this.dapEDIT.concat(item.toString()).concat("?editEnabled=true");
   }
 
   async getRecords() {
@@ -108,7 +109,7 @@ export class DapComponent implements OnInit {
     // return this.records = Object(records);
   }
 
-  public async fetchRecords(url: string) {
+  public fetchRecords(url: string) {
     this.http.get(url)
       .pipe(map((responseData: any) => {
         return responseData

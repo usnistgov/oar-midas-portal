@@ -31,8 +31,28 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       }
       */
      if (request.url.indexOf('cloud') > -1 && request.method === 'GET') {
-      return of(new HttpResponse({ status: 200, body: midasData }));
-      //return of(new HttpResponse({ status: 200}));
+        return of(new HttpResponse({ status: 200, body: midasData }));
+        //return of(new HttpResponse({ status: 200}));
+      }
+      else if (request.url.indexOf('auth') > -1 && request.method === 'GET') {
+        console.log("Fake back end so no authentication")
+        var tempData = {
+          "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc3RvcGhlci5kYXZpc0BuaXN0LmdvdnwxMjM0IiwiZXhwIjoxNjkxMDA1MDk4LCJjdXN0b21pemF0aW9uIjoiYXV0aG9yaXphdGlvbiJ9.NVFPprw74Z-ozQ372yrHiuJkXEqdWOAfi5lTc76y0dU",
+          "userDetails": {
+              "userId": "cnd7",
+              "userName": "Christopher",
+              "userLastName": "Davis",
+              "userEmail": "christopher.davis@nist.gov",
+              "userGroup": "Domain Users",
+              "userDiv": "Applications Systems Division",
+              "userDivNum": "183",
+              "userOU": "Office of Information Systems Management"
+          },
+          "errorMessage": ""
+        }
+        return of(new HttpResponse({ status: 200, body: JSON.stringify(tempData) }));
+      }
+        return next.handle(request)
     }
     /*else if (request.url.indexOf('auth') > -1 && request.method === 'GET') {
       console.log("Fake back end so no authentication")

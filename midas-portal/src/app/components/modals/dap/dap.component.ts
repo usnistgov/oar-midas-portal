@@ -37,6 +37,7 @@ export class DapModalComponent implements OnInit {
   loading: boolean = true;
   dapAPI: string;
   dapUI: string;
+  dapEDIT: string;
   statuses: any[];
   ref: DynamicDialogRef;
   public count: any;
@@ -99,6 +100,7 @@ export class DapModalComponent implements OnInit {
       this.appConfig.getRemoteConfig().subscribe(config => {
         this.dapAPI = config.dapAPI;
         this.dapUI = config.dapUI;
+        this.dapEDIT = config.dapEDIT
         resolve(this.dapAPI);
         this.data = this.config.data
         this.count = this.data.length
@@ -162,7 +164,7 @@ export class DapModalComponent implements OnInit {
   }
 
   linkto(item: string) {
-    return this.dapAPI.concat(item.toString());
+    return this.dapEDIT.concat(item.toString()).concat("?editEnabled=true");
   }
 
 
