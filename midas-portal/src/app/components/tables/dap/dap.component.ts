@@ -57,21 +57,7 @@ export class DapComponent implements OnInit {
       this.dapAPI = this.configSvc.getConfig()['dapAPI'];
       this.dapUI = this.configSvc.getConfig()['dapUI'];
       resolve(this.dapAPI);
-      //GET method to get data
       this.fetchRecords(this.dapAPI);
-
-
-      // Retrieving data using fetch functions 
-      /*
-      promise.then(async ()=> {
-          await this.getRecords();
-      }
-      ).then(() => {
-        console.log('DAP data retrieved');
-        console.log(this.records);
-        this.data = this.records;
-      });
-      */
       this.statuses = [
         { label: 'published', value: 'published' },
         { label: 'edit', value: 'edit' },

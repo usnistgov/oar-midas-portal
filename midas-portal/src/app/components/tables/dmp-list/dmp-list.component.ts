@@ -47,18 +47,6 @@ export class DmpListComponent implements OnInit {
       resolve(this.dmpAPI);
       //GET method to get data
       this.fetchRecords(this.dmpAPI);
-
-
-
-      // Retrieving data using fetch functions 
-      /*
-      promise.then(async ()=> {
-          await this.getRecords();
-      }
-      ).then(() => {
-        this.data = JSON.parse(this.records);
-      });
-      */
     })
   }
   show() {
