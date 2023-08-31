@@ -58,8 +58,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       console.log("Fake back end so no authentication")
       return of(new HttpResponse({ status: 200, body: "" }));
     }*/
-      return next.handle(request)
-  }
 }
 
 export let fakeBackendProvider = {
