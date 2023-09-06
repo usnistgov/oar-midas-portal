@@ -40,11 +40,11 @@
             </ng-template>
             <ng-template pTemplate="body" let-item let-expanded="expanded">
                 <tr>
-                    <td><a href={{linkto(item.id)}} target="_blank">{{item.name}}</a></td>
+                    <td><a href={{linkto(item.name)}} target="_blank">{{item.name}}</a></td>
                     <td>{{item.owner}}</td>
-                    <td>{{item.data.organization[0].ORG_ID}}</td>
-                    <td>{{item.data.primary_NIST_contact.firstName+' '+item.data.primary_NIST_contact.lastName}}</td>
-                    <td>{{this.datepipe.transform(item.status.modified,'MM/dd/yyyy')}}</td>
+                    <td>{{item.orgid}}</td>
+                    <td>{{item.primaryContact}}</td>
+                    <td>{{this.datepipe.transform(item.modifiedDate,'MM/dd/yyyy')}}</td>
                     <td style="max-width:150px">
                         <button type="button" pButton pRipple [pRowToggler]="item"
                             class="p-button-text p-button-rounded p-button-plain"
@@ -55,7 +55,7 @@
             <ng-template pTemplate="rowexpansion" let-item>
                 <tr>
                     <div class="p-3">
-                        <td colspan="3"><strong>Description:</strong> {{item.data.projectDescription}}</td>
+                        <td colspan="3"><strong>Description:</strong> {{item.description}}</td>
                     </div>
                 </tr>
             </ng-template>

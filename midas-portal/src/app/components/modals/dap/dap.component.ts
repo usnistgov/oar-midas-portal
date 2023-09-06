@@ -110,7 +110,7 @@ export class DapModalComponent implements OnInit {
           { field: 'owner', header: 'Owner' },
           { field: 'file_count', header: 'Files Associated' },
           { field: "title", header: 'Title' },
-          { field: 'resourceType', header: 'Type' },
+          { field: 'type', header: 'Type' },
           { field: 'id', header: 'ID' },
           { field: 'doi', header: 'DOI' }
 

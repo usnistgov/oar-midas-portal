@@ -11,6 +11,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { DapModalComponent } from '../../modals/dap/dap.component';
 import { ConfigurationService } from 'oarng';
+import { dap } from '../../../models/dap.model';
 
 
 @Component({
@@ -35,6 +36,7 @@ export class DapComponent implements OnInit {
   dapEDIT: string;
   statuses: any[];
   ref: DynamicDialogRef;
+  public DAP: any[] = [];
 
   dataSource: any;
 
@@ -56,24 +58,7 @@ export class DapComponent implements OnInit {
       this.dapAPI = this.configSvc.getConfig()['dapAPI'];
       this.dapEDIT = this.configSvc.getConfig()['dapEDIT'];
       resolve(this.dapAPI);
-      //GET method to get data
       this.fetchRecords(this.dapAPI);
-      if (typeof this.data !== 'undefined') {
-        for (let i = 0; i < this.data.length; i++) {
-          this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate)
-        }
-      };
-      // Retrieving data using fetch functions 
-      /*
-      promise.then(async ()=> {
-          await this.getRecords();
-      }
-      ).then(() => {
-        console.log('DAP data retrieved');
-        console.log(this.records);
-        this.data = this.records;
-      });
-      */
       this.statuses = [
         { label: 'published', value: 'published' },
         { label: 'edit', value: 'edit' },
@@ -86,7 +71,7 @@ export class DapComponent implements OnInit {
 
   show() {
     this.ref = this.dialogService.open(DapModalComponent, {
-      data: this.data,
+      data: this.DAP,
       width: '90%',
       contentStyle: {
         'overflow-y': 'hidden', 'overflow-x': 'hidden',
@@ -129,8 +114,24 @@ export class DapComponent implements OnInit {
       .pipe(map((responseData: any) => {
         return responseData
       })).subscribe(records => {
-        this.data = records
+        for (let i = 0; i < records.length; i++) {
+          this.DAP.push(this.customSerialize(records[i]))
+        }
       })
+  }
+
+  public customSerialize(item: any) {
+    let tmp = new dap();
+    tmp.doi = item.data['doi']
+    tmp.file_count = item.data['file_count']
+    tmp.id = item.id
+    tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate)
+    tmp.name = item.name
+    tmp.owner = item.owner
+    tmp.state = item.status.state
+    tmp.title = item.data['title']
+    tmp.type = item.meta['resourceType']
+    return tmp
   }
 
 

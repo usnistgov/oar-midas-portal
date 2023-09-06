@@ -11,15 +11,14 @@
         [scrollable]="true" [showCurrentPageReport]="true" [rowHover]="true" [columns]="selectedColumns"
         [scrollable]="true" scrollHeight="600px"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [globalFilterFields]="['name','owner','id','resourceType','title','doi']">
+        [globalFilterFields]="['name','owner','id','type','title','doi','file_count']">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" pResizableColumn pSortableColumn={{col.field}}>
                     {{col.header}}<p-sortIcon field={{col.field}}></p-sortIcon>
                 </th>
                 <th pResizableColumn>
-                    <p-columnFilter field="status.state" matchMode="equals" [showMenu]="false"
-                        [showClearButton]="false">
+                    <p-columnFilter field="state" matchMode="equals" [showMenu]="false" [showClearButton]="false">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                             <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)"
                                 placeholder="State" [showClear]="true">
@@ -31,7 +30,7 @@
                     </p-columnFilter>
                 </th>
                 <th pResizableColumn>Last Modified
-                    <p-columnFilter title="Filter by date" type="date" field="status.modifiedDate"
+                    <p-columnFilter title="Filter by date" type="date" field="modifiedDate"
                         display="menu"></p-columnFilter>
                 </th>
                 <!--<th pResizableColumn pSortableColumn="id">ID<p-sortIcon field="id"></p-sortIcon></th>
@@ -58,32 +57,10 @@
         <ng-template pTemplate="body" let-item let-columns="columns">
             <tr>
                 <td *ngFor="let col of columns">
-                    <div
-                        *ngIf="col.field==='resourceType' || col.field==='title' || col.field==='doi' || col.field==='file_count'|| col.field==='name';else other_content">
-                        <div *ngIf="col.field=='resourceType'">
-                            {{item.meta['resourceType']}}
-                        </div>
-                        <div *ngIf="col.field=='title'">
-                            {{item.data['title']}}
-                        </div>
-                        <div *ngIf="col.field=='doi'">
-                            {{item.data['doi']}}
-                        </div>
-                        <div *ngIf="col.field=='file_count'">
-                            {{item.data['file_count']}}
-                        </div>
-                        <div *ngIf="col.field=='name'">
-                            <a href={{linkto(item.id)}} target="_blank">{{item.name}}</a>
-                        </div>
-
-                    </div>
-                    <ng-template #other_content>
-                        {{item[col.field]}}
-                    </ng-template>
+                    {{item[col.field]}}
                 </td>
-                <td class="td-class"><p-tag [value]="item.status.state"
-                        [severity]="getStatus(item.status.state)"></p-tag></td>
-                <td class="td-class">{{this.datepipe.transform(item.status.modifiedDate,'MM/dd/yyyy')}}</td>
+                <td class="td-class"><p-tag [value]="item.state" [severity]="getStatus(item.state)"></p-tag></td>
+                <td class="td-class">{{this.datepipe.transform(item.modifiedDate,'MM/dd/yyyy')}}</td>
                 <!--<td>{{item.data['@id']}}</td>
                     <td>{{item.data['title']}}</td>
                     <td>{{item.meta['resourceType']}}</td>-->

@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DmpListModalComponent } from '../../modals/dmp-list/dmp-list.component';
 import { ConfigurationService } from 'oarng';
+import { dmp } from '../../../models/dmp.model';
 
 @Component({
   selector: 'app-dmp-list',
@@ -28,6 +29,7 @@ export class DmpListComponent implements OnInit {
   dmpUI: string;
   dmpEDIT: string;
   ref: DynamicDialogRef;
+  public DMP: any[] = [];
 
 
   dataSource: any;
@@ -46,27 +48,11 @@ export class DmpListComponent implements OnInit {
       resolve(this.dmpAPI);
       //GET method to get data
       this.fetchRecords(this.dmpAPI);
-      if (typeof this.data !== 'undefined') {
-        for (let i = 0; i < this.data.length; i++) {
-          this.data[i].status.modifiedDate = new Date(this.data[i].status.modifiedDate * 1000)
-        }
-      }
-
-
-      // Retrieving data using fetch functions 
-      /*
-      promise.then(async ()=> {
-          await this.getRecords();
-      }
-      ).then(() => {
-        this.data = JSON.parse(this.records);
-      });
-      */
     })
   }
   show() {
     this.ref = this.dialogService.open(DmpListModalComponent, {
-      data: this.data,
+      data: this.DMP,
       width: '80%',
       contentStyle: { overflow: 'auto' },
       baseZIndex: 10000,
@@ -107,9 +93,23 @@ export class DmpListComponent implements OnInit {
       .pipe(map((responseData: any) => {
         return responseData
       })).subscribe(records => {
-        this.data = records
+        for (let i = 0; i < records.length; i++) {
+          this.DMP.push(this.customSerialize(records[i]))
+        }
       })
   }
+
+  public customSerialize(item: any) {
+    let tmp = new dmp();
+    tmp.name = item.name
+    tmp.orgid = item.data.organizations[0].ORG_ID
+    tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate)
+    tmp.owner = item.owner
+    tmp.primaryContact = item.data.primary_NIST_contact.firstName + ' ' + item.data.primary_NIST_contact.lastName
+    tmp.description = item.data.projectDescription
+    return tmp
+  }
+
   clear(table: Table) {
     table.clear();
   }
