@@ -123,6 +123,10 @@ export class LandingComponent implements OnInit {
     this.http.get(this.authAPI, { observe: 'response', headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }}).subscribe(response => {
       console.log('response code: ' + response.status);
       console.log('user details 1 : ' + JSON.stringify(response.body));
+      console.log('user details 11 : ' + JSON.parse(JSON.stringify(response.body)));
+      console.log('user details 12 : ' + JSON.parse(JSON.stringify(response.body)).token);
+      console.log('user details 13 : ' + JSON.parse(JSON.stringify(response.body)).userDetail);
+      console.log('user details 13 : ' + JSON.parse(JSON.stringify(response.body)).errorMessage);
       if(response.status != 200) {
         //redirect to authentication URL
 
@@ -135,7 +139,7 @@ export class LandingComponent implements OnInit {
          var testToken =  JSON.parse(JSON.stringify(response.body)).token;
          console.log(" TOKEN ::"+testToken)
          let responseString = response.body as string;
-         let userDetails = JSON.parse(responseString).userDetails;
+         let userDetails = JSON.parse(JSON.stringify(response.body)).userDetails;
          console.log(" userDetails :: 3 "+userDetails)
          
          this.userName = userDetails.userName;
