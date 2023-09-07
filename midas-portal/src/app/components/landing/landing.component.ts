@@ -122,7 +122,7 @@ export class LandingComponent implements OnInit {
     //make the call to the auth service
     this.http.get(this.authAPI, { observe: 'response', headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }}).subscribe(response => {
       console.log('response code: ' + response.status);
-      console.log('user details 1 : ' + response.body);
+      console.log('user details 1 : ' + JSON.stringify(response.body));
       if(response.status != 200) {
         //redirect to authentication URL
 
