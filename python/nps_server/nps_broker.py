@@ -65,7 +65,7 @@ class NPS(Resource):
 
 
 # adding the defined resources along with their corresponding urls
-api.add_resource(NPS, '/user/<string:username>')
+api.add_resource(NPS, '/nps/<string:username>')
 
 
 # driver function

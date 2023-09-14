@@ -1,7 +1,7 @@
 {
     "authAPI": "https://mdsdev.nist.gov/sso/auth/_tokeninfo",
     "authRedirect": "https://mdsdev.nist.gov/sso/saml/login?redirectTo=https://mdsdev.nist.gov/portal",
-    "NPSAPI": "https://localhost:5000/user/cnd7",
+    "NPSAPI": "https://localhost:5000/nps/cnd7",
     "dmpAPI": "https://localhost/midas/dmp/mdm1",
     "dapAPI": "https://localhost/midas/dap/mds3",
     "groupAPI": "https://localhost/midas/groups",
