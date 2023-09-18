@@ -102,7 +102,9 @@ export class DmpListComponent implements OnInit {
   public customSerialize(item: any) {
     let tmp = new dmp();
     tmp.name = item.name
-    tmp.orgid = item.data.organizations[0].ORG_ID
+    tmp.orgid = 0;
+    if (item.data.organizations && item.data.organizations.length > 0)
+      tmp.orgid = item.data.organizations[0].ORG_ID
     tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate)
     tmp.owner = item.owner
     tmp.primaryContact = item.data.primary_NIST_contact.firstName + ' ' + item.data.primary_NIST_contact.lastName
