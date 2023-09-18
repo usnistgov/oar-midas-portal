@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { faCheck, faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
@@ -36,20 +35,21 @@ export class DmpListComponent implements OnInit {
 
   @ViewChild('dmptable') dmpTable: Table;
 
-  constructor(private configSvc: ConfigurationService, private http: HttpClient, public datepipe: DatePipe, public dialogService: DialogService
-    , public messageService: MessageService) {
-  }
+  constructor(private configSvc: ConfigurationService, private http: HttpClient,
+              public datepipe: DatePipe, public dialogService: DialogService,
+              public messageService: MessageService)
+  {  }
 
   async ngOnInit() {
-    let promise = new Promise((resolve) => {
-      this.dmpUI = this.configSvc.getConfig()['dmpUI'];
-      this.dmpAPI = this.configSvc.getConfig()['dmpAPI'];
-      this.dmpEDIT = this.configSvc.getConfig()['dmpEDIT'];
-      resolve(this.dmpAPI);
+      let cfg = this.configSvc.getConfig();
+      this.dmpUI = cfg['dmpUI'];
+      this.dmpAPI = cfg['dmpAPI'];
+      this.dmpEDIT = cfg['dmpEDIT'];
+
       //GET method to get data
       this.fetchRecords(this.dmpAPI);
-    })
   }
+
   show() {
     this.ref = this.dialogService.open(DmpListModalComponent, {
       data: this.DMP,

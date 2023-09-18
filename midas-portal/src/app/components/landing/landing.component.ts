@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/api';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ToastModule } from 'primeng/toast';
 import { map } from 'rxjs/operators';
-import { AuthenticationService, ConfigurationService } from 'oarng';
+import { AuthenticationService } from 'oarng';
 
 
 @Component({

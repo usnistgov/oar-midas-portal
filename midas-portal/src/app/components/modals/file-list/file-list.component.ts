@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {faFileImport,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
@@ -29,14 +28,11 @@ export class FileListModalComponent implements OnInit {
   ref: DynamicDialogRef;
   public count:any;
   
-  
-
   @ViewChild('filetable') fileTable: Table;
 
-  constructor(private appConfig: AppConfig,private http:HttpClient,public datepipe:DatePipe,public dialogService: DialogService
-    , public messageService: MessageService, public config: DynamicDialogConfig) { 
-  }
-
+  constructor(public datepipe:DatePipe, public dialogService: DialogService,
+              public messageService: MessageService, public config: DynamicDialogConfig)
+  { }
 
   ngAfterViewInit() {
     let filter = document.getElementsByTagName("p-columnfilter");

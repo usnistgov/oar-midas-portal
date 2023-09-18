@@ -56,7 +56,8 @@ import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
     AuthModule
   ],
   providers: [
-//    fakeBackendProvider, { provide: CONFIG_URL, useValue: "assets/environment.json" },
+//       fakeBackendProvider,
+      { provide: CONFIG_URL, useValue: "assets/environment.json" },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
