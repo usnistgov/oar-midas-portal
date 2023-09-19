@@ -1,0 +1,41 @@
+[
+  {
+    "dataSetID": 2572,
+    "title": "MIDAS 3.13 TEST RECORD, PLEASE DISREGARD",
+    "submitterName": "Davis Christopher",
+    "submitterID": 208821,
+    "currentReviewerID": 15091,
+    "currentReviewer": "Sell, Sean",
+    "currentReviewStep": "Group Leader"
+  },
+
+  {
+
+    "dataSetID": 2273,
+    "title": "Test Record 8/19",
+    "submitterName": "Davis Christopher",
+    "submitterID": 208821,
+    "currentReviewerID": 15091,
+    "currentReviewer": "Sell, Sean",
+    "currentReviewStep": "Group Leader"
+  },
+
+  {
+    "dataSetID": 2313,
+    "title": "Another new record",
+    "submitterName": "Davis Christopher",
+    "submitterID": 208821,
+    "currentReviewerID": 15091,
+    "currentReviewer": "Sell, Sean",
+    "currentReviewStep": "Group Leader"
+  },
+  {
+    "dataSetID": 2311,
+    "title": "One more test record",
+    "submitterName": "Davis Christopher",
+    "submitterID": 208821,
+    "currentReviewerID": 15091,
+    "currentReviewer": "Sell, Sean",
+    "currentReviewStep": "Group Leader"
+  }
+]

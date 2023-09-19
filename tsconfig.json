@@ -1,0 +1,11 @@
+{
+    "files": [],
+    "references": [
+      {
+        "path": "./lib/tsconfig.ref.json"
+      },
+      {
+        "path": "./midas-portal/tsconfig.ref.json"
+      },
+    ],
+  }

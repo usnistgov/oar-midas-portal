@@ -1,0 +1,58 @@
+[
+    {
+        "name": "ZvTrt",
+        "owner": "Raymond Plante",
+        "access": "Own",
+        "space_used": "754KB",
+        "files_associated_count":"12",
+        "last_modified":"2023-01-21T02:01:50"
+    },
+    {
+        "name": "caqVH",
+        "owner": "Raymond Plante",
+        "access": "Admin",
+        "space_used": "74KB",
+        "files_associated_count":"12",
+        "last_modified":"2023-05-23T02:01:50"
+    },
+    {
+        "name": "UlBtz",
+        "owner": "Raymond Plante",
+        "access": "Read",
+        "space_used": "754KB",
+        "files_associated_count":"9",
+        "last_modified":"2023-04-28T02:01:50"
+    },
+    {
+        "name": "PHafO",
+        "owner": "Raymond Plante",
+        "access": "Own",
+        "space_used": "904KB",
+        "files_associated_count":"12",
+        "last_modified":"2023-03-28T02:01:50"
+    },
+    {
+        "name": "WhSNA",
+        "owner": "Raymond Plante",
+        "access": "Write",
+        "space_used": "74GB",
+        "files_associated_count":"2",
+        "last_modified":"2023-02-28T02:01:50"
+    },
+    {
+        "name": "MEheH",
+        "owner": "Raymond Plante",
+        "access": "Admin",
+        "space_used": "4TB",
+        "files_associated_count":"5",
+        "last_modified":"2023-02-28T02:01:50"
+    },
+    {
+        "name": "BJzfS",
+        "owner": "Raymond Plante",
+        "access": "Write",
+        "space_used": "754KB",
+        "files_associated_count":"7",
+        "last_modified":"2023-02-27T02:01:50"
+    }
+  ]

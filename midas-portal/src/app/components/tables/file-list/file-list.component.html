@@ -1,0 +1,51 @@
+<div *ngIf="display==true; else noData ">
+<p-panel header="My Files">
+    <ng-template pTemplate="icons">
+        <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
+            <!-- <span class="pi pi-cog"></span> -->
+            <a href={{nextcloudUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faFileImport" size="lg" title="Add or update files"></fa-icon></a>
+        </button>
+        <p-toast></p-toast>
+<button pButton class="p-panel-header-icon p-link" (click)="show()"><fa-icon [style]="{display: 'inline-block', color: '#005EA2'}" [icon]="faUpRightAndDownLeftFromCenter" size="lg" title="Expand"></fa-icon></button>
+        <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
+</ng-template>
+    
+    <p-table #filetable [value]="data" [paginator]="true"
+        [rows]="5" [scrollable]="true" 
+        [showCurrentPageReport]="true"
+        [rowHover]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
+        [globalFilterFields]="['file_name', 'file_path']">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pResizableColumn pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th pResizableColumn pSortableColumn="owner">Owner <p-sortIcon field="owner"></p-sortIcon></th>
+                <th pResizableColumn pSortableColumn="access">Allowed Access <p-sortIcon field="access"></p-sortIcon></th>
+                <th pResizableColumn pSortableColumn="space_used">Total Space Used <p-sortIcon field="space_used"></p-sortIcon></th>
+                <th pResizableColumn pSortableColumn="files_associated_count">Total number of data files <p-sortIcon field="files_associated_count"></p-sortIcon></th>
+                <th pResizableColumn pSortableColumn="last_modified"> Last Modified
+                    <p-columnFilter title="Filter by date" type="date" field="last_modified" display="menu"></p-columnFilter>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td class="td-class"><a href="www.google.com" target="_blank">{{item.name}}</a></td>
+                <td class="td-class">{{item.owner}}</td>
+                <td class="td-class">{{item.access}}</td>
+                <td class="td-class">{{item.space_used}}</td>
+                <td class="td-class">{{item.files_associated_count}}</td>
+                <td>{{this.datepipe.transform(item.last_modified,'MM/dd/yyyy')}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
+</div>
+<ng-template #noData>
+    <p-panel header="My Files">
+        No data to display for the user cnd7
+    </p-panel>
+    
+</ng-template>
+
+

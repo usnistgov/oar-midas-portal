@@ -1,0 +1,127 @@
+
+<!-- Bootstrap row -->
+<div class="row" id="body-row">
+  <!-- Sidebar -->
+  <p-toast></p-toast>
+  <div id="sidebar-container" class="sidebar-expanded d-none d-md-block">
+      <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
+      <!-- Bootstrap List Group -->
+      <ul class="list-group">
+        <li class="list-group-header sidebar-separator-title d-flex align-items-center menu-collapsed">
+          <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faUser"></fa-icon>User : {{userId}}</span >
+        </li>
+        <div class="container" style="background-color: #EFF6FB;">
+          <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005EA2'}" [icon]="faBuilding"></fa-icon><strong>Divison:</strong> {{userDiv}}</span>
+          <br>
+          <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005EA2'}" [icon]="faHouse"></fa-icon><strong>OU:</strong> {{userOU}}</span>
+         </div>
+             
+         
+         <!-- Separator with title -->
+          <li class="list-group-header sidebar-separator-title d-flex align-items-center menu-collapsed">
+              <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faLink"></fa-icon>Resource/links</span >
+          </li>
+          <!-- /END Separator -->
+          <a href="#" class="list-group-item list-group-item-action links">
+              <div class="d-flex w-100 justify-content-start align-items-center">
+                  <span class="menu-collapsed">NIST OAR Intranet</span>
+              </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action links">
+              <div class="d-flex w-100 justify-content-start align-items-center">
+                  <span class="menu-collapsed">Public Data Repository</span>
+              </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action links">
+            <div class="d-flex w-100 justify-content-start align-items-center">
+                <span class="menu-collapsed">NIST Research Library</span>
+            </div>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action links">
+            <div class="d-flex w-100 justify-content-start align-items-center">
+                <span class="menu-collapsed">Data Publishing Tool</span>
+            </div>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action links">
+          <div class="d-flex w-100 justify-content-start align-items-center">
+              <span class="menu-collapsed">Data Management Plan Tool</span>
+          </div>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action links">
+          <div class="d-flex w-100 justify-content-start align-items-center">
+              <span class="menu-collapsed">NIST Publication System</span>
+          </div>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+            <span class="menu-collapsed">NextCloud</span>
+        </div>
+    </a>
+    <a href="#" class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+            <span class="menu-collapsed">User Guide</span>
+        </div>
+    </a>
+          <!-- /END Separator -->
+      </ul><!-- List Group END-->
+  </div><!-- sidebar-container END -->
+  <!-- MAIN -->
+  <div class="col p-4">
+    <div class="row">
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="table-dashboard">
+          <app-dap></app-dap>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="table-dashboard">
+          <app-dmp-list ></app-dmp-list>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="table-dashboard">
+          <app-review-list ></app-review-list>
+          </div>
+      </div>
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="table-dashboard">
+          <app-file-list ></app-file-list>
+        </div>
+      </div>
+    </div>
+    
+  </div><!-- Main Col END -->
+</div><!-- body-row END -->
+
+
+
+<script>
+  // Hide submenus
+$('#body-row .collapse').collapse('hide'); 
+
+// Collapse/Expand icon
+$('#collapse-icon').addClass('fa-angle-double-left'); 
+
+// Collapse click
+$('[data-toggle=sidebar-colapse]').click(function() {
+    SidebarCollapse();
+});
+
+function SidebarCollapse () {
+    $('.menu-collapsed').toggleClass('d-none');
+    $('.sidebar-submenu').toggleClass('d-none');
+    $('.submenu-icon').toggleClass('d-none');
+    $('#sidebar-container').toggleClass('sidebar-expanded sidebar-collapsed');
+    
+    // Treating d-flex/d-none on separators with title
+    var SeparatorTitle = $('.sidebar-separator-title');
+    if ( SeparatorTitle.hasClass('d-flex') ) {
+        SeparatorTitle.removeClass('d-flex');
+    } else {
+        SeparatorTitle.addClass('d-flex');
+    }
+    
+    // Collapse/Expand icon
+    $('#collapse-icon').toggleClass('fa-angle-double-left fa-angle-double-right');
+}
+</script>

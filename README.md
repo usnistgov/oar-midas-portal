@@ -32,7 +32,7 @@ Software in this repository is built using the [Angular](https://angular.io/) ap
 (v13), and, thus, is built and run using `nodejs` and `npm`.  Both become available to your
 development environment when you install,
 
-  * node 14.19.0 or higher
+  * node > 14.19.0 and <= 16.17.1
 
 All prerequisite Javascript modules needed are provided via the `npm` build tool.  See
 `package.json` for a listing of primary dependencies and `package-lock.json` for a
@@ -102,8 +102,67 @@ command-line options.
 The `npm` tool can be used in the standard way for [Angular projects](https://angular.io/docs) to
 build and test this software.
 
-[detail commands and instructions]
+Detail commands and instructions:
 
+1. Clone this repository and update Angular library
+    
+    After clone the repository, do the following:
+    
+```
+    cd oar-pdr-angular
+    git submodule update --init --recursive
+    cd lib
+    git checkout integration
+```
+
+Now lib folder should have the latest code of oar-lib-angular.
+    
+2. Install packages
+
+    Go to root folder, switch to initial-portal-setup02 branch, then do npm install:
+    
+```    
+    Note: make sure your npm version is 7.0.0 or higher. Use npm -v to check your version. 
+    If not, run npm install -g npm@latest.
+    
+    cd ..
+    git checkout initial-portal-setup02
+    npm i 
+```    
+    
+3. Build and run your application
+
+You can build Angular library and your application separately or with one command.
+
+To build Angular library only:
+
+```    
+    npm run build-lib
+```
+
+To build your application only:
+
+```    
+    npm run build
+```
+
+To build both lib and your application:
+
+```    
+    npm run build-all
+```
+
+To start your application:
+
+```    
+    npm run start
+```
+
+4. Testing your app
+
+```
+    Browse: http://localhost:4200
+```
 
 ## Repository Administration
 
@@ -115,7 +174,7 @@ repository is open-source and held in the public domain.
 The administrators of this repository include:
 
   * Gretchen Greene (gretchen.greene@nist.gov)
-  * Jon Zhang (.zhang@nist.gov)
+  * Jon Zhang (yang.zhang@nist.gov)
   * Ray Plante (raymond.plante@nist.gov)
-  * Christopher David (christopher.davis@nist.gov)
+  * Christopher Davis (christopher.davis@nist.gov)
 
