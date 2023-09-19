@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { AppConfig } from '../../../config/app.config'
-//import { AppConfig } from 'src/app/config/app.config';
+import { ConfigurationService } from 'oarng';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
@@ -26,8 +25,6 @@ interface Column {
     './dap.component.css'
   ]
 })
-
-
 export class DapModalComponent implements OnInit {
   @Input() openedAsDialog: boolean = false;
   faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
@@ -50,11 +47,10 @@ export class DapModalComponent implements OnInit {
 
   @ViewChild('recordsTable') recordsTable: Table;
 
-  constructor(private appConfig: AppConfig, private http: HttpClient, public datepipe: DatePipe, public dialogService: DialogService
-    , public messageService: MessageService, public config: DynamicDialogConfig) {
-  }
-
-
+  constructor(private cfgsvc: ConfigurationService,
+              public datepipe: DatePipe, public dialogService: DialogService,
+              public messageService: MessageService, public config: DynamicDialogConfig)
+  {  }
 
   ngAfterViewInit() {
     let filter = document.getElementsByTagName("p-columnfilter");
@@ -96,37 +92,30 @@ export class DapModalComponent implements OnInit {
 
   async ngOnInit() {
 
-    let promise = new Promise((resolve) => {
-      this.appConfig.getRemoteConfig().subscribe(config => {
-        this.dapAPI = config.dapAPI;
-        this.dapUI = config.dapUI;
-        this.dapEDIT = config.dapEDIT
-        resolve(this.dapAPI);
-        this.data = this.config.data
-        this.count = this.data.length
+      let config = this.cfgsvc.getConfig();
+      this.dapAPI = config['dapAPI'];
+      this.dapUI = config['dapUI'];
+      this.dapEDIT = config['dapEDIT'];
+      this.data = this.config.data;
+      this.count = this.data.length;
 
-        this.cols = [
-          { field: 'name', header: 'Name' },
-          { field: 'owner', header: 'Owner' },
-          { field: 'file_count', header: 'Files Associated' },
-          { field: "title", header: 'Title' },
-          { field: 'type', header: 'Type' },
-          { field: 'id', header: 'ID' },
-          { field: 'doi', header: 'DOI' }
+      this.cols = [
+        { field: 'name', header: 'Name' },
+        { field: 'owner', header: 'Owner' },
+        { field: 'file_count', header: 'Files Associated' },
+        { field: "title", header: 'Title' },
+        { field: 'type', header: 'Type' },
+        { field: 'id', header: 'ID' },
+        { field: 'doi', header: 'DOI' }
+      ];
 
-        ];
+      this._selectedColumns = this.cols;
 
-        this._selectedColumns = this.cols;
-
-      });
-    });
-
-    this.statuses = [
-      { label: 'published', value: 'published' },
-      { label: 'edit', value: 'edit' },
-      { label: 'reviewed', value: 'reviewed' }
-    ];
-
+      this.statuses = [
+        { label: 'published', value: 'published' },
+        { label: 'edit', value: 'edit' },
+        { label: 'reviewed', value: 'reviewed' }
+      ];
   }
 
   @Input() get selectedColumns(): any[] {

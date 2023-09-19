@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
-import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
@@ -30,21 +29,22 @@ export class ReviewListComponent implements OnInit {
 
   @ViewChild('reviewtable') reviewTable: Table;
 
-  constructor(private configSvc: ConfigurationService ,private http: HttpClient,public datepipe:DatePipe,public dialogService: DialogService
-    , public messageService: MessageService) { 
-    
-  }
+  constructor(private configSvc: ConfigurationService, private http: HttpClient,
+              public datepipe:DatePipe,public dialogService: DialogService,
+              public messageService: MessageService)
+  { }
 
-  ngAfterViewInit() {
-       
-  }
+  ngAfterViewInit() { }
 
   async ngOnInit() {
 
     let promise = new Promise((resolve) => {
-        this.NPSAPI = this.configSvc.getConfig()['NPSAPI'];
-        this.npsUI = this.configSvc.getConfig()['npsUI'];
+        let config = this.configSvc.getConfig()
+        this.NPSAPI = config['NPSAPI'];
+        this.npsUI = config['npsUI'];
+        
         resolve(this.NPSAPI);
+        
         //GET Using fake backend
         this.fetchRecords(this.NPSAPI);
         if(typeof this.data !== 'undefined') {

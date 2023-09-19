@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
-import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { ConfigurationService } from 'oarng';
 
 @Component({
   selector: 'app-review-list-modal',
@@ -29,10 +29,10 @@ export class ReviewListModalComponent implements OnInit {
 
   @ViewChild('reviewtable') reviewTable: Table;
 
-  constructor(private appConfig: AppConfig,private http: HttpClient,public datepipe:DatePipe,public dialogService: DialogService
-    , public messageService: MessageService,public config:DynamicDialogConfig) { 
-    
-  }
+  constructor(private cfgsvc: ConfigurationService, public datepipe:DatePipe,
+              public dialogService: DialogService, public messageService: MessageService,
+              public config:DynamicDialogConfig)
+  { }
 
   ngAfterViewInit() {
     let filter = document.getElementsByTagName("p-columnfilter");
@@ -73,24 +73,18 @@ export class ReviewListModalComponent implements OnInit {
   }
   async ngOnInit() {
 
-    let promise = new Promise((resolve) => {
-      this.appConfig.getRemoteConfig().subscribe(config => {
-        this.NPSAPI = config.NPSAPI;
-        this.npsUI = config.npsUI;
-        this.data=this.config.data
-        this.count=this.data.length
-      })
-    });
+      let config = this.cfgsvc.getConfig();
+      this.NPSAPI = config['NPSAPI'];
+      this.npsUI = config['npsUI'];
+      
+      this.data=this.config.data
+      this.count=this.data.length
 
-
-    
- 
-
-    this.statuses = [
-      { label: 'Pending', value: 'Pending' },
-      { label: 'Done', value: 'Done' },
-      { label: 'In Progress', value: 'In Progress' }
-  ];
+      this.statuses = [
+        { label: 'Pending', value: 'Pending' },
+        { label: 'Done', value: 'Done' },
+        { label: 'In Progress', value: 'In Progress' }
+      ];
   }
 
   linkto(item:string){

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { faCheck, faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
@@ -36,20 +35,21 @@ export class DmpListComponent implements OnInit {
 
   @ViewChild('dmptable') dmpTable: Table;
 
-  constructor(private configSvc: ConfigurationService, private http: HttpClient, public datepipe: DatePipe, public dialogService: DialogService
-    , public messageService: MessageService) {
-  }
+  constructor(private configSvc: ConfigurationService, private http: HttpClient,
+              public datepipe: DatePipe, public dialogService: DialogService,
+              public messageService: MessageService)
+  {  }
 
   async ngOnInit() {
-    let promise = new Promise((resolve) => {
-      this.dmpUI = this.configSvc.getConfig()['dmpUI'];
-      this.dmpAPI = this.configSvc.getConfig()['dmpAPI'];
-      this.dmpEDIT = this.configSvc.getConfig()['dmpEDIT'];
-      resolve(this.dmpAPI);
+      let cfg = this.configSvc.getConfig();
+      this.dmpUI = cfg['dmpUI'];
+      this.dmpAPI = cfg['dmpAPI'];
+      this.dmpEDIT = cfg['dmpEDIT'];
+
       //GET method to get data
       this.fetchRecords(this.dmpAPI);
-    })
   }
+
   show() {
     this.ref = this.dialogService.open(DmpListModalComponent, {
       data: this.DMP,
@@ -101,13 +101,16 @@ export class DmpListComponent implements OnInit {
 
   public customSerialize(item: any) {
     let tmp = new dmp();
-    tmp.name = item.name
-    tmp.orgid = item.data.organizations[0].ORG_ID
-    tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate)
-    tmp.owner = item.owner
-    tmp.primaryContact = item.data.primary_NIST_contact.firstName + ' ' + item.data.primary_NIST_contact.lastName
-    tmp.description = item.data.projectDescription
-    return tmp
+    tmp.id = item.id;
+    tmp.name = item.name;
+    tmp.orgid = 0;
+    if (item.data.organizations && item.data.organizations.length > 0)
+      tmp.orgid = item.data.organizations[0].ORG_ID;
+    tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate);
+    tmp.owner = item.owner;
+    tmp.primaryContact = item.data.primary_NIST_contact.firstName + ' ' + item.data.primary_NIST_contact.lastName;
+    tmp.description = item.data.projectDescription;
+    return tmp;
   }
 
   clear(table: Table) {

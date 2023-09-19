@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {faFileImport,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
@@ -9,6 +8,7 @@ import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FileListModalComponent } from '../../modals/file-list/file-list.component';
+import { ConfigurationService } from 'oarng';
 
 @Component({
   selector: 'app-file-list',
@@ -24,46 +24,36 @@ export class FileListComponent implements OnInit {
   public nextcloudUI: string;
   public display:boolean;
   ref: DynamicDialogRef;
-  
-  
 
   @ViewChild('filetable') fileTable: Table;
 
-  constructor(private appConfig: AppConfig,private http:HttpClient,public datepipe:DatePipe,public dialogService: DialogService
-    , public messageService: MessageService) { 
+  constructor(private cfgsvc: ConfigurationService, private http:HttpClient,
+              public datepipe:DatePipe, public dialogService: DialogService,
+              public messageService: MessageService)
+  { 
     this.recordsApi = 'https://data.nist.gov/rmm/records'
-    
   }
 
-
-
-  
-  
-
   async ngOnInit() {
-    this.display=true;
-    let promise = new Promise((resolve) => {
-      this.appConfig.getRemoteConfig().subscribe(config => {
-        this.nextcloudUI = config.nextcloudUI;
-        resolve(this.nextcloudUI);
-        //GET method to get data
-        this.fetchRecords(this.nextcloudUI);
-        console.log(this.data)
-        if(this.data==null){
+      this.display=true;
+
+      let config = this.cfgsvc.getConfig();
+      this.nextcloudUI = config['nextcloudUI'];
+
+      //GET method to get data
+      this.fetchRecords(this.nextcloudUI);
+      console.log(this.data)
+      if (this.data==null) 
           this.display=false;
-        }else{
-        for (let i = 0; i<this.data.length;i++){
-          this.data[i].last_modified = new Date(this.data[i].last_modified)
-        }
+      else {
+          for (let i = 0; i<this.data.length;i++){
+              this.data[i].last_modified = new Date(this.data[i].last_modified)
+          }
       }
         
-      });
-      
-    });
-    
-    //await this.getRecords()
-    //this.data = this.records.ResultData
-    //this.data = RECORD_DATA;
+      //await this.getRecords()
+      //this.data = this.records.ResultData
+      //this.data = RECORD_DATA;
     
   }
 
@@ -97,7 +87,7 @@ export class FileListComponent implements OnInit {
 
   clear(table: Table) {
     table.clear();
-}
+  }
 
 
   titleClick() {

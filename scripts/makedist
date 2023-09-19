@@ -1,18 +1,114 @@
 #! /bin/bash
 #
-# makedist:  build the package's distributions
+# makedist.angular:  build the package's angular distributions
 #
 # This script is designed to run without any arguments: this will build
-# all of the available distributions.  Restricting the build to specific
+# all of the available angular distributions.  Restricting the build to specific
 # distributions can be done by listing the names of the desired distributions
 # on the command line.
 #
-# This script is a simple wrapper around makedist.angular; see that script
-# for further details (or type "makedist -h")
+# There is currently only one angular distribution:  midas-portal
+#
+# SYNOPSIS
+#    makedist [OPTIONS] [angular|python|DISTNAME ...]
+#
+# OPTIONS
+#    -l, --list               list the names of the supported distributions and
+#                             exit without building.
+#    --dist-dir=DIR           The output directory to write the distribution
+#                             products into.
+#    -d DIR, --source-dir=DIR  the directory containing the python source code
+#                             (default: .)
+#    -c DIR, --cache-dir=DIR  directory for holding intermediate or cache-able
+#                             products; if provided, the node_modules cache will
+#                             be located and used from here.  This can be shared
+#                             with other similar packages to avoid redundant 
+#                             re-building of nodejs dependency modules
+#    -v VER, --version=VER    assign VER as the VERSION for this product
+#    
+#
+
 set -e
 prog=`basename $0`
 execdir=`dirname $0`
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
 PACKAGE_DIR=`dirname $execdir`
+[ "$PACKAGE_DIR" = "" -o "$PACKAGE_DIR" = "." ] && PACKAGE_DIR=$PWD
 
-exec $execdir/makedist.angular
+# this is needed because realpath is not on macs
+function realpath {
+    if [ -d "$1" ]; then
+        (cd $1 && pwd)
+    elif [ -f "$1" ]; then
+        file=`basename $1`
+        parent=`dirname $1`
+        realdir=`(cd $parent && pwd)`
+        echo "$realdir/$file"
+    elif [[ $1 = /* ]]; then
+        echo $1
+    else
+        echo "$PWD/${1#./}"
+    fi
+}
+
+# Update this list with the names of the individual component names
+#
+ang_dists="midas-portal"
+py_dists="midas-nps"
+DISTNAMES="$ang_dists"
+
+# handle command line options
+args=""
+while [ "$1" != "" ]; do 
+  case "$1" in
+    --list|-l)
+        echo "Available distributions: $DISTNAMES"
+        exit 0
+        ;;
+    --dist-dir=*|--source-dir=*|--dir=*|--cache-dir=*)
+        args="$args $1"
+        ;;
+    --dist-dir|-d|--dir|--source-dir|-c|--cache-dir)
+        args="$args $1=$2"
+        shift
+        ;;
+    -*)
+        echo "$prog: unsupported option:" $1
+        false
+        ;;
+    python)
+        set -- "$@" $py_dists
+        ;;
+    angular)
+        set -- "$@" $ang_dists
+        ;;
+    *)
+        (echo :${DISTNAMES}: | sed -e 's/ /:/g' | grep -qs :${1}:) || {
+            echo "${prog}: ${1}: unrecognized distribution name"
+            echo "${prog}: recognized names:" $DISTNAMES
+            false
+        }
+        build_dist="$build_dist $1"
+        ;;
+  esac
+  shift
+done
+[ -n "$build_dist" ] || build_dist=$DISTNAMES
+echo '#' Building $build_dist
+
+true ${DIST_DIR:=$PACKAGE_DIR/dist}
+mkdir -p $DIST_DIR
+
+filt=`echo $py_dists | sed -e 's/ /|/g'`
+py_req=`echo $build_dist | sed -e 's/ /\n/g' | grep -E $filt` || true
+filt=`echo $ang_dists | sed -e 's/ /|/g'`
+ang_req=`echo $build_dist | sed -e 's/ /\n/g' | grep -E $filt` || true
+
+if [ -n "$ang_req" ]; then
+    echo '+' scripts/makedist.angular "$args" "$ang_req"
+    $execdir/makedist.angular "$args" "$ang_req"
+fi
+if [ -n "$py_req" ]; then
+    echo '+' scripts/makedist.python "$args" "$py_req"
+    $execdir/makedist.python "$args" "$py_req"
+fi

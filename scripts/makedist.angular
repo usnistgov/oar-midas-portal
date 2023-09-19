@@ -1,17 +1,16 @@
 #! /bin/bash
-
 #
-# makedist.angular:  build the package's angular-based distributions
+# makedist.angular:  build the package's angular distributions
 #
 # This script is designed to run without any arguments: this will build
-# all of the angular distributions.  Restricting the build to specific
+# all of the available angular distributions.  Restricting the build to specific
 # distributions can be done by listing the names of the desired distributions
 # on the command line.
 #
-# There is currently only one python distribution: pdr-lps
+# There is currently only one angular distribution:  midas-portal
 #
 # SYNOPSIS
-#    makedist.angular [OPTIONS] [DISTNAME ...]
+#    makedist [OPTIONS] [DISTNAME ...]
 #
 # OPTIONS
 #    -l, --list               list the names of the supported distributions and
@@ -19,7 +18,7 @@
 #    --dist-dir=DIR           The output directory to write the distribution
 #                             products into.
 #    -d DIR, --source-dir=DIR  the directory containing the python source code
-#                             (default: ./angular)
+#                             (default: .)
 #    -c DIR, --cache-dir=DIR  directory for holding intermediate or cache-able
 #                             products; if provided, the node_modules cache will
 #                             be located and used from here.  This can be shared
@@ -27,11 +26,14 @@
 #                             re-building of nodejs dependency modules
 #    -v VER, --version=VER    assign VER as the VERSION for this product
 #    
-# #
+#
+
 set -e
 prog=`basename $0`
 execdir=`dirname $0`
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
+PACKAGE_DIR=`dirname $execdir`
+[ "$PACKAGE_DIR" = "" -o "$PACKAGE_DIR" = "." ] && PACKAGE_DIR=$PWD
 
 # this is needed because realpath is not on macs
 function realpath {
@@ -49,18 +51,16 @@ function realpath {
     fi
 }
 
-execdir=`realpath $execdir`
-PACKAGE_DIR=`dirname $execdir`
-DIST_DIR=$PACKAGE_DIR/dist
-SOURCE_DIR=$PACKAGE_DIR/midas-portal
-BUILD_DIR=$SOURCE_DIR/dist
-
 # Update this list with the names of the individual component names
 # 
 DISTNAMES="midas-portal"
 
+declare -A APPSRCDIR=(           \
+    [midas-portal]=midas-portal  \
+    [midas-nps]=python           \
+)
+
 # handle command line options
-build_dist=
 while [ "$1" != "" ]; do 
   case "$1" in
     --list|-l)
@@ -75,95 +75,108 @@ while [ "$1" != "" ]; do
         DIST_DIR=$1
         ;;
     --source-dir=*|--dir=*)
-        PACKAGE_DIR=`echo $1 | sed -e 's/[^=]*=//'`
+        SOURCE_DIR=`echo $1 | sed -e 's/[^=]*=//'`
         ;;
     -d|--dir|--source-dir)
         shift
-        PACKAGE_DIR=$1
+        SOURCE_DIR=$1
         ;;
     --cache-dir=*)
         CACHE_DIR=`echo $1 | sed -e 's/[^=]*=//'`
+        # NOTE: CACHE_DIR is ignored
         ;;
     -c|--cache-dir)
         shift
         CACHE_DIR=$1
-        ;;
-    -v|--version)
-        shift
-        VERSION=$1
-        ;;
-    --version=*)
-        VERSION=`echo $1 | sed -e 's/[^=]*=//'`
+        # NOTE: CACHE_DIR is ignored
         ;;
     -*)
         echo "$prog: unsupported option:" $1
         false
         ;;
-    $DISTNAMES)
-        # assuming just one distribution
-        true
-        ;;
     *)
-        echo "${prog}: ${1}: unrecognized distribution name"
-        false
+        (echo :${DISTNAMES}: | sed -e 's/ /:/g' | grep -qs :${1}:) || {
+            echo "${prog}: ${1}: unrecognized distribution name"
+            echo "${prog}: recognized names:" $DISTNAMES
+            false
+        }
+        build_dist="$build_dist $1"
         ;;
   esac
   shift
 done
 [ -n "$build_dist" ] || build_dist=$DISTNAMES
 
-# true ${DIST_DIR:=$SOURCE_DIR/dist}
-DIST_DIR=`realpath $DIST_DIR`
-mkdir -p $DIST_DIR $BUILD_DIR
+true ${DIST_DIR:=$PACKAGE_DIR/dist}
+mkdir -p $DIST_DIR
+
+# make sure the oar-metadata submodule has been initialized
+#
+[ -d "lib/libs" ] || {
+    set -x
+    git submodule init
+    git submodule update
+    set +x
+}
 
 # set the current version.  This will inject the version into the code, if 
 # needed.
 #
-# don't reset the version unnecessarily as it may have been done by makedist
-# 
-[ -z "$VERSION" -a -f "$PACKAGE_DIR/VERSION" ] || {
-    echo '+' $execdir/setversion.sh $VERSION
-    $execdir/setversion.sh $VERSION
-}
-[ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat $PACKAGE_DIR/VERSION | awk '{print $1}'`
-version=$VERSION
-[ -n "$version" ] || version=`cat $PACKAGE_DIR/VERSION | awk '{print $2}'`
-vers4fn=`echo $version | perl -pe 's#[/ \t]+#_#g'`
+# set -x
+echo '+' scripts/setversion.sh
+scripts/setversion.sh
+[ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat VERSION | awk '{print $1}'`
+version=`cat VERSION | awk '{print $2}'`
+vers4fn=`echo $version | sed -re 's#[/ \t]+#_#g'`
+
+npmpfx=
+[ -z "$CACHE_DIR" ] || npmpfx="--prefix $CACHE_DIR"
+
+echo "# Building dependencies"...
 
 # install required modules
-nodemodarg=
-[ -z "$CACHE_DIR" ] || nodemodearg="--prefix $CACHE_DIR"
 npmvers=`npm --version`
-echo '+' npm install $nodemodarg
-npm $npmpfx install $nodemodarg
+echo '+' npm $npmpfx install
+npm $npmpfx install
 
-echo '#########################'
-echo '#'
-echo "# Building $DISTNAMES"...
-echo '#'
-echo '#########################'
+# build oarng
+echo '+' npm $npmpfx run build-lib
+npm $npmpfx run build-lib
 
+# build target distributions
+declare -A buildscript
+buildscript=(                \
+    ["midas-portal"]=build   \
+)
 
-echo '+' " npm run build-all"
-npm run build-all
+for target in $build_dist; do
+    distname="${target}-$vers4fn"
+    builddir="${APPSRCDIR[$target]}/dist"
 
-# create the dependency file
-if [ -f "package-lock.json" ]; then
-    echo '+' $execdir/record_npm_deps.py $DISTNAMES $version package-lock.json \
-             $npmvers \> $DIST_DIR/${DISTNAMES}-${vers4fn}_dep.json
-    $execdir/record_npm_deps.py $DISTNAMES $version package-lock.json \
-             $npmvers  > $DIST_DIR/${DISTNAMES}-${vers4fn}_dep.json
-else
-    echo ${prog}: WARNING: Unable to create dependency file for ${dist}: \
-         package-lock.json not found
-fi
+    echo '##############################################'
+    echo '#'
+    echo "# Building $distname"...
+    echo '#'
+    echo '##############################################'
 
-# # create the distribution file
-echo '+' '(cd' $BUILD_DIR '&&' \
-         "zip -qr $DIST_DIR/${DISTNAMES}-${vers4fn}.zip *)"
-(cd $BUILD_DIR && zip -qr $DIST_DIR/${DISTNAMES}-${vers4fn}.zip *)
-    
-set +x
-echo Created distribution in dist directory: 
-echo $DISTNAMES-${vers4fn}.zip
+    # build the code
+    echo '+' npm $npmpfx run ${buildscript[$target]}
+    npm $npmpfx run ${buildscript[$target]}
+
+    # zip up the distribution
+    echo '+' '(cd $builddir' '&&' \
+             "zip -qr $DIST_DIR/${distname}.zip *)"
+    (cd $builddir && zip -qr $DIST_DIR/${distname}.zip *)
+
+    # create the dependency file
+    if [ -f "package-lock.json" ]; then
+        echo '+' $execdir/record_npm_deps.py $target $version package-lock.json \
+                 $npmvers \> $DIST_DIR/${distname}_dep.json
+        $execdir/record_npm_deps.py $target $version package-lock.json $npmvers \
+                                    > $DIST_DIR/${distname}_dep.json
+    else
+        echo ${prog}: WARNING: Unable to create dependency file for ${dist}: \
+             package-lock.json not found
+    fi
+done
 

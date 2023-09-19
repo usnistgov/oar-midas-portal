@@ -2,8 +2,6 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { AppConfig } from '../../../config/app.config'
-//import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';

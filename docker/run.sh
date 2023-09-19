@@ -12,6 +12,10 @@ os=`uname`
 SED_RE_OPT=r
 [ "$os" != "Darwin" ] || SED_RE_OPT=E
 
+ang_dists=midas-portal
+py_dists=midas-nps
+avail_dists="$ang_dists $py_dists"
+
 function usage {
     cat <<EOF
 
@@ -19,15 +23,14 @@ $prog - build and optionally test the software in this repo via docker
 
 SYNOPSIS
   $prog [-d|--docker-build] [--dist-dir DIR] [CMD ...] 
-        [DISTNAME|python|angular|java ...] 
+        [DISTNAME|angular|python ...] 
         
 
 ARGS:
-  python    apply commands to just the python distributions
   angular   apply commands to just the angular distributions
-  java      apply commands to just the java distributions
+  python    apply commands to just the python distributions
 
-DISTNAMES:  pdr-lps, pdr-publish, customization-api
+DISTNAMES:  midas-portal, midas-nps
 
 CMDs:
   build     build the software
@@ -69,7 +72,7 @@ args=()
 dargs=()
 pyargs=()
 angargs=()
-jargs=()
+dists=()
 testcl=()
 while [ "$1" != "" ]; do
     case "$1" in
@@ -105,16 +108,14 @@ while [ "$1" != "" ]; do
         -*)
             args=(${args[@]} $1)
             ;;
-        python|midas-portal|java)
-            comptypes="$comptypes $1"
+        python)
+            set -- "$@" $py_dists
             ;;
-        midas-portal)
-            wordin midas-portal $comptypes || comptypes="$comptypes midas-portal"
-            angargs=(${args[@]} $1)
+        angular)
+            set -- "$@" $ang_dists
             ;;
-        pdr-publish)
-            wordin python $comptypes || comptypes="$comptypes python"
-            pyargs=(${pyargs[@]} $1)
+        midas-portal|midas-nps)
+            wordin $1 $dists || dists="$dists $1"
             ;;
         build|install|test|shell)
             cmds="$cmds $1"
@@ -132,11 +133,11 @@ done
     dargs=(${dargs[@]} --env OAR_TEST_INCLUDE=\"${testcl[@]}\")
 }
 
-comptypes=`echo $comptypes`
+dists=`echo $dists`
 cmds=`echo $cmds`
-[ -n "$comptypes" ] || comptypes="midas-portal"
+[ -n "$dists" ] || dists="$ang_dists"
 [ -n "$cmds" ] || cmds="build"
-echo "run.sh: Running docker commands [$cmds] on [$comptypes]"
+echo "run.sh: Running docker commands [$cmds] on [$dists]"
 
 testopts="--cap-add SYS_ADMIN"
 volopt="-v ${codedir}:/dev/oar-midas-portal"
@@ -145,7 +146,7 @@ volopt="-v ${codedir}:/dev/oar-midas-portal"
 # changes requiring re-builds.
 # 
 if [ -z "$dodockbuild" ]; then
-    if wordin midas-portal $comptypes; then
+    if wordin midas-portal $dists; then
         if wordin build $cmds; then
             docker_images_built oar-midas-portal/midas-portal || dodockbuild=1
         fi
@@ -158,39 +159,60 @@ fi
     $execdir/dockbuild.sh
 }
 
-if wordin midas-portal $comptypes; then
-    docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
-    if { wordin shell $cmds && [ "$comptypes" == "editable" ]; }; then
-        docmds="$docmds shell"
+filt=`echo $py_dists | sed -e 's/ /|/g'`
+py_req=`echo $dists | sed -e 's/ /\n/g' | grep -E $filt` || true
+filt=`echo $ang_dists | sed -e 's/ /|/g'`
+ang_req=`echo $dists | sed -e 's/ /\n/g' | grep -E $filt` || true
+
+# build distributions, if requested
+#
+if wordin build $cmds; then
+
+    if [ -n "$ang_req" ]; then
+        echo '+' docker run --rm $volopt "${dargs[@]}" oar-pdr-angular/midas-portal \
+                        build "${args[@]}" $ang_dists
+        docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal \
+               build "${args[@]}" $ang_dists
     fi
 
-    if [ "$docmds" == "build" ]; then
-        # build only
-        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
-                       "${args[@]}" "${angargs[@]}"
-        docker run --rm  $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
-                       "${args[@]}" "${angargs[@]}"
+    if [ -n "$py_req" ]; then
+        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-nps \
+                        build "${args[@]}" $py_dists
+        docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-nps \
+               build "${args[@]}" $py_dists
     fi
+
 fi
 
-# if wordin nps $comptypes; then
-#     docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
-#     if { wordin shell $cmds && [ "$comptypes" == "nps" ]; }; then
-#         docmds="$docmds shell"
-#     fi
+# run tests, if requested
+#
+if wordin test $cmds; then
 
-#     if [ "$docmds" == "build" ]; then
-#         # build only
-#         echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/nps build \
-#                        "${args[@]}" "${angargs[@]} -p 5000:5000"
-#         docker run --rm $volopt "${dargs[@]}" -p 5000:5000 oar-midas-portal/nps build \
-#                        "${args[@]}" "${angargs[@]}" 
-#     fi
-# fi
+    echo "Warning: docker test command not yet supported"; exit 1
+    if [ -n "$ang_req" ]; then
+        echo '+' docker run --rm $volopt "${dargs[@]}" oar-pdr-angular/midas-portal \
+                        test "${args[@]}" $ang_dists
+        docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal \
+               test "${args[@]}" $ang_dists
+    fi
 
-# if wordin pdpserver $cmds; then
-#         echo '+' docker run -ti --rm $volopt "${dargs[@]}" "${envargs[@]}" -p 9090:9090 $PKGNAME/pdpserver \
-#                         "${args[@]}"  "${pyargs[@]}"
-#         exec docker run -ti --rm $volopt "${dargs[@]}" "${envargs[@]}" -p 9090:9090 $PKGNAME/pdpserver \
-#                         "${args[@]}"  "${pyargs[@]}"
-#     fi
+    if [ -n "$py_req" ]; then
+        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-nps \
+                        test "${args[@]}" $py_dists
+        docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-nps \
+               test "${args[@]}" $py_dists
+    fi
+
+fi
+
+# open a shell, if requested
+#
+if wordin shell $cmds; then
+
+    container="oar-midas-nps/midas-portal"
+    [ -z "$py_req"  ] || container="oar-midas-portal/midas-nps"
+    [ -z "$ang_req" ] || container="oar-midas-portal/midas-portal"
+
+    echo '+' docker run -ti --rm $volopt "${dargs[@]}" $container shell "${args[@]}"
+    docker run -ti --rm $volopt "${dargs[@]}" $container shell "${args[@]}"
+fi
