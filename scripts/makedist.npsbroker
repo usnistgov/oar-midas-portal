@@ -50,11 +50,14 @@ function realpath {
 execdir=`realpath $execdir`
 PACKAGE_DIR=`dirname $execdir`
 SOURCE_DIR=$PACKAGE_DIR/python
+DIST_DIR=$PACKAGE_DIR/dist
+BUILD_DIR=$SOURCE_DIR/dist
 VERSION=
+
 
 # Update this list with the names of the individual component names
 # 
-DISTNAMES=(midas-nps)
+DISTNAMES=(npsbroker)
 
 # handle command line options
 while [ "$1" != "" ]; do 
@@ -97,7 +100,7 @@ while [ "$1" != "" ]; do
         echo "$prog: unsupported option:" $1
         false
         ;;
-    pdr-py)
+    npsbroker)
         # assuming just one distribution
         true
         ;;
@@ -113,10 +116,11 @@ true ${DIST_DIR:=$PACKAGE_DIR/dist}
 BUILD_DIR=$SOURCE_DIR/dist
 mkdir -p $BUILD_DIR $DIST_DIR
 
+
 # set the current version.  This will inject the version into the code, if 
 # needed.
 #
-(cd metadata; scripts/setversion.sh)
+(cd $PACKAGE_DIR ./scripts/setversion.sh)
 
 # don't reset the version unnecessarily as it may have been done by makedist
 # 
@@ -137,10 +141,11 @@ echo '#'
 echo '#########################'
 
 # build the components
-installdir=$BUILD_DIR/
+installdir=$BUILD_DIR/npsbroker
 set -x
 mkdir -p $installdir
-scripts/install.sh --install-dir=$installdir
+
+cp $PACKAGE_DIR/python/nps_server/nps_broker.py $installdir/nps_broker.py
 
 # ENTER COMMANDS for creating the dependency file(s)
 #
@@ -151,14 +156,15 @@ if [ -n "$PYTHONPATH" ]; then
 else
     export PYTHONPATH=$installdir/lib/python
 fi
+
+#Is this needed?
 $execdir/record_python_deps.py ${DISTNAMES[0]} $version \
                         > $DIST_DIR/${DISTNAMES[0]}-${vers4fn}_dep.json
 
-
+echo "bundle creation"
 # Bundle the distribution
-(cd $BUILD_DIR && zip -qr $DIST_DIR/${DISTNAMES[0]}-${vers4fn}.zip pdr)
+(cd $BUILD_DIR && zip -qr $DIST_DIR/${DISTNAMES[0]}-${vers4fn}.zip npsbroker)
 
 set +x
 echo Created distribution in dist directory: 
 echo ${DISTNAMES[0]}-${vers4fn}.zip
-

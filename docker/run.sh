@@ -27,7 +27,7 @@ ARGS:
   angular   apply commands to just the angular distributions
   java      apply commands to just the java distributions
 
-DISTNAMES:  pdr-lps, pdr-publish, customization-api
+DISTNAMES:  midas-portal, midas-nps
 
 CMDs:
   build     build the software
@@ -173,24 +173,17 @@ if wordin midas-portal $comptypes; then
     fi
 fi
 
-# if wordin nps $comptypes; then
-#     docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
-#     if { wordin shell $cmds && [ "$comptypes" == "nps" ]; }; then
-#         docmds="$docmds shell"
-#     fi
+if wordin npsbroker $comptypes; then
+    docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
+    if { wordin shell $cmds && [ "$comptypes" == "nps" ]; }; then
+        docmds="$docmds shell"
+    fi
 
-#     if [ "$docmds" == "build" ]; then
-#         # build only
-#         echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/nps build \
-#                        "${args[@]}" "${angargs[@]} -p 5000:5000"
-#         docker run --rm $volopt "${dargs[@]}" -p 5000:5000 oar-midas-portal/nps build \
-#                        "${args[@]}" "${angargs[@]}" 
-#     fi
-# fi
-
-# if wordin pdpserver $cmds; then
-#         echo '+' docker run -ti --rm $volopt "${dargs[@]}" "${envargs[@]}" -p 9090:9090 $PKGNAME/pdpserver \
-#                         "${args[@]}"  "${pyargs[@]}"
-#         exec docker run -ti --rm $volopt "${dargs[@]}" "${envargs[@]}" -p 9090:9090 $PKGNAME/pdpserver \
-#                         "${args[@]}"  "${pyargs[@]}"
-#     fi
+    if [ "$docmds" == "build" ]; then
+        # build only
+        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/npsbroker build \
+                       "${args[@]}" "${angargs[@]} -p 9092:9092"
+        docker run --rm $volopt "${dargs[@]}" -p 9092:9092 oar-midas-portal/npsbroker build \
+                       "${args[@]}" "${angargs[@]}" 
+    fi
+fi

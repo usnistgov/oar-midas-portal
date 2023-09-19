@@ -16,3 +16,4 @@ execdir=`dirname $0`
 PACKAGE_DIR=`dirname $execdir`
 
 exec $execdir/makedist.angular
+exec $execdir/makedist.npsbroker
