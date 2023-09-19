@@ -65,10 +65,9 @@ class NPS(Resource):
 
 
 # adding the defined resources along with their corresponding urls
-api.add_resource(NPS, '/user/<string:username>')
+api.add_resource(NPS, '/nps/<string:username>')
 
 
 # driver function
 if __name__ == '__main__':
 	app.run(debug = True, ssl_context='adhoc')
-
