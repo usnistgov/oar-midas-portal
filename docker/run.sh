@@ -173,17 +173,19 @@ if wordin midas-portal $comptypes; then
     fi
 fi
 
-if wordin npsbroker $comptypes; then
-    docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
-    if { wordin shell $cmds && [ "$comptypes" == "nps" ]; }; then
-        docmds="$docmds shell"
-    fi
+#If we need to add more python packaging etc and use dockers we can user it
+# This is not used right now
+# if wordin npsbroker $comptypes; then
+#     docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
+#     if { wordin shell $cmds && [ "$comptypes" == "nps" ]; }; then
+#         docmds="$docmds shell"
+#     fi
 
-    if [ "$docmds" == "build" ]; then
-        # build only
-        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/npsbroker build \
-                       "${args[@]}" "${angargs[@]} -p 9092:9092"
-        docker run --rm $volopt "${dargs[@]}" -p 9092:9092 oar-midas-portal/npsbroker build \
-                       "${args[@]}" "${angargs[@]}" 
-    fi
-fi
+#     if [ "$docmds" == "build" ]; then
+#         # build only
+#         echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/npsbroker build \
+#                        "${args[@]}" "${angargs[@]} -p 9092:9092"
+#         docker run --rm $volopt "${dargs[@]}" -p 9092:9092 oar-midas-portal/npsbroker build \
+#                        "${args[@]}" "${angargs[@]}" 
+#     fi
+# fi

@@ -157,9 +157,9 @@ else
     export PYTHONPATH=$installdir/lib/python
 fi
 
-#Is this needed?
-$execdir/record_python_deps.py ${DISTNAMES[0]} $version \
-                        > $DIST_DIR/${DISTNAMES[0]}-${vers4fn}_dep.json
+# #Is this needed?
+# $execdir/record_python_deps.py ${DISTNAMES[0]} $version \
+#                         > $DIST_DIR/${DISTNAMES[0]}-${vers4fn}_dep.json
 
 echo "bundle creation"
 # Bundle the distribution

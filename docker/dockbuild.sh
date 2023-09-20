@@ -42,5 +42,6 @@ log_intro   # record start of build into log
 echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal midas-portal
 docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal midas-portal 2>&1
 
-echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/npsbroker npsbroker
-docker build $BUILD_OPTS -t $PACKAGE_NAME/npsbroker npsbroker 2>&1
+#This can be added to the systems which need to build the docker image
+# echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/npsbroker npsbroker
+# docker build $BUILD_OPTS -t $PACKAGE_NAME/npsbroker npsbroker 2>&1
