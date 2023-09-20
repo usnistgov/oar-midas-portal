@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, Input } from '@angular/core';
 import { faCheck, faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { HttpClient } from '@angular/common/http';
@@ -34,6 +34,7 @@ export class DmpListComponent implements OnInit {
   dataSource: any;
 
   @ViewChild('dmptable') dmpTable: Table;
+  @Input() authToken: string|null = null;
 
   constructor(private configSvc: ConfigurationService, private http: HttpClient,
               public datepipe: DatePipe, public dialogService: DialogService,
@@ -45,9 +46,14 @@ export class DmpListComponent implements OnInit {
       this.dmpUI = cfg['dmpUI'];
       this.dmpAPI = cfg['dmpAPI'];
       this.dmpEDIT = cfg['dmpEDIT'];
+  }
 
-      //GET method to get data
-      this.fetchRecords(this.dmpAPI);
+  /**
+   * update the state of this component as the result of changes in its parent
+   */
+  ngOnChanges(changes: SimpleChanges) {
+      if (this.authToken)
+          this.fetchRecords(this.dmpAPI);
   }
 
   show() {
@@ -89,11 +95,13 @@ export class DmpListComponent implements OnInit {
   }
 
   private fetchRecords(url: string) {
-    this.http.get(url)
+    this.http.get(url, { headers: { Authorization: "Bearer "+this.authToken }})
       .pipe(map((responseData: any) => {
         return responseData
       })).subscribe(records => {
+        console.log("Loading "+records.length+" DMP records");
         for (let i = 0; i < records.length; i++) {
+          this.DMP = [];
           this.DMP.push(this.customSerialize(records[i]))
         }
       })

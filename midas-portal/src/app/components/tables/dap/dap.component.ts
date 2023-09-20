@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, Input } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
@@ -22,9 +22,10 @@ import { dap } from '../../../models/dap.model';
     './dap.component.css'
   ]
 })
-export class DapComponent implements OnInit {
+export class DapComponent implements OnInit, OnChanges {
   @Input() openedAsDialog: boolean = false;
   @Input() parent: any;
+  @Input() authToken: string|null;    
   faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
   faFileEdit = faFileEdit;
   public data: any;
@@ -44,27 +45,26 @@ export class DapComponent implements OnInit {
     , public messageService: MessageService) {
   }
 
-
-
   ngAfterViewInit() {
-
   }
 
-  async ngOnInit() {
-    let promise = new Promise((resolve) => {
+  ngOnInit() {
       this.dapUI = this.configSvc.getConfig()['dapUI'];
       this.dapAPI = this.configSvc.getConfig()['dapAPI'];
       this.dapEDIT = this.configSvc.getConfig()['dapEDIT'];
-      resolve(this.dapAPI);
-      this.fetchRecords(this.dapAPI);
       this.statuses = [
         { label: 'published', value: 'published' },
         { label: 'edit', value: 'edit' },
         { label: 'reviewed', value: 'reviewed' }
       ];
+  }
 
-
-    })
+  /**
+   * update the state of this component as the result of changes in its parent
+   */
+  ngOnChanges(changes: SimpleChanges) {
+      if (this.authToken)
+          this.fetchRecords(this.dapAPI);
   }
 
   show() {
@@ -108,10 +108,12 @@ export class DapComponent implements OnInit {
   }
 
   public fetchRecords(url: string) {
-    this.http.get(url)
+    this.http.get(url, { headers: { Authorization: "Bearer "+this.authToken }})
       .pipe(map((responseData: any) => {
         return responseData
       })).subscribe(records => {
+        console.log("Loading "+records.length+" DAP records");
+        this.DAP = [];
         for (let i = 0; i < records.length; i++) {
           this.DAP.push(this.customSerialize(records[i]))
         }

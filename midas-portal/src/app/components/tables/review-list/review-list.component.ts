@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, Input } from '@angular/core';
 import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
 import { HttpClient } from '@angular/common/http';
@@ -28,6 +28,7 @@ export class ReviewListComponent implements OnInit {
   loading: boolean = false;
 
   @ViewChild('reviewtable') reviewTable: Table;
+  @Input() authToken: string|null = null;
 
   constructor(private configSvc: ConfigurationService, private http: HttpClient,
               public datepipe:DatePipe,public dialogService: DialogService,
@@ -36,38 +37,25 @@ export class ReviewListComponent implements OnInit {
 
   ngAfterViewInit() { }
 
-  async ngOnInit() {
+  ngOnInit() {
 
-    let promise = new Promise((resolve) => {
-        let config = this.configSvc.getConfig()
-        this.NPSAPI = config['NPSAPI'];
-        this.npsUI = config['npsUI'];
-        
-        resolve(this.NPSAPI);
-        
-        //GET Using fake backend
-        this.fetchRecords(this.NPSAPI);
-        if(typeof this.data !== 'undefined') {
-          for (let i = 0; i<this.data.length;i++){
-            this.data[i].deadline = new Date(this.data[i].deadline)
-            //this.data[i].deadline = this.datepipe.transform(this.data[i].deadline,'MM/dd/yyyy')
-          }
-        }
-    });
-    /* using fetch to retrieve data
-    promise.then(async ()=> {
-        await this.getRecords();
-    }
-    ).then(() => {
-      this.data = JSON.parse(this.records);
-    });
-    */
+      let config = this.configSvc.getConfig()
+      this.NPSAPI = config['NPSAPI'];
+      this.npsUI = config['npsUI'];
 
-    this.statuses = [
-      { label: 'Pending', value: 'Pending' },
-      { label: 'Done', value: 'Done' },
-      { label: 'In Progress', value: 'In Progress' }
-  ];
+      this.statuses = [
+          { label: 'Pending', value: 'Pending' },
+          { label: 'Done', value: 'Done' },
+          { label: 'In Progress', value: 'In Progress' }
+      ];
+  }
+
+  /**
+   * update the state of this component as the result of changes in its parent
+   */
+  ngOnChanges(changes: SimpleChanges) {
+      if (this.authToken)
+          this.fetchRecords(this.NPSAPI);
   }
 
   linkto(item:string){
@@ -101,11 +89,18 @@ export class ReviewListComponent implements OnInit {
   }
 
   private fetchRecords(url:string){
-    this.http.get(url)
+    this.http.get(url, { headers: { Authorization: "Bearer "+this.authToken }})
     .pipe(map((responseData: any)  => {
       return responseData
     })). subscribe(records => {
-      this.data = records
+      this.data = records;
+      if(typeof this.data !== 'undefined') {
+          console.log("Loading "+records.length+" NPS records");
+          for (let i = 0; i<this.data.length;i++){
+            this.data[i].deadline = new Date(this.data[i].deadline)
+            //this.data[i].deadline = this.datepipe.transform(this.data[i].deadline,'MM/dd/yyyy')
+          }
+      }
     })
   }
 

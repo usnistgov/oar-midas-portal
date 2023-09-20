@@ -47,7 +47,7 @@ export class LandingComponent implements OnInit {
   userId: string|undefined;
   userOU: string|undefined;
   userDiv: string|undefined;
-  authToken: string|null|undefined;
+  authToken: string|null = null;
   public dap: any;
   dapAPI: string;
 
@@ -108,7 +108,8 @@ export class LandingComponent implements OnInit {
               this.userLastName = creds.userAttributes.userLastName;
               this.userEmail = creds.userAttributes.userEmail;
               this.userOU = creds.userAttributes.userOU;
-              this.authToken = creds.token;
+              if (creds.token)
+                  this.authToken = creds.token;
           },
           error => {
               alert("Unable to determine your identity");

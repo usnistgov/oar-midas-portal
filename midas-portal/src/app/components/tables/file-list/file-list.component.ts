@@ -42,12 +42,12 @@ export class FileListComponent implements OnInit {
 
       //GET method to get data
       this.fetchRecords(this.nextcloudUI);
-      console.log(this.data)
+      console.log("file space data: "+JSON.stringify(this.data));
       if (this.data==null) 
           this.display=false;
       else {
           for (let i = 0; i<this.data.length;i++){
-              this.data[i].last_modified = new Date(this.data[i].last_modified)
+              this.data[i].last_modified = new Date(this.data[i].last_modified);
           }
       }
         
