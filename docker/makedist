@@ -11,6 +11,8 @@
 #   python             build only the python-based distributions
 #   angular            build only the angular-based distributions
 #
+
+
 echo "********************** makdist in docker"
 prog=`basename $0`
 execdir=`dirname $0`
@@ -22,10 +24,14 @@ echo "Creating scripts directory path"
 #This is a repo level scripts directory
 scriptsdir=$DOCKERDIR/../scripts/
 
-echo "Build python $@"
-#This builds the python section of the portal code
-$scriptsdir/makedist.npsbroker
+if [ $1 = "npsbroker" ]; then 
+    echo "Build python $@"
+    #This builds the python section of the portal code
+    $scriptsdir/makedist.npsbroker
+fi
+
 
 #run.sh is called to execute dockerized builds for example in this case
 # it is for angular building
 exec $DOCKERDIR/run.sh build "$@"
+

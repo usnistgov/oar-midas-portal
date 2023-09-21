@@ -105,15 +105,15 @@ while [ "$1" != "" ]; do
         -*)
             args=(${args[@]} $1)
             ;;
-        python|midas-portal|java)
+        python|midas-portal|npsbroker)
             comptypes="$comptypes $1"
             ;;
         midas-portal)
             wordin midas-portal $comptypes || comptypes="$comptypes midas-portal"
             angargs=(${args[@]} $1)
             ;;
-        pdr-publish)
-            wordin python $comptypes || comptypes="$comptypes python"
+        npsbroker)
+            wordin python $comptypes || comptypes="$comptypes npsbroker"
             pyargs=(${pyargs[@]} $1)
             ;;
         build|install|test|shell)
