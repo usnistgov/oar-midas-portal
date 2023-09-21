@@ -158,6 +158,7 @@ fi
     $execdir/dockbuild.sh
 }
 
+echo "Check the arguments... $1"
 if wordin midas-portal $comptypes; then
     docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
     if { wordin shell $cmds && [ "$comptypes" == "editable" ]; }; then
