@@ -24,14 +24,13 @@ echo "Creating scripts directory path"
 #This is a repo level scripts directory
 scriptsdir=$DOCKERDIR/../scripts/
 
-# if [ $1 = "npsbroker" ]; then 
-#     echo "Build python $@"
-#     #This builds the python section of the portal code
-#     $scriptsdir/makedist.npsbroker
-# fi
-$scriptsdir/makedist.npsbroker
+if [ $1 = "npsbroker" ]; then 
+    echo "Build python $@"
+    #This builds the python section of the portal code
+    $scriptsdir/makedist.npsbroker
+fi
+# $scriptsdir/makedist.npsbroker
 
-echo "Testing the arguments here :$@"
 #run.sh is called to execute dockerized builds for example in this case
 # it is for angular building
 exec $DOCKERDIR/run.sh build "$@"
