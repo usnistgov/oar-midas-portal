@@ -70,4 +70,4 @@ api.add_resource(NPS, '/nps/<string:username>')
 
 # driver function
 if __name__ == '__main__':
-	app.run(debug = True, ssl_context='adhoc')
+	app.run(debug = True, port=9092)
