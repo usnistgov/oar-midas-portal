@@ -41,7 +41,7 @@ export class DmpListComponent implements OnInit {
               public messageService: MessageService)
   {  }
 
-  async ngOnInit() {
+  ngOnInit() {
       let cfg = this.configSvc.getConfig();
       this.dmpUI = cfg['dmpUI'];
       this.dmpAPI = cfg['dmpAPI'];
