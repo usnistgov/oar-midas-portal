@@ -11,23 +11,13 @@
 
 # The parent should be an ancestor image of the operational container
 # 
-FROM debian:bullseye-slim
+FROM node:16.17-bullseye-slim
 
-RUN sed -e '/buster-updates/ s/^deb/#deb/' /etc/apt/sources.list \
+RUN sed -e '/bullseye-updates/ s/^deb/#deb/' /etc/apt/sources.list \
     > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list
 RUN apt-get update && \
     apt-get install -y --no-install-recommends zip wget ca-certificates git xz-utils \
                                                gnupg python3
-
-COPY node-sha256.txt /tmp
-RUN cd /tmp && wget https://nodejs.org/dist/v16.17.1/node-v16.17.1-linux-x64.tar.xz \
-            && sha256sum -c node-sha256.txt
-RUN cd /usr/local && tar xJf /tmp/node-v16.17.1-linux-x64.tar.xz \
-                  && ln -s node-v16.17.1-linux-x64 node          \
-                  && cd bin                                     \
-                  && ln -s ../node/bin/node node                \
-                  && ln -s ../node/bin/npm  npm                 \
-                  && ln -s ../node/bin/npx  npx            
 
 ENV GOSU_VERSION 1.14
 RUN set -ex; \

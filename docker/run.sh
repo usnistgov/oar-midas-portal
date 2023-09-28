@@ -12,6 +12,10 @@ os=`uname`
 SED_RE_OPT=r
 [ "$os" != "Darwin" ] || SED_RE_OPT=E
 
+ang_dists=midas-portal
+py_dists=midas-nps
+avail_dists="$ang_dists $py_dists"
+
 function usage {
     cat <<EOF
 
@@ -19,13 +23,12 @@ $prog - build and optionally test the software in this repo via docker
 
 SYNOPSIS
   $prog [-d|--docker-build] [--dist-dir DIR] [CMD ...] 
-        [DISTNAME|python|angular|java ...] 
+        [DISTNAME|angular|python ...] 
         
 
 ARGS:
-  python    apply commands to just the python distributions
   angular   apply commands to just the angular distributions
-  java      apply commands to just the java distributions
+  python    apply commands to just the python distributions
 
 DISTNAMES:  midas-portal, midas-nps
 
@@ -69,7 +72,7 @@ args=()
 dargs=()
 pyargs=()
 angargs=()
-jargs=()
+dists=()
 testcl=()
 while [ "$1" != "" ]; do
     case "$1" in
@@ -108,9 +111,8 @@ while [ "$1" != "" ]; do
         python|midas-portal|npsbroker)
             comptypes="$comptypes $1"
             ;;
-        midas-portal)
-            wordin midas-portal $comptypes || comptypes="$comptypes midas-portal"
-            angargs=(${args[@]} $1)
+        angular)
+            set -- "$@" $ang_dists
             ;;
         npsbroker)
             wordin python $comptypes || comptypes="$comptypes npsbroker"
@@ -132,11 +134,11 @@ done
     dargs=(${dargs[@]} --env OAR_TEST_INCLUDE=\"${testcl[@]}\")
 }
 
-comptypes=`echo $comptypes`
+dists=`echo $dists`
 cmds=`echo $cmds`
-[ -n "$comptypes" ] || comptypes="midas-portal"
+[ -n "$dists" ] || dists="$ang_dists"
 [ -n "$cmds" ] || cmds="build"
-echo "run.sh: Running docker commands [$cmds] on [$comptypes]"
+echo "run.sh: Running docker commands [$cmds] on [$dists]"
 
 testopts="--cap-add SYS_ADMIN"
 volopt="-v ${codedir}:/dev/oar-midas-portal"
@@ -145,7 +147,7 @@ volopt="-v ${codedir}:/dev/oar-midas-portal"
 # changes requiring re-builds.
 # 
 if [ -z "$dodockbuild" ]; then
-    if wordin midas-portal $comptypes; then
+    if wordin midas-portal $dists; then
         if wordin build $cmds; then
             docker_images_built oar-midas-portal/midas-portal || dodockbuild=1
         fi
@@ -158,6 +160,7 @@ fi
     $execdir/dockbuild.sh
 }
 
+
 echo "Check the arguments... $1"
 if wordin midas-portal $comptypes; then
     docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
@@ -165,15 +168,14 @@ if wordin midas-portal $comptypes; then
         docmds="$docmds shell"
     fi
 
-    if [ "$docmds" == "build" ]; then
-        # build only
-        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
-                       "${args[@]}" "${angargs[@]}"
-        docker run --rm  $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
-                       "${args[@]}" "${angargs[@]}"
+    if [ -n "$py_req" ]; then
+        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-nps \
+                        test "${args[@]}" $py_dists
+        docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-nps \
+               test "${args[@]}" $py_dists
     fi
-fi
 
+fi
 #If we need to add more python packaging etc and use dockers we can user it
 # This is not used right now
 # if wordin npsbroker $comptypes; then
@@ -190,3 +192,4 @@ fi
 #                        "${args[@]}" "${angargs[@]}" 
 #     fi
 # fi
+

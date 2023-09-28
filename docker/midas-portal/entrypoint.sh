@@ -15,8 +15,8 @@ op=$1
 shift
 case "$op" in
     build|makedist)
-        echo '+' scripts/makedist.angular "$@"
-        $CODEDIR/scripts/makedist.angular "$@"
+        echo '+' scripts/makedist "$@"
+        $CODEDIR/scripts/makedist "$@"
         ;;
     shell)
         exec /bin/bash

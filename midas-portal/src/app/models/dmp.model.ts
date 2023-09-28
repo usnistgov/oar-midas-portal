@@ -1,4 +1,5 @@
 export class dmp {
+    id: string;
     name: string;
     owner: string;
     orgid: number;

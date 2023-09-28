@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { CustomizationService } from '../auth-service/auth.service';
-import { AuthService } from '../auth-service/auth.service';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList,
 faSearch, faFileCirclePlus, faPlus,faBook, faListCheck,faLink,faAddressBook
  ,faCircle, faPrint, faPersonCircleQuestion, faBuilding} from '@fortawesome/free-solid-svg-icons';
-import { AppConfig } from 'src/app/config/app.config';
-import { UserDetails } from '../auth-service/user.interface';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -40,53 +36,43 @@ export class LandingComponent implements OnInit {
   faListCheck=faListCheck;
   faPrint=faPrint;
   faPersonCircleQuestion=faPersonCircleQuestion;
-  private _custsvc: CustomizationService ;
   public username: string;
   events: string[] = [];
   opened: boolean;
   display = false;
   filterString: string;
-  userLastName : string;
-  userName: string;
-  userEmail: string;
-  userId: string;
-  userOU: string;
-  userDiv: string;
+  userLastName : string|undefined;
+  userName: string|undefined;
+  userEmail: string|undefined;
+  userId: string|undefined;
+  userOU: string|undefined;
+  userDiv: string|undefined;
+  authToken: string|null|undefined;
   public dap: any;
-  authAPI: string;
-  authRedirect: string;
   dapAPI: string;
 
-  userDetails: UserDetails;
-
   public constructor(private authsvc: AuthenticationService,
-                    private appConfig: AppConfig,
-                    private http: HttpClient,public dialogService: DialogService
-                    , public messageService: MessageService) { 
+                     private http: HttpClient, public dialogService: DialogService,
+                     public messageService: MessageService) { 
     
   }
 
 
   ngOnInit(): void {
-    let promise = new Promise((resolve) => {
-      //this.startEditing(true);
-    
-    console.log('******** authAPI: ' + this.authAPI);
-      this.appConfig.getRemoteConfig().subscribe(config => {
-        this.authAPI = config.authAPI;
-        this.authRedirect = config.authRedirect;
-        console.log('********** calll userinfor ');
       this.getUserInfo();
-      });
-    })
   }
 
 
   ngAfterViewInit() {
     setTimeout(() => {
-        this.messageService.addAll([
-            { severity: 'success', summary: 'NIST MIDAS Portal', detail: 'Connected as cnd7'}
-        ]);
+        if (this.userId)
+            this.messageService.addAll([
+                { severity: 'success', summary: 'NIST MIDAS Portal', detail: 'Connected as '+this.userId }
+            ]);
+        else
+            this.messageService.addAll([
+                { severity: 'warning', summary: 'Portal login failed', detail: 'Connected as anonymous' }
+            ]);
     })
 
     let filter = document.getElementsByTagName("p-columnfilter");
@@ -109,73 +95,25 @@ export class LandingComponent implements OnInit {
         i.children[0].children[5].ariaLabel="Last page"
 
     }
-
-
-    
-
-}
+  }
 
   public getUserInfo() {
-    console.log('authAPI: ' + this.authAPI);
-    console.log('authRedirect: ' + this.authRedirect);
-
-    //make the call to the auth service
-    this.http.get(this.authAPI, { observe: 'response', headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }}).subscribe(response => {
-      console.log('response code: ' + response.status);
-      console.log('user details: ' + response.body);
-      if(response.status != 200) {
-        //redirect to authentication URL
-
-        console.log("Redirecting to " + this.authRedirect + " to authenticate user");
-        window.location.assign(this.authRedirect);        
-      }
-      else {
-
-         console.log(" userDetails ::"+JSON.parse(JSON.stringify(response.body)))
-         var testToken =  JSON.parse(JSON.stringify(response.body)).token;
-         console.log(" TOKEN ::"+testToken)
-         let responseString = response.body as string;
-         let userDetails = JSON.parse(responseString).userDetails;
-         console.log(" userDetails ::"+userDetails)
-         
-         this.userName = userDetails.userName;
-         this.userLastName = userDetails.userLastName;
-         this.userEmail = userDetails.userEmail;
-         this.userId = userDetails.userId;
-         this.userOU = userDetails.userOU;
-         this.userDiv = userDetails.userDiv + " ("+ userDetails.userDivNum + ")";
-        console.log('username: ' + this.userName);
-      }
-      //this.userDetails = response.body;
-      
-    },
-    httperr => {
-      if (httperr.status == 401) {
-        console.log("Redirecting to " + this.authRedirect + " to authenticate user");
-        window.location.assign(this.authRedirect);  
-     }
-     else if (httperr.status < 100 && httperr.error) {
-       
-         let msg = "Service connection error"
-         if (httperr['message'])
-             msg += ": " + httperr.message
-         if (httperr.error.message)
-             msg += ": " + httperr.error.message
-         if (httperr.status == 0 && httperr.statusText.includes('Unknown'))
-             msg += " (possibly due to CORS restriction?)";
-         alert(msg)
-     }
-     else  {
-        
-         // URL returned some other error status
-         let msg = "Unexpected error during authorization";
-         // TODO: can we get at body of message when an error occurs?
-         // msg += (httperr.body['message']) ? httperr.body['message'] : httperr.statusText;
-         msg += " (" + httperr.status.toString() + " " + httperr.statusText + ")"
-         alert(msg);
-     }
-    }
-    );
+      return this.authsvc.getCredentials().subscribe(
+          creds => {
+              if (! creds || ! creds.userId)
+                  throw new Error("Missing identity information in credentials");
+              console.log("Logged in as "+creds.userId);
+              this.userId = creds.userId;
+              this.userName = creds.userAttributes.userName;
+              this.userLastName = creds.userAttributes.userLastName;
+              this.userEmail = creds.userAttributes.userEmail;
+              this.userOU = creds.userAttributes.userOU;
+              this.authToken = creds.token;
+          },
+          error => {
+              alert("Unable to determine your identity");
+          }
+      )
   }
 
   public fetchRecords(url:string){
@@ -186,20 +124,5 @@ export class LandingComponent implements OnInit {
       this.dap = records
     })
   }
-
-
-  public logintest(){
-    alert("Test");
-    //this.authsvc.getUserInfo();
-  }
-    /**
-     * return true if the user is currently authorized to to edit the resource metadata.
-     * If false, can attempt to gain authorization via a call to authorizeEditing();
-     */
-     public isAuthorized(): boolean {
-      return Boolean(this._custsvc);
-  }
-
-
 }
 
