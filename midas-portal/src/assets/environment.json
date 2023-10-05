@@ -11,6 +11,8 @@
     "dapEDIT": "https://localhost/dapui/edit/od/id/",
     "npsUI": "https://tsapps-t.nist.gov/nps/npsui",
     "nextcloudUI": "https://nextcloud-dev.nist.gov",
+    "NPSClientID": "MIDAS",
+    "NPSClientSecret": "a521G90T3716n0x1",
     "auth": {
         "serviceEndpoint": "https://mdsdev.nist.gov/sso/auth/_tokeninfo"
     }
