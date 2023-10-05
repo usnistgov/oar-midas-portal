@@ -52,19 +52,16 @@ class NPS(Resource):
 	
 	def get_auth_token(self):
 
+		#get access token from NPS service
 		url = 'https://tsapps-t.nist.gov/nps/npsidp/connect/token'
+		#read client ID and secret from environment.json
 		config = readConfig.get_nps_credentials()
-		#client_id = 'MIDAS'
-		#client_secret = 'a521G90T3716n0x1'
 
-		print('CLIENT in BROKER: ' + config.client_id)
-		print('SECRET in BROKER: ' + str(config.client_secret))
 		response = requests.post(
 			url, 
 			data={'grant_type': 'client_credentials'},
 			auth=(config.client_id, config.client_secret),
 		)
-		print('response' + str(response.json()))
 
 		return response.json()["access_token"]
 

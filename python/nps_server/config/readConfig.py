@@ -2,6 +2,7 @@ import config.configParams
 import json
 
 cp = config.configParams.ConfigParams()
+#reads NPS client ID and secret from environment.json
 def get_nps_credentials():
     """read environment.json file and get values for NPS client id and secret"""
     try:
