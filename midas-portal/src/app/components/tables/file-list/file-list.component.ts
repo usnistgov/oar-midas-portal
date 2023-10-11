@@ -42,7 +42,7 @@ export class FileListComponent implements OnInit {
 
       //GET method to get data
       this.fetchRecords(this.nextcloudUI);
-      console.log("file space data: "+JSON.stringify(this.data));
+      //console.log("file space data: "+JSON.stringify(this.data));
       if (this.data==null) 
           this.display=false;
       else {

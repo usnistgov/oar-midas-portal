@@ -1,13 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Component, OnInit,  } from '@angular/core';
 import { faHouse, faUser, faDashboard, faCloud, faClipboardList,
 faSearch, faFileCirclePlus, faPlus,faBook, faListCheck,faLink,faAddressBook
  ,faCircle, faPrint, faPersonCircleQuestion, faBuilding} from '@fortawesome/free-solid-svg-icons';
-import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ToastModule } from 'primeng/toast';
-import { map } from 'rxjs/operators';
+import { DialogService, } from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'oarng';
 
 
@@ -36,11 +32,6 @@ export class LandingComponent implements OnInit {
   faListCheck=faListCheck;
   faPrint=faPrint;
   faPersonCircleQuestion=faPersonCircleQuestion;
-  public username: string;
-  events: string[] = [];
-  opened: boolean;
-  display = false;
-  filterString: string;
   userLastName : string|undefined;
   userName: string|undefined;
   userEmail: string|undefined;
@@ -48,20 +39,24 @@ export class LandingComponent implements OnInit {
   userOU: string|undefined;
   userDiv: string|undefined;
   authToken: string|null = null;
-  public dap: any;
-  dapAPI: string;
 
-  public constructor(private authsvc: AuthenticationService,
-                     private http: HttpClient, public dialogService: DialogService,
+
+  public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,
                      public messageService: MessageService) { 
     
   }
 
 
-  ngOnInit(): void {
-      this.getUserInfo();
+   ngOnInit(): void {
+    this.getUserInfo();
   }
 
+
+  /**
+   * This functions does two things :
+   * 1- print a pop up to confirm to the user that he's connected
+   * 2- inject some JS labels in the HTMl to make it 508 compliant
+   */
 
   ngAfterViewInit() {
     setTimeout(() => {
@@ -71,13 +66,14 @@ export class LandingComponent implements OnInit {
             ]);
         else
             this.messageService.addAll([
-                { severity: 'warning', summary: 'Portal login failed', detail: 'Connected as anonymous' }
+                { severity: 'error', summary: 'Portal login failed', detail: 'Connected as anonymous' }
             ]);
-    })
+    },2000);
+    
 
     let filter = document.getElementsByTagName("p-columnfilter");
 
-    // regular for loop
+    // adding 508 labels to children of column
     var Ar_filter = Array.prototype.slice.call(filter)
     for (let i of Ar_filter) {
       i.children[0].children[0].ariaLabel="Last Modified"
@@ -86,7 +82,7 @@ export class LandingComponent implements OnInit {
 
     let paginator = document.getElementsByTagName("p-paginator");
 
-    // regular for loop
+    // adding 508 labels to children of paginator
     var Ar_paginator = Array.prototype.slice.call(paginator)
     for (let i of Ar_paginator) {
         i.children[0].children[1].ariaLabel="First page"
@@ -97,7 +93,13 @@ export class LandingComponent implements OnInit {
     }
   }
 
-  public getUserInfo() {
+  /**
+   * This method is used to get the user info from the AuthenticationService.
+   * it doesn't take any parameters because the service is used as a lib from oarng
+   * @returns Observable<Credentials> custom model of Crendetials from auth including userID,username,useremail and userOU
+   */
+
+  public async getUserInfo() {
       return this.authsvc.getCredentials().subscribe(
           creds => {
               if (! creds || ! creds.userId)
@@ -108,22 +110,14 @@ export class LandingComponent implements OnInit {
               this.userLastName = creds.userAttributes.userLastName;
               this.userEmail = creds.userAttributes.userEmail;
               this.userOU = creds.userAttributes.userOU;
+              console.log("token : "+creds.token)
               if (creds.token)
-                  this.authToken = creds.token;
+                this.authToken = creds.token;
           },
           error => {
               alert("Unable to determine your identity");
           }
       )
-  }
-
-  public fetchRecords(url:string){
-    this.http.get(url)
-    .pipe(map((responseData: any)  => {
-      return responseData
-    })). subscribe(records => {
-      this.dap = records
-    })
   }
 }
 
