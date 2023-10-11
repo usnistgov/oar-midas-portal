@@ -99,7 +99,7 @@ export class LandingComponent implements OnInit {
    * @returns Observable<Credentials> custom model of Crendetials from auth including userID,username,useremail and userOU
    */
 
-  public async getUserInfo() {
+  public getUserInfo() {
       return this.authsvc.getCredentials().subscribe(
           creds => {
               if (! creds || ! creds.userId)
