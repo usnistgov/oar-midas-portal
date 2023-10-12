@@ -70,19 +70,16 @@ export class LandingComponent implements OnInit {
             ]);
     },2000);
     
-
+  // adding 508 labels to children of column
     let filter = document.getElementsByTagName("p-columnfilter");
-
-    // adding 508 labels to children of column
     var Ar_filter = Array.prototype.slice.call(filter)
     for (let i of Ar_filter) {
       i.children[0].children[0].ariaLabel="Last Modified"
       
     }
 
-    let paginator = document.getElementsByTagName("p-paginator");
-
     // adding 508 labels to children of paginator
+    let paginator = document.getElementsByTagName("p-paginator");
     var Ar_paginator = Array.prototype.slice.call(paginator)
     for (let i of Ar_paginator) {
         i.children[0].children[1].ariaLabel="First page"
@@ -111,8 +108,9 @@ export class LandingComponent implements OnInit {
               this.userEmail = creds.userAttributes.userEmail;
               this.userOU = creds.userAttributes.userOU;
               console.log("token : "+creds.token)
-              if (creds.token)
-                this.authToken = creds.token;
+              this.authToken="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5NzE0MDQyMCwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.cVrseKvALxxfD2189Y2UM8v9ng8_K__fyHE6lAsWQ7Q";
+              //if (creds.token)
+                //this.authToken = creds.token;
           },
           error => {
               alert("Unable to determine your identity");
