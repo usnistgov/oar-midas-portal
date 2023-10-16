@@ -17,18 +17,13 @@ export class DmpListModalComponent implements OnInit {
   faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
   faCheck = faCheck;
   faFileEdit = faFileEdit;
-  public records: any;
-  public recordsApi: string;
   public data: any;
-  loading: boolean = true;
   dmpAPI: string;
   dmpUI: string;
   dmpEDIT: string;
   ref: DynamicDialogRef;
   public count: any;
 
-
-  dataSource: any;
 
   @ViewChild('dmptable') dmpTable: Table;
 
@@ -37,19 +32,22 @@ export class DmpListModalComponent implements OnInit {
               public config: DynamicDialogConfig)
   { }
 
+  /**
+   * This functions does two things :
+   * 1- print a pop up to confirm to the user that he's connected
+   * 2- inject some JS labels in the HTMl to make it 508 compliant
+   */
   ngAfterViewInit() {
     let filter = document.getElementsByTagName("p-columnfilter");
 
-    // regular for loop
+    // adding 508 labels to children of column
     var Ar_filter = Array.prototype.slice.call(filter)
     for (let i of Ar_filter) {
       i.children[0].children[0].ariaLabel = "Last Modified"
 
     }
-
+    // adding 508 labels to children of paginator
     let paginator = document.getElementsByTagName("p-paginator");
-
-    // regular for loop
     var Ar_paginator = Array.prototype.slice.call(paginator)
     for (let i of Ar_paginator) {
       i.children[0].children[1].ariaLabel = "First page"
@@ -75,7 +73,11 @@ export class DmpListModalComponent implements OnInit {
 
   }
 
+  /**
+   * iniating the tables of the modal from data from the landing page
+   */
   async ngOnInit() {
+    //Retrieve the data passed on by the show function in the tables/dmp.component.ts
       let config = this.cfgsvc.getConfig();
       this.dmpAPI = config['dmpAPI']
       this.dmpUI = config['dmpUI'];
@@ -85,20 +87,28 @@ export class DmpListModalComponent implements OnInit {
       this.count = this.data.length;
   }
 
+  /**
+   * this function allow to create the link to edit a specific dap
+   * @param item is the id of the dap we want to modify
+   * @returns string that is the link to the dapui interface of the dap
+   */
   linkto(item: string) {
     return this.dmpEDIT.concat(item.toString())
   }
 
 
+  /**
+   * this function helps to clear the table when doing research
+   * @param table  the table to clear
+   */
   clear(table: Table) {
     table.clear();
   }
 
-
-  titleClick() {
-    console.log(this);
-  }
-
+/**
+ * helper for the filtering of the table in the modal
+ * @param event is column selected
+ */
   filterTable(event: any) {
     this.dmpTable.filterGlobal(event.target.value, 'contains');
   }

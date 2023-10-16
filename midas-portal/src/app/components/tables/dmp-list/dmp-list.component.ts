@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, SimpleChanges, ViewChild, Input } from '@angular/core';
 import { faCheck, faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { HttpClient } from '@angular/common/http';
@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
-import { MatDialogRef } from '@angular/material/dialog';
 import { DmpListModalComponent } from '../../modals/dmp-list/dmp-list.component';
 import { ConfigurationService } from 'oarng';
 import { dmp } from '../../../models/dmp.model';
@@ -17,39 +16,42 @@ import { dmp } from '../../../models/dmp.model';
   styleUrls: ['./dmp-list.component.css']
 })
 export class DmpListComponent implements OnInit {
+  @ViewChild('dmptable') dmpTable: Table;
+  @Input() authToken: string|null = null;
   faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
   faCheck = faCheck;
   faFileEdit = faFileEdit;
-  public records: any;
-  public recordsApi: string;
-  public data: any;
-  loading: boolean = true;
   dmpAPI: string;
   dmpUI: string;
   dmpEDIT: string;
   ref: DynamicDialogRef;
   public DMP: any[] = [];
 
-
-  dataSource: any;
-
-  @ViewChild('dmptable') dmpTable: Table;
+  
 
   constructor(private configSvc: ConfigurationService, private http: HttpClient,
               public datepipe: DatePipe, public dialogService: DialogService,
               public messageService: MessageService)
   {  }
 
-  async ngOnInit() {
+  ngOnInit() {
       let cfg = this.configSvc.getConfig();
       this.dmpUI = cfg['dmpUI'];
       this.dmpAPI = cfg['dmpAPI'];
       this.dmpEDIT = cfg['dmpEDIT'];
-
-      //GET method to get data
-      this.fetchRecords(this.dmpAPI);
   }
 
+  /**
+   * update the state of this component as the result of changes in its parent
+   */
+  ngOnChanges(changes: SimpleChanges) {
+      if (this.authToken)
+          this.fetchRecords(this.dmpAPI);
+  }
+
+  /**
+   * this functions open the modal with a bigger view of the dmp and passes all the data to the DapModalComponent
+   */
   show() {
     this.ref = this.dialogService.open(DmpListModalComponent, {
       data: this.DMP,
@@ -58,47 +60,42 @@ export class DmpListComponent implements OnInit {
       baseZIndex: 10000,
     });
   }
+  
 
+  /**
+   * this function allow to create the link to edit a specific dap
+   * @param item is the id of the dap we want to modify
+   * @returns string that is the link to the dapui interface of the dap
+   */
   linkto(item: string) {
-    //https://localhost/dmpui/edit/mdm1:0001
     return this.dmpEDIT.concat(item.toString())
   }
 
-  async getRecords() {
 
-    let records;
-
-    const headerDict = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Allow-Origin': '*',
-      'rejectUnauthorized': 'false'
-    }
-
-    const requestOptions = {
-      headers: new Headers(headerDict)
-    };
-
-    await fetch(this.dmpAPI).then(r => r.json()).then(function (r) {
-      return records = r
-    })
-
-    this.loading = false;
-    return this.records = Object(records);
-  }
-
+  /**
+ * This function get data from the DBIO
+ * @param url is the endpoint of the dbio where we want to get data from
+ */
   private fetchRecords(url: string) {
-    this.http.get(url)
+    this.http.get(url, { headers: { Authorization: "Bearer "+this.authToken }})
       .pipe(map((responseData: any) => {
         return responseData
       })).subscribe(records => {
+        console.log("Loading "+records.length+" DMP records");
         for (let i = 0; i < records.length; i++) {
+          this.DMP = [];
           this.DMP.push(this.customSerialize(records[i]))
         }
       })
   }
 
+
+  /**
+   * This function serialize the data received from the dbio to the model we defined.
+   *  It helps dealing with the data later on in the portal
+   * @param item is the data received form the dbio
+   * @returns dmp
+   */
   public customSerialize(item: any) {
     let tmp = new dmp();
     tmp.id = item.id;
@@ -113,16 +110,4 @@ export class DmpListComponent implements OnInit {
     return tmp;
   }
 
-  clear(table: Table) {
-    table.clear();
-  }
-
-
-  titleClick() {
-    console.log(this);
-  }
-
-  filterTable(event: any) {
-    this.dmpTable.filterGlobal(event.target.value, 'contains');
-  }
 }

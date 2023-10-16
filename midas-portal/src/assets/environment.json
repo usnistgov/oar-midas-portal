@@ -12,6 +12,6 @@
     "npsUI": "https://tsapps-t.nist.gov/nps/npsui",
     "nextcloudUI": "https://nextcloud-dev.nist.gov",
     "auth": {
-        "serviceEndpoint": "https://mdsdev.nist.gov/sso/auth/_tokeninfo"
+        "serviceEndpoint": "https://localhost/sso/"
     }
 }
