@@ -10,13 +10,33 @@
 #                      (instead of the default directory, dist)
 #   python             build only the python-based distributions
 #   angular            build only the angular-based distributions
+#
+
+
+echo "********************** makdist in docker"
+
 #   midas-portal       build the portal application
 #   midas-nps          build the NPS proxy service
 #
+
 prog=`basename $0`
 execdir=`dirname $0`
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
 export CODEDIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 export DOCKERDIR=$execdir
 
+echo "Creating scripts directory path"
+#This is a repo level scripts directory
+scriptsdir=$DOCKERDIR/../scripts/
+
+if [ $1 = "npsbroker" ]; then 
+    echo "Build python $@"
+    #This builds the python section of the portal code
+    $scriptsdir/makedist.npsbroker
+fi
+# $scriptsdir/makedist.npsbroker
+
+#run.sh is called to execute dockerized builds for example in this case
+# it is for angular building
 exec $DOCKERDIR/run.sh build "$@"
+

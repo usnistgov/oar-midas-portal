@@ -108,14 +108,15 @@ while [ "$1" != "" ]; do
         -*)
             args=(${args[@]} $1)
             ;;
-        python)
-            set -- "$@" $py_dists
+        python|midas-portal|npsbroker)
+            comptypes="$comptypes $1"
             ;;
         angular)
             set -- "$@" $ang_dists
             ;;
-        midas-portal|midas-nps)
-            wordin $1 $dists || dists="$dists $1"
+        npsbroker)
+            wordin python $comptypes || comptypes="$comptypes npsbroker"
+            pyargs=(${pyargs[@]} $1)
             ;;
         build|install|test|shell)
             cmds="$cmds $1"
@@ -159,41 +160,12 @@ fi
     $execdir/dockbuild.sh
 }
 
-filt=`echo $py_dists | sed -e 's/ /|/g'`
-py_req=`echo $dists | sed -e 's/ /\n/g' | grep -E $filt` || true
-filt=`echo $ang_dists | sed -e 's/ /|/g'`
-ang_req=`echo $dists | sed -e 's/ /\n/g' | grep -E $filt` || true
 
-# build distributions, if requested
-#
-if wordin build $cmds; then
-
-    if [ -n "$ang_req" ]; then
-        echo '+' docker run --rm $volopt "${dargs[@]}" oar-pdr-angular/midas-portal \
-                        build "${args[@]}" $ang_dists
-        docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal \
-               build "${args[@]}" $ang_dists
-    fi
-
-    if [ -n "$py_req" ]; then
-        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-nps \
-                        build "${args[@]}" $py_dists
-        docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-nps \
-               build "${args[@]}" $py_dists
-    fi
-
-fi
-
-# run tests, if requested
-#
-if wordin test $cmds; then
-
-    echo "Warning: docker test command not yet supported"; exit 1
-    if [ -n "$ang_req" ]; then
-        echo '+' docker run --rm $volopt "${dargs[@]}" oar-pdr-angular/midas-portal \
-                        test "${args[@]}" $ang_dists
-        docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal \
-               test "${args[@]}" $ang_dists
+echo "Check the arguments... $1"
+if wordin midas-portal $comptypes; then
+    docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
+    if { wordin shell $cmds && [ "$comptypes" == "editable" ]; }; then
+        docmds="$docmds shell"
     fi
 
     if [ -n "$py_req" ]; then
@@ -204,15 +176,20 @@ if wordin test $cmds; then
     fi
 
 fi
+#If we need to add more python packaging etc and use dockers we can user it
+# This is not used right now
+# if wordin npsbroker $comptypes; then
+#     docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
+#     if { wordin shell $cmds && [ "$comptypes" == "nps" ]; }; then
+#         docmds="$docmds shell"
+#     fi
 
-# open a shell, if requested
-#
-if wordin shell $cmds; then
+#     if [ "$docmds" == "build" ]; then
+#         # build only
+#         echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/npsbroker build \
+#                        "${args[@]}" "${angargs[@]} -p 9092:9092"
+#         docker run --rm $volopt "${dargs[@]}" -p 9092:9092 oar-midas-portal/npsbroker build \
+#                        "${args[@]}" "${angargs[@]}" 
+#     fi
+# fi
 
-    container="oar-midas-nps/midas-portal"
-    [ -z "$py_req"  ] || container="oar-midas-portal/midas-nps"
-    [ -z "$ang_req" ] || container="oar-midas-portal/midas-portal"
-
-    echo '+' docker run -ti --rm $volopt "${dargs[@]}" $container shell "${args[@]}"
-    docker run -ti --rm $volopt "${dargs[@]}" $container shell "${args[@]}"
-fi

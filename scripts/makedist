@@ -103,12 +103,5 @@ filt=`echo $py_dists | sed -e 's/ /|/g'`
 py_req=`echo $build_dist | sed -e 's/ /\n/g' | grep -E $filt` || true
 filt=`echo $ang_dists | sed -e 's/ /|/g'`
 ang_req=`echo $build_dist | sed -e 's/ /\n/g' | grep -E $filt` || true
-
-if [ -n "$ang_req" ]; then
-    echo '+' scripts/makedist.angular "$args" "$ang_req"
-    $execdir/makedist.angular "$args" "$ang_req"
-fi
-if [ -n "$py_req" ]; then
-    echo '+' scripts/makedist.python "$args" "$py_req"
-    $execdir/makedist.python "$args" "$py_req"
-fi
+exec $execdir/makedist.angular
+exec $execdir/makedist.npsbroker
