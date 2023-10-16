@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AuthService, WebAuthService ,createAuthService} from '../auth-service/auth.service';
 import { LandingComponent } from './landing.component';
 import {HttpClientModule}   from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
@@ -61,8 +59,6 @@ import { MultiSelectModule } from 'primeng/multiselect';
          
          
     ],
-    providers:[ HttpClient,
-        { provide: AuthService, useFactory: createAuthService, deps: [ HttpClient ] },DatePipe
-]
+    providers:[ HttpClient,DatePipe]
 })
 export class LandingModule {}
