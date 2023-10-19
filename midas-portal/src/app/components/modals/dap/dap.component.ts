@@ -42,9 +42,7 @@ export class DapModalComponent implements OnInit {
   {  }
 
   /**
-   * This functions does two things :
-   * 1- print a pop up to confirm to the user that he's connected
-   * 2- inject some JS labels in the HTMl to make it 508 compliant
+   * This functions injects some JS labels in the HTMl to make it 508 compliant
    */
   ngAfterViewInit() {
     let filter = document.getElementsByTagName("p-columnfilter");
@@ -160,14 +158,4 @@ export class DapModalComponent implements OnInit {
     }
     return ""
   }
-
-  /**
- * helper for the filtering of the table in the modal
- * @param event is column selected
- */
-
-  filterTable(event: any) {
-    this.recordsTable.filterGlobal(event.target.value, 'contains');
-  }
-
 }

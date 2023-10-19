@@ -33,9 +33,7 @@ export class DmpListModalComponent implements OnInit {
   { }
 
   /**
-   * This functions does two things :
-   * 1- print a pop up to confirm to the user that he's connected
-   * 2- inject some JS labels in the HTMl to make it 508 compliant
+   * This functions injects some JS labels in the HTMl to make it 508 compliant
    */
   ngAfterViewInit() {
     let filter = document.getElementsByTagName("p-columnfilter");
@@ -103,13 +101,5 @@ export class DmpListModalComponent implements OnInit {
    */
   clear(table: Table) {
     table.clear();
-  }
-
-/**
- * helper for the filtering of the table in the modal
- * @param event is column selected
- */
-  filterTable(event: any) {
-    this.dmpTable.filterGlobal(event.target.value, 'contains');
   }
 }

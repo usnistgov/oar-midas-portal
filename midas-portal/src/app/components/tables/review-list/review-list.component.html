@@ -1,7 +1,7 @@
 
 <p-panel header="My Reviews">
     <ng-template pTemplate="icons">
-        <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
+        <button pButton class="p-panel-header-icon p-link">
             <!-- <span class="pi pi-cog"></span> -->
             <a href={{npsUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faListCheck" size="lg" title="Check Reviews"></fa-icon></a>
        
@@ -12,7 +12,7 @@
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
 <div class="">
-    <p-table #reviewtable [loading]="loading" [rowHover]="true"[value]="data"
+    <p-table #reviewtable  [rowHover]="true"[value]="data"
         [paginator]="true" [rows]="5" [scrollable]="true"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
