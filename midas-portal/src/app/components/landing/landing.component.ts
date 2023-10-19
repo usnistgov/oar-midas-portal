@@ -107,11 +107,8 @@ export class LandingComponent implements OnInit {
               this.userLastName = creds.userAttributes.userLastName;
               this.userEmail = creds.userAttributes.userEmail;
               this.userOU = creds.userAttributes.userOU;
-              //console.log("token : "+creds.token)
-              this.authToken="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5NzE0MDQyMCwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.cVrseKvALxxfD2189Y2UM8v9ng8_K__fyHE6lAsWQ7Q";
-              console.log("token : "+this.authToken)
-              //if (creds.token)
-              //  this.authToken = creds.token;
+              if (creds.token)
+                this.authToken = creds.token;
           },
           error => {
               alert("Unable to determine your identity");
