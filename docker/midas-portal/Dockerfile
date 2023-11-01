@@ -21,6 +21,7 @@ RUN apt-get update && \
 
 COPY cacerts/README.md cacerts/*.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
+ENV NODE_EXTRA_CA_CERTS /etc/ssl/certs/ca-certificates.crt
 
 ENV GOSU_VERSION 1.14
 RUN set -ex; \

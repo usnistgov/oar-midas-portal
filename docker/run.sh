@@ -182,7 +182,7 @@ fi
 #
 if wordin shell $cmds; then
     echo '+' docker run -ti --rm $volopt "${dargs[@]}"  \
-                    oar-pdr-angular/build-test shell "${args[@]}"
+                    oar-pdr-angular/midas-portal shell "${args[@]}"
     docker run --rm -ti $volopt "${dargs[@]}" \
            oar-midas-portal/midas-portal shell
 fi
