@@ -16,8 +16,8 @@ FROM node:16.17-bullseye-slim
 RUN sed -e '/bullseye-updates/ s/^deb/#deb/' /etc/apt/sources.list \
     > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends zip wget ca-certificates git xz-utils \
-                                               gnupg python3
+    apt-get install -y --no-install-recommends zip wget ca-certificates git \
+                                               xz-utils gnupg python3
 
 ENV GOSU_VERSION 1.14
 RUN set -ex; \
