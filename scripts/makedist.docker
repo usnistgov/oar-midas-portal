@@ -22,5 +22,4 @@ export DOCKERDIR=$CODEDIR/docker
 $DOCKERDIR/dockbuild.sh
 
 # Run the main makedist in the dockerdir
-echo "Run makedist for oar-midas-portal"
 exec $DOCKERDIR/makedist "$@"

@@ -11,12 +11,8 @@
 #   python             build only the python-based distributions
 #   angular            build only the angular-based distributions
 #
-
-
-echo "********************** makdist in docker"
-
 #   midas-portal       build the portal application
-#   midas-nps          build the NPS proxy service
+#   npsbroker          build the NPS proxy service
 #
 
 prog=`basename $0`
@@ -25,18 +21,28 @@ execdir=`dirname $0`
 export CODEDIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 export DOCKERDIR=$execdir
 
-echo "Creating scripts directory path"
+os=`uname`
+SED_RE_OPT=r
+[ "$os" != "Darwin" ] || SED_RE_OPT=E
+
 #This is a repo level scripts directory
-scriptsdir=$DOCKERDIR/../scripts/
+scriptsdir=$CODEDIR/scripts
 
-if [ $1 = "npsbroker" ]; then 
-    echo "Build python $@"
-    #This builds the python section of the portal code
-    $scriptsdir/makedist.npsbroker
+buildpy=1
+[ $# == "0" ] || buildpy=`echo " $@ " | egrep " npsbroker | python "`
+buildang=1
+[ $# == "0" ] || buildang=`echo " $@ " | egrep " midas-portal | angular "`
+args=`echo " $@ " | sed -${SED_RE_OPT}e 's/ (npsbroker|midas-portal|angular|python) / /g'`
+
+if [ -n "$buildpy" ]; then
+    # No special docker environment is required to build
+    # the npsbroker; we can do it natively
+    echo "Building npsbroker (natively)"
+    $scriptsdir/makedist.npsbroker $args
 fi
-# $scriptsdir/makedist.npsbroker
 
-#run.sh is called to execute dockerized builds for example in this case
-# it is for angular building
-exec $DOCKERDIR/run.sh build "$@"
+if [ -n "$buildang" ]; then
+    echo "Building midas-portal via docker"
+    exec $DOCKERDIR/run.sh build $args angular
+fi
 
