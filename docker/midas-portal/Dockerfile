@@ -19,6 +19,9 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends zip wget ca-certificates git \
                                                xz-utils gnupg python3
 
+COPY cacerts/README.md cacerts/*.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+
 ENV GOSU_VERSION 1.14
 RUN set -ex; \
     arch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
