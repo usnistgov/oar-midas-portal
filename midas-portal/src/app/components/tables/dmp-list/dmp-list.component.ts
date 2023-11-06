@@ -82,8 +82,8 @@ export class DmpListComponent implements OnInit {
         return responseData
       })).subscribe(records => {
         console.log("Loading "+records.length+" DMP records");
+        this.DMP = [];
         for (let i = 0; i < records.length; i++) {
-          this.DMP = [];
           this.DMP.push(this.customSerialize(records[i]))
         }
       })
