@@ -19,7 +19,7 @@
 #                             products into.
 #    -d DIR, --source-dir=DIR  the directory containing the python source code
 #                             (default: ./python)
-#    -c DIR, --cache-dir=DIR  directory for holding intermediate or cache-able
+#    --dist-dir=DIR           directory for holding intermediate or cache-able
 #                             products (currently not used); this can be shared
 #                             with other similar packages to avoid redundant 
 #                             re-building.
@@ -53,17 +53,13 @@ SOURCE_DIR=$PACKAGE_DIR/python
 DIST_DIR=$PACKAGE_DIR/dist
 BUILD_DIR=$SOURCE_DIR/dist
 VERSION=
-
-
-# Update this list with the names of the individual component names
-# 
-DISTNAMES=(npsbroker)
+DISTNAME=npsbroker
 
 # handle command line options
 while [ "$1" != "" ]; do 
   case "$1" in
     --list|-l)
-        echo "Available distributions: $DISTNAMES"
+        echo "Available distributions: $DISTNAME"
         exit 0
         ;;
     --dist-dir=*)
@@ -79,15 +75,6 @@ while [ "$1" != "" ]; do
     -d|--dir|--source-dir)
         shift
         SOURCE_DIR=$1
-        ;;
-    --cache-dir=*)
-        CACHE_DIR=`echo $1 | sed -e 's/[^=]*=//'`
-        # NOTE: CACHE_DIR is ignored
-        ;;
-    -c|--cache-dir)
-        shift
-        CACHE_DIR=$1
-        # NOTE: CACHE_DIR is ignored
         ;;
     -v|--version)
         shift
@@ -113,14 +100,8 @@ while [ "$1" != "" ]; do
 done
 
 true ${DIST_DIR:=$PACKAGE_DIR/dist}
-BUILD_DIR=$SOURCE_DIR/dist
+BUILD_DIR=$SOURCE_DIR/build
 mkdir -p $BUILD_DIR $DIST_DIR
-
-
-# set the current version.  This will inject the version into the code, if 
-# needed.
-#
-(cd $PACKAGE_DIR ./scripts/setversion.sh)
 
 # don't reset the version unnecessarily as it may have been done by makedist
 # 
@@ -136,7 +117,7 @@ vers4fn=`echo $version | perl -pe 's#[/ \t]+#_#g'`
 
 echo '#########################'
 echo '#'
-echo "# Building ${DISTNAMES[0]}"...
+echo "# Building $DISTNAME"...
 echo '#'
 echo '#########################'
 
@@ -145,26 +126,23 @@ installdir=$BUILD_DIR/npsbroker
 set -x
 mkdir -p $installdir
 
-cp $PACKAGE_DIR/python/nps_server/nps_broker.py $installdir/nps_broker.py
+cp $SOURCE_DIR/nps_server/nps_broker.py $installdir/nps_broker.py
 
-# ENTER COMMANDS for creating the dependency file(s)
+# #Is this needed?  Eventually, for documentation purposes
 #
 # A dependency file should be called DISTNAME-${version}_dep.json
-mkdir -p $DIST_DIR
-if [ -n "$PYTHONPATH" ]; then
-    export PYTHONPATH=$installdir/lib/python:$PYTHONPATH
-else
-    export PYTHONPATH=$installdir/lib/python
-fi
+# if [ -n "$PYTHONPATH" ]; then
+#     export PYTHONPATH=$installdir/lib/python:$PYTHONPATH
+# else
+#     export PYTHONPATH=$installdir/lib/python
+# fi
+#
+# $execdir/record_python_deps.py $DISTNAME $version \
+#                         > $DIST_DIR/$DISTNAME-${vers4fn}_dep.json
 
-# #Is this needed?
-# $execdir/record_python_deps.py ${DISTNAMES[0]} $version \
-#                         > $DIST_DIR/${DISTNAMES[0]}-${vers4fn}_dep.json
-
-echo "bundle creation"
 # Bundle the distribution
-(cd $BUILD_DIR && zip -qr $DIST_DIR/${DISTNAMES[0]}-${vers4fn}.zip npsbroker)
+(cd $BUILD_DIR && zip -qr $DIST_DIR/$DISTNAME-${vers4fn}.zip npsbroker)
 
 set +x
 echo Created distribution in dist directory: 
-echo ${DISTNAMES[0]}-${vers4fn}.zip
+echo $DISTNAME-${vers4fn}.zip

@@ -22,7 +22,7 @@ PACKAGE_NAME=oar-midas-portal
 ## containers to be built.  List them in dependency order (where a latter one
 ## depends the former ones).  
 #
-DOCKER_IMAGE_DIRS="pymongo jqfromsrc ejsonschema midas-portal nps"
+DOCKER_IMAGE_DIRS="midas-portal npsbroker"
 
 . $codedir/oar-build/_dockbuild.sh
 
@@ -37,10 +37,19 @@ setup_build
 
 log_intro   # record start of build into log
 
-# $codedir/oar-metadata/docker/dockbuild.sh $BUILD_IMAGES
+if { echo " $BUILD_IMAGES " | egrep -qs " midas-portal "; }; then
+    # install CA certs into containers that can use them
+    cp_ca_certs_to midas-portal
 
-echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal midas-portal
-docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal midas-portal 2>&1
-#This can be added to the systems which need to build the docker image
-# echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/npsbroker npsbroker
-# docker build $BUILD_OPTS -t $PACKAGE_NAME/npsbroker npsbroker 2>&1
+    echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal midas-portal
+    docker build $BUILD_OPTS -t $PACKAGE_NAME/midas-portal midas-portal 2>&1
+fi
+
+if { echo " $BUILD_IMAGES " | egrep -qs " npsbroker "; }; then
+    # install CA certs into containers that can use them
+    cp_ca_certs_to npsbroker
+
+    echo '+' docker build $BUILD_OPTS -t $PACKAGE_NAME/npsbroker npsbroker
+    docker build $BUILD_OPTS -t $PACKAGE_NAME/npsbroker npsbroker 2>&1
+fi
+
