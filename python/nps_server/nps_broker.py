@@ -13,6 +13,8 @@ from flask import Flask, jsonify, request, json
 from flask_restful import Resource, Api
 from flask_cors import CORS
 
+import config.readConfig as readConfig
+
 # creating the flask app
 app = Flask(__name__)
 CORS(app)
@@ -50,14 +52,15 @@ class NPS(Resource):
 	
 	def get_auth_token(self):
 
+		#get access token from NPS service
 		url = 'https://tsapps-t.nist.gov/nps/npsidp/connect/token'
-		client_id = 'MIDAS'
-		client_secret = 'a521G90T3716n0x1'
+		#read client ID and secret from environment.json
+		config = readConfig.get_nps_credentials()
 
 		response = requests.post(
 			url, 
 			data={'grant_type': 'client_credentials'},
-			auth=(client_id, client_secret),
+			auth=(config.client_id, config.client_secret),
 		)
 
 		return response.json()["access_token"]
