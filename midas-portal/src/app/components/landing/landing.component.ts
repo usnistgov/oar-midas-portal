@@ -117,5 +117,9 @@ export class LandingComponent implements OnInit {
           }
       )
   }
+
+  onSearchKeyUp(value: string) {
+    alert('hey there: ' + value);
+  }
 }
 
