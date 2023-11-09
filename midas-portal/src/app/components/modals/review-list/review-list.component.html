@@ -1,46 +1,51 @@
-
-<p-panel header="My Reviews ({{count}})">
+<p-panel style="color:#005ea2" header="My Reviews ({{count}})">
     <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link">
             <!-- <span class="pi pi-cog"></span> -->
-            <a href={{npsUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faListCheck" size="lg" title="Check Reviews"></fa-icon></a>
-       
-        </button>
-        <p-toast></p-toast>      
-        <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
-</ng-template>
-<div class="">
-    <p-table #reviewtable [loading]="loading" [rowHover]="true"[value]="data"
-        height="100px" [rows]="1000"
-        [paginator]="true" [scrollable]="true"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-        [globalFilterFields]="['title', 'submittername', 'currentreviewer','reviewstep']">
-        <ng-template pTemplate="header">
-            <tr>
-                <th style="width:20%" pSortableColumn="title">Title <p-sortIcon field="title"></p-sortIcon></th>
-                <th style="width:20%" pSortableColumn="submittername">Submitter Name <p-sortIcon field="submittername"></p-sortIcon></th>
-                <th style="width:20%" pSortableColumn="currentreviewer">Current Reviewer <p-sortIcon field="currentreviewer"></p-sortIcon></th>
-                <th style="width:20%" pSortableColumn="reviewstep">Current Review Step <p-sortIcon field="reviewstep"></p-sortIcon></th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="caption">
-            <div class="filter">
-                <span class="p-input-icon-right ml-auto" style="margin-right: 2%;">
-                    <input pInputText type="text" (input)="reviewtable.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
-                </span>
-                <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(reviewtable)"></button>
-            </div>
-        </ng-template>
+            <a href={{npsUI}} target="_blank"><fa-icon
+                    [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faListCheck" size="lg"
+                    title="Check Reviews"></fa-icon></a>
 
-        <ng-template pTemplate="body" let-item>
-            <tr class="tr-class">
-                <td class="td-class"><a href={{linkto(item.dataSetID)}} target="_blank">{{item.title}}</a></td>
-                <td class="td-class">{{item.submitterName}}</td>
-                <td class="td-class">{{item.currentReviewer}}</td>
-                <td class="td-class">{{item.currentReviewStep}}</td>
-            </tr>
-        </ng-template>
-    </p-table>
-</div>
+        </button>
+        <p-toast></p-toast>
+        <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
+    </ng-template>
+    <div class="">
+        <p-table #reviewtable [loading]="loading" [rowHover]="true" [value]="data" height="100px" [rows]="1000"
+            [paginator]="true" [scrollable]="true" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [globalFilterFields]="['title', 'submittername', 'currentreviewer','reviewstep']">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width:20%" pSortableColumn="title">Title <p-sortIcon field="title"></p-sortIcon></th>
+                    <th style="width:20%" pSortableColumn="submittername">Submitter Name <p-sortIcon
+                            field="submittername"></p-sortIcon></th>
+                    <th style="width:20%" pSortableColumn="currentreviewer">Current Reviewer <p-sortIcon
+                            field="currentreviewer"></p-sortIcon></th>
+                    <th style="width:20%" pSortableColumn="reviewstep">Current Review Step <p-sortIcon
+                            field="reviewstep"></p-sortIcon></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="caption">
+                <div class="filter">
+                    <span class="p-input-icon-right ml-auto" style="margin-right: 2%;">
+                        <input pInputText type="text"
+                            (input)="reviewtable.filterGlobal($any($event.target).value, 'contains')"
+                            placeholder="Search keyword" />
+                    </span>
+                    <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                        (click)="clear(reviewtable)"></button>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+                <tr class="tr-class">
+                    <td class="td-class"><a href={{linkto(item.dataSetID)}} target="_blank">{{item.title}}</a></td>
+                    <td class="td-class">{{item.submitterName}}</td>
+                    <td class="td-class">{{item.currentReviewer}}</td>
+                    <td class="td-class">{{item.currentReviewStep}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
 </p-panel>

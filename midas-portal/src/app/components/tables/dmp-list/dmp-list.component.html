@@ -1,42 +1,39 @@
-<div class="dmp">
-    <p-panel header="My Data Management Plans">
-        <ng-template pTemplate="icons">
-            <button pButton class="p-panel-header-icon p-link">
-                <a href={{dmpUI}} target="blank"><fa-icon
-                        [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faFileEdit"
-                        size="lg" title="Create New Data management plan"></fa-icon> </a>
-            </button>
-            <p-toast></p-toast>
-            <button pButton class="p-panel-header-icon p-link" (click)="show()"><fa-icon
-                    [style]="{display: 'inline-block', color: '#005EA2'}" [icon]="faUpRightAndDownLeftFromCenter"
-                    size="lg" title="Expand"></fa-icon></button>
-            <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
+<p-panel style="color:#005ea2" header="My Data Management Plans">
+    <ng-template pTemplate="icons">
+        <button pButton class="p-panel-header-icon p-link">
+            <a href={{dmpUI}} target="blank"><fa-icon
+                    [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faFileEdit" size="lg"
+                    title="Create New Data management plan"></fa-icon> </a>
+        </button>
+        <p-toast></p-toast>
+        <button pButton class="p-panel-header-icon p-link" (click)="show()"><fa-icon
+                [style]="{display: 'inline-block', color: '#005EA2'}" [icon]="faUpRightAndDownLeftFromCenter" size="lg"
+                title="Expand"></fa-icon></button>
+        <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
+    </ng-template>
+    <p-table #dmptable [value]="DMP" [paginator]="true" height="100px" [rows]="4" [scrollable]="true"
+        [showCurrentPageReport]="true" [rowHover]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [globalFilterFields]="['name', 'owner','nist']">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pResizableColumn pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon></th>
+                <th pResizableColumn pSortableColumn="owner">Owner<p-sortIcon field="owner"></p-sortIcon></th>
+                <th pResizableColumn pSortableColumn="nist">Primary NIST Contact<p-sortIcon field="nist"></p-sortIcon>
+                </th>
+                <th pResizableColumn>Last Modified
+                    <p-columnFilter title="Filter by date" type="date" field="status.modifiedDate"
+                        display="menu"></p-columnFilter>
+                </th>
+            </tr>
         </ng-template>
-        <p-table #dmptable [value]="DMP" [paginator]="true" height="100px" [rows]="4" [scrollable]="true"
-            [showCurrentPageReport]="true" [rowHover]="true"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-            [globalFilterFields]="['name', 'owner','nist']">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th pResizableColumn pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon></th>
-                    <th pResizableColumn pSortableColumn="owner">Owner<p-sortIcon field="owner"></p-sortIcon></th>
-                    <th pResizableColumn pSortableColumn="nist">Primary NIST Contact<p-sortIcon
-                            field="nist"></p-sortIcon></th>
-                    <th pResizableColumn>Last Modified
-                        <p-columnFilter title="Filter by date" type="date" field="status.modifiedDate"
-                            display="menu"></p-columnFilter>
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-item>
-                <tr>
-                    <td><a href={{linkto(item.id)}} target="_blank">{{item.name}}</a></td>
-                    <td>{{item.owner}}</td>
-                    <td>{{item.primaryContact}}</td>
-                    <td>{{this.datepipe.transform(item.modifiedDate,'MM/dd/yyyy')}}</td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </p-panel>
-
-</div>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td><a href={{linkto(item.id)}} target="_blank">{{item.name}}</a></td>
+                <td>{{item.owner}}</td>
+                <td>{{item.primaryContact}}</td>
+                <td>{{this.datepipe.transform(item.modifiedDate,'MM/dd/yyyy')}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
