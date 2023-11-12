@@ -17,6 +17,7 @@ import { ConfigurationService } from 'oarng';
 export class ReviewListComponent implements OnInit {
   @ViewChild('reviewtable') reviewTable: Table;
   @Input() authToken: string|null = null;
+  @Input() userId: string|undefined|null = null;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   faBell=faBell;
   faListCheck=faUsersViewfinder;
@@ -37,7 +38,11 @@ export class ReviewListComponent implements OnInit {
   ngOnInit() {
       let config = this.configSvc.getConfig()
       this.NPSAPI = config['NPSAPI'];
+      if (! this.NPSAPI.endsWith('/'))
+          this.NPSAPI += '/';
       this.npsUI = config['npsUI'];
+      if (! this.npsUI.endsWith('/'))
+          this.npsUI += '/';
 
       this.statuses = [
           { label: 'Pending', value: 'Pending' },
@@ -50,8 +55,8 @@ export class ReviewListComponent implements OnInit {
    * update the state of this component as the result of changes in its parent
    */
   ngOnChanges(changes: SimpleChanges) {
-      if (this.authToken)
-          this.fetchRecords(this.NPSAPI);
+      if (this.authToken && this.userId)
+          this.fetchRecords(this.NPSAPI+this.userId);
   }
 
   /**
@@ -60,7 +65,7 @@ export class ReviewListComponent implements OnInit {
    * @returns string that is the link to the npsui interface of the dap
    */
   linkto(item:string){
-    return this.npsUI.concat('/Dataset/DataSetDetails?id=').concat(item.toString())
+    return this.npsUI.concat('Dataset/DataSetDetails?id=').concat(item.toString())
   }
 
 /**
