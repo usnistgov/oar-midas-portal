@@ -22,42 +22,42 @@
               <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faLink"></fa-icon>Resource/links</span >
           </li>
           <!-- /END Separator -->
-          <a href="#" class="list-group-item list-group-item-action links">
+          <a href="https://inet.nist.gov/lp/adlp/open-access-research-oar" target="_blank" class="list-group-item list-group-item-action links">
               <div class="d-flex w-100 justify-content-start align-items-center">
                   <span class="menu-collapsed">NIST OAR Intranet</span>
               </div>
           </a>
-          <a href="#" class="list-group-item list-group-item-action links">
+          <a href="https://data.nist.gov.com"  target="_blank" class="list-group-item list-group-item-action links">
               <div class="d-flex w-100 justify-content-start align-items-center">
                   <span class="menu-collapsed">Public Data Repository</span>
               </div>
           </a>
-          <a href="#" class="list-group-item list-group-item-action links">
+          <a href="https://inet.nist.gov/mr/library" target="_blank" class="list-group-item list-group-item-action links">
             <div class="d-flex w-100 justify-content-start align-items-center">
                 <span class="menu-collapsed">NIST Research Library</span>
             </div>
         </a>
-        <a href="#" class="list-group-item list-group-item-action links">
+        <a href="https://mdsdev.nist.gov/dapui/new/" target="_blank" class="list-group-item list-group-item-action links">
             <div class="d-flex w-100 justify-content-start align-items-center">
                 <span class="menu-collapsed">Data Publishing Tool</span>
             </div>
         </a>
-        <a href="#" class="list-group-item list-group-item-action links">
+        <a href="https://mdsdev.nist.gov/dmpui/new/" target="_blank" class="list-group-item list-group-item-action links">
           <div class="d-flex w-100 justify-content-start align-items-center">
               <span class="menu-collapsed">Data Management Plan Tool</span>
           </div>
       </a>
-      <a href="#" class="list-group-item list-group-item-action links">
+      <a href="https://tsapps-i.nist.gov/nps/npsui" target="_blank" class="list-group-item list-group-item-action links">
           <div class="d-flex w-100 justify-content-start align-items-center">
               <span class="menu-collapsed">NIST Publication System</span>
           </div>
       </a>
-      <a href="#" class="list-group-item list-group-item-action links">
+      <a href="#" target="_blank" class="list-group-item list-group-item-action links">
         <div class="d-flex w-100 justify-content-start align-items-center">
             <span class="menu-collapsed">NextCloud</span>
         </div>
     </a>
-    <a href="#" class="list-group-item list-group-item-action links">
+    <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components"  target="_blank" class="list-group-item list-group-item-action links">
         <div class="d-flex w-100 justify-content-start align-items-center">
             <span class="menu-collapsed">User Guide</span>
         </div>
@@ -80,12 +80,12 @@
       </div>
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
-          <app-review-list ></app-review-list>
+          <app-review-list [authToken]="authToken" [userId]="userId"></app-review-list>
           </div>
       </div>
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
-          <app-file-list ></app-file-list>
+          <app-file-list [userId]="userId"></app-file-list>
         </div>
       </div>
     </div>

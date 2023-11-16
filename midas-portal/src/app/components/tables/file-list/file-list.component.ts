@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {faFileImport,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { HttpClient } from '@angular/common/http';
@@ -16,6 +16,7 @@ import { ConfigurationService } from 'oarng';
   styleUrls: ['./file-list.component.css']
 })
 export class FileListComponent implements OnInit {
+  @Input() userId: string|undefined;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   faFileImport=faFileImport;
   public records: any;
