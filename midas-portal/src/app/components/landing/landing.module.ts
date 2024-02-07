@@ -26,6 +26,7 @@ import { FileListModalComponent } from '../modals/file-list/file-list.component'
 import { DmpListModalComponent } from '../modals/dmp-list/dmp-list.component';
 import { ReviewListModalComponent } from '../modals/review-list/review-list.component';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { SearchListModalComponent } from '../modals/search/search-list.component';
 
 @NgModule({
     declarations:[
@@ -37,7 +38,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
         DapModalComponent,
         FileListModalComponent,
         DmpListModalComponent,
-        ReviewListModalComponent
+        ReviewListModalComponent,
+        SearchListModalComponent
     ],
     imports:[
          HttpClientModule,
