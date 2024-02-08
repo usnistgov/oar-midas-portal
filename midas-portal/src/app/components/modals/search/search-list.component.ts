@@ -108,6 +108,12 @@ export class SearchListModalComponent implements OnInit {
       ];
 
       this._selectedColumns = this.cols;
+
+      this.statuses = [
+        { label: 'published', value: 'published' },
+        { label: 'edit', value: 'edit' },
+        { label: 'reviewed', value: 'reviewed' }
+      ];
   }
 
   linkto(item:string){
