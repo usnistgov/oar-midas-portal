@@ -14,8 +14,8 @@
         "@fortawesome/angular-fontawesome": "^0.10.2",
         "@fortawesome/fontawesome-svg-core": "^6.2.1",
         "@fortawesome/free-solid-svg-icons": "^6.2.1",
-        "@ionic/angular": "^6.3.8",
+        "@ionic/angular": "^6.2.2",
         "primefaces": "^12.0.0",
-        "primeng": "^13.4.1"
+        "primeng": "^15.4.1"
     }
 }
