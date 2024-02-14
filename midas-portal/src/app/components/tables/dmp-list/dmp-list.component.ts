@@ -1,5 +1,5 @@
 import { Component, OnInit, SimpleChanges, ViewChild, Input } from '@angular/core';
-import { faCheck, faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
+import { faUpRightAndDownLeftFromCenter,faSquarePlus } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -19,8 +19,7 @@ export class DmpListComponent implements OnInit {
   @ViewChild('dmptable') dmpTable: Table;
   @Input() authToken: string|null = null;
   faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
-  faCheck = faCheck;
-  faFileEdit = faFileEdit;
+  faSquarePlus = faSquarePlus;
   dmpAPI: string;
   dmpUI: string;
   dmpEDIT: string;

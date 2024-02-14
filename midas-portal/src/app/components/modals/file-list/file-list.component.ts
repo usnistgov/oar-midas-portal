@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {faFileImport,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import {DynamicDialogConfig} from 'primeng/dynamicdialog';
+import { ConfigurationService } from 'oarng';
 
 
 
@@ -20,17 +19,14 @@ import {DynamicDialogConfig} from 'primeng/dynamicdialog';
 export class FileListModalComponent implements OnInit {
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   faFileImport=faFileImport;
-  public records: any;
-  public recordsApi: string;
-  public data: any;
-  public nextcloudUI: string;
-  public display:boolean;
+  public nextcloudUI:string;
+  public data: any = [];
   ref: DynamicDialogRef;
   public count:any;
   
   @ViewChild('filetable') fileTable: Table;
 
-  constructor(public datepipe:DatePipe, public dialogService: DialogService,
+  constructor(private cfgsvc: ConfigurationService,public datepipe:DatePipe, public dialogService: DialogService,
               public messageService: MessageService, public config: DynamicDialogConfig)
   { }
 
@@ -73,28 +69,35 @@ export class FileListModalComponent implements OnInit {
   }
   
   
-
+  /**
+   * iniating the tables of the modal from data from the landing page
+   */
   async ngOnInit() {
-    this.display=true;
-    let promise = new Promise((resolve) => {
-      this.data=this.config.data;
-      this.count=this.data.length
-    });
+    let config = this.cfgsvc.getConfig();
+    
+    this.data = this.config.data;
+    this.count = this.data.length;
     
   }
 
 
-
+/**
+   * this function helps to clear the table when doing research
+   * @param table  the table to clear
+   */
   clear(table: Table) {
     table.clear();
 }
 
-
-  titleClick() {
-    console.log(this);
+  /**
+   * this function allow to create the link to edit a specific dap
+   * @param item is the id of the dap we want to modify
+   * @returns string that is the link to the dapui interface of the dap
+   */
+  linkto(item: string) {
+    //return this.dapEDIT.concat(item.toString()).concat("?editEnabled=true");
   }
 
-  filterTable(event: any) {
-    this.fileTable.filterGlobal(event.target.value, 'contains');
-  }
+
+
 }

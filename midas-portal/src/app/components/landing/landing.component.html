@@ -57,7 +57,7 @@
             <span class="menu-collapsed">NextCloud</span>
         </div>
     </a>
-    <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components"  target="_blank" class="list-group-item list-group-item-action links">
+    <a href="https://inet.nist.gov/mr/library/midas-user-guides"  target="_blank" class="list-group-item list-group-item-action links">
         <div class="d-flex w-100 justify-content-start align-items-center">
             <span class="menu-collapsed">User Guide</span>
         </div>
@@ -85,7 +85,7 @@
       </div>
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
-          <app-file-list [userId]="userId"></app-file-list>
+          <app-file-list [authToken]="authToken" ></app-file-list>
         </div>
       </div>
     </div>
