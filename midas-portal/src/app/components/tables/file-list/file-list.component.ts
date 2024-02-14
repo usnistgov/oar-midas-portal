@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api';
 import { FileListModalComponent } from '../../modals/file-list/file-list.component';
 import { ConfigurationService } from 'oarng';
 import { fm } from '../../../models/fm.model';
+import { DapModalComponent } from '../../modals/dap/dap.component';
 
 @Component({
   selector: 'app-file-list',
@@ -34,7 +35,7 @@ export class FileListComponent implements OnInit {
 
    ngOnInit() {
       this.dapAPI = this.configSvc.getConfig()['dapAPI']
-      this.nextcloudUI = "tbd"
+      this.nextcloudUI = "odejkf"
   }
 
   ngOnChanges(changes: SimpleChanges){
@@ -75,23 +76,27 @@ export class FileListComponent implements OnInit {
         .pipe(map((responseData: any) => {
           return responseData
         })).subscribe(records => {
-          console.log("Loading "+records.length+" DAP records");
+          console.log("Loading "+records.length+" DAP records for fm");
           this.DAP = [];
           for (let i = 0; i < records.length; i++) {
-            if(records['file_manager']!==undefined)
+            if(records[i]['file_space']!==undefined)
+              console.log(records[i].file_space)
               this.DAP.push(this.customSerialize(records[i]))
           }
+          console.log(this.DAP)
         })
     }
 
     public customSerialize(item:any){
       let tmp = new fm()
       tmp.name = item.name
-      tmp.location = item.file_manager['location']
-      tmp.usage = item.file_manager['usage']
-      tmp.file_count = item.file_manager['file_count']
-      tmp.last_modified = new Date(item.file_manager.last_modified)
-      return fm
+      tmp.location = item.file_space['action']
+      tmp.usage = item.file_space['usage']
+      tmp.file_count = item.file_space['file_count']
+      tmp.last_modified = new Date(item.file_space.last_modified)
+      console.log("===")
+      console.log(tmp)
+      return tmp
     }
 
 }
