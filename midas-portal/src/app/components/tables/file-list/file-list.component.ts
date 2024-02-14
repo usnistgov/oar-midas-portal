@@ -23,7 +23,7 @@ export class FileListComponent implements OnInit {
   nextcloudUI:string;
 
   ref: DynamicDialogRef;
-  public DAP: any[] = [];
+  public DAP: fm[] = [];
 
   
 
@@ -33,7 +33,8 @@ export class FileListComponent implements OnInit {
  
 
    ngOnInit() {
-      this.dapAPI = this.configSvc.getConfig()['dapUI']
+      this.dapAPI = this.configSvc.getConfig()['dapAPI']
+      this.nextcloudUI = "tbd"
   }
 
   ngOnChanges(changes: SimpleChanges){
@@ -90,6 +91,7 @@ export class FileListComponent implements OnInit {
       tmp.usage = item.file_manager['usage']
       tmp.file_count = item.file_manager['file_count']
       tmp.last_modified = new Date(item.file_manager.last_modified)
+      return fm
     }
 
 }
