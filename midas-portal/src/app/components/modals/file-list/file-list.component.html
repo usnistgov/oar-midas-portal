@@ -4,7 +4,7 @@
         [showCurrentPageReport]="true"
         [rowHover]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
-        [globalFilterFields]="['file_name', 'file_path']">
+        [globalFilterFields]="['name']">
         <ng-template pTemplate="header">
             <tr>
                 <th pResizableColumn pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
@@ -25,7 +25,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-item>
             <tr>
-                <td class="td-class"><a href={{linkto(item.location)}} target="_blank">{{item.name}}</a></td>
+                <td class="td-class"><a href={{item.location}} target="_blank">{{item.name}}</a></td>
                 <td class="td-class">{{item.usage}}</td>
                 <td class="td-class">{{item.file_count}}</td>
                 <td>{{this.datepipe.transform(item.last_modified,'MM/dd/yyyy')}}</td>
