@@ -76,7 +76,7 @@ export class ReviewListComponent implements OnInit {
     .pipe(map((responseData: any)  => {
       return responseData
     })). subscribe(records => {
-      if(typeof records == "string" ){
+      if(typeof records !== "string" ){
       this.data = records;
       if(typeof this.data !== 'undefined') {
           console.log("Loading "+records.length+" NPS records");
