@@ -9,7 +9,6 @@ import { MessageService } from 'primeng/api';
 import { FileListModalComponent } from '../../modals/file-list/file-list.component';
 import { ConfigurationService } from 'oarng';
 import { fm } from '../../../models/fm.model';
-import { DapModalComponent } from '../../modals/dap/dap.component';
 
 @Component({
   selector: 'app-file-list',
@@ -58,16 +57,6 @@ export class FileListComponent implements OnInit {
 
 
   /**
-     * this function allow to create the link to edit a specific dap
-     * @param item is the id of the dap we want to modify
-     * @returns string that is the link to the dapui interface of the dap
-     */
-  linkto(item: string) {
-    //return this.dapEDIT.concat(item.toString()).concat("?editEnabled=true");
-    return this.nextcloudUI.concat(item.toString())
-  }
-
-  /**
    * This function get data from the DBIO
    * @param url is the endpoint of the dbio where we want to get data from
    */
@@ -76,26 +65,22 @@ export class FileListComponent implements OnInit {
         .pipe(map((responseData: any) => {
           return responseData
         })).subscribe(records => {
-          console.log("Loading "+records.length+" DAP records for fm");
+          console.log("Loading "+records.length+" DAP records for File Manager");
           this.DAP = [];
           for (let i = 0; i < records.length; i++) {
             if(records[i]['file_space']!==undefined)
-              console.log(records[i].file_space)
               this.DAP.push(this.customSerialize(records[i]))
           }
-          console.log(this.DAP)
         })
     }
 
     public customSerialize(item:any){
       let tmp = new fm()
       tmp.name = item.name
-      tmp.location = item.file_space['action']
+      tmp.location = item.file_space['location']
       tmp.usage = item.file_space['usage']
       tmp.file_count = item.file_space['file_count']
       tmp.last_modified = new Date(item.file_space.last_modified)
-      console.log("===")
-      console.log(tmp)
       return tmp
     }
 
