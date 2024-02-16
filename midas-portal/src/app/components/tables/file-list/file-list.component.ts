@@ -55,6 +55,23 @@ export class FileListComponent implements OnInit {
     });
   }
 
+  formatBytes(bytes: number, numAfterDecimal: number = 0) : string {
+    if (bytes == null || bytes == undefined) return '';
+    if (0 == bytes) return "0 Bytes";
+    if (1 == bytes) return "1 Byte";
+    let base = 1000,
+        e = ["Bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
+        d = numAfterDecimal || 1,
+        f = Math.floor(Math.log(bytes) / Math.log(base));
+
+    let v = bytes / Math.pow(base, f);
+    if (f == 0) // less than 1 kiloByte
+        d = 0;
+    else if (numAfterDecimal == null && v < 10.0)
+        d = 2;
+    return v.toFixed(d) + " " + e[f];
+}
+
 
   /**
    * This function get data from the DBIO
@@ -78,7 +95,7 @@ export class FileListComponent implements OnInit {
       let tmp = new fm()
       tmp.name = item.name
       tmp.location = item.file_space['location']
-      tmp.usage = item.file_space['usage']
+      tmp.usage = this.formatBytes(parseInt(item.file_space['usage']))
       tmp.file_count = item.file_space['file_count']
       tmp.last_modified = new Date(item.file_space.last_modified)
       return tmp
