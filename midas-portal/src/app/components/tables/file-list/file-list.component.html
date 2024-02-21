@@ -1,4 +1,4 @@
-    <p-panel style="color:#005ea2" header="File Manager">
+<p-panel style="color:#005ea2" header="File Manager">
     <ng-template pTemplate="icons">
 <button pButton class="p-panel-header-icon p-link" (click)="show()"><fa-icon [style]="{display: 'inline-block'}" [icon]="faUpRightAndDownLeftFromCenter" size="lg" title="Expand"></fa-icon></button>
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
@@ -8,6 +8,8 @@
         [rows]="5" [scrollable]="true" 
         [showCurrentPageReport]="true"
         [rowHover]="true"
+        (sortFunction)="customSort($event)"
+        [customSort]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
         [globalFilterFields]="['file_name', 'file_path']">
         <ng-template pTemplate="header">
