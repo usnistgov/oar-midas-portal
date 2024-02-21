@@ -179,17 +179,7 @@ convertToBytes(size: string, unit: string): number {
       tmp.name = item.name
       tmp.location = item.file_space['location']
       tmp.usage = this.formatBytes(parseInt(item.file_space['usage']))
-      if (tmp.name=="sawesrt"){
-        tmp.usage = this.formatBytes(239894)
-        tmp.file_count = 12
-      }else if (tmp.name=="asdf"){
-        tmp.usage = this.formatBytes(78)
-        tmp.file_count = 3
-      }else{
-        tmp.usage = this.formatBytes(7092133820218)
-        tmp.file_count = 38
-      }
-      //tmp.file_count = item.file_space['file_count']
+      tmp.file_count = item.file_space['file_count']
       tmp.last_modified = new Date(item.file_space.last_modified)
       return tmp
     }
