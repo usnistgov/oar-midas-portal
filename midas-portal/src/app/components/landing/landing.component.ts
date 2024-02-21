@@ -63,14 +63,12 @@ export class LandingComponent implements OnInit {
   ngAfterViewInit() {
     setTimeout(() => {
       if (this.userId)
-        this.messageService.addAll([
-          { severity: 'success', summary: 'NIST MIDAS Portal', detail: 'Connected as ' + this.userId }
-        ]);
-      else
+      {}
+      else{
         this.messageService.addAll([
           { severity: 'error', summary: 'Portal login failed', detail: 'Connected as anonymous' }
         ]);
-    }, 2000);
+    }}, 2000);
 
     // adding 508 labels to children of column
     let filter = document.getElementsByTagName("p-columnfilter");
