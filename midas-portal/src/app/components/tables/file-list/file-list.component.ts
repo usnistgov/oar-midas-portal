@@ -123,9 +123,7 @@ convertToBytes(size: string, unit: string): number {
             // Extract numeric and unit parts from the values
             const regex = /(\d*\.?\d+)\s*([A-Za-z]+)/;
             const match1 = value1.match(regex);
-            console.log(match1);
             const match2 = value2.match(regex);
-            console.log(match2);
     
             // Convert sizes to bytes
             const bytes1 = this.convertToBytes(match1[1], match1[2]);
@@ -133,7 +131,6 @@ convertToBytes(size: string, unit: string): number {
     
             // Compare bytes
             result = bytes1 - bytes2;
-            console.log('result ', result);
           }
           if(event.order && result){
           return event.order * result;

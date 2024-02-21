@@ -3,6 +3,8 @@
     height="100px" [rows]="1000" [scrollable]="true"
         [showCurrentPageReport]="true"
         [rowHover]="true"
+        (sortFunction)="customSort($event)"
+        [customSort]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
         [globalFilterFields]="['name']">
         <ng-template pTemplate="header">
