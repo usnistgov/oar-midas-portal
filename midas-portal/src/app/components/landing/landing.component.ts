@@ -63,14 +63,12 @@ export class LandingComponent implements OnInit {
   ngAfterViewInit() {
     setTimeout(() => {
       if (this.userId)
-        this.messageService.addAll([
-          { severity: 'success', summary: 'NIST MIDAS Portal', detail: 'Connected as ' + this.userId }
-        ]);
-      else
+      {}
+      else{
         this.messageService.addAll([
           { severity: 'error', summary: 'Portal login failed', detail: 'Connected as anonymous' }
         ]);
-    }, 2000);
+    }}, 2000);
 
     // adding 508 labels to children of column
     let filter = document.getElementsByTagName("p-columnfilter");
@@ -111,6 +109,7 @@ export class LandingComponent implements OnInit {
         this.userOU = creds.userAttributes.userOU;
         if (creds.token)
           this.authToken = creds.token;
+          //this.authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5ODcxOTAxOSwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.ntiPIo39kG78T7xbVrbJEfw4cz8jn--Bk-t7aRJdvPs"
       },
       error => {
         alert("Unable to determine your identity");

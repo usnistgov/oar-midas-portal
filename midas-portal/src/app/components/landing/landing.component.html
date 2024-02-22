@@ -6,62 +6,62 @@
   <div id="sidebar-container" class="sidebar-expanded d-none d-md-block">
       <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
       <!-- Bootstrap List Group -->
-      <ul class="list-group">
-        <li class="list-group-header sidebar-separator-title d-flex align-items-center menu-collapsed">
-          <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faUser"></fa-icon>User : {{userId}}</span >
-        </li>
-        <div class="container" style="background-color: #EFF6FB;">
-          <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005EA2'}" [icon]="faBuilding"></fa-icon><strong>Divison:</strong> {{userDiv}}</span>
-          <br>
-          <span class="contact"><fa-icon [style]="{display: 'inline-block', padding: '1px', color: '#005EA2'}" [icon]="faHouse"></fa-icon><strong>OU:</strong> {{userOU}}</span>
-         </div>
-             
-         
-         <!-- Separator with title -->
+      <ul class="list-group">          
+                 <!-- Separator with title -->
           <li class="list-group-header sidebar-separator-title d-flex align-items-center menu-collapsed">
               <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faLink"></fa-icon>Resource/links</span >
           </li>
           <!-- /END Separator -->
-          <a href="https://inet.nist.gov/lp/adlp/open-access-research-oar" target="_blank" class="list-group-item list-group-item-action links">
+          <a href="https://inet.nist.gov/mr/library/midas-user-guides" target="_blank" class="list-group-item list-group-item-action links">
               <div class="d-flex w-100 justify-content-start align-items-center">
-                  <span class="menu-collapsed">NIST OAR Intranet</span>
+                  <span class="menu-collapsed">User Guide</span>
               </div>
           </a>
-          <a href="https://data.nist.gov.com"  target="_blank" class="list-group-item list-group-item-action links">
+          <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-management-plans"  target="_blank" class="list-group-item list-group-item-action links">
               <div class="d-flex w-100 justify-content-start align-items-center">
-                  <span class="menu-collapsed">Public Data Repository</span>
+                  <span class="menu-collapsed">Data Management Plans</span>
               </div>
           </a>
-          <a href="https://inet.nist.gov/mr/library" target="_blank" class="list-group-item list-group-item-action links">
+          <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/digital-asset-publisher-dap" target="_blank" class="list-group-item list-group-item-action links">
             <div class="d-flex w-100 justify-content-start align-items-center">
-                <span class="menu-collapsed">NIST Research Library</span>
+                <span class="menu-collapsed">Digital Asset Publishing</span>
             </div>
         </a>
-        <a href="https://mdsdev.nist.gov/dapui/new/" target="_blank" class="list-group-item list-group-item-action links">
+        <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/file-manager" target="_blank" class="list-group-item list-group-item-action links">
             <div class="d-flex w-100 justify-content-start align-items-center">
-                <span class="menu-collapsed">Data Publishing Tool</span>
+                <span class="menu-collapsed">Manage Files</span>
             </div>
         </a>
-        <a href="https://mdsdev.nist.gov/dmpui/new/" target="_blank" class="list-group-item list-group-item-action links">
+        <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-review-system" target="_blank" class="list-group-item list-group-item-action links">
           <div class="d-flex w-100 justify-content-start align-items-center">
-              <span class="menu-collapsed">Data Management Plan Tool</span>
+              <span class="menu-collapsed">Data/Code Review</span>
           </div>
       </a>
-      <a href="https://tsapps-i.nist.gov/nps/npsui" target="_blank" class="list-group-item list-group-item-action links">
+      <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-tools/reports" target="_blank" class="list-group-item list-group-item-action links">
           <div class="d-flex w-100 justify-content-start align-items-center">
-              <span class="menu-collapsed">NIST Publication System</span>
+              <span class="menu-collapsed">Reports</span>
           </div>
       </a>
-      <a href="#" target="_blank" class="list-group-item list-group-item-action links">
+      <a href="https://inet.nist.gov/lp/adlp/open-access-research-oar" target="_blank" class="list-group-item list-group-item-action links">
         <div class="d-flex w-100 justify-content-start align-items-center">
-            <span class="menu-collapsed">NextCloud</span>
+            <span class="menu-collapsed">Open Access INET</span>
         </div>
     </a>
-    <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components"  target="_blank" class="list-group-item list-group-item-action links">
+    <a href="https://data.nist.gov"  target="_blank" class="list-group-item list-group-item-action links">
         <div class="d-flex w-100 justify-content-start align-items-center">
-            <span class="menu-collapsed">User Guide</span>
+            <span class="menu-collapsed">Public Data Portal</span>
         </div>
     </a>
+      <a href="https://inet.nist.gov/adlp/open-access-research-oar/publishing-instructions"  target="_blank" class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+            <span class="menu-collapsed">Data Policy</span>
+        </div>
+    </a>
+    <a href="https://inet.nist.gov/mr/library/publishing-support-nist-publications"  target="_blank" class="list-group-item list-group-item-action links">
+      <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">User Support</span>
+      </div>
+  </a>
           <!-- /END Separator -->
       </ul><!-- List Group END-->
   </div><!-- sidebar-container END -->
@@ -85,7 +85,7 @@
       </div>
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
-          <app-file-list [userId]="userId"></app-file-list>
+          <app-file-list [authToken]="authToken" ></app-file-list>
         </div>
       </div>
     </div>
@@ -95,33 +95,3 @@
 
 
 
-<script>
-  // Hide submenus
-$('#body-row .collapse').collapse('hide'); 
-
-// Collapse/Expand icon
-$('#collapse-icon').addClass('fa-angle-double-left'); 
-
-// Collapse click
-$('[data-toggle=sidebar-colapse]').click(function() {
-    SidebarCollapse();
-});
-
-function SidebarCollapse () {
-    $('.menu-collapsed').toggleClass('d-none');
-    $('.sidebar-submenu').toggleClass('d-none');
-    $('.submenu-icon').toggleClass('d-none');
-    $('#sidebar-container').toggleClass('sidebar-expanded sidebar-collapsed');
-    
-    // Treating d-flex/d-none on separators with title
-    var SeparatorTitle = $('.sidebar-separator-title');
-    if ( SeparatorTitle.hasClass('d-flex') ) {
-        SeparatorTitle.removeClass('d-flex');
-    } else {
-        SeparatorTitle.addClass('d-flex');
-    }
-    
-    // Collapse/Expand icon
-    $('#collapse-icon').toggleClass('fa-angle-double-left fa-angle-double-right');
-}
-</script>

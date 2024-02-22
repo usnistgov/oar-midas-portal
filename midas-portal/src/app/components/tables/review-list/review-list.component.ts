@@ -1,5 +1,5 @@
 import { Component, OnInit, SimpleChanges, ViewChild, Input } from '@angular/core';
-import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
+import {faBook,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -19,8 +19,7 @@ export class ReviewListComponent implements OnInit {
   @Input() authToken: string|null = null;
   @Input() userId: string|undefined|null = null;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
-  faBell=faBell;
-  faListCheck=faUsersViewfinder;
+  faBook=faBook;
   public records: any;
   public NPSAPI: string;
   public npsUI: string;
@@ -77,6 +76,7 @@ export class ReviewListComponent implements OnInit {
     .pipe(map((responseData: any)  => {
       return responseData
     })). subscribe(records => {
+      if(typeof records !== "string" ){
       this.data = records;
       if(typeof this.data !== 'undefined') {
           console.log("Loading "+records.length+" NPS records");
@@ -84,6 +84,7 @@ export class ReviewListComponent implements OnInit {
             this.data[i].deadline = new Date(this.data[i].deadline)
           }
       }
+    }
     })
   }
 
