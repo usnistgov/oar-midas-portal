@@ -103,10 +103,26 @@ convertToBytes(size: string, unit: string): number {
           console.log("Loading "+records.length+" DAP records for File Manager");
           this.DAP = [];
           for (let i = 0; i < records.length; i++) {
-            if(records[i]['file_space']!==undefined)
-              this.DAP.push(this.customSerialize(records[i]))
+            if(records[i]['file_space']!==undefined){
+              if(this.is_complete(records[i])){
+                this.DAP.push(this.customSerialize(records[i]))
+            }
+          }
           }
         })
+    }
+
+    is_complete(obj: any): boolean {
+      const requiredKeys = ['location', 'usage', 'file_count'];
+      console.log(obj)
+      for (const key of requiredKeys) {
+        console.log(key)
+        console.log(obj.file_space[key])
+        if (obj.file_space[key] === undefined) {
+          return false;
+        }
+      }
+      return true;
     }
 
     customSort(event: SortEvent) {
