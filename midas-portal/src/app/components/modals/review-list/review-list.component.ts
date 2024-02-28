@@ -34,6 +34,9 @@ export class ReviewListModalComponent implements OnInit {
               public config:DynamicDialogConfig)
   { }
 
+  /**
+   * This functions injects some JS labels in the HTMl to make it 508 compliant
+   */
   ngAfterViewInit() {
     let filter = document.getElementsByTagName("p-columnfilter");
 
@@ -71,6 +74,10 @@ export class ReviewListModalComponent implements OnInit {
     }
     
   }
+
+  /**
+   * iniating the tables of the modal from data from the landing page
+   */
   async ngOnInit() {
 
       let config = this.cfgsvc.getConfig();
@@ -78,6 +85,7 @@ export class ReviewListModalComponent implements OnInit {
       this.npsUI = config['npsUI'];
       
       this.data=this.config.data
+      console.log(this.data)
       this.count=this.data.length
 
       this.statuses = [
@@ -87,31 +95,23 @@ export class ReviewListModalComponent implements OnInit {
       ];
   }
 
+  /**
+   * this function allow to create the link to edit a specific nps record
+   * @param item is the id of the dap we want to modify
+   * @returns string that is the link to the npsui interface of the dap
+   */
   linkto(item:string){
-    this.NPSAPI.concat(item.toString())
+    return this.NPSAPI.concat('/Dataset/DataSetDetails?id=').concat(item.toString())
   }
 
-  getStatus(status: string) {
-    switch (status) {
-        case 'Done':
-            return 'success';
-        case 'In Progress':
-            return 'warning';
-        case 'Pending':
-            return 'danger';
-    }
-    return ""
-  }
 
+
+  /**
+   * this function helps to clear the table when doing research
+   * @param table  the table to clear
+   */
   clear(table: Table) {
     table.clear();
 }
 
-  titleClick() {
-    console.log(this);
-  }
-
-  filterTable(event: any) {
-    this.reviewTable.filterGlobal(event.target.value, 'contains');
-  }
 }

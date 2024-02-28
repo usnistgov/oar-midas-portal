@@ -4,7 +4,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './angular-material.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { LandingComponent } from './components/landing/landing.component';
 // import { EdiListComponent } from './components/edi-list/edi-list.component';
@@ -45,7 +44,6 @@ import { TabViewModule } from 'primeng/tabview';
     AppRoutingModule,
     BrowserAnimationsModule,
     AngularMaterialModule,
-    FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
     OARngModule,

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, Input } from '@angular/core';
-import { faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
+import {faUpRightAndDownLeftFromCenter,faSquarePlus } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -25,7 +25,7 @@ export class DapComponent implements OnInit, OnChanges {
   @Input() authToken: string|null;    
   @ViewChild('recordsTable') recordsTable: Table;
   faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
-  faFileEdit = faFileEdit;
+  faSquarePlus = faSquarePlus;
   dapAPI: string;
   dapUI: string;
   dapEDIT: string;

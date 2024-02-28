@@ -1,0 +1,39 @@
+:host ::ng-deep .p-panel-header {
+    background: #EFF6FB;
+    border: 1px solid #005EA2;
+    padding: 0.2rem;
+    color: #005EA2;
+}
+
+:host ::ng-deep .p-dialog-header {
+    padding: 0.35rem;
+}
+
+:host ::ng-deep .p-panel-content {
+    padding: 0.25rem;
+}
+
+:host ::ng-deep .p-paginator-bottom {
+    padding: 0.25rem;
+}
+
+:host ::ng-deep .p-datatable-tbody>tr>td {
+    padding: 0.35rem;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead>tr>th {
+    padding: 0.35rem;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    padding: 0.55rem 0.55rem;
+}
+
+.filter {
+    display: flex;
+    justify-content: space-between;
+}
+
+.search {
+    display: flex;
+}

@@ -1,9 +1,19 @@
-FROM oar-metadata/ejsonschema
+FROM python:3.8-bookworm
 
-RUN apt-get update && apt-get install -y python-yaml curl wget less sudo zip \
-                                         p7zip-full ca-certificates git
-# RUN pip install --upgrade pip setuptools
-RUN pip install funcsigs 'bagit>=1.6.3,<2.0' 'fs>=2.0.21' jsonpatch mako
+RUN apt-get update && apt-get install -y curl wget less sudo git zip unzip   \
+                                         p7zip-full ca-certificates uuid-dev \
+                                         build-essential python3-distutils   \
+                                         libcap-dev libpcre3-dev \
+                                         uwsgi uwsgi-src 
+RUN uwsgi --build-plugin "/usr/src/uwsgi/plugins/python python" && \
+    mv python_plugin.so /usr/lib/uwsgi/plugins/python_plugin.so && \
+    chmod 644 /usr/lib/uwsgi/plugins/python_plugin.so
+                                         
+COPY cacerts/README.md cacerts/*.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+ENV REQUESTS_CA_BUNDLE
+
+RUN pip install -U flask flask-restful flask-cors pyopenssl 
 
 RUN sed --in-place -e '/CREATE_MAIL_SPOOL/ s/=yes/=no/' /etc/default/useradd
 ARG devuser=developer
