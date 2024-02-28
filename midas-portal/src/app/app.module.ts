@@ -18,12 +18,15 @@ import { AuthModule } from 'oarng';
 import { CONFIG_URL } from 'oarng';
 import { DropdownModule } from 'primeng/dropdown';
 import { PanelModule } from "primeng/panel";
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import { HttpClientModule } from '@angular/common/http';
 // import { AuthService, WebAuthService, CustomizationService } from './components/auth-service/auth.service';
 // import { LandingComponent } from './components/landing/landing.component';
 import { LandingModule } from './components/landing/landing.module';
 import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
+import { ButtonModule } from 'primeng/button';
+import { TabViewModule } from 'primeng/tabview';
 
 
 
@@ -51,7 +54,10 @@ import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
     LandingModule,
     ScrollPanelModule,
     DropdownModule,
-    AuthModule
+    AuthModule,
+    AutoCompleteModule,
+    ButtonModule,
+    TabViewModule
   ],
   providers: [
 //       fakeBackendProvider,

@@ -1,16 +1,40 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CheckboxModule } from 'primeng/checkbox'
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { ConfigurationService } from 'oarng';
+import { searchResult } from 'src/app/models/searchResult.model';
 
 interface Column {
   field: string;
   header: string;
+}
+
+interface People {
+    PEOPLE_ID: number;
+    LAST_NAME: string;
+    FIRST_NAME: string;
+    FULL_NAME: string;
+}
+
+interface Org {
+    ORG_ID: number;
+    ORG_CD: string;
+    ORG_LVL_ID: number;
+    ORG_NFC_LVL_CD: number;
+    ORG_NAME: string;
+    EFFECTIVE_DT: string;
+    ORG_ACRNM: string;
+    ORG_SHORT_NAME: string;
+    ORG_LOC_ID: number;
+    PARENT_ORG_ID: number;
+    PARENT_ORG_CD: string;
 }
 
 @Component({
@@ -32,6 +56,124 @@ export class SearchListModalComponent implements OnInit {
   searchURL: any;
   _selectedColumns!: Column[];
   cols!: Column[];
+
+  keywords: any;
+  theme: any;
+  status: string[] = [];
+  selectedOrg: any;
+  recordOwner: any;
+  output: any = 'grid';
+  paper: any;
+  publishedBefore: any;
+  publishedAfter: any;
+
+  orgs = [
+    {
+        "ORG_ID": 13642,
+        "ORG_CD": "68501",
+        "ORG_LVL_ID": 3,
+        "ORG_NFC_LVL_CD": 6,
+        "ORG_NAME": "Thermodynamic Metrology Group",
+        "EFFECTIVE_DT": "2011-10-01",
+        "ORG_ACRNM": "",
+        "ORG_SHORT_NAME": "Thermo Metrology Group",
+        "ORG_LOC_ID": 2,
+        "PARENT_ORG_ID": 13268,
+        "PARENT_ORG_CD": "685"
+    },
+    {
+        "ORG_ID": 13643,
+        "ORG_CD": "68502",
+        "ORG_LVL_ID": 3,
+        "ORG_NFC_LVL_CD": 6,
+        "ORG_NAME": "Fluid Metrology Group",
+        "EFFECTIVE_DT": "2011-10-01",
+        "ORG_ACRNM": "",
+        "ORG_SHORT_NAME": "Fluid Met Grp",
+        "ORG_LOC_ID": 2,
+        "PARENT_ORG_ID": 13268,
+        "PARENT_ORG_CD": "685"
+    },
+    {
+        "ORG_ID": 13443,
+        "ORG_CD": "68503",
+        "ORG_LVL_ID": 3,
+        "ORG_NFC_LVL_CD": 6,
+        "ORG_NAME": "Optical Radiation Group",
+        "EFFECTIVE_DT": "2011-10-01",
+        "ORG_ACRNM": "",
+        "ORG_SHORT_NAME": "Optical Rad Grp",
+        "ORG_LOC_ID": 2,
+        "PARENT_ORG_ID": 13268,
+        "PARENT_ORG_CD": "685"
+    }];
+
+  tempOwners = [
+    {
+        "PEOPLE_ID": 1,
+        "LAST_NAME": "Davis",
+        "FIRST_NAME": "Christopher",
+        "FULL_NAME": "Davis, Christopher"
+    },
+    {
+        "PEOPLE_ID": 2,
+        "LAST_NAME": "Greene",
+        "FIRST_NAME": "Gretchen",
+        "FULL_NAME": "Greene, Gretchen"
+    },
+    {
+        "PEOPLE_ID": 3,
+        "LAST_NAME": "Plante",
+        "FIRST_NAME": "Raymond",
+        "FULL_NAME": "Plante, Raymond"
+    },
+    {
+        "PEOPLE_ID": 4,
+        "LAST_NAME": "Smith",
+        "FIRST_NAME": "Roberta",
+        "FULL_NAME": "Smith, Robert"
+    },
+    {
+        "PEOPLE_ID": 5,
+        "LAST_NAME": "Blonder",
+        "FIRST_NAME": "Niksa",
+        "FULL_NAME": "Blonder, Niksa"
+    },
+    {
+        "PEOPLE_ID": 6,
+        "LAST_NAME": "Walker",
+        "FIRST_NAME": "Steven",
+        "FULL_NAME": "Walker, Steven"
+    },
+    {
+        "PEOPLE_ID": 7,
+        "LAST_NAME": "Gao",
+        "FIRST_NAME": "Jing",
+        "FULL_NAME": "Gao, Jing"
+    },
+    {
+        "PEOPLE_ID": 8,
+        "LAST_NAME": "Lin",
+        "FIRST_NAME": "Chuan",
+        "FULL_NAME": "Lin, Chuan"
+    },
+    {
+        "PEOPLE_ID": 9,
+        "LAST_NAME": "Martins",
+        "FIRST_NAME": "Melvin",
+        "FULL_NAME": "Martins, Melvin"
+    },
+    {
+        "PEOPLE_ID": 10,
+        "LAST_NAME": "Loembe",
+        "FIRST_NAME": "Alex",
+        "FULL_NAME": "Loembe, Alex"
+    }
+
+  ]
+  
+  suggestions: People[] = []
+  orgSuggestions: Org[] = []
 
   loading: boolean = false;
 
@@ -158,11 +300,60 @@ export class SearchListModalComponent implements OnInit {
     this.searchTerm = searchTerm;
   }
 
+  /**
+   * This function serialize the data received from the dbio to the model we defined.
+   *  It helps dealing with the data later on in the portal
+   * @param item is the data received form the dbio
+   * @returns dap
+   */
+  public customSerialize(item: any) {
+    let tmp = new searchResult();
+    tmp.doi = item.data['doi']
+    tmp.file_count = item.data['file_count']
+    tmp.id = item.id
+    tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate)
+    tmp.name = item.name
+    tmp.owner = item.owner
+    tmp.state = item.status.state
+    tmp.title = item.data['title']
+    tmp.type = item.meta['resourceType']
+    return tmp
+  }
+
+  onSearchClick() {
+    if(this.keywords !=  undefined) {
+        console.log('keywords: ' + this.keywords);
+    }
+    if(this.theme !=  undefined) {
+        console.log('theme: ' + this.theme);
+    }
+    if(this.status !=  undefined) { 
+        console.log('status: ' + this.status);
+    }
+    if(this.selectedOrg !=  undefined) {
+        console.log('selectedOrg: ' + this.selectedOrg);
+    }
+    if(this.recordOwner !=  undefined) {
+        console.log('recordOwner: ' + this.recordOwner);
+    }
+
+    //need to build DBIO search JSON here
+
+  }
+
+  getPeople($event: any) {
+    this.suggestions = this.tempOwners.filter(val => val.FULL_NAME.toUpperCase().includes($event.query.toUpperCase()))
+  }
+
+  getOrgs($event: any) {
+    this.orgSuggestions = this.orgs.filter(val => val.ORG_NAME.toUpperCase().includes($event.query.toUpperCase()))
+  }
+
   search(searchTerm: any) {
 
     //need to add a call to the search API here.
     //this.loading = true;
-    this.data = [
+    var tempData = [
       {
           "id": "mds3:0081",
           "name": "ZoIrY",
@@ -334,7 +525,7 @@ export class SearchListModalComponent implements OnInit {
           "data":
           {
               "@id": "ark:/88434/mds3-0082",
-              "title": "",
+              "title": "Spectroscopy Inferences",
               "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
               "@type":
               [
@@ -397,7 +588,7 @@ export class SearchListModalComponent implements OnInit {
           "data":
           {
               "@id": "ark:/88434/mds3-0115",
-              "title": "",
+              "title": "Super Science Data",
               "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
               "@type":
               [
@@ -422,5 +613,9 @@ export class SearchListModalComponent implements OnInit {
           "type": "dap"
       }
   ]
+  this.data = []
+  for (let i = 0; i < tempData.length; i++) {
+    this.data.push(this.customSerialize(tempData[i]))
   }
+}
 }

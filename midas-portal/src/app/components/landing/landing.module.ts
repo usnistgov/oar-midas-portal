@@ -27,6 +27,9 @@ import { DmpListModalComponent } from '../modals/dmp-list/dmp-list.component';
 import { ReviewListModalComponent } from '../modals/review-list/review-list.component';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SearchListModalComponent } from '../modals/search/search-list.component';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { TabViewModule } from 'primeng/tabview';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
     declarations:[
@@ -57,8 +60,10 @@ import { SearchListModalComponent } from '../modals/search/search-list.component
          FormsModule,
          ToastModule,
          BrowserModule,
-         MultiSelectModule
-         
+         MultiSelectModule,
+         AutoCompleteModule,
+         TabViewModule,
+         CalendarModule
          
     ],
     providers:[ HttpClient,DatePipe]
