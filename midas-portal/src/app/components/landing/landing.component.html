@@ -17,7 +17,7 @@
          </div>
         <div class="container" style="background-color: #EFF6FB;">
           <span class="contact">
-            Search: <input #box type="text" (keyup.enter)="onSearchKeyUp(box.value)">
+            <input #box type="text" emptyText="Search" (keyup.enter)="onSearchKeyUp(box.value)">
           </span>
         </div>
              
