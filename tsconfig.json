@@ -8,4 +8,19 @@
         "path": "./midas-portal/tsconfig.ref.json"
       },
     ],
-  }
+    "compilerOptions": {
+        "types": [
+            "jest", "node"
+        ],
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "resolveJsonModule": true
+    },
+    "angularCompilerOptions": {
+      "enableI18nLegacyMessageIdFormat": false,
+      "strictInjectionParameters": true,
+      "strictInputAccessModifiers": true,
+      "strictTemplates": true
+    }
+}
