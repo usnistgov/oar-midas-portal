@@ -321,23 +321,59 @@ export class SearchListModalComponent implements OnInit {
   }
 
   onSearchClick() {
+    //need to build DBIO search JSON here
+    let andArray = [
+    ];
+
     if(this.keywords !=  undefined) {
-        console.log('keywords: ' + this.keywords);
+        var keywordsObj = {'data.keywords': this.keywords};
+        andArray.push(keywordsObj);
     }
     if(this.theme !=  undefined) {
-        console.log('theme: ' + this.theme);
+        var themeObj = {'data.theme': this.keywords};
+        andArray.push(themeObj);
     }
     if(this.status !=  undefined) { 
-        console.log('status: ' + this.status);
+        var statusObj = {'status.state': this.status};
+        andArray.push(statusObj);
     }
     if(this.selectedOrg !=  undefined) {
-        console.log('selectedOrg: ' + this.selectedOrg);
+        var orgObj = {'org': this.selectedOrg.ORG_ID};
+        andArray.push(orgObj);
     }
     if(this.recordOwner !=  undefined) {
-        console.log('recordOwner: ' + this.recordOwner);
+        //may need to switch from people ID to username at some point
+        var ownerObj = {'owner': this.recordOwner};
+        andArray.push(ownerObj);
+    }
+    if(this.paper != undefined) {
+        var paperObj = {'data.paper': this.paper};
+        andArray.push(paperObj);
+    }
+    if(this.output != undefined) {
+        var outputObj = {'output': this.output};
+        andArray.push(outputObj);
     }
 
-    //need to build DBIO search JSON here
+    var searchJSON = {
+        "$and": andArray
+    };
+
+    console.log('searchJSON: ' + JSON.stringify(searchJSON));
+    
+
+    /*{
+        "$and": [
+            {
+                "status.state": "edit"
+            },
+            {
+                "name": "test3"
+            }
+        ]
+    }*/
+
+    //this.search(searchJSON); 
 
   }
 
