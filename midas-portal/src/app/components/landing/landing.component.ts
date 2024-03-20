@@ -2,7 +2,7 @@ import { Component, OnInit, } from '@angular/core';
 import {
   faHouse, faUser, faDashboard, faCloud, faClipboardList,
   faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook
-  , faCircle, faPrint, faPersonCircleQuestion, faBuilding
+  , faCircle, faPrint, faPersonCircleQuestion, faBuilding, faSquareCaretDown,faSquareCaretUp
 } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
 import { DialogService, } from 'primeng/dynamicdialog';
@@ -20,6 +20,9 @@ import { AuthenticationService } from 'oarng';
 export class LandingComponent implements OnInit {
   faAddressBook = faAddressBook;
   faLink = faLink;
+  faSquareCaretUp =faSquareCaretUp;
+  faSquareCaretDown = faSquareCaretDown;
+  submenuCollapsed: boolean = true;
   faCircle = faCircle;
   faBuilding = faBuilding;
   faPlus = faPlus;
@@ -115,6 +118,10 @@ export class LandingComponent implements OnInit {
         alert("Unable to determine your identity");
       }
     )
+  }
+
+  toggleSubmenu(): void {
+    this.submenuCollapsed = !this.submenuCollapsed;
   }
 }
 
