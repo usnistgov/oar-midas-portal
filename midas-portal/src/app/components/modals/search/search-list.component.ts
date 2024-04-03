@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { ConfigurationService } from 'oarng';
 import { searchResult } from 'src/app/models/searchResult.model';
+import { SearchAPIService } from 'src/app/shared/search-api.service';
 
 interface Column {
   field: string;
@@ -181,7 +182,7 @@ export class SearchListModalComponent implements OnInit {
 
   constructor(private cfgsvc: ConfigurationService, public datepipe:DatePipe,
               public dialogService: DialogService, public messageService: MessageService,
-              public config:DynamicDialogConfig)
+              public config:DynamicDialogConfig, private apiService: SearchAPIService,)
   { }
 
   ngAfterViewInit() {
@@ -219,7 +220,6 @@ export class SearchListModalComponent implements OnInit {
     for(let i of Ar_multiselect){
       i.children[0].children[0].children[0].ariaLabel="Rows Selected"
     }
-    
   }
   async ngOnInit() {
 
@@ -228,8 +228,6 @@ export class SearchListModalComponent implements OnInit {
       
       this.searchTerm = this.config.data
       //this.count=this.data.length
-      this.searchURL=config['searchAPI']
-      console.log('searchURL: ' + this.searchURL)
 
       this.search(this.searchTerm);
 
@@ -256,6 +254,7 @@ export class SearchListModalComponent implements OnInit {
         { label: 'edit', value: 'edit' },
         { label: 'reviewed', value: 'reviewed' }
       ];
+    
   }
 
   linkto(item:string){
@@ -378,7 +377,12 @@ export class SearchListModalComponent implements OnInit {
   }
 
   getPeople($event: any) {
-    this.suggestions = this.tempOwners.filter(val => val.FULL_NAME.toUpperCase().includes($event.query.toUpperCase()))
+    //this.suggestions = this.tempOwners.filter(val => val.FULL_NAME.toUpperCase().includes($event.query.toUpperCase()))
+    this.apiService.get_NIST_Personnel($event.query.toUpperCase()).subscribe((value) => {
+        console.log(value);
+    }
+    );
+    
   }
 
   getOrgs($event: any) {
