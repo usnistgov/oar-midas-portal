@@ -355,24 +355,15 @@ export class SearchListModalComponent implements OnInit {
     }
 
     var searchJSON = {
-        "$and": andArray
+        "$and": andArray,
+        "permissions": [
+            "read",
+            "write"
+        ]
     };
 
     console.log('searchJSON: ' + JSON.stringify(searchJSON));
     
-
-    /*{
-        "$and": [
-            {
-                "status.state": "edit"
-            },
-            {
-                "name": "test3"
-            }
-        ]
-    }*/
-
-    //this.search(searchJSON); 
 
   }
 
