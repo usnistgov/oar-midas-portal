@@ -67,6 +67,7 @@ export class SearchListModalComponent implements OnInit {
   paper: any;
   publishedBefore: any;
   publishedAfter: any;
+  resourceType: any;
 
   orgs = [
     {
@@ -363,7 +364,6 @@ export class SearchListModalComponent implements OnInit {
     };
 
     console.log('searchJSON: ' + JSON.stringify(searchJSON));
-    
 
   }
 

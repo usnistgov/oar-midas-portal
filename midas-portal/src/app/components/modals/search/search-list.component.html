@@ -1,6 +1,13 @@
 <p-tabView header="Header 1">
     <p-tabPanel header="Search Results for '{{searchTerm}}'">
         <p-panel header="Advanced Search" [toggleable]="true" [collapsed]="true">
+            Resource Type:
+            <p-radioButton label="DMP" name="resourceType" value="DMP" [(ngModel)]="resourceType"
+                inputId="resourceDMP"></p-radioButton> &nbsp;
+            <p-radioButton label="DAP" name="resourceType" value="DAP" [(ngModel)]="resourceType"
+                inputId="resourceDAP"></p-radioButton> &nbsp;                
+            <p-radioButton label="Both" name="resourceType" value="both" [(ngModel)]="resourceType"
+                inputId="resourceBoth"></p-radioButton> &nbsp; <br/>
             Keywords: <input type="text" pInputText [(ngModel)]="keywords"> &nbsp;&nbsp;&nbsp;
             Theme: <input type="text" pInputText [(ngModel)]="theme"> <br />
             NIST Organization: <p-autoComplete [suggestions]="orgSuggestions" [(ngModel)]="selectedOrg" field="ORG_NAME"
