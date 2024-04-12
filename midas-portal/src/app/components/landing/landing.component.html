@@ -1,69 +1,83 @@
-
 <!-- Bootstrap row -->
 <div class="row" id="body-row">
   <!-- Sidebar -->
   <p-toast></p-toast>
   <div id="sidebar-container" class="sidebar-expanded d-none d-md-block">
-      <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
-      <!-- Bootstrap List Group -->
-      <ul class="list-group">          
-                 <!-- Separator with title -->
-          <li class="list-group-header sidebar-separator-title d-flex align-items-center menu-collapsed">
-              <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faLink"></fa-icon>Resource/links</span >
-          </li>
-          <!-- /END Separator -->
-          <a href="https://inet.nist.gov/mr/library/midas-user-guides" target="_blank" class="list-group-item list-group-item-action links">
-              <div class="d-flex w-100 justify-content-start align-items-center">
-                  <span class="menu-collapsed">User Guide</span>
-              </div>
-          </a>
-          <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-management-plans"  target="_blank" class="list-group-item list-group-item-action links">
-              <div class="d-flex w-100 justify-content-start align-items-center">
-                  <span class="menu-collapsed">Data Management Plans</span>
-              </div>
-          </a>
-          <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/digital-asset-publisher-dap" target="_blank" class="list-group-item list-group-item-action links">
-            <div class="d-flex w-100 justify-content-start align-items-center">
-                <span class="menu-collapsed">Digital Asset Publishing</span>
-            </div>
-        </a>
-        <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/file-manager" target="_blank" class="list-group-item list-group-item-action links">
-            <div class="d-flex w-100 justify-content-start align-items-center">
-                <span class="menu-collapsed">Manage Files</span>
-            </div>
-        </a>
-        <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-review-system" target="_blank" class="list-group-item list-group-item-action links">
-          <div class="d-flex w-100 justify-content-start align-items-center">
-              <span class="menu-collapsed">Data/Code Review</span>
-          </div>
-      </a>
-      <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-tools/reports" target="_blank" class="list-group-item list-group-item-action links">
-          <div class="d-flex w-100 justify-content-start align-items-center">
-              <span class="menu-collapsed">Reports</span>
-          </div>
-      </a>
-      <a href="https://inet.nist.gov/lp/adlp/open-access-research-oar" target="_blank" class="list-group-item list-group-item-action links">
-        <div class="d-flex w-100 justify-content-start align-items-center">
-            <span class="menu-collapsed">Open Access INET</span>
-        </div>
-    </a>
-    <a href="https://data.nist.gov"  target="_blank" class="list-group-item list-group-item-action links">
-        <div class="d-flex w-100 justify-content-start align-items-center">
-            <span class="menu-collapsed">Public Data Portal</span>
-        </div>
-    </a>
-      <a href="https://inet.nist.gov/adlp/open-access-research-oar/publishing-instructions"  target="_blank" class="list-group-item list-group-item-action links">
-        <div class="d-flex w-100 justify-content-start align-items-center">
-            <span class="menu-collapsed">Data Policy</span>
-        </div>
-    </a>
-    <a href="https://inet.nist.gov/mr/library/publishing-support-nist-publications"  target="_blank" class="list-group-item list-group-item-action links">
-      <div class="d-flex w-100 justify-content-start align-items-center">
-          <span class="menu-collapsed">User Support</span>
+    <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
+    <!-- Bootstrap List Group -->
+    <ul class="list-group">
+      <div class="container" style="background-color: #EFF6FB;">
+        <input #box type="text" pInputText placeholder="Search" (keyup.enter)="onSearchKeyUp(box.value)">
       </div>
-  </a>
-          <!-- /END Separator -->
-      </ul><!-- List Group END-->
+    </ul>
+
+    <ul class="list-group">
+      <li class="list-group-header sidebar-separator-title d-flex align-items-center menu-collapsed">
+        <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}"
+            [icon]="faLink"></fa-icon>Resource/links</span>
+      </li>
+      <!-- /END Separator -->
+      <a href="https://inet.nist.gov/mr/library/midas-user-guides" target="_blank"
+        class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">User Guide</span>
+        </div>
+      </a>
+      <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-management-plans"
+        target="_blank" class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">Data Management Plans</span>
+        </div>
+      </a>
+      <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/digital-asset-publisher-dap"
+        target="_blank" class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">Digital Asset Publishing</span>
+        </div>
+      </a>
+      <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/file-manager" target="_blank"
+        class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">Manage Files</span>
+        </div>
+      </a>
+      <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-review-system" target="_blank"
+        class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">Data/Code Review</span>
+        </div>
+      </a>
+      <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-tools/reports" target="_blank"
+        class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">Reports</span>
+        </div>
+      </a>
+      <a href="https://inet.nist.gov/lp/adlp/open-access-research-oar" target="_blank"
+        class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">Open Access INET</span>
+        </div>
+      </a>
+      <a href="https://data.nist.gov" target="_blank" class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">Public Data Portal</span>
+        </div>
+      </a>
+      <a href="https://inet.nist.gov/adlp/open-access-research-oar/publishing-instructions" target="_blank"
+        class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">Data Policy</span>
+        </div>
+      </a>
+      <a href="https://inet.nist.gov/mr/library/publishing-support-nist-publications" target="_blank"
+        class="list-group-item list-group-item-action links">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="menu-collapsed">User Support</span>
+        </div>
+      </a>
+      <!-- /END Separator -->
+    </ul><!-- List Group END-->
   </div><!-- sidebar-container END -->
   <!-- MAIN -->
   <div class="col p-4">
@@ -81,17 +95,14 @@
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
           <app-review-list [authToken]="authToken" [userId]="userId"></app-review-list>
-          </div>
+        </div>
       </div>
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="table-dashboard">
-          <app-file-list [authToken]="authToken" ></app-file-list>
+          <app-file-list [authToken]="authToken"></app-file-list>
         </div>
       </div>
     </div>
-    
+
   </div><!-- Main Col END -->
 </div><!-- body-row END -->
-
-
-

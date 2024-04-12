@@ -5,8 +5,9 @@ import {
   , faCircle, faPrint, faPersonCircleQuestion, faBuilding
 } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
-import { DialogService, } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'oarng';
+import { SearchListModalComponent } from '../modals/search/search-list.component';
 
 
 @Component({
@@ -25,22 +26,24 @@ export class LandingComponent implements OnInit {
   faPlus = faPlus;
   faHouse = faHouse;
   faUser = faUser;
-  faDashboard = faDashboard;
-  faCloud = faCloud;
-  faClipboardList = faClipboardList;
-  faSearch = faSearch;
-  faFileCirclePlus = faFileCirclePlus;
-  faBook = faBook;
-  faListCheck = faListCheck;
-  faPrint = faPrint;
-  faPersonCircleQuestion = faPersonCircleQuestion;
-  userLastName: string | undefined;
-  userName: string | undefined;
-  userEmail: string | undefined;
-  userId: string | undefined;
-  userOU: string | undefined;
-  userDiv: string | undefined;
-  authToken: string | null = null;
+  faDashboard =faDashboard;
+  faCloud =faCloud;
+  faClipboardList= faClipboardList;
+  faSearch=faSearch;
+  faFileCirclePlus=faFileCirclePlus;
+  faBook=faBook;
+  faListCheck=faListCheck;
+  faPrint=faPrint;
+  faPersonCircleQuestion=faPersonCircleQuestion;
+  userLastName : string|undefined;
+  userName: string|undefined;
+  userEmail: string|undefined;
+  userId: string|undefined;
+  userOU: string|undefined;
+  userDiv: string|undefined;
+  authToken: string|null = null;
+  ref: DynamicDialogRef;
+  public searchResults: any[] = [];
 
 
   public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,
@@ -115,6 +118,16 @@ export class LandingComponent implements OnInit {
         alert("Unable to determine your identity");
       }
     )
+  }
+
+  onSearchKeyUp(value: string) {
+
+    this.ref = this.dialogService.open(SearchListModalComponent, {
+      data: value,
+      width: '80%',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+    });
   }
 }
 

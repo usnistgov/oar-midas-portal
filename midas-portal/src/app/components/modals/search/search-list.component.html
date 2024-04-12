@@ -1,0 +1,107 @@
+<p-tabView header="Header 1">
+    <p-tabPanel header="Search Results for '{{searchTerm}}'">
+        <p-panel header="Advanced Search" [toggleable]="true" [collapsed]="true">
+            Resource Type:
+            <p-radioButton label="DMP" name="resourceType" value="DMP" [(ngModel)]="resourceType"
+                inputId="resourceDMP"></p-radioButton> &nbsp;
+            <p-radioButton label="DAP" name="resourceType" value="DAP" [(ngModel)]="resourceType"
+                inputId="resourceDAP"></p-radioButton> &nbsp;                
+            <p-radioButton label="Both" name="resourceType" value="both" [(ngModel)]="resourceType"
+                inputId="resourceBoth"></p-radioButton> &nbsp; <br/>
+            Keywords: <input type="text" pInputText [(ngModel)]="keywords"> &nbsp;&nbsp;&nbsp;
+            Theme: <input type="text" pInputText [(ngModel)]="theme"> <br />
+            NIST Organization: <p-autoComplete [suggestions]="orgSuggestions" [(ngModel)]="selectedOrg" field="ORG_NAME"
+                optionLabel="ORG_NAME" placeholder="Select an organization"
+                (completeMethod)="getOrgs($event)"></p-autoComplete> &nbsp; &nbsp; &nbsp;
+            Record Owner: <p-autoComplete [(ngModel)]="recordOwner" [suggestions]="suggestions" field="FULL_NAME"
+                (completeMethod)="getPeople($event)"></p-autoComplete><br />
+            Published Before: <p-calendar [(ngModel)]="publishedBefore" [showIcon]="true"></p-calendar> &nbsp; &nbsp;
+            Published After: <p-calendar [(ngModel)]="publishedAfter" [showIcon]="true"></p-calendar> <br />
+            Process Status: &nbsp; &nbsp; &nbsp;
+            <input type="checkbox">&nbsp; Edit &nbsp; &nbsp;
+            <input type="checkbox">&nbsp; Processing &nbsp; &nbsp;
+            <input type="checkbox">&nbsp; Submitted &nbsp; &nbsp;
+            <input type="checkbox">&nbsp; Published &nbsp; &nbsp;
+            <p-checkbox label="Edit" name="statusEdit" value="edit" [(ngModel)]="status" ngDefaultControl></p-checkbox>
+            <p-checkbox label="Processing" name="statusProcessing" value="processing" [(ngModel)]="status"
+                ngDefaultControl></p-checkbox>
+            <p-checkbox label="Submitted" name="statusSubmitted" value="submitted" [(ngModel)]="status"
+                ngDefaultControl></p-checkbox>
+            <p-checkbox label="Published" name="statusPublished" value="published" [(ngModel)]="status"
+                ngDefaultControl></p-checkbox>
+            <br />
+            Associated Paper Publication? &nbsp; &nbsp; <input type="checkbox"><p-checkbox name="paper" value="true"
+                [(ngModel)]="paper" ngDefaultControl></p-checkbox>
+            <br />
+            Output: &nbsp; &nbsp;
+            <p-radioButton label="Grid" name="outputGrid" value="grid" [(ngModel)]="output"
+                inputId="outputGrid"></p-radioButton> &nbsp;
+            <p-radioButton label="JSON" name="outputJSON" value="JSON" [(ngModel)]="output"
+                inputId="outputJSON"></p-radioButton> &nbsp;
+            <p-radioButton label="CSV" name="outputCSV" value="CSV" [(ngModel)]="output"
+                inputId="outputCSV"></p-radioButton> &nbsp;
+            <p-radioButton label="PDF" name="outputPDF" value="PDF" [(ngModel)]="output"
+                inputId="outputPDF"></p-radioButton> &nbsp;
+            <br /><br />
+            <button pButton (click)="onSearchClick()">Search</button>
+            <br />
+        </p-panel>
+
+        <div class="">
+            <p-table #recordsTable name="recordtable" [value]="data" [paginator]="true" height="100px" [rows]="1000"
+                [scrollable]="true" [showCurrentPageReport]="true" [rowHover]="true" [columns]="selectedColumns"
+                [scrollable]="true" scrollHeight="600px"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [globalFilterFields]="['name','owner','id','type','title','doi','file_count']">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" pResizableColumn pSortableColumn={{col.field}}>
+                            {{col.header}}<p-sortIcon field={{col.field}}></p-sortIcon>
+                        </th>
+                        <th pResizableColumn>
+                            <p-columnFilter field="state" matchMode="equals" [showMenu]="false"
+                                [showClearButton]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)"
+                                        placeholder="State" [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            {{option.value}}
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </th>
+                        <th pResizableColumn>Last Modified
+                            <p-columnFilter title="Filter by date" type="date" field="modifiedDate"
+                                display="menu"></p-columnFilter>
+                        </th>
+                        <!--<th pResizableColumn pSortableColumn="id">ID<p-sortIcon field="id"></p-sortIcon></th>
+                            <th pResizableColumn pSortableColumn="title">Title<p-sortIcon field="title"></p-sortIcon></th>
+                            <th pResizableColumn pSortableColumn="type">Type<p-sortIcon field="type"></p-sortIcon></th>-->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns">
+                            <div *ngIf="col.field=='name'; else rest ">
+                                <a href={{linkto(item.id)}} target="_blank">{{item[col.field]}}</a>
+                            </div>
+                            <ng-template #rest>
+                                {{item[col.field]}}
+                            </ng-template>
+                        </td>
+                        <td class="td-class"><p-tag [value]="item.state" [severity]="getStatus(item.state)"></p-tag>
+                        </td>
+                        <td class="td-class">{{this.datepipe.transform(item.modifiedDate,'MM/dd/yyyy')}}</td>
+                        <!--<td>{{item.data['@id']}}</td>
+                            <td>{{item.data['title']}}</td>
+                            <td>{{item.meta['resourceType']}}</td>-->
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </p-tabPanel>
+    <p-tabPanel header="Reports">
+        CANNED/EXPERT REPORTS TO GO HERE
+    </p-tabPanel>
+</p-tabView>

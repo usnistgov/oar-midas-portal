@@ -11,6 +11,7 @@
     "dapEDIT": "https://localhost/dapui/edit/od/id/",
     "npsUI": "https://tsapps-t.nist.gov/nps/npsui",
     "nextcloudUI": "https://nextcloud-dev.nist.gov",
+    "searchAPI": "https://localhost/midas/search",
     "auth": {
         "serviceEndpoint": "https://localhost/sso/"
     }
