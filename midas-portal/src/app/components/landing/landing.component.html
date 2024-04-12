@@ -1,4 +1,3 @@
-
 <!-- Bootstrap row -->
 <div class="row">
   <!-- Sidebar -->
@@ -7,20 +6,26 @@
         <div class="col-auto col-md-3 col-xl-2 px-0 sidebar-landing">
             <div class="d-flex flex-column align-items-center align-items-sm-start">
               <li class="list-group-header col-12 sidebar-separator-title d-flex align-items-center menu-collapsed">
+                <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faLink"></fa-icon>Advance Search</span>
+            </li>
+            <ul class="nav flex-column align-items-center align-items-sm-start w-100" id="menu">
+                <div class="container" style="background-color: #EFF6FB;">
+                  <input #box type="text" pInputText placeholder="Search" (keyup.enter)="onSearchKeyUp(box.value)">
+                </div>
+              </ul>
+              <li class="list-group-header col-12 sidebar-separator-title d-flex align-items-center menu-collapsed">
                 <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faLink"></fa-icon>Resource/links</span >
             </li>
                 <ul class="nav flex-column align-items-center align-items-sm-start w-100" id="menu">
                     <li class="nav-item w-100">
-                      <a href="https://inet.nist.gov/mr/library/midas-user-guides" target="_blank" class="nav-link align-middle ">
-                          <span class="ms-1 d-none d-sm-inline">User Guide</span>
-                      </a>
-                    </li>
-                    <li class="nav-item w-100">
-                        <a href="#submenu1" (click)="toggleSubmenu()" data-bs-toggle="collapse" class="nav-link align-middle">
-                            <span class="ms-1 d-none d-sm-inline">MIDAS Tools</span>
-                            <fa-icon class="sidebar-icon" [icon]="submenuCollapsed ? faSquareCaretDown : faSquareCaretUp"></fa-icon>
+                        <a href="#submenu1" (click)="toggleSubmenu(0)" data-bs-toggle="collapse" class="nav-link align-middle">
+                            <span class="ms-1 d-none d-sm-inline">MIDAS Tools Guide</span>
+                            <fa-icon class="sidebar-icon" [icon]="submenuCollapsed[0] ? faSquareCaretDown : faSquareCaretUp"></fa-icon>
                            </a>
                         <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                            <li class="nav-link-sub pl-1">
+                              <a href="https://inet.nist.gov/mr/library/midas-user-guides"  target="_blank" class="list-group-item list-group-item-action links" > <span class="d-none d-sm-inline sidebar-span">User Guide</span></a>
+                            </li>
                             <li class="nav-link-sub pl-1">
                                 <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-management-plans"  target="_blank" class="list-group-item list-group-item-action links" > <span class="d-none d-sm-inline sidebar-span">Data Management Plans</span></a>
                             </li>
@@ -39,6 +44,20 @@
                         </ul>
                     </li>
                     <li class="nav-item w-100">
+                      <a href="#submenu2" (click)="toggleSubmenu(1)" data-bs-toggle="collapse" class="nav-link align-middle">
+                          <span class="ms-1 d-none d-sm-inline">Create New...</span>
+                          <fa-icon class="sidebar-icon" [icon]="submenuCollapsed[1] ? faSquareCaretDown : faSquareCaretUp"></fa-icon>
+                         </a>
+                      <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
+                          <li class="nav-link-sub pl-1">
+                            <a href="https://inet.nist.gov/mr/library/midas-user-guides"  target="_blank" class="list-group-item list-group-item-action links" > <span class="d-none d-sm-inline sidebar-span">Digital Asset Publication</span></a>
+                          </li>
+                          <li class="nav-link-sub pl-1">
+                              <a href="https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-management-plans"  target="_blank" class="list-group-item list-group-item-action links" > <span class="d-none d-sm-inline sidebar-span">Data Management Plans</span></a>
+                          </li>
+                      </ul>
+                  </li>
+                    <li class="nav-item w-100">
                       <a href="https://inet.nist.gov/lp/adlp/open-access-research-oar" target="_blank" class="nav-link align-middle ">
                           <span class="ms-1 d-none d-sm-inline">Open Access INET</span>
                       </a>
@@ -56,6 +75,16 @@
                   <li class="nav-item w-100">
                     <a href="https://inet.nist.gov/mr/library/publishing-support-nist-publications"  target="_blank" class="nav-link align-middle ">
                         <span class="ms-1 d-none d-sm-inline">User Support</span>
+                    </a>
+                  </li>
+                  <li class="nav-item w-100">
+                    <a href="https://inet.nist.gov/mr/library/midas-user-guides" target="_blank" class="nav-link align-middle ">
+                        <span class="ms-1 d-none d-sm-inline">Data Policy</span>
+                    </a>
+                  </li>
+                  <li class="nav-item w-100">
+                    <a href="https://inet.nist.gov/mr/library/midas-user-guides" target="_blank" class="nav-link align-middle ">
+                        <span class="ms-1 d-none d-sm-inline">Developer Tools</span>
                     </a>
                   </li>
                 </ul>
