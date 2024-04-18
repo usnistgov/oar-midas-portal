@@ -52,12 +52,17 @@
                 [scrollable]="true" [showCurrentPageReport]="true" [rowHover]="true" [columns]="selectedColumns"
                 [scrollable]="true" scrollHeight="600px"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [globalFilterFields]="['name','owner','id','type','title','doi','file_count']">
+                [globalFilterFields]="['name','owner','id','type','title','doi','file_count']"
+                [sortField]="'modifiedDate'" [sortOrder]="-1"
+                >
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th *ngFor="let col of columns" pResizableColumn pSortableColumn={{col.field}}>
-                            {{col.header}}<p-sortIcon field={{col.field}}></p-sortIcon>
-                        </th>
+                        <th pResizable pSortableColumn="">ID<p-sortIcon field="nist"></p-sortIcon></th>
+                        <th pResizableColumn pSortableColumn="name">Record<p-sortIcon field="name"></p-sortIcon></th>
+                        <th pResizableColumn pSortableColumn="owner">Name<p-sortIcon field="owner"></p-sortIcon></th>
+                        <th pResizableColumn pSortableColumn="nist">Owner<p-sortIcon field="nist"></p-sortIcon>
+                        <th pResizableColumn pSortableColumn="nist">Operating Unit Field<p-sortIcon field="orgid"></p-sortIcon>  
+                        <th pResizableColumn pSortableColumn="nist">Title<p-sortIcon field="title"></p-sortIcon>     
                         <th pResizableColumn>
                             <p-columnFilter field="state" matchMode="equals" [showMenu]="false"
                                 [showClearButton]="false">
@@ -71,28 +76,27 @@
                                 </ng-template>
                             </p-columnFilter>
                         </th>
-                        <th pResizableColumn>Last Modified
-                            <p-columnFilter title="Filter by date" type="date" field="modifiedDate"
+                        <th pResizableColumn pSortableColumn>Last Modified
+                            <p-columnFilter title="Filter by date" type="date" field="modifiedDate" pSort
                                 display="menu"></p-columnFilter>
                         </th>
-                        <!--<th pResizableColumn pSortableColumn="id">ID<p-sortIcon field="id"></p-sortIcon></th>
-                            <th pResizableColumn pSortableColumn="title">Title<p-sortIcon field="title"></p-sortIcon></th>
-                            <th pResizableColumn pSortableColumn="type">Type<p-sortIcon field="type"></p-sortIcon></th>-->
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-item let-columns="columns">
-                    <tr>
-                        <td *ngFor="let col of columns">
-                            <div *ngIf="col.field=='name'; else rest ">
-                                <a href={{linkto(item.id)}} target="_blank">{{item[col.field]}}</a>
-                            </div>
-                            <ng-template #rest>
-                                {{item[col.field]}}
-                            </ng-template>
-                        </td>
+                    <tr [ngClass]="{
+                        'record-dap': item.rectype === 'dap',
+                        'record-dmp': item.rectype === 'dmp'
+                      }">
+                        <td><a href={{linkto(item.id)}} target="_blank">{{item.id}}</a></td>
+                        <td>{{item.rectype}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.owner}}</td>
+                        <td>{{item.orgid}}</td>
+                        <td>{{item.title}}</td>
                         <td class="td-class"><p-tag [value]="item.state" [severity]="getStatus(item.state)"></p-tag>
                         </td>
                         <td class="td-class">{{this.datepipe.transform(item.modifiedDate,'MM/dd/yyyy')}}</td>
+                            
                         <!--<td>{{item.data['@id']}}</td>
                             <td>{{item.data['title']}}</td>
                             <td>{{item.meta['resourceType']}}</td>-->

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
+import { map } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox'
 import { HttpClient } from '@angular/common/http';
@@ -11,6 +12,7 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { ConfigurationService } from 'oarng';
 import { searchResult } from 'src/app/models/searchResult.model';
 import { SearchAPIService } from 'src/app/shared/search-api.service';
+import { dmap } from '../../../models/dmap.model';
 
 interface Column {
   field: string;
@@ -44,6 +46,7 @@ interface Org {
   styleUrls: ['./search-list.component.css']
 })
 export class SearchListModalComponent implements OnInit {
+  authToken: string|null;
   @Input() openedAsDialog: boolean = false;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   faBell=faBell;
@@ -68,6 +71,8 @@ export class SearchListModalComponent implements OnInit {
   publishedBefore: any;
   publishedAfter: any;
   resourceType: any;
+  public DMAP: any[]=[];
+  
 
   orgs = [
     {
@@ -182,6 +187,7 @@ export class SearchListModalComponent implements OnInit {
   @ViewChild('searchtable') searchTable: Table;
 
   constructor(private cfgsvc: ConfigurationService, public datepipe:DatePipe,
+                private http: HttpClient,
               public dialogService: DialogService, public messageService: MessageService,
               public config:DynamicDialogConfig, private apiService: SearchAPIService,)
   { }
@@ -227,7 +233,8 @@ export class SearchListModalComponent implements OnInit {
       let config = this.cfgsvc.getConfig();
       // config values here
       
-      this.searchTerm = this.config.data
+      this.authToken = this.config.data.authToken
+      this.searchTerm = this.config.data.value
       //this.count=this.data.length
 
       this.search(this.searchTerm);
@@ -306,17 +313,17 @@ export class SearchListModalComponent implements OnInit {
    * @param item is the data received form the dbio
    * @returns dap
    */
-  public customSerialize(item: any) {
-    let tmp = new searchResult();
-    tmp.doi = item.data['doi']
-    tmp.file_count = item.data['file_count']
+  public customSerialize(item: any,rectype:string) {
+    let tmp = new dmap();
     tmp.id = item.id
-    tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate)
+    tmp.rectype =rectype
+    rectype == 'dap' ? tmp.modifiedDate = new Date(item.status.modifiedDate) : tmp.modifiedDate = new Date(item.status.modified*1000)
     tmp.name = item.name
     tmp.owner = item.owner
     tmp.state = item.status.state
-    tmp.title = item.data['title']
-    tmp.type = item.meta['resourceType']
+    
+    tmp.orgid = rectype === 'dmp'  ? item.data.organization[0].ORG_ID : '';
+    rectype == 'dap' ? tmp.title= item.data['title'] : tmp.title = ''
     return tmp
   }
 
@@ -364,7 +371,18 @@ export class SearchListModalComponent implements OnInit {
     };
 
     console.log('searchJSON: ' + JSON.stringify(searchJSON));
+    var url=""
 
+    this.http.post(url,JSON.stringify(searchJSON), { headers: { Authorization: "Bearer "+this.authToken }})
+      .pipe(map((responseData: any) => {
+        return responseData
+      })).subscribe(records => {
+        console.log("Loading "+records.length+" DAP records");
+        this.DMAP = [];
+        for (let i = 0; i < records.length; i++) {
+          this.DMAP.push(this.customSerialize(records[i],"dap"))
+        }
+      })
   }
 
   getPeople($event: any) {
@@ -382,9 +400,317 @@ export class SearchListModalComponent implements OnInit {
 
   search(searchTerm: any) {
 
+    var dmpData=[
+      {
+        "id": "mdm1:0026",
+        "name": "Standard Reference Materials",
+        "acls": {
+            "read": [
+                "anonymous"
+            ],
+            "write": [
+                "anonymous"
+            ],
+            "admin": [
+                "anonymous"
+            ],
+            "delete": [
+                "anonymous"
+            ]
+        },
+        "owner": "anonymous",
+        "deactivated": null,
+        "status": {
+            "created": 1689021182.820267,
+            "state": "edit",
+            "action": "create",
+            "since": 1689021182.8203456,
+            "modified": 1699921600.8212953,
+            "message": "draft created"
+        },
+        "data": {
+            "title": "Standard Reference Materials",
+            "startDate": "2021-07-08 19:03:27",
+            "endDate": "",
+            "dmpSearchable": "Y",
+            "funding": {
+                "grant_source": "Grant Number",
+                "grant_id": ""
+            },
+            "projectDescription": "Division-wide project to provide statistical support for the NIST Standard Reference Materials program. SED work on this project includes design and analysis of experiments for a wide range of reference materials. Data sets based on measurement results received from NIST scientists and researchers external to NIST will be compiled and analyzed. Simulation data may also be generated to derive results. The anticipated data volume for this project is 200 MB/year.",
+            "organization": [
+                {
+                    "ORG_ID": 776,
+                    "name": "Statistical Engineering Division"
+                }
+            ],
+            "primary_NIST_contact": {
+                "firstName": "William F.",
+                "lastName": "Guthrie"
+            },
+            "contributors": [
+                {
+                    "contributor": {
+                        "firstName": "William F.",
+                        "lastName": "Guthrie"
+                    },
+                    "e_mail": "william.guthrie@nist.gov",
+                    "instituion": "NIST",
+                    "role": "Principal Investigator"
+                }
+            ],
+            "keyWords": [
+                "standard reference materials"
+            ],
+            "dataStorage": [],
+            "dataSize": null,
+            "sizeUnit": "GB",
+            "softwareDevelopment": {
+                "development": "no",
+                "softwareUse": "",
+                "softwareDatabase": "",
+                "softwareWebsite": ""
+            },
+            "technicalResources": [],
+            "ethical_issues": {
+                "ethical_issues_exist": "no",
+                "ethical_issues_description": "",
+                "ethical_issues_report": "",
+                "dmp_PII": "no"
+            },
+            "dataDescription": "No additional requirements: Preliminary working and derived dataData must be backed up using a tested/automated process: Final working and derived data used to generate publishable results will be stored on centrally accessible and backed up Division file systems.Not available to the public: Working and derived dataNot available to the public (when NIST Enterprise Data Inventory system is available): Publishable resultsMade available to the public as described below: Published results will be made available via the SRM Program web site.",
+            "dataCategories": [
+                "Derived Data",
+                "Working Data",
+                "Published Results & SRD",
+                "Publishable Results"
+            ],
+            "preservationDescription": "Working Data; Derived Data; Publishable Results; Published Results: File types used in this project will be primarily text files containing numeric results, but some spectra and image data may also be generated.",
+            "pathsURLs": []
+        },
+        "meta": {},
+        "curators": []
+      },
+      {
+        "id": "mdm1:0025",
+        "name": "Supplementary material for:",
+        "acls": {
+            "read": [
+                "anonymous"
+            ],
+            "write": [
+                "anonymous"
+            ],
+            "admin": [
+                "anonymous"
+            ],
+            "delete": [
+                "anonymous"
+            ]
+        },
+        "owner": "anonymous",
+        "deactivated": null,
+        "status": {
+            "created": 1689021178.207318,
+            "state": "edit",
+            "action": "create",
+            "since": 1689021178.2074027,
+            "modified": 1689021178.2083783,
+            "message": "draft created"
+        },
+        "data": {
+            "title": "Supplementary material for: The detection of carbon dioxide leaks using quasi-tomographic laser absorption spectroscopy",
+            "startDate": "2021-07-08 19:03:27",
+            "endDate": "",
+            "dmpSearchable": "Y",
+            "funding": {
+                "grant_source": "Grant Number",
+                "grant_id": ""
+            },
+            "projectDescription": "The purpose is to satisfy a requirement of the journal Atmospheric Measurement Techniques that the published data be publicly available.  The data concerns the detection of carbon dioxide leaks at sequestration sites.",
+            "organization": [
+                {
+                    "ORG_ID": 685,
+                    "name": "Sensor Science Division"
+                }
+            ],
+            "primary_NIST_contact": {
+                "firstName": "Zachary H.",
+                "lastName": "Levine"
+            },
+            "contributors": [
+                {
+                    "contributor": {
+                        "firstName": "Michael",
+                        "lastName": "Braun"
+                    },
+                    "e_mail": "",
+                    "instituion": "Harris Corp.",
+                    "role": ""
+                },
+                {
+                    "contributor": {
+                        "firstName": "Timothy",
+                        "lastName": "Pernini"
+                    },
+                    "e_mail": "",
+                    "instituion": "Atmospheric and Environmental Research, Inc.",
+                    "role": ""
+                },
+                {
+                    "contributor": {
+                        "firstName": "Jeremy",
+                        "lastName": "Dobler"
+                    },
+                    "e_mail": "",
+                    "instituion": "Harris Corp.",
+                    "role": ""
+                },
+                {
+                    "contributor": {
+                        "firstName": "Nathan",
+                        "lastName": "Blume"
+                    },
+                    "e_mail": "",
+                    "instituion": "Harris Corp.",
+                    "role": ""
+                },
+                {
+                    "contributor": {
+                        "firstName": "Zachary H.",
+                        "lastName": "Levine"
+                    },
+                    "e_mail": "zachary.levine@nist.gov",
+                    "instituion": "NIST",
+                    "role": "Principal Investigator"
+                }
+            ],
+            "keyWords": [
+                "carbon sequestration",
+                "laser absorption spectroscopy"
+            ],
+            "dataStorage": [],
+            "dataSize": null,
+            "sizeUnit": "GB",
+            "softwareDevelopment": {
+                "development": "no",
+                "softwareUse": "",
+                "softwareDatabase": "",
+                "softwareWebsite": ""
+            },
+            "technicalResources": [],
+            "ethical_issues": {
+                "ethical_issues_exist": "no",
+                "ethical_issues_description": "",
+                "ethical_issues_report": "",
+                "dmp_PII": "no"
+            },
+            "dataDescription": "The data includes two parts:  experimental observations and simulation data.  The data are self-described ASCII files.",
+            "dataCategories": [
+                "Published Results & SRD"
+            ],
+            "preservationDescription": "NIST institutional mangement",
+            "pathsURLs": [
+                "nike.nist.gov   SEARCH G2016-0163 for amt-2015-291-suppl.zip"
+            ]
+        },
+        "meta": {},
+        "curators": []
+      },
+      {
+        "id": "mdm1:0024",
+        "name": "GitHub Page Template",
+        "acls": {
+            "read": [
+                "anonymous"
+            ],
+            "write": [
+                "anonymous"
+            ],
+            "admin": [
+                "anonymous"
+            ],
+            "delete": [
+                "anonymous"
+            ]
+        },
+        "owner": "anonymous",
+        "deactivated": null,
+        "status": {
+            "created": 1689021173.6844378,
+            "state": "edit",
+            "action": "create",
+            "since": 1689021173.6845205,
+            "modified": 1731249973.68544,
+            "message": "draft created"
+        },
+        "data": {
+            "title": "GitHub Page Template",
+            "startDate": "2021-07-08 19:03:27",
+            "endDate": "",
+            "dmpSearchable": "Y",
+            "funding": {
+                "grant_source": "Grant Number",
+                "grant_id": ""
+            },
+            "projectDescription": "This template will be available to NIST employees who wish to create a GitHub backed website and place it on NIST pages (pages.nist.gov).",
+            "organization": [
+                {
+                    "ORG_ID": 641,
+                    "name": "Office of Data and Informatics"
+                }
+            ],
+            "primary_NIST_contact": {
+                "firstName": "Casey",
+                "lastName": "Hume"
+            },
+            "contributors": [
+                {
+                    "contributor": {
+                        "firstName": "Casey",
+                        "lastName": "Hume"
+                    },
+                    "e_mail": "casey.hume@nist.gov",
+                    "instituion": "NIST",
+                    "role": "Principal Investigator"
+                }
+            ],
+            "keyWords": [
+                "GitHub pages template"
+            ],
+            "dataStorage": [],
+            "dataSize": null,
+            "sizeUnit": "GB",
+            "softwareDevelopment": {
+                "development": "no",
+                "softwareUse": "",
+                "softwareDatabase": "",
+                "softwareWebsite": ""
+            },
+            "technicalResources": [],
+            "ethical_issues": {
+                "ethical_issues_exist": "no",
+                "ethical_issues_description": "",
+                "ethical_issues_report": "",
+                "dmp_PII": "no"
+            },
+            "dataDescription": "Code is developed in python, html, css, xml and javascript and shared via GitHub's USNISTGOV organization.",
+            "dataCategories": [
+                "Working Data"
+            ],
+            "preservationDescription": "The primary working storage is on a local virtual machine, with primary backup storage on a network drive.  Additional backups are in the GitHub cloud.",
+            "pathsURLs": [
+                "https://github.com/usnistgov/Pages-Template"
+            ]
+        },
+        "meta": {},
+        "curators": []
+      }
+      ]
+
     //need to add a call to the search API here.
     //this.loading = true;
-    var tempData = [
+    var dapData = [
       {
           "id": "mds3:0081",
           "name": "ZoIrY",
@@ -412,7 +738,7 @@ export class SearchListModalComponent implements OnInit {
           "status":
           {
               "created": 1700154605.5411382,
-              "state": "edit",
+              "state": "reviewed",
               "action": "update",
               "since": 1700154605.5412595,
               "modified": 1700154646.185461,
@@ -607,7 +933,7 @@ export class SearchListModalComponent implements OnInit {
           "status":
           {
               "created": 1704378224.7134526,
-              "state": "edit",
+              "state": "published",
               "action": "create",
               "since": 1704378224.7135918,
               "modified": 1704378224.7216735,
@@ -645,8 +971,11 @@ export class SearchListModalComponent implements OnInit {
       }
   ]
   this.data = []
-  for (let i = 0; i < tempData.length; i++) {
-    this.data.push(this.customSerialize(tempData[i]))
+  for (let i = 0; i < dapData.length; i++) {
+    this.data.push(this.customSerialize(dapData[i],"dap"))
+  }
+  for (let i = 0; i < dmpData.length; i++) {
+    this.data.push(this.customSerialize(dmpData[i],"dmp"))
   }
 }
 }

@@ -131,7 +131,7 @@ export class LandingComponent implements OnInit {
   onSearchKeyUp(value: string) {
 
     this.ref = this.dialogService.open(SearchListModalComponent, {
-      data: value,
+      data: {value: value,authToken:this.authToken},
       width: '80%',
       contentStyle: { overflow: 'auto' },
       baseZIndex: 10000,
