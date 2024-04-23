@@ -44,7 +44,10 @@
                 inputId="outputPDF"></p-radioButton> &nbsp;
             <br /><br />
             <button pButton (click)="onSearchClick()">Search</button>
-            <br />
+            -
+            <button pButton (click)="onExportListClick()">Export List</button>
+            -
+            <button pButton (click)="onExportRecordsClick()">Export Records</button>
         </p-panel>
 
         <div class="">
@@ -57,6 +60,7 @@
                 >
                 <ng-template pTemplate="header" let-columns>
                     <tr>
+                        <th><button pButton  (click)="toggleSelectAll()">Select All</button></th>
                         <th pResizable pSortableColumn="">ID<p-sortIcon field="nist"></p-sortIcon></th>
                         <th pResizableColumn pSortableColumn="name">Record<p-sortIcon field="name"></p-sortIcon></th>
                         <th pResizableColumn pSortableColumn="owner">Name<p-sortIcon field="owner"></p-sortIcon></th>
@@ -87,6 +91,7 @@
                         'record-dap': item.rectype === 'dap',
                         'record-dmp': item.rectype === 'dmp'
                       }">
+                        <td><input type="checkbox" [(ngModel)]="item.selected" name="recordCheckbox" [value]="item.id"></td>
                         <td><a href={{linkto(item.id)}} target="_blank">{{item.id}}</a></td>
                         <td>{{item.rectype}}</td>
                         <td>{{item.name}}</td>

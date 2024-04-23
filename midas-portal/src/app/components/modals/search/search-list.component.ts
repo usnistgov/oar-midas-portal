@@ -26,6 +26,13 @@ interface People {
     FULL_NAME: string;
 }
 
+interface Selected {
+    id: number;
+    name: string;
+    selected: boolean;
+    // Other properties...
+  }
+
 interface Org {
     ORG_ID: number;
     ORG_CD: string;
@@ -60,6 +67,9 @@ export class SearchListModalComponent implements OnInit {
   searchURL: any;
   _selectedColumns!: Column[];
   cols!: Column[];
+  allSelected: boolean = false;
+
+  
 
   keywords: any;
   theme: any;
@@ -383,6 +393,27 @@ export class SearchListModalComponent implements OnInit {
           this.DMAP.push(this.customSerialize(records[i],"dap"))
         }
       })
+  }
+
+  onExportListClick(){
+    // Get the selected records
+    const selectedRecords = this.data.filter((item: Selected)  => item.selected);
+    console.log('Selected Records:', selectedRecords);
+
+    // Perform your search logic here
+  }
+
+  onExportRecordsClick(){
+    // Get the selected records
+    const selectedRecords = this.data.filter((item: Selected)  => item.selected);
+    console.log('Selected Records:', selectedRecords);
+
+    // Perform your search logic here
+  }
+
+  toggleSelectAll() {
+    this.allSelected = !this.allSelected;
+    this.data.forEach((item: Selected) => item.selected = this.allSelected);
   }
 
   getPeople($event: any) {
