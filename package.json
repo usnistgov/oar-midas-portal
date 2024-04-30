@@ -16,7 +16,12 @@
         "@fortawesome/fontawesome-svg-core": "^6.2.1",
         "@fortawesome/free-solid-svg-icons": "^6.2.1",
         "@ionic/angular": "^6.3.8",
+        "ngx-csv": "^0.3.2",
+        "pdfmake": "^0.2.10",
         "primefaces": "^12.0.0",
         "primeng": "^16.4.3"
+    },
+    "devDependencies": {
+        "@types/pdfmake": "^0.2.9"
     }
 }

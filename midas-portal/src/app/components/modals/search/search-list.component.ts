@@ -1,4 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import * as pdfMake from 'pdfmake/build/pdfmake'
+import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
 import { map } from 'rxjs/operators';
@@ -13,6 +15,10 @@ import { ConfigurationService } from 'oarng';
 import { searchResult } from 'src/app/models/searchResult.model';
 import { SearchAPIService } from 'src/app/shared/search-api.service';
 import { dmap } from '../../../models/dmap.model';
+import { TDocumentDefinitions, StyleDictionary } from 'pdfmake/interfaces';
+import { ngxCsv } from 'ngx-csv/ngx-csv';
+
+(pdfMake as any).vfs=pdfFonts.pdfMake.vfs;
 
 interface Column {
   field: string;
@@ -68,6 +74,7 @@ export class SearchListModalComponent implements OnInit {
   _selectedColumns!: Column[];
   cols!: Column[];
   allSelected: boolean = false;
+  outputType:string;
 
   
 
@@ -279,6 +286,12 @@ export class SearchListModalComponent implements OnInit {
     // URL specification here
   }
 
+  onOutputTypeChange(event: any) {
+    // Access the selected value from the event
+    this.outputType = event.target.value;
+    // Perform any other actions based on the selected value
+  }
+
   getStatus(status: string) {
     switch (status) {
         case 'Done':
@@ -396,12 +409,115 @@ export class SearchListModalComponent implements OnInit {
   }
 
   onExportListClick(){
+    console.log(this.outputType);
+    if(this.outputType == 'pdf'){
     // Get the selected records
     const selectedRecords = this.data.filter((item: Selected)  => item.selected);
     console.log('Selected Records:', selectedRecords);
 
+    // Prepare table data
+    const tableBody = selectedRecords.map((record: dmap) => {
+        return [
+            record.rectype,
+            record.id,
+            record.name,
+            record.owner,
+            record.modifiedDate.toString(), // Convert Date to string
+            record.state,
+            record.orgid.toString(), // Convert number to string
+            record.title
+        ];
+    });
+
+    // Add table headers
+    const tableHeaders = ['Record Type', 'ID', 'Name', 'Owner', 'Modified Date', 'State', 'Org ID', 'Title'];
+    const tableHeaders1 = ['Record Typ1e', 'ID1', 'Name1', 'Owner1', 'Modified Date1', 'State1', 'Org ID1', 'Title1'];
+
+    // Create the table
+    const table = {
+        table: {
+            headerRows: 1,
+            widths: ['10%', '10%', '10%', '10%', '10%', '10%', '10%', '10%'],
+            body: [
+                tableHeaders,
+                ...tableBody,
+            ]
+        }
+    };
+
+    let docDefinition: TDocumentDefinitions = {
+        content: [
+            { text: 'Selected Records', style: 'header' },
+            table // Add the table to the PDF content
+        ],
+        styles: {
+            header: {
+                fontSize: 16,
+                bold: true,
+                margin: [0, 0, 0, 5], // bottom margin
+                fillColor: 'blue',
+                color: 'white', // Text color for the header
+            },
+            body: {
+                fillColor: 'yellow',
+            },
+        }
+    };
+
+    // Download the PDF
+    //I don't want my timestamp to be separated by _ 
+    const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+    const filename = `records_${timestamp}.pdf`;
+    pdfMake.createPdf(docDefinition).download(filename);
+
     // Perform your search logic here
-  }
+}else if (this.outputType == 'csv'){
+    const selectedRecords = this.data.filter((item: Selected)  => item.selected);
+    const tableBody = selectedRecords.map((record: dmap) => {
+        return [
+            record.rectype,
+            record.id,
+            record.name,
+            record.owner,
+            record.modifiedDate.toString(), // Convert Date to string
+            record.state,
+            record.orgid.toString(), // Convert number to string
+            record.title
+        ];
+    });
+
+    var options = { 
+        fieldSeparator: ',',
+        quoteStrings: '',
+        decimalseparator: '.',
+        showLabels: true, 
+        showTitle: false,
+        useBom: true,
+        noDownload: false,
+        headers: ["Record type", "ID","name","owner","modified date","state","org id","title"]
+      };
+
+      const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+    const filename = `records_${timestamp}`;
+    new ngxCsv(tableBody, filename,options);
+}else if (this.outputType == 'grid'){
+}else if (this.outputType == 'json'){
+    const selectedRecords = this.data.filter((item: Selected)  => item.selected);
+    const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+    const filename = `records_${timestamp}.json`;
+    var json = JSON.stringify(selectedRecords);
+    console.log(json);
+    var blob = new Blob([json], {type: "application/json"});
+    var url  = URL.createObjectURL(blob);
+
+    var a = document.createElement('a');
+    a.download = filename;
+    a.href = url;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+}
+
 
   onExportRecordsClick(){
     // Get the selected records
