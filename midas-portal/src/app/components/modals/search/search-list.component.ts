@@ -75,6 +75,7 @@ export class SearchListModalComponent implements OnInit {
   cols!: Column[];
   allSelected: boolean = false;
   outputType:string;
+  resourceType: any;
 
   
 
@@ -87,8 +88,579 @@ export class SearchListModalComponent implements OnInit {
   paper: any;
   publishedBefore: any;
   publishedAfter: any;
-  resourceType: any;
+  
   public DMAP: any[]=[];
+
+  dmpData=[
+    {
+      "id": "mdm1:0026",
+      "name": "Standard Reference Materials",
+      "acls": {
+          "read": [
+              "anonymous"
+          ],
+          "write": [
+              "anonymous"
+          ],
+          "admin": [
+              "anonymous"
+          ],
+          "delete": [
+              "anonymous"
+          ]
+      },
+      "owner": "anonymous",
+      "deactivated": null,
+      "status": {
+          "created": 1689021182.820267,
+          "state": "edit",
+          "action": "create",
+          "since": 1689021182.8203456,
+          "modified": 1699921600.8212953,
+          "message": "draft created"
+      },
+      "data": {
+          "title": "Standard Reference Materials",
+          "startDate": "2021-07-08 19:03:27",
+          "endDate": "",
+          "dmpSearchable": "Y",
+          "funding": {
+              "grant_source": "Grant Number",
+              "grant_id": ""
+          },
+          "projectDescription": "Division-wide project to provide statistical support for the NIST Standard Reference Materials program. SED work on this project includes design and analysis of experiments for a wide range of reference materials. Data sets based on measurement results received from NIST scientists and researchers external to NIST will be compiled and analyzed. Simulation data may also be generated to derive results. The anticipated data volume for this project is 200 MB/year.",
+          "organization": [
+              {
+                  "ORG_ID": 776,
+                  "name": "Statistical Engineering Division"
+              }
+          ],
+          "primary_NIST_contact": {
+              "firstName": "William F.",
+              "lastName": "Guthrie"
+          },
+          "contributors": [
+              {
+                  "contributor": {
+                      "firstName": "William F.",
+                      "lastName": "Guthrie"
+                  },
+                  "e_mail": "william.guthrie@nist.gov",
+                  "instituion": "NIST",
+                  "role": "Principal Investigator"
+              }
+          ],
+          "keyWords": [
+              "standard reference materials"
+          ],
+          "dataStorage": [],
+          "dataSize": null,
+          "sizeUnit": "GB",
+          "softwareDevelopment": {
+              "development": "no",
+              "softwareUse": "",
+              "softwareDatabase": "",
+              "softwareWebsite": ""
+          },
+          "technicalResources": [],
+          "ethical_issues": {
+              "ethical_issues_exist": "no",
+              "ethical_issues_description": "",
+              "ethical_issues_report": "",
+              "dmp_PII": "no"
+          },
+          "dataDescription": "No additional requirements: Preliminary working and derived dataData must be backed up using a tested/automated process: Final working and derived data used to generate publishable results will be stored on centrally accessible and backed up Division file systems.Not available to the public: Working and derived dataNot available to the public (when NIST Enterprise Data Inventory system is available): Publishable resultsMade available to the public as described below: Published results will be made available via the SRM Program web site.",
+          "dataCategories": [
+              "Derived Data",
+              "Working Data",
+              "Published Results & SRD",
+              "Publishable Results"
+          ],
+          "preservationDescription": "Working Data; Derived Data; Publishable Results; Published Results: File types used in this project will be primarily text files containing numeric results, but some spectra and image data may also be generated.",
+          "pathsURLs": []
+      },
+      "meta": {},
+      "curators": []
+    },
+    {
+      "id": "mdm1:0025",
+      "name": "Supplementary material for:",
+      "acls": {
+          "read": [
+              "anonymous"
+          ],
+          "write": [
+              "anonymous"
+          ],
+          "admin": [
+              "anonymous"
+          ],
+          "delete": [
+              "anonymous"
+          ]
+      },
+      "owner": "anonymous",
+      "deactivated": null,
+      "status": {
+          "created": 1689021178.207318,
+          "state": "edit",
+          "action": "create",
+          "since": 1689021178.2074027,
+          "modified": 1689021178.2083783,
+          "message": "draft created"
+      },
+      "data": {
+          "title": "Supplementary material for: The detection of carbon dioxide leaks using quasi-tomographic laser absorption spectroscopy",
+          "startDate": "2021-07-08 19:03:27",
+          "endDate": "",
+          "dmpSearchable": "Y",
+          "funding": {
+              "grant_source": "Grant Number",
+              "grant_id": ""
+          },
+          "projectDescription": "The purpose is to satisfy a requirement of the journal Atmospheric Measurement Techniques that the published data be publicly available.  The data concerns the detection of carbon dioxide leaks at sequestration sites.",
+          "organization": [
+              {
+                  "ORG_ID": 685,
+                  "name": "Sensor Science Division"
+              }
+          ],
+          "primary_NIST_contact": {
+              "firstName": "Zachary H.",
+              "lastName": "Levine"
+          },
+          "contributors": [
+              {
+                  "contributor": {
+                      "firstName": "Michael",
+                      "lastName": "Braun"
+                  },
+                  "e_mail": "",
+                  "instituion": "Harris Corp.",
+                  "role": ""
+              },
+              {
+                  "contributor": {
+                      "firstName": "Timothy",
+                      "lastName": "Pernini"
+                  },
+                  "e_mail": "",
+                  "instituion": "Atmospheric and Environmental Research, Inc.",
+                  "role": ""
+              },
+              {
+                  "contributor": {
+                      "firstName": "Jeremy",
+                      "lastName": "Dobler"
+                  },
+                  "e_mail": "",
+                  "instituion": "Harris Corp.",
+                  "role": ""
+              },
+              {
+                  "contributor": {
+                      "firstName": "Nathan",
+                      "lastName": "Blume"
+                  },
+                  "e_mail": "",
+                  "instituion": "Harris Corp.",
+                  "role": ""
+              },
+              {
+                  "contributor": {
+                      "firstName": "Zachary H.",
+                      "lastName": "Levine"
+                  },
+                  "e_mail": "zachary.levine@nist.gov",
+                  "instituion": "NIST",
+                  "role": "Principal Investigator"
+              }
+          ],
+          "keyWords": [
+              "carbon sequestration",
+              "laser absorption spectroscopy"
+          ],
+          "dataStorage": [],
+          "dataSize": null,
+          "sizeUnit": "GB",
+          "softwareDevelopment": {
+              "development": "no",
+              "softwareUse": "",
+              "softwareDatabase": "",
+              "softwareWebsite": ""
+          },
+          "technicalResources": [],
+          "ethical_issues": {
+              "ethical_issues_exist": "no",
+              "ethical_issues_description": "",
+              "ethical_issues_report": "",
+              "dmp_PII": "no"
+          },
+          "dataDescription": "The data includes two parts:  experimental observations and simulation data.  The data are self-described ASCII files.",
+          "dataCategories": [
+              "Published Results & SRD"
+          ],
+          "preservationDescription": "NIST institutional mangement",
+          "pathsURLs": [
+              "nike.nist.gov   SEARCH G2016-0163 for amt-2015-291-suppl.zip"
+          ]
+      },
+      "meta": {},
+      "curators": []
+    },
+    {
+      "id": "mdm1:0024",
+      "name": "GitHub Page Template",
+      "acls": {
+          "read": [
+              "anonymous"
+          ],
+          "write": [
+              "anonymous"
+          ],
+          "admin": [
+              "anonymous"
+          ],
+          "delete": [
+              "anonymous"
+          ]
+      },
+      "owner": "anonymous",
+      "deactivated": null,
+      "status": {
+          "created": 1689021173.6844378,
+          "state": "edit",
+          "action": "create",
+          "since": 1689021173.6845205,
+          "modified": 1731249973.68544,
+          "message": "draft created"
+      },
+      "data": {
+          "title": "GitHub Page Template",
+          "startDate": "2021-07-08 19:03:27",
+          "endDate": "",
+          "dmpSearchable": "Y",
+          "funding": {
+              "grant_source": "Grant Number",
+              "grant_id": ""
+          },
+          "projectDescription": "This template will be available to NIST employees who wish to create a GitHub backed website and place it on NIST pages (pages.nist.gov).",
+          "organization": [
+              {
+                  "ORG_ID": 641,
+                  "name": "Office of Data and Informatics"
+              }
+          ],
+          "primary_NIST_contact": {
+              "firstName": "Casey",
+              "lastName": "Hume"
+          },
+          "contributors": [
+              {
+                  "contributor": {
+                      "firstName": "Casey",
+                      "lastName": "Hume"
+                  },
+                  "e_mail": "casey.hume@nist.gov",
+                  "instituion": "NIST",
+                  "role": "Principal Investigator"
+              }
+          ],
+          "keyWords": [
+              "GitHub pages template"
+          ],
+          "dataStorage": [],
+          "dataSize": null,
+          "sizeUnit": "GB",
+          "softwareDevelopment": {
+              "development": "no",
+              "softwareUse": "",
+              "softwareDatabase": "",
+              "softwareWebsite": ""
+          },
+          "technicalResources": [],
+          "ethical_issues": {
+              "ethical_issues_exist": "no",
+              "ethical_issues_description": "",
+              "ethical_issues_report": "",
+              "dmp_PII": "no"
+          },
+          "dataDescription": "Code is developed in python, html, css, xml and javascript and shared via GitHub's USNISTGOV organization.",
+          "dataCategories": [
+              "Working Data"
+          ],
+          "preservationDescription": "The primary working storage is on a local virtual machine, with primary backup storage on a network drive.  Additional backups are in the GitHub cloud.",
+          "pathsURLs": [
+              "https://github.com/usnistgov/Pages-Template"
+          ]
+      },
+      "meta": {},
+      "curators": []
+    }
+    ]
+
+  //need to add a call to the search API here.
+  //this.loading = true;
+  dapData = [
+    {
+        "id": "mds3:0081",
+        "name": "ZoIrY",
+        "acls":
+        {
+            "read":
+            [
+                "cnd7"
+            ],
+            "write":
+            [
+                "cnd7"
+            ],
+            "admin":
+            [
+                "cnd7"
+            ],
+            "delete":
+            [
+                "cnd7"
+            ]
+        },
+        "owner": "cnd7",
+        "deactivated": null,
+        "status":
+        {
+            "created": 1700154605.5411382,
+            "state": "reviewed",
+            "action": "update",
+            "since": 1700154605.5412595,
+            "modified": 1700154646.185461,
+            "message": "",
+            "createdDate": "2023-11-16T17:10:05",
+            "modifiedDate": "2023-11-16T17:10:46",
+            "sinceDate": "2023-11-16T17:10:05"
+        },
+        "data":
+        {
+            "@id": "ark:/88434/mds3-0081",
+            "title": "Title of Record",
+            "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
+            "@type":
+            [
+                "nrdp:PublicDataResource",
+                "dcat:Resource"
+            ],
+            "doi": "doi:10.18434/mds3-0081",
+            "author_count": 0,
+            "file_count": 0,
+            "nonfile_count": 0,
+            "reference_count": 0
+        },
+        "meta":
+        {
+            "resourceType": "data",
+            "creatorisContact": true,
+            "willUpload": false,
+            "assocPageType": "stand-alone"
+        },
+        "curators":
+        [],
+        "type": "dap"
+    },
+    {
+        "id": "mds3:0068",
+        "name": "H652E",
+        "acls":
+        {
+            "read":
+            [
+                "cnd7"
+            ],
+            "write":
+            [
+                "cnd7"
+            ],
+            "admin":
+            [
+                "cnd7"
+            ],
+            "delete":
+            [
+                "cnd7"
+            ]
+        },
+        "owner": "cnd7",
+        "deactivated": null,
+        "status":
+        {
+            "created": 1695319633.0411932,
+            "state": "edit",
+            "action": "update",
+            "since": 1695319633.041336,
+            "modified": 1695319658.6617084,
+            "message": "",
+            "createdDate": "2023-09-21T18:07:13",
+            "modifiedDate": "2023-09-21T18:07:38",
+            "sinceDate": "2023-09-21T18:07:13"
+        },
+        "data":
+        {
+            "@id": "ark:/88434/mds3-0068",
+            "title": "This is my test record",
+            "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
+            "@type":
+            [
+                "nrdp:PublicDataResource",
+                "dcat:Resource"
+            ],
+            "doi": "doi:10.18434/mds3-0068",
+            "contactPoint":
+            {
+                "fn": "Christopher Davis",
+                "hasEmail": "mailto:christopher.davis@nist.gov",
+                "@type": "vcard:Contact"
+            },
+            "author_count": 0,
+            "file_count": 0,
+            "nonfile_count": 0,
+            "reference_count": 0
+        },
+        "meta":
+        {
+            "resourceType": "data",
+            "creatorisContact": true,
+            "willUpload": false,
+            "assocPageType": "stand-alone"
+        },
+        "curators":
+        [],
+        "type": "dap"
+    },
+    {
+        "id": "mds3:0082",
+        "name": "79hwX",
+        "acls":
+        {
+            "read":
+            [
+                "cnd7"
+            ],
+            "write":
+            [
+                "cnd7"
+            ],
+            "admin":
+            [
+                "cnd7"
+            ],
+            "delete":
+            [
+                "cnd7"
+            ]
+        },
+        "owner": "cnd7",
+        "deactivated": null,
+        "status":
+        {
+            "created": 1700161987.5689886,
+            "state": "edit",
+            "action": "create",
+            "since": 1700161987.5691032,
+            "modified": 1700161987.5742366,
+            "message": "",
+            "createdDate": "2023-11-16T19:13:07",
+            "modifiedDate": "2023-11-16T19:13:07",
+            "sinceDate": "2023-11-16T19:13:07"
+        },
+        "data":
+        {
+            "@id": "ark:/88434/mds3-0082",
+            "title": "Spectroscopy Inferences",
+            "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
+            "@type":
+            [
+                "nrdp:PublicDataResource",
+                "dcat:Resource"
+            ],
+            "doi": "doi:10.18434/mds3-0082",
+            "author_count": 0,
+            "file_count": 0,
+            "nonfile_count": 0,
+            "reference_count": 0
+        },
+        "meta":
+        {
+            "resourceType": "data",
+            "creatorisContact": true,
+            "willUpload": false,
+            "assocPageType": "stand-alone"
+        },
+        "curators":
+        [],
+        "type": "dap"
+    },
+    {
+        "id": "mds3:0115",
+        "name": "Something",
+        "acls":
+        {
+            "read":
+            [
+                "cnd7"
+            ],
+            "write":
+            [
+                "cnd7"
+            ],
+            "admin":
+            [
+                "cnd7"
+            ],
+            "delete":
+            [
+                "cnd7"
+            ]
+        },
+        "owner": "cnd7",
+        "deactivated": null,
+        "status":
+        {
+            "created": 1704378224.7134526,
+            "state": "published",
+            "action": "create",
+            "since": 1704378224.7135918,
+            "modified": 1704378224.7216735,
+            "message": "",
+            "createdDate": "2024-01-04T14:23:44",
+            "modifiedDate": "2024-01-04T14:23:44",
+            "sinceDate": "2024-01-04T14:23:44"
+        },
+        "data":
+        {
+            "@id": "ark:/88434/mds3-0115",
+            "title": "Super Science Data",
+            "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
+            "@type":
+            [
+                "nrdp:PublicDataResource",
+                "dcat:Resource"
+            ],
+            "doi": "doi:10.18434/mds3-0115",
+            "author_count": 0,
+            "file_count": 0,
+            "nonfile_count": 0,
+            "reference_count": 0
+        },
+        "meta":
+        {
+            "resourceType": "data",
+            "creatorisContact": true,
+            "willUpload": false,
+            "assocPageType": "loosely-related"
+        },
+        "curators":
+        [],
+        "type": "dap"
+    }
+]
   
 
   orgs = [
@@ -291,6 +863,14 @@ export class SearchListModalComponent implements OnInit {
     this.outputType = event.target.value;
     // Perform any other actions based on the selected value
   }
+
+  onresourceTypeChange(event: any) {
+    // Access the selected value from the event
+    this.resourceType = event.target.value;
+    // Perform any other actions based on the selected value
+  }
+
+
 
   getStatus(status: string) {
     switch (status) {
@@ -500,23 +1080,40 @@ export class SearchListModalComponent implements OnInit {
       const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
     const filename = `records_${timestamp}`;
     new ngxCsv(tableBody, filename,options);
-}else if (this.outputType == 'grid'){
 }else if (this.outputType == 'json'){
+    var tmpData:any;
     const selectedRecords = this.data.filter((item: Selected)  => item.selected);
-    const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
-    const filename = `records_${timestamp}.json`;
-    var json = JSON.stringify(selectedRecords);
-    console.log(json);
-    var blob = new Blob([json], {type: "application/json"});
-    var url  = URL.createObjectURL(blob);
+    console.log(selectedRecords)
+    console.log(this.resourceType)
+    if(this.resourceType == 'dap'){
+        tmpData = this.dapData.filter((dapRecord: any) =>
+            selectedRecords.some((record: Selected) => dapRecord.id === record.id)
+          );
+    }else if(this.resourceType == 'dmp'){
+        tmpData = this.dmpData.filter((dmpRecord: any) => 
+            selectedRecords.some((record: Selected) => dmpRecord.id === record.id)
+          );
+    }
 
-    var a = document.createElement('a');
-    a.download = filename;
-    a.href = url;
-    a.click();
-    URL.revokeObjectURL(url);
-}
-}
+    if (tmpData.length !== 0) {
+        const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+        const filename = `records_${timestamp}.json`;
+        console.log(tmpData);
+        var json = JSON.stringify(tmpData);
+        console.log(json);
+        var blob = new Blob([json], {type: "application/json"});
+        var url  = URL.createObjectURL(blob);
+
+        var a = document.createElement('a');
+        a.download = filename;
+        a.href = url;
+        a.click();
+        URL.revokeObjectURL(url);
+      } else {
+        window.alert('No records selected');
+    
+    }
+}}
 
 
   onExportRecordsClick(){
@@ -547,582 +1144,12 @@ export class SearchListModalComponent implements OnInit {
 
   search(searchTerm: any) {
 
-    var dmpData=[
-      {
-        "id": "mdm1:0026",
-        "name": "Standard Reference Materials",
-        "acls": {
-            "read": [
-                "anonymous"
-            ],
-            "write": [
-                "anonymous"
-            ],
-            "admin": [
-                "anonymous"
-            ],
-            "delete": [
-                "anonymous"
-            ]
-        },
-        "owner": "anonymous",
-        "deactivated": null,
-        "status": {
-            "created": 1689021182.820267,
-            "state": "edit",
-            "action": "create",
-            "since": 1689021182.8203456,
-            "modified": 1699921600.8212953,
-            "message": "draft created"
-        },
-        "data": {
-            "title": "Standard Reference Materials",
-            "startDate": "2021-07-08 19:03:27",
-            "endDate": "",
-            "dmpSearchable": "Y",
-            "funding": {
-                "grant_source": "Grant Number",
-                "grant_id": ""
-            },
-            "projectDescription": "Division-wide project to provide statistical support for the NIST Standard Reference Materials program. SED work on this project includes design and analysis of experiments for a wide range of reference materials. Data sets based on measurement results received from NIST scientists and researchers external to NIST will be compiled and analyzed. Simulation data may also be generated to derive results. The anticipated data volume for this project is 200 MB/year.",
-            "organization": [
-                {
-                    "ORG_ID": 776,
-                    "name": "Statistical Engineering Division"
-                }
-            ],
-            "primary_NIST_contact": {
-                "firstName": "William F.",
-                "lastName": "Guthrie"
-            },
-            "contributors": [
-                {
-                    "contributor": {
-                        "firstName": "William F.",
-                        "lastName": "Guthrie"
-                    },
-                    "e_mail": "william.guthrie@nist.gov",
-                    "instituion": "NIST",
-                    "role": "Principal Investigator"
-                }
-            ],
-            "keyWords": [
-                "standard reference materials"
-            ],
-            "dataStorage": [],
-            "dataSize": null,
-            "sizeUnit": "GB",
-            "softwareDevelopment": {
-                "development": "no",
-                "softwareUse": "",
-                "softwareDatabase": "",
-                "softwareWebsite": ""
-            },
-            "technicalResources": [],
-            "ethical_issues": {
-                "ethical_issues_exist": "no",
-                "ethical_issues_description": "",
-                "ethical_issues_report": "",
-                "dmp_PII": "no"
-            },
-            "dataDescription": "No additional requirements: Preliminary working and derived dataData must be backed up using a tested/automated process: Final working and derived data used to generate publishable results will be stored on centrally accessible and backed up Division file systems.Not available to the public: Working and derived dataNot available to the public (when NIST Enterprise Data Inventory system is available): Publishable resultsMade available to the public as described below: Published results will be made available via the SRM Program web site.",
-            "dataCategories": [
-                "Derived Data",
-                "Working Data",
-                "Published Results & SRD",
-                "Publishable Results"
-            ],
-            "preservationDescription": "Working Data; Derived Data; Publishable Results; Published Results: File types used in this project will be primarily text files containing numeric results, but some spectra and image data may also be generated.",
-            "pathsURLs": []
-        },
-        "meta": {},
-        "curators": []
-      },
-      {
-        "id": "mdm1:0025",
-        "name": "Supplementary material for:",
-        "acls": {
-            "read": [
-                "anonymous"
-            ],
-            "write": [
-                "anonymous"
-            ],
-            "admin": [
-                "anonymous"
-            ],
-            "delete": [
-                "anonymous"
-            ]
-        },
-        "owner": "anonymous",
-        "deactivated": null,
-        "status": {
-            "created": 1689021178.207318,
-            "state": "edit",
-            "action": "create",
-            "since": 1689021178.2074027,
-            "modified": 1689021178.2083783,
-            "message": "draft created"
-        },
-        "data": {
-            "title": "Supplementary material for: The detection of carbon dioxide leaks using quasi-tomographic laser absorption spectroscopy",
-            "startDate": "2021-07-08 19:03:27",
-            "endDate": "",
-            "dmpSearchable": "Y",
-            "funding": {
-                "grant_source": "Grant Number",
-                "grant_id": ""
-            },
-            "projectDescription": "The purpose is to satisfy a requirement of the journal Atmospheric Measurement Techniques that the published data be publicly available.  The data concerns the detection of carbon dioxide leaks at sequestration sites.",
-            "organization": [
-                {
-                    "ORG_ID": 685,
-                    "name": "Sensor Science Division"
-                }
-            ],
-            "primary_NIST_contact": {
-                "firstName": "Zachary H.",
-                "lastName": "Levine"
-            },
-            "contributors": [
-                {
-                    "contributor": {
-                        "firstName": "Michael",
-                        "lastName": "Braun"
-                    },
-                    "e_mail": "",
-                    "instituion": "Harris Corp.",
-                    "role": ""
-                },
-                {
-                    "contributor": {
-                        "firstName": "Timothy",
-                        "lastName": "Pernini"
-                    },
-                    "e_mail": "",
-                    "instituion": "Atmospheric and Environmental Research, Inc.",
-                    "role": ""
-                },
-                {
-                    "contributor": {
-                        "firstName": "Jeremy",
-                        "lastName": "Dobler"
-                    },
-                    "e_mail": "",
-                    "instituion": "Harris Corp.",
-                    "role": ""
-                },
-                {
-                    "contributor": {
-                        "firstName": "Nathan",
-                        "lastName": "Blume"
-                    },
-                    "e_mail": "",
-                    "instituion": "Harris Corp.",
-                    "role": ""
-                },
-                {
-                    "contributor": {
-                        "firstName": "Zachary H.",
-                        "lastName": "Levine"
-                    },
-                    "e_mail": "zachary.levine@nist.gov",
-                    "instituion": "NIST",
-                    "role": "Principal Investigator"
-                }
-            ],
-            "keyWords": [
-                "carbon sequestration",
-                "laser absorption spectroscopy"
-            ],
-            "dataStorage": [],
-            "dataSize": null,
-            "sizeUnit": "GB",
-            "softwareDevelopment": {
-                "development": "no",
-                "softwareUse": "",
-                "softwareDatabase": "",
-                "softwareWebsite": ""
-            },
-            "technicalResources": [],
-            "ethical_issues": {
-                "ethical_issues_exist": "no",
-                "ethical_issues_description": "",
-                "ethical_issues_report": "",
-                "dmp_PII": "no"
-            },
-            "dataDescription": "The data includes two parts:  experimental observations and simulation data.  The data are self-described ASCII files.",
-            "dataCategories": [
-                "Published Results & SRD"
-            ],
-            "preservationDescription": "NIST institutional mangement",
-            "pathsURLs": [
-                "nike.nist.gov   SEARCH G2016-0163 for amt-2015-291-suppl.zip"
-            ]
-        },
-        "meta": {},
-        "curators": []
-      },
-      {
-        "id": "mdm1:0024",
-        "name": "GitHub Page Template",
-        "acls": {
-            "read": [
-                "anonymous"
-            ],
-            "write": [
-                "anonymous"
-            ],
-            "admin": [
-                "anonymous"
-            ],
-            "delete": [
-                "anonymous"
-            ]
-        },
-        "owner": "anonymous",
-        "deactivated": null,
-        "status": {
-            "created": 1689021173.6844378,
-            "state": "edit",
-            "action": "create",
-            "since": 1689021173.6845205,
-            "modified": 1731249973.68544,
-            "message": "draft created"
-        },
-        "data": {
-            "title": "GitHub Page Template",
-            "startDate": "2021-07-08 19:03:27",
-            "endDate": "",
-            "dmpSearchable": "Y",
-            "funding": {
-                "grant_source": "Grant Number",
-                "grant_id": ""
-            },
-            "projectDescription": "This template will be available to NIST employees who wish to create a GitHub backed website and place it on NIST pages (pages.nist.gov).",
-            "organization": [
-                {
-                    "ORG_ID": 641,
-                    "name": "Office of Data and Informatics"
-                }
-            ],
-            "primary_NIST_contact": {
-                "firstName": "Casey",
-                "lastName": "Hume"
-            },
-            "contributors": [
-                {
-                    "contributor": {
-                        "firstName": "Casey",
-                        "lastName": "Hume"
-                    },
-                    "e_mail": "casey.hume@nist.gov",
-                    "instituion": "NIST",
-                    "role": "Principal Investigator"
-                }
-            ],
-            "keyWords": [
-                "GitHub pages template"
-            ],
-            "dataStorage": [],
-            "dataSize": null,
-            "sizeUnit": "GB",
-            "softwareDevelopment": {
-                "development": "no",
-                "softwareUse": "",
-                "softwareDatabase": "",
-                "softwareWebsite": ""
-            },
-            "technicalResources": [],
-            "ethical_issues": {
-                "ethical_issues_exist": "no",
-                "ethical_issues_description": "",
-                "ethical_issues_report": "",
-                "dmp_PII": "no"
-            },
-            "dataDescription": "Code is developed in python, html, css, xml and javascript and shared via GitHub's USNISTGOV organization.",
-            "dataCategories": [
-                "Working Data"
-            ],
-            "preservationDescription": "The primary working storage is on a local virtual machine, with primary backup storage on a network drive.  Additional backups are in the GitHub cloud.",
-            "pathsURLs": [
-                "https://github.com/usnistgov/Pages-Template"
-            ]
-        },
-        "meta": {},
-        "curators": []
-      }
-      ]
-
-    //need to add a call to the search API here.
-    //this.loading = true;
-    var dapData = [
-      {
-          "id": "mds3:0081",
-          "name": "ZoIrY",
-          "acls":
-          {
-              "read":
-              [
-                  "cnd7"
-              ],
-              "write":
-              [
-                  "cnd7"
-              ],
-              "admin":
-              [
-                  "cnd7"
-              ],
-              "delete":
-              [
-                  "cnd7"
-              ]
-          },
-          "owner": "cnd7",
-          "deactivated": null,
-          "status":
-          {
-              "created": 1700154605.5411382,
-              "state": "reviewed",
-              "action": "update",
-              "since": 1700154605.5412595,
-              "modified": 1700154646.185461,
-              "message": "",
-              "createdDate": "2023-11-16T17:10:05",
-              "modifiedDate": "2023-11-16T17:10:46",
-              "sinceDate": "2023-11-16T17:10:05"
-          },
-          "data":
-          {
-              "@id": "ark:/88434/mds3-0081",
-              "title": "Title of Record",
-              "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
-              "@type":
-              [
-                  "nrdp:PublicDataResource",
-                  "dcat:Resource"
-              ],
-              "doi": "doi:10.18434/mds3-0081",
-              "author_count": 0,
-              "file_count": 0,
-              "nonfile_count": 0,
-              "reference_count": 0
-          },
-          "meta":
-          {
-              "resourceType": "data",
-              "creatorisContact": true,
-              "willUpload": false,
-              "assocPageType": "stand-alone"
-          },
-          "curators":
-          [],
-          "type": "dap"
-      },
-      {
-          "id": "mds3:0068",
-          "name": "H652E",
-          "acls":
-          {
-              "read":
-              [
-                  "cnd7"
-              ],
-              "write":
-              [
-                  "cnd7"
-              ],
-              "admin":
-              [
-                  "cnd7"
-              ],
-              "delete":
-              [
-                  "cnd7"
-              ]
-          },
-          "owner": "cnd7",
-          "deactivated": null,
-          "status":
-          {
-              "created": 1695319633.0411932,
-              "state": "edit",
-              "action": "update",
-              "since": 1695319633.041336,
-              "modified": 1695319658.6617084,
-              "message": "",
-              "createdDate": "2023-09-21T18:07:13",
-              "modifiedDate": "2023-09-21T18:07:38",
-              "sinceDate": "2023-09-21T18:07:13"
-          },
-          "data":
-          {
-              "@id": "ark:/88434/mds3-0068",
-              "title": "This is my test record",
-              "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
-              "@type":
-              [
-                  "nrdp:PublicDataResource",
-                  "dcat:Resource"
-              ],
-              "doi": "doi:10.18434/mds3-0068",
-              "contactPoint":
-              {
-                  "fn": "Christopher Davis",
-                  "hasEmail": "mailto:christopher.davis@nist.gov",
-                  "@type": "vcard:Contact"
-              },
-              "author_count": 0,
-              "file_count": 0,
-              "nonfile_count": 0,
-              "reference_count": 0
-          },
-          "meta":
-          {
-              "resourceType": "data",
-              "creatorisContact": true,
-              "willUpload": false,
-              "assocPageType": "stand-alone"
-          },
-          "curators":
-          [],
-          "type": "dap"
-      },
-      {
-          "id": "mds3:0082",
-          "name": "79hwX",
-          "acls":
-          {
-              "read":
-              [
-                  "cnd7"
-              ],
-              "write":
-              [
-                  "cnd7"
-              ],
-              "admin":
-              [
-                  "cnd7"
-              ],
-              "delete":
-              [
-                  "cnd7"
-              ]
-          },
-          "owner": "cnd7",
-          "deactivated": null,
-          "status":
-          {
-              "created": 1700161987.5689886,
-              "state": "edit",
-              "action": "create",
-              "since": 1700161987.5691032,
-              "modified": 1700161987.5742366,
-              "message": "",
-              "createdDate": "2023-11-16T19:13:07",
-              "modifiedDate": "2023-11-16T19:13:07",
-              "sinceDate": "2023-11-16T19:13:07"
-          },
-          "data":
-          {
-              "@id": "ark:/88434/mds3-0082",
-              "title": "Spectroscopy Inferences",
-              "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
-              "@type":
-              [
-                  "nrdp:PublicDataResource",
-                  "dcat:Resource"
-              ],
-              "doi": "doi:10.18434/mds3-0082",
-              "author_count": 0,
-              "file_count": 0,
-              "nonfile_count": 0,
-              "reference_count": 0
-          },
-          "meta":
-          {
-              "resourceType": "data",
-              "creatorisContact": true,
-              "willUpload": false,
-              "assocPageType": "stand-alone"
-          },
-          "curators":
-          [],
-          "type": "dap"
-      },
-      {
-          "id": "mds3:0115",
-          "name": "Something",
-          "acls":
-          {
-              "read":
-              [
-                  "cnd7"
-              ],
-              "write":
-              [
-                  "cnd7"
-              ],
-              "admin":
-              [
-                  "cnd7"
-              ],
-              "delete":
-              [
-                  "cnd7"
-              ]
-          },
-          "owner": "cnd7",
-          "deactivated": null,
-          "status":
-          {
-              "created": 1704378224.7134526,
-              "state": "published",
-              "action": "create",
-              "since": 1704378224.7135918,
-              "modified": 1704378224.7216735,
-              "message": "",
-              "createdDate": "2024-01-04T14:23:44",
-              "modifiedDate": "2024-01-04T14:23:44",
-              "sinceDate": "2024-01-04T14:23:44"
-          },
-          "data":
-          {
-              "@id": "ark:/88434/mds3-0115",
-              "title": "Super Science Data",
-              "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
-              "@type":
-              [
-                  "nrdp:PublicDataResource",
-                  "dcat:Resource"
-              ],
-              "doi": "doi:10.18434/mds3-0115",
-              "author_count": 0,
-              "file_count": 0,
-              "nonfile_count": 0,
-              "reference_count": 0
-          },
-          "meta":
-          {
-              "resourceType": "data",
-              "creatorisContact": true,
-              "willUpload": false,
-              "assocPageType": "loosely-related"
-          },
-          "curators":
-          [],
-          "type": "dap"
-      }
-  ]
   this.data = []
-  for (let i = 0; i < dapData.length; i++) {
-    this.data.push(this.customSerialize(dapData[i],"dap"))
+  for (let i = 0; i < this.dapData.length; i++) {
+    this.data.push(this.customSerialize(this.dapData[i],"dap"))
   }
-  for (let i = 0; i < dmpData.length; i++) {
-    this.data.push(this.customSerialize(dmpData[i],"dmp"))
+  for (let i = 0; i < this.dmpData.length; i++) {
+    this.data.push(this.customSerialize(this.dmpData[i],"dmp"))
   }
 }
 }
