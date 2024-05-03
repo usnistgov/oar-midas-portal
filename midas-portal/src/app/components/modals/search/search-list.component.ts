@@ -1099,7 +1099,7 @@ export class SearchListModalComponent implements OnInit {
         const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
         const filename = `records_${timestamp}.json`;
         console.log(tmpData);
-        var json = JSON.stringify(tmpData);
+        var json = JSON.stringify(tmpData, null, 2);
         console.log(json);
         var blob = new Blob([json], {type: "application/json"});
         var url  = URL.createObjectURL(blob);
