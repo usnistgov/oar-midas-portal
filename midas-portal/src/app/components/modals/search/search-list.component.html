@@ -35,6 +35,18 @@
             <br /><br />
             <button pButton (click)="onSearchClick()">Search</button>
         </p-panel>
+        <p-panel header="Exports" [toggleable]="true" [collapsed]="true">
+            <br />
+            Output: &nbsp; &nbsp;
+            <p-radioButton label="JSON" name="outputType" value="json" [(ngModel)]="outputType"
+                inputId="outputJSON" (change)="onOutputTypeChange($event)" [disabled]="resourceType === 'both'" ></p-radioButton> &nbsp;
+            <p-radioButton label="CSV" name="outputType" value="csv" [(ngModel)]="outputType"
+                inputId="outputCSV" (change)="onOutputTypeChange($event)" [disabled]="resourceType === 'both'"></p-radioButton> &nbsp;
+            <p-radioButton label="PDF (summary view)" name="outputType" value="pdf" [(ngModel)]="outputType"
+                inputId="outputPDF" (change)="onOutputTypeChange($event)"></p-radioButton> &nbsp;
+            <br /><br />
+            <button pButton (click)="onExportListClick()">Export</button>
+        </p-panel>
         <div class="">
             <p-table #recordsTable name="recordtable" [value]="data" [paginator]="true" height="100px" [rows]="1000"
                 [scrollable]="true" [showCurrentPageReport]="true" [rowHover]="true" [columns]="selectedColumns"
@@ -94,18 +106,6 @@
                 </ng-template>
             </p-table>
         </div>
-        <p-panel header="Exports" [toggleable]="true" [collapsed]="true">
-            <br />
-            Output: &nbsp; &nbsp;
-            <p-radioButton label="JSON" name="outputType" value="json" [(ngModel)]="outputType"
-                inputId="outputJSON" (change)="onOutputTypeChange($event)" [disabled]="resourceType === 'both'" ></p-radioButton> &nbsp;
-            <p-radioButton label="CSV" name="outputType" value="csv" [(ngModel)]="outputType"
-                inputId="outputCSV" (change)="onOutputTypeChange($event)" [disabled]="resourceType === 'both'"></p-radioButton> &nbsp;
-            <p-radioButton label="PDF" name="outputType" value="pdf" [(ngModel)]="outputType"
-                inputId="outputPDF" (change)="onOutputTypeChange($event)"></p-radioButton> &nbsp;
-            <br /><br />
-            <button pButton (click)="onExportListClick()">Export</button>
-        </p-panel>
     </p-tabPanel>
     <p-tabPanel header="Reports">
         CANNED/EXPERT REPORTS TO GO HERE

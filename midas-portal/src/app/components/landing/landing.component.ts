@@ -1,7 +1,7 @@
 import { Component, OnInit, } from '@angular/core';
 import {
   faHouse, faUser, faDashboard, faCloud, faClipboardList,
-  faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook
+  faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook, faMicrochip, faMagnifyingGlass
   , faCircle, faPrint, faPersonCircleQuestion, faBuilding, faSquareCaretDown,faSquareCaretUp
 } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
@@ -36,6 +36,8 @@ export class LandingComponent implements OnInit {
   faBook=faBook;
   faListCheck=faListCheck;
   faPrint=faPrint;
+  faMicrochip=faMicrochip;
+  faMagnifyingGlass=faMagnifyingGlass;
   faPersonCircleQuestion=faPersonCircleQuestion;
   userLastName : string|undefined;
   userName: string|undefined;

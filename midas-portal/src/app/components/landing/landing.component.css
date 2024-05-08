@@ -91,21 +91,28 @@
   /* Add your hover styles here */
   background-color: #005ea2; /* Change background color on hover */
   color:white;
-  font-style:italic;
+  
 }
 
 .nav-item:hover .nav-link {
     color: white;
+
+}
+
+.simple:hover .nav-link {
+  font-style: italic;
+  font-weight: bold;
 }
 
 
 
 /* Define styles for the default state of the anchor tag inside the list item */
-.nav-item a:hover {
+.nav-item > ul > li > a:hover {
   /* Add your hover styles here */
   text-decoration: none; /* Remove underline on hover */
   color: white; /* Change text color on hover */
-  font-style:italic;
+  font-style: italic;
+  font-weight: bold;
 }
 
 
@@ -113,8 +120,9 @@
 
 .Menu-Title{
     color:#EFF6FB;
-    padding-left: 2rem;
-    size: 2.5rem;
+    padding-left: 1.5rem;
+    size: 3rem;
+    font-size:19px;
 }
 
 .links{
