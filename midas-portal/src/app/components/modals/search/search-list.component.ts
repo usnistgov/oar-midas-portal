@@ -76,6 +76,8 @@ export class SearchListModalComponent implements OnInit {
   allSelected: boolean = false;
   outputType:string;
   resourceType: any;
+  dapAPI: string;
+  dmpAPI: string;
 
   
 
@@ -820,6 +822,8 @@ export class SearchListModalComponent implements OnInit {
   async ngOnInit() {
 
       let config = this.cfgsvc.getConfig();
+      this.dapAPI = config['dapAPI'];
+      this.dmpAPI = config['dmpAPI'];
       // config values here
       
       this.authToken = this.config.data.authToken
@@ -972,20 +976,38 @@ export class SearchListModalComponent implements OnInit {
             "write"
         ]
     };
-
+    this.data = [];
     console.log('searchJSON: ' + JSON.stringify(searchJSON));
-    var url=""
+    /*
+    const apiMap = {
+        'dmp': this.dmpAPI,
+        'dap': this.dapAPI
+      } as const;
+      
+      if (this.resourceType === 'dmp' || this.resourceType === 'dap') {
+        const url = `${apiMap[this.resourceType as keyof typeof apiMap]}/:select`;
+        this.fetchAdvancedSearchResults(url, searchJSON, this.data, this.resourceType);
+      } else {
+        (['dap', 'dmp'] as ("dmp" | "dap")[]).forEach((type: keyof typeof apiMap) => {
+          const url = `${apiMap[type]}/:select`;
+          this.fetchAdvancedSearchResults(url, searchJSON, this.data, type);
+        });
+      }
+      */
+  }
 
+  fetchAdvancedSearchResults(url:string,searchJSON:any,data:any[],type:string) {
     this.http.post(url,JSON.stringify(searchJSON), { headers: { Authorization: "Bearer "+this.authToken }})
       .pipe(map((responseData: any) => {
+        console.log(responseData)
         return responseData
       })).subscribe(records => {
-        console.log("Loading "+records.length+" DAP records");
-        this.DMAP = [];
+        console.log("Loading "+records.length+" records");
         for (let i = 0; i < records.length; i++) {
-          this.DMAP.push(this.customSerialize(records[i],"dap"))
+          data.push(this.customSerialize(records[i],type))
         }
       })
+
   }
 
   onExportListClick(){
@@ -1143,8 +1165,28 @@ export class SearchListModalComponent implements OnInit {
   }
 
   search(searchTerm: any) {
+    console.log(searchTerm)
+    this.data = [];
+    /*
+    var searchJSON = {
+        "$and": searchTerm,
+        "permissions": [
+            "read",
+            "write"
+        ]
+    };
+    
+    const apiMap = {
+    'dmp': this.dmpAPI,
+    'dap': this.dapAPI
+    } as const;
 
-  this.data = []
+    (['dmp', 'dap'] as const).forEach((type) => {
+    const url = `${apiMap[type]}/:select`;
+    console.log(searchJSON)
+    this.fetchAdvancedSearchResults(url, searchJSON, this.data, type);
+    });
+  */
   for (let i = 0; i < this.dapData.length; i++) {
     this.data.push(this.customSerialize(this.dapData[i],"dap"))
   }

@@ -110,6 +110,7 @@ export class LandingComponent implements OnInit {
         if (!creds || !creds.userId)
           throw new Error("Missing identity information in credentials");
         console.log("Logged in as " + creds.userId);
+
         this.userId = creds.userId;
         this.userName = creds.userAttributes.userName;
         this.userLastName = creds.userAttributes.userLastName;
@@ -122,7 +123,14 @@ export class LandingComponent implements OnInit {
       error => {
         alert("Unable to determine your identity");
       }
-    )
+    )/*
+    this.userId="TestId";
+    this.userEmail= "test.user@nist.gov",
+    this.userName= "Test",
+    this.userLastName= "User",
+    this.userOU= "MML",
+    this.authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5ODcxOTAxOSwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.ntiPIo39kG78T7xbVrbJEfw4cz8jn--Bk-t7aRJdvPs"
+*/
   }
 
  
