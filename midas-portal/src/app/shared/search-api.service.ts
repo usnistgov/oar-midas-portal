@@ -1,18 +1,17 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
+import { ConfigurationService } from 'oarng';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchAPIService {
   //URL to get a list of mock contacts from MongoDB using python API
-  peopleAPI = "https://nsd-test.nist.gov/nsd/api/v1/People/list/"
+  peopleAPI = ""
   //#peopleAPI = "/foo/nsd/api/v1/People/list";
-  orgAPI = "https://nsd-test.nist.gov/nsd/api/v1/NISTOUDivisionGroup"
+  orgAPI = ""
   //#orgAPI = "/foo/nsd/api/v1/NISTOUDivisionGroup"
-  divisionAPI = ""
-  APIsecret = "Tc567FxCs90tOvy6cWZyPamkC7c8hjbQzO2IKwMt7eVmdSIaNuqp"
   nsdtoken = ""
 
   nsdTokenURL = "https://localhost:5000/nsdtoken"
@@ -32,7 +31,17 @@ export class SearchAPIService {
     ]
   }
 
-  constructor(private http: HttpClient)  {
+  ngOnInit() {
+    let config = this.configSvc.getConfig()
+    this.peopleAPI = config['peopleAPI'];
+    if (! this.peopleAPI.endsWith('/'))
+        this.peopleAPI += '/';
+    this.orgAPI = config['orgAPI'];
+    if (! this.orgAPI.endsWith('/'))
+        this.orgAPI += '/';
+  }
+
+  constructor(private http: HttpClient, private configSvc: ConfigurationService)  {
     this.getNSDToken();
    }
 
