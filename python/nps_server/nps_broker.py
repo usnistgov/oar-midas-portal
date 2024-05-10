@@ -140,10 +140,10 @@ class NSD(Resource):
 		return response
 
 
-api.add_resource(NSD, '/nsdtoken')
+api.add_resource(NSD, '/nps/nsdtoken')
 
 # adding the defined resources along with their corresponding urls
-api.add_resource(NPS, '/nps/<string:username>')
+api.add_resource(NPS, '/nps/people/<string:username>')
 
 
 # driver function
