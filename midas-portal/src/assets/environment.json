@@ -14,7 +14,7 @@
     "searchAPI": "https://localhost/midas/search",
     "peopleAPI": "https://nsd-test.nist.gov/nsd/api/v1/People/list/",
     "orgAPI": "https://nsd-test.nist.gov/nsd/api/v1/NISTOUDivisionGroup",
-    "nsdTokenURL": "https://localhost:9092/nsdtoken",
+    "nsdTokenURL": "http://localhost:9092/nsdtoken",
     "auth": {
         "serviceEndpoint": "https://localhost/sso/"
     }
