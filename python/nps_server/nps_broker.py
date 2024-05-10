@@ -84,8 +84,11 @@ class NPS(Resource):
 			testconfig = resp.json()
         	# print("testconfig 1:::", testconfig)
 			self.npsURL = testconfig['propertySources'][0]['source']['npsURL']
+			print('nps URL: ' + self.npsURL)
 			self.npsTokenSecret = testconfig['propertySources'][0]['source']['npsTokenSecret']
+			print('nps Token Secret: ' + self.npsTokenSecret)
 			self.npsTokenURL = testconfig['propertySources'][0]['source']['npsTokenURL']
+			print('nps Token URL: ' + self.npsTokenURL)
 
 		except:	
 			# nothing for now

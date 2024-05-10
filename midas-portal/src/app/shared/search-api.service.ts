@@ -42,6 +42,9 @@ export class SearchAPIService {
     this.nsdTokenURL = config['nsdTokenURL'];
     if (! this.nsdTokenURL.endsWith('/'))
         this.nsdTokenURL += '/';
+    console.log('people API: ' + this.peopleAPI);
+    console.log('org API: ' + this.orgAPI);
+    console.log('nsd token URL: ' + this.nsdTokenURL);
   }
 
   constructor(private http: HttpClient, private configSvc: ConfigurationService)  {
