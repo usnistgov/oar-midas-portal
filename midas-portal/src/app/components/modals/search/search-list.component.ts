@@ -18,10 +18,10 @@ interface Column {
 }
 
 interface People {
-    PEOPLE_ID: number;
-    LAST_NAME: string;
-    FIRST_NAME: string;
-    FULL_NAME: string;
+    PEOPLE_ID?: any;
+    LAST_NAME?: any;
+    FIRST_NAME?: any;
+    FULL_NAME?: any;
 }
 
 interface Org {
@@ -69,111 +69,6 @@ export class SearchListModalComponent implements OnInit {
   publishedAfter: any;
   resourceType: any;
 
-  orgs = [
-    {
-        "ORG_ID": 13642,
-        "ORG_CD": "68501",
-        "ORG_LVL_ID": 3,
-        "ORG_NFC_LVL_CD": 6,
-        "ORG_NAME": "Thermodynamic Metrology Group",
-        "EFFECTIVE_DT": "2011-10-01",
-        "ORG_ACRNM": "",
-        "ORG_SHORT_NAME": "Thermo Metrology Group",
-        "ORG_LOC_ID": 2,
-        "PARENT_ORG_ID": 13268,
-        "PARENT_ORG_CD": "685"
-    },
-    {
-        "ORG_ID": 13643,
-        "ORG_CD": "68502",
-        "ORG_LVL_ID": 3,
-        "ORG_NFC_LVL_CD": 6,
-        "ORG_NAME": "Fluid Metrology Group",
-        "EFFECTIVE_DT": "2011-10-01",
-        "ORG_ACRNM": "",
-        "ORG_SHORT_NAME": "Fluid Met Grp",
-        "ORG_LOC_ID": 2,
-        "PARENT_ORG_ID": 13268,
-        "PARENT_ORG_CD": "685"
-    },
-    {
-        "ORG_ID": 13443,
-        "ORG_CD": "68503",
-        "ORG_LVL_ID": 3,
-        "ORG_NFC_LVL_CD": 6,
-        "ORG_NAME": "Optical Radiation Group",
-        "EFFECTIVE_DT": "2011-10-01",
-        "ORG_ACRNM": "",
-        "ORG_SHORT_NAME": "Optical Rad Grp",
-        "ORG_LOC_ID": 2,
-        "PARENT_ORG_ID": 13268,
-        "PARENT_ORG_CD": "685"
-    }];
-
-  tempOwners = [
-    {
-        "PEOPLE_ID": 1,
-        "LAST_NAME": "Davis",
-        "FIRST_NAME": "Christopher",
-        "FULL_NAME": "Davis, Christopher"
-    },
-    {
-        "PEOPLE_ID": 2,
-        "LAST_NAME": "Greene",
-        "FIRST_NAME": "Gretchen",
-        "FULL_NAME": "Greene, Gretchen"
-    },
-    {
-        "PEOPLE_ID": 3,
-        "LAST_NAME": "Plante",
-        "FIRST_NAME": "Raymond",
-        "FULL_NAME": "Plante, Raymond"
-    },
-    {
-        "PEOPLE_ID": 4,
-        "LAST_NAME": "Smith",
-        "FIRST_NAME": "Roberta",
-        "FULL_NAME": "Smith, Robert"
-    },
-    {
-        "PEOPLE_ID": 5,
-        "LAST_NAME": "Blonder",
-        "FIRST_NAME": "Niksa",
-        "FULL_NAME": "Blonder, Niksa"
-    },
-    {
-        "PEOPLE_ID": 6,
-        "LAST_NAME": "Walker",
-        "FIRST_NAME": "Steven",
-        "FULL_NAME": "Walker, Steven"
-    },
-    {
-        "PEOPLE_ID": 7,
-        "LAST_NAME": "Gao",
-        "FIRST_NAME": "Jing",
-        "FULL_NAME": "Gao, Jing"
-    },
-    {
-        "PEOPLE_ID": 8,
-        "LAST_NAME": "Lin",
-        "FIRST_NAME": "Chuan",
-        "FULL_NAME": "Lin, Chuan"
-    },
-    {
-        "PEOPLE_ID": 9,
-        "LAST_NAME": "Martins",
-        "FIRST_NAME": "Melvin",
-        "FULL_NAME": "Martins, Melvin"
-    },
-    {
-        "PEOPLE_ID": 10,
-        "LAST_NAME": "Loembe",
-        "FIRST_NAME": "Alex",
-        "FULL_NAME": "Loembe, Alex"
-    }
-
-  ]
-  
   suggestions: People[] = []
   orgSuggestions: Org[] = []
 
@@ -369,15 +264,44 @@ export class SearchListModalComponent implements OnInit {
 
   getPeople($event: any) {
     //this.suggestions = this.tempOwners.filter(val => val.FULL_NAME.toUpperCase().includes($event.query.toUpperCase()))
-    this.apiService.get_NIST_Personnel($event.query.toUpperCase()).subscribe((value) => {
-        console.log(value);
+    var tempSuggestions: People[] = [];
+    this.apiService.get_NIST_Personnel($event.query.toUpperCase()).subscribe((value: any[]) => {
+        for(var i=0; i<value.length; i++) {
+            tempSuggestions.push({
+                FULL_NAME: value[i].lastName + ', ' + value[i].firstName,
+                FIRST_NAME: value[i].firstName,
+                LAST_NAME: value[i].lastName,
+                PEOPLE_ID: value[i].peopleId
+            });
+        }
+        this.suggestions = tempSuggestions;
     }
     );
     
   }
 
   getOrgs($event: any) {
-    this.orgSuggestions = this.orgs.filter(val => val.ORG_NAME.toUpperCase().includes($event.query.toUpperCase()))
+    //this.orgSuggestions = this.orgs.filter(val => val.ORG_NAME.toUpperCase().includes($event.query.toUpperCase()))
+    var tempDivisions: Org[] = [];
+    this.apiService.get_NIST_Divisions().subscribe((value: any[]) => {
+        for(var i=0; i<value.length; i++) {
+            tempDivisions.push({
+                ORG_ID: value[i].orG_ID,
+                ORG_CD: value[i].orG_CD,
+                ORG_LVL_ID: value[i].orG_LVL_ID,
+                ORG_NFC_LVL_CD: value[i].orG_LVL_CD,
+                ORG_NAME: value[i].orG_Name,
+                EFFECTIVE_DT: value[i].effectivE_DT,
+                ORG_ACRNM: value[i].orG_ACRNM,
+                ORG_SHORT_NAME: value[i].orG_SHORT_NAME,
+                ORG_LOC_ID: value[i].orG_LOC_ID,
+                PARENT_ORG_ID: value[i].parenT_ORG_ID,
+                PARENT_ORG_CD: value[i].parenT_ORG_CD
+            });
+        }
+        this.orgSuggestions = tempDivisions;
+        console.log(this.orgSuggestions);
+    });
   }
 
   search(searchTerm: any) {
