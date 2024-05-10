@@ -32,6 +32,10 @@ export class SearchAPIService {
   }
 
   ngOnInit() {
+    
+  }
+
+  constructor(private http: HttpClient, private configSvc: ConfigurationService)  {
     let config = this.configSvc.getConfig()
     this.peopleAPI = config['peopleAPI'];
     if (! this.peopleAPI.endsWith('/'))
@@ -45,9 +49,7 @@ export class SearchAPIService {
     console.log('people API: ' + this.peopleAPI);
     console.log('org API: ' + this.orgAPI);
     console.log('nsd token URL: ' + this.nsdTokenURL);
-  }
-
-  constructor(private http: HttpClient, private configSvc: ConfigurationService)  {
+    
     this.getNSDToken();
    }
 
