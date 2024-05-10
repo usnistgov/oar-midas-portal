@@ -29,8 +29,6 @@ api = Api(app)
 class NPS(Resource):
 
 	npsURL = ''
-	nsdURL = ''
-	npsSecret = ''
 	npsTokenURL = ''
 	npsTokenSecret = ''
 
@@ -85,10 +83,9 @@ class NPS(Resource):
         	# print("format:"+ct)
 			testconfig = resp.json()
         	# print("testconfig 1:::", testconfig)
-			npsURL = testconfig['propertySources'][0]['source']['npsURL']
-			nsdURL = testconfig['propertySources'][0]['source']['nsdURL']
-			npsSecret = testconfig['propertySources'][0]['source']['npsSecret']
-			npsAuthTokenURL = testconfig['propertySources'][0]['source']['npsAuthTokenURL']
+			self.npsURL = testconfig['propertySources'][0]['source']['npsURL']
+			self.npsTokenSecret = testconfig['propertySources'][0]['source']['npsTokenSecret']
+			self.npsTokenURL = testconfig['propertySources'][0]['source']['npsTokenURL']
 
 		except:	
 			# nothing for now
