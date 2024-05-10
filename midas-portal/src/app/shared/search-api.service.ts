@@ -14,7 +14,7 @@ export class SearchAPIService {
   //#orgAPI = "/foo/nsd/api/v1/NISTOUDivisionGroup"
   nsdtoken = ""
 
-  nsdTokenURL = "https://localhost:5000/nsdtoken"
+  nsdTokenURL = ""
 
   claims = {
     'iss': 'NIST_ASD',
@@ -39,6 +39,9 @@ export class SearchAPIService {
     this.orgAPI = config['orgAPI'];
     if (! this.orgAPI.endsWith('/'))
         this.orgAPI += '/';
+    this.nsdTokenURL = config['nsdTokenURL'];
+    if (! this.nsdTokenURL.endsWith('/'))
+        this.nsdTokenURL += '/';
   }
 
   constructor(private http: HttpClient, private configSvc: ConfigurationService)  {
