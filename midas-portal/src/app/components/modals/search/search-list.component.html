@@ -33,7 +33,7 @@
             Associated Paper Publication? &nbsp; &nbsp; <input type="checkbox"><p-checkbox name="paper" value="true"
                 [(ngModel)]="paper" ngDefaultControl></p-checkbox>
             <br /><br />
-            <button pButton (click)="onSearchClick()">Search</button>
+            <button pButton (click)="onSearchClick()" [disabled]="!resourceType">Search</button>
         </p-panel>
         <p-panel header="Exports" [toggleable]="true" [collapsed]="true">
             <br />
@@ -45,7 +45,7 @@
             <p-radioButton label="PDF (summary view)" name="outputType" value="pdf" [(ngModel)]="outputType"
                 inputId="outputPDF" (change)="onOutputTypeChange($event)"></p-radioButton> &nbsp;
             <br /><br />
-            <button pButton (click)="onExportListClick()">Export</button>
+            <button pButton (click)="onExportListClick()" [disabled]="!outputType">Export</button>
         </p-panel>
         <div class="">
             <p-table #recordsTable name="recordtable" [value]="data" [paginator]="true" height="100px" [rows]="1000"
