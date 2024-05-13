@@ -978,7 +978,7 @@ export class SearchListModalComponent implements OnInit {
     };
     this.data = [];
     console.log('searchJSON: ' + JSON.stringify(searchJSON));
-    /*
+    
     const apiMap = {
         'dmp': this.dmpAPI,
         'dap': this.dapAPI
@@ -993,7 +993,7 @@ export class SearchListModalComponent implements OnInit {
           this.fetchAdvancedSearchResults(url, searchJSON, this.data, type);
         });
       }
-      */
+      
   }
 
   fetchAdvancedSearchResults(url:string,searchJSON:any,data:any[],type:string) {
@@ -1106,6 +1106,7 @@ export class SearchListModalComponent implements OnInit {
     var tmpData:any;
     const selectedRecords = this.data.filter((item: Selected)  => item.selected);
     console.log(selectedRecords)
+    console.log("===============")
     console.log(this.resourceType)
     if(this.resourceType == 'dap'){
         tmpData = this.dapData.filter((dapRecord: any) =>
@@ -1117,7 +1118,7 @@ export class SearchListModalComponent implements OnInit {
           );
     }
 
-    if (tmpData.length !== 0) {
+    if (tmpData && tmpData.length !== 0) {
         const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
         const filename = `records_${timestamp}.json`;
         console.log(tmpData);
@@ -1132,10 +1133,20 @@ export class SearchListModalComponent implements OnInit {
         a.click();
         URL.revokeObjectURL(url);
       } else {
-        window.alert('No records selected');
+        console.log(tmpData)
+        if(selectedRecords.length == 0 ){
+            alert('No records selected. Please select records and try again.')
+        }else if(this.outputType === 'json' && !this.resourceType) {
+          alert('You can only export JSON for a single resource type. Please select a resource type and try again.');
+          return;
+        }
     
     }
-}}
+    }
+    else{
+        alert('Please select an output type in the Advance Search section and try again.');
+    }
+}
 
 
   onExportRecordsClick(){
