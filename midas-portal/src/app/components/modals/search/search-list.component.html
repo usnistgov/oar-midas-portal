@@ -2,12 +2,12 @@
     <p-tabPanel header="Search Results for '{{searchTerm}}'">
         <p-panel header="Advanced Search" [toggleable]="true" [collapsed]="true">
             Resource Type:
-            <p-radioButton label="DMP" name="resourceType" value="DMP" [(ngModel)]="resourceType"
-                inputId="resourceDMP"></p-radioButton> &nbsp;
-            <p-radioButton label="DAP" name="resourceType" value="DAP" [(ngModel)]="resourceType"
-                inputId="resourceDAP"></p-radioButton> &nbsp;                
+            <p-radioButton label="DMP" name="resourceType" value="dmp" [(ngModel)]="resourceType"
+                inputId="dmp" (change)="onresourceTypeChange($event)"></p-radioButton> &nbsp;
+            <p-radioButton label="DAP" name="resourceType" value="dap" [(ngModel)]="resourceType"
+                inputId="dap" (change)="onresourceTypeChange($event)"></p-radioButton> &nbsp;                
             <p-radioButton label="Both" name="resourceType" value="both" [(ngModel)]="resourceType"
-                inputId="resourceBoth"></p-radioButton> &nbsp; <br/>
+                inputId="both" (change)="onresourceTypeChange($event)"></p-radioButton> &nbsp; <br/>
             Keywords: <input type="text" pInputText [(ngModel)]="keywords"> &nbsp;&nbsp;&nbsp;
             Theme: <input type="text" pInputText [(ngModel)]="theme"> <br />
             NIST Organization: <p-autoComplete [suggestions]="orgSuggestions" [(ngModel)]="selectedOrg" field="ORG_NAME"
@@ -32,32 +32,38 @@
             <br />
             Associated Paper Publication? &nbsp; &nbsp; <input type="checkbox"><p-checkbox name="paper" value="true"
                 [(ngModel)]="paper" ngDefaultControl></p-checkbox>
+            <br /><br />
+            <button pButton (click)="onSearchClick()" [disabled]="!resourceType">Search</button>
+        </p-panel>
+        <p-panel header="Exports" [toggleable]="true" [collapsed]="true">
             <br />
             Output: &nbsp; &nbsp;
-            <p-radioButton label="Grid" name="outputGrid" value="grid" [(ngModel)]="output"
-                inputId="outputGrid"></p-radioButton> &nbsp;
-            <p-radioButton label="JSON" name="outputJSON" value="JSON" [(ngModel)]="output"
-                inputId="outputJSON"></p-radioButton> &nbsp;
-            <p-radioButton label="CSV" name="outputCSV" value="CSV" [(ngModel)]="output"
-                inputId="outputCSV"></p-radioButton> &nbsp;
-            <p-radioButton label="PDF" name="outputPDF" value="PDF" [(ngModel)]="output"
-                inputId="outputPDF"></p-radioButton> &nbsp;
+            <p-radioButton label="JSON" name="outputType" value="json" [(ngModel)]="outputType"
+                inputId="outputJSON" (change)="onOutputTypeChange($event)" [disabled]="resourceType === 'both'" ></p-radioButton> &nbsp;
+            <p-radioButton label="CSV" name="outputType" value="csv" [(ngModel)]="outputType"
+                inputId="outputCSV" (change)="onOutputTypeChange($event)" [disabled]="resourceType === 'both'"></p-radioButton> &nbsp;
+            <p-radioButton label="PDF (summary view)" name="outputType" value="pdf" [(ngModel)]="outputType"
+                inputId="outputPDF" (change)="onOutputTypeChange($event)"></p-radioButton> &nbsp;
             <br /><br />
-            <button pButton (click)="onSearchClick()">Search</button>
-            <br />
+            <button pButton (click)="onExportListClick()" [disabled]="!outputType">Export</button>
         </p-panel>
-
         <div class="">
             <p-table #recordsTable name="recordtable" [value]="data" [paginator]="true" height="100px" [rows]="1000"
                 [scrollable]="true" [showCurrentPageReport]="true" [rowHover]="true" [columns]="selectedColumns"
                 [scrollable]="true" scrollHeight="600px"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [globalFilterFields]="['name','owner','id','type','title','doi','file_count']">
+                [globalFilterFields]="['name','owner','id','type','title','doi','file_count']"
+                [sortField]="'modifiedDate'" [sortOrder]="-1"
+                >
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th *ngFor="let col of columns" pResizableColumn pSortableColumn={{col.field}}>
-                            {{col.header}}<p-sortIcon field={{col.field}}></p-sortIcon>
-                        </th>
+                        <th><button pButton  (click)="toggleSelectAll()">Select All</button></th>
+                        <th pResizable pSortableColumn="">ID<p-sortIcon field="nist"></p-sortIcon></th>
+                        <th pResizableColumn pSortableColumn="name">Record<p-sortIcon field="name"></p-sortIcon></th>
+                        <th pResizableColumn pSortableColumn="owner">Name<p-sortIcon field="owner"></p-sortIcon></th>
+                        <th pResizableColumn pSortableColumn="nist">Owner<p-sortIcon field="nist"></p-sortIcon>
+                        <th pResizableColumn pSortableColumn="nist">Operating Unit Field<p-sortIcon field="orgid"></p-sortIcon>  
+                        <th pResizableColumn pSortableColumn="nist">Title<p-sortIcon field="title"></p-sortIcon>     
                         <th pResizableColumn>
                             <p-columnFilter field="state" matchMode="equals" [showMenu]="false"
                                 [showClearButton]="false">
@@ -71,28 +77,28 @@
                                 </ng-template>
                             </p-columnFilter>
                         </th>
-                        <th pResizableColumn>Last Modified
-                            <p-columnFilter title="Filter by date" type="date" field="modifiedDate"
+                        <th pResizableColumn pSortableColumn>Last Modified
+                            <p-columnFilter title="Filter by date" type="date" field="modifiedDate" pSort
                                 display="menu"></p-columnFilter>
                         </th>
-                        <!--<th pResizableColumn pSortableColumn="id">ID<p-sortIcon field="id"></p-sortIcon></th>
-                            <th pResizableColumn pSortableColumn="title">Title<p-sortIcon field="title"></p-sortIcon></th>
-                            <th pResizableColumn pSortableColumn="type">Type<p-sortIcon field="type"></p-sortIcon></th>-->
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-item let-columns="columns">
-                    <tr>
-                        <td *ngFor="let col of columns">
-                            <div *ngIf="col.field=='name'; else rest ">
-                                <a href={{linkto(item.id)}} target="_blank">{{item[col.field]}}</a>
-                            </div>
-                            <ng-template #rest>
-                                {{item[col.field]}}
-                            </ng-template>
-                        </td>
+                    <tr [ngClass]="{
+                        'record-dap': item.rectype === 'dap',
+                        'record-dmp': item.rectype === 'dmp'
+                      }">
+                        <td><input type="checkbox" [(ngModel)]="item.selected" name="recordCheckbox" [value]="item.id"></td>
+                        <td><a href={{linkto(item.id)}} target="_blank">{{item.id}}</a></td>
+                        <td>{{item.rectype}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.owner}}</td>
+                        <td>{{item.orgid}}</td>
+                        <td>{{item.title}}</td>
                         <td class="td-class"><p-tag [value]="item.state" [severity]="getStatus(item.state)"></p-tag>
                         </td>
                         <td class="td-class">{{this.datepipe.transform(item.modifiedDate,'MM/dd/yyyy')}}</td>
+                            
                         <!--<td>{{item.data['@id']}}</td>
                             <td>{{item.data['title']}}</td>
                             <td>{{item.meta['resourceType']}}</td>-->
@@ -100,8 +106,5 @@
                 </ng-template>
             </p-table>
         </div>
-    </p-tabPanel>
-    <p-tabPanel header="Reports">
-        CANNED/EXPERT REPORTS TO GO HERE
     </p-tabPanel>
 </p-tabView>

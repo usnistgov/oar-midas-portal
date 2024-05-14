@@ -16,6 +16,6 @@
     "orgAPI": "https://nsd-test.nist.gov/nsd/api/v1/NISTOUDivisionGroup",
     "nsdTokenURL": "http://localhost/nps/nsdtoken",
     "auth": {
-        "serviceEndpoint": "https://localhost/sso/"
+        "serviceEndpoint": "http://localhost/sso/"
     }
 }

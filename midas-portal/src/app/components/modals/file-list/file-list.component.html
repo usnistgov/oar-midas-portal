@@ -1,4 +1,4 @@
-<p-panel style="color:#005ea2" header="My Files ({{count}})">
+<p-panel [style]="{color:'#005ea2'}"  header="My Files ({{count}})">
     <p-table #filetable [value]="data" [paginator]="true"
     height="100px" [rows]="1000" [scrollable]="true"
         [showCurrentPageReport]="true"

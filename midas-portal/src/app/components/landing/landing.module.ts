@@ -63,7 +63,8 @@ import { CalendarModule } from 'primeng/calendar';
          MultiSelectModule,
          AutoCompleteModule,
          TabViewModule,
-         CalendarModule
+         CalendarModule,
+         
          
     ],
     providers:[ HttpClient,DatePipe]
