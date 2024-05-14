@@ -1,0 +1,11 @@
+{
+  "/foo/*": {
+    "target": "https://nsd-test.nist.gov/",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite":  {
+      "^/foo": ""
+    }
+  }
+}

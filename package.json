@@ -15,7 +15,17 @@
         "@fortawesome/fontawesome-svg-core": "^6.2.1",
         "@fortawesome/free-solid-svg-icons": "^6.2.1",
         "@ionic/angular": "^6.3.8",
+        "crypto-browserify": "^3.12.0",
+        "crypto-js": "^4.2.0",
+        "jsonwebtoken": "^9.0.2",
         "primefaces": "^12.0.0",
-        "primeng": "^13.4.1"
+        "primeng": "^13.4.1",
+        "process": "^0.11.10",
+        "stream": "^0.0.2",
+        "stream-browserify": "^3.0.0",
+        "util": "^0.12.5"
+    },
+    "devDependencies": {
+        "@types/jsonwebtoken": "^9.0.6"
     }
 }

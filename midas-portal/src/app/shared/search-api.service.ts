@@ -8,10 +8,10 @@ import { ConfigurationService } from 'oarng';
 })
 export class SearchAPIService {
   //URL to get a list of mock contacts from MongoDB using python API
-  peopleAPI = ""
-  //#peopleAPI = "/foo/nsd/api/v1/People/list";
-  orgAPI = ""
-  //#orgAPI = "/foo/nsd/api/v1/NISTOUDivisionGroup"
+  //peopleAPI = ""
+  peopleAPI = "/foo/nsd/api/v1/People/list";
+  //orgAPI = ""
+  orgAPI = "/foo/nsd/api/v1/NISTOUDivisionGroup"
   nsdtoken = ""
 
   nsdTokenURL = ""
