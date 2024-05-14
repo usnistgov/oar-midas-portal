@@ -1,12 +1,13 @@
 import { Component, OnInit, } from '@angular/core';
 import {
   faHouse, faUser, faDashboard, faCloud, faClipboardList,
-  faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook
-  , faCircle, faPrint, faPersonCircleQuestion, faBuilding
+  faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook, faMicrochip, faMagnifyingGlass
+  , faCircle, faPrint, faPersonCircleQuestion, faBuilding, faSquareCaretDown,faSquareCaretUp
 } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
-import { DialogService, } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'oarng';
+import { SearchListModalComponent } from '../modals/search/search-list.component';
 
 
 @Component({
@@ -20,27 +21,34 @@ import { AuthenticationService } from 'oarng';
 export class LandingComponent implements OnInit {
   faAddressBook = faAddressBook;
   faLink = faLink;
+  faSquareCaretUp =faSquareCaretUp;
+  faSquareCaretDown = faSquareCaretDown;
   faCircle = faCircle;
   faBuilding = faBuilding;
   faPlus = faPlus;
   faHouse = faHouse;
   faUser = faUser;
-  faDashboard = faDashboard;
-  faCloud = faCloud;
-  faClipboardList = faClipboardList;
-  faSearch = faSearch;
-  faFileCirclePlus = faFileCirclePlus;
-  faBook = faBook;
-  faListCheck = faListCheck;
-  faPrint = faPrint;
-  faPersonCircleQuestion = faPersonCircleQuestion;
-  userLastName: string | undefined;
-  userName: string | undefined;
-  userEmail: string | undefined;
-  userId: string | undefined;
-  userOU: string | undefined;
-  userDiv: string | undefined;
-  authToken: string | null = null;
+  faDashboard =faDashboard;
+  faCloud =faCloud;
+  faClipboardList= faClipboardList;
+  faSearch=faSearch;
+  faFileCirclePlus=faFileCirclePlus;
+  faBook=faBook;
+  faListCheck=faListCheck;
+  faPrint=faPrint;
+  faMicrochip=faMicrochip;
+  faMagnifyingGlass=faMagnifyingGlass;
+  faPersonCircleQuestion=faPersonCircleQuestion;
+  userLastName : string|undefined;
+  userName: string|undefined;
+  userEmail: string|undefined;
+  userId: string|undefined;
+  userOU: string|undefined;
+  userDiv: string|undefined;
+  authToken: string|null = null;
+  ref: DynamicDialogRef;
+  public searchResults: any[] = [];
+  submenuCollapsed: boolean[] = [true, true];
 
 
   public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,
@@ -102,6 +110,7 @@ export class LandingComponent implements OnInit {
         if (!creds || !creds.userId)
           throw new Error("Missing identity information in credentials");
         console.log("Logged in as " + creds.userId);
+
         this.userId = creds.userId;
         this.userName = creds.userAttributes.userName;
         this.userLastName = creds.userAttributes.userLastName;
@@ -114,7 +123,28 @@ export class LandingComponent implements OnInit {
       error => {
         alert("Unable to determine your identity");
       }
-    )
+    )/*
+    this.userId="TestId";
+    this.userEmail= "test.user@nist.gov",
+    this.userName= "Test",
+    this.userLastName= "User",
+    this.userOU= "MML",
+    this.authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5ODcxOTAxOSwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.ntiPIo39kG78T7xbVrbJEfw4cz8jn--Bk-t7aRJdvPs"
+*/
+  }
+
+ 
+  toggleSubmenu(index: number): void {
+    this.submenuCollapsed[index] = !this.submenuCollapsed[index]; // Toggle the state of the selected submenu
+  }
+
+  onSearchKeyUp(value: string) {
+
+    this.ref = this.dialogService.open(SearchListModalComponent, {
+      data: {value: value,authToken:this.authToken},
+      width: '80%',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+    });
   }
 }
-

@@ -78,6 +78,7 @@ export class DmpListComponent implements OnInit {
   private fetchRecords(url: string) {
     this.http.get(url, { headers: { Authorization: "Bearer "+this.authToken }})
       .pipe(map((responseData: any) => {
+        console.log("TEST"+responseData)
         return responseData
       })).subscribe(records => {
         console.log("Loading "+records.length+" DMP records");
