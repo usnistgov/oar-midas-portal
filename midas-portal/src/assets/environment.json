@@ -1,7 +1,7 @@
 {
     "authAPI": "https://mdsdev.nist.gov/sso/auth/_tokeninfo",
     "authRedirect": "https://mdsdev.nist.gov/sso/saml/login?redirectTo=https://mdsdev.nist.gov/portal",
-    "NPSAPI": "http://localhost/nps/people/cnd7",
+    "NPSAPI": "https://localhost/nps/people/cnd7",
     "dmpAPI": "https://localhost/midas/dmp/mdm1",
     "dapAPI": "https://localhost/midas/dap/mds3",
     "groupAPI": "https://localhost/midas/groups",
@@ -14,7 +14,7 @@
     "searchAPI": "https://localhost/midas/search",
     "peopleAPI": "https://nsd-test.nist.gov/nsd/api/v1/People/list/",
     "orgAPI": "https://nsd-test.nist.gov/nsd/api/v1/NISTOUDivisionGroup",
-    "nsdTokenURL": "http://localhost/nps/nsdtoken",
+    "nsdTokenURL": "https://localhost/nps/nsdtoken",
     "auth": {
         "serviceEndpoint": "http://localhost/sso/"
     }
