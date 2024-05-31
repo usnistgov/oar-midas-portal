@@ -1,5 +1,8 @@
 <p-tabView header="Header 1">
     <p-tabPanel header="Search Results for '{{searchTerm}}'">
+        <div class="container bg-light p-2">
+            <input #box type="text" class="form-control" pInputText value="{{searchTerm }}" (keyup.enter)="search(box.value)">
+          </div>
         <p-panel header="Advanced Search" [toggleable]="true" [collapsed]="true">
             Resource Type:
             <p-radioButton label="DMP" name="resourceType" value="dmp" [(ngModel)]="resourceType"
@@ -48,6 +51,7 @@
             <button pButton (click)="onExportListClick()" [disabled]="!outputType">Export</button>
         </p-panel>
         <div class="">
+            <div *ngIf="data$ | async as data">
             <p-table #recordsTable name="recordtable" [value]="data" [paginator]="true" height="100px" [rows]="1000"
                 [scrollable]="true" [showCurrentPageReport]="true" [rowHover]="true" [columns]="selectedColumns"
                 [scrollable]="true" scrollHeight="600px"
@@ -105,6 +109,7 @@
                     </tr>
                 </ng-template>
             </p-table>
+        </div>
         </div>
     </p-tabPanel>
 </p-tabView>
