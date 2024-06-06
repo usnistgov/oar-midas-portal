@@ -18,20 +18,14 @@
                 (completeMethod)="getOrgs($event)"></p-autoComplete> &nbsp; &nbsp; &nbsp;
             Record Owner: <p-autoComplete [(ngModel)]="recordOwner" [suggestions]="suggestions" field="FULL_NAME"
                 (completeMethod)="getPeople($event)"></p-autoComplete><br />
-            Published Before: <p-calendar [(ngModel)]="publishedBefore" [showIcon]="true"></p-calendar> &nbsp; &nbsp;
-            Published After: <p-calendar [(ngModel)]="publishedAfter" [showIcon]="true"></p-calendar> <br />
+            Published Before: <p-calendar [(ngModel)]="publishedBefore" [showIcon]="true" [appendTo]="'body'"></p-calendar> &nbsp; &nbsp;
+            Published After: <p-calendar [(ngModel)]="publishedAfter" [showIcon]="true" [appendTo]="'body'"></p-calendar> <br />
             Process Status: &nbsp; &nbsp; &nbsp;
-            <input type="checkbox">&nbsp; Edit &nbsp; &nbsp;
-            <input type="checkbox">&nbsp; Processing &nbsp; &nbsp;
-            <input type="checkbox">&nbsp; Submitted &nbsp; &nbsp;
-            <input type="checkbox">&nbsp; Published &nbsp; &nbsp;
-            <p-checkbox label="Edit" name="statusEdit" value="edit" [(ngModel)]="status" ngDefaultControl></p-checkbox>
-            <p-checkbox label="Processing" name="statusProcessing" value="processing" [(ngModel)]="status"
-                ngDefaultControl></p-checkbox>
-            <p-checkbox label="Submitted" name="statusSubmitted" value="submitted" [(ngModel)]="status"
-                ngDefaultControl></p-checkbox>
-            <p-checkbox label="Published" name="statusPublished" value="published" [(ngModel)]="status"
-                ngDefaultControl></p-checkbox>
+            <p-radioButton name="status" name="status" value="edit" label="edit" value="edit" [(ngModel)]="status" inputId="edit"></p-radioButton>&nbsp;&nbsp;
+            <p-radioButton name="status" name="status" value="processing" label="processing" value="processing" [(ngModel)]="status" inputId="processing"></p-radioButton>&nbsp;&nbsp;
+            <p-radioButton name="status" name="status" value="submitted" label="submitted" value="submitted" [(ngModel)]="status" inputId="submitted"></p-radioButton>&nbsp;&nbsp;
+            <p-radioButton name="status" name="status" value="published" label="published" value="published" [(ngModel)]="status" inputId="published"></p-radioButton>&nbsp;&nbsp;
+            <br>
             <br />
             Associated Paper Publication? &nbsp; &nbsp; <input type="checkbox"><p-checkbox name="paper" value="true"
                 [(ngModel)]="paper" ngDefaultControl></p-checkbox>
@@ -93,7 +87,7 @@
                         'record-dmp': item.rectype === 'dmp'
                       }">
                         <td><input type="checkbox" [(ngModel)]="item.selected" name="recordCheckbox" [value]="item.id"></td>
-                        <td><a href={{linkto(item.id)}} target="_blank">{{item.id}}</a></td>
+                        <td><a href={{linkto(item.id,item.rectype)}} target="_blank">{{item.id}}</a></td>
                         <td>{{item.rectype}}</td>
                         <td>{{item.name}}</td>
                         <td>{{item.owner}}</td>
@@ -113,3 +107,9 @@
         </div>
     </p-tabPanel>
 </p-tabView>
+
+<style>
+.ui-calendar .ui-datepicker {
+height : 200px !important;
+}
+    </style>

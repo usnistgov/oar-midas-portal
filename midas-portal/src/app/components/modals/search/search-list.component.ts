@@ -5,7 +5,7 @@ import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawes
 import {Table} from 'primeng/table';
 import { map } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CheckboxModule } from 'primeng/checkbox'
+import { Checkbox, CheckboxModule } from 'primeng/checkbox'
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -80,14 +80,20 @@ export class SearchListModalComponent implements OnInit {
   resourceType: any;
   dapAPI: string;
   dmpAPI: string;
+  dmpEDIT: string;
+  dapEDIT: string;
   dapData=[]
   dmpData=[]
+  edit = false;
+  processing = false;
+  submitted = false;
+  published = false;
 
   
 
   keywords: any;
   theme: any;
-  status: string[] = [];
+  status: string;
   selectedOrg: any;
   recordOwner: any;
   output: any = 'grid';
@@ -255,6 +261,8 @@ export class SearchListModalComponent implements OnInit {
       let config = this.cfgsvc.getConfig();
       this.dapAPI = config['dapAPI'];
       this.dmpAPI = config['dmpAPI'];
+      this.dmpEDIT = config['dmpEDIT'];
+      this.dapEDIT = config['dapEDIT'];
       // config values here
       
       this.authToken = this.config.data.authToken
@@ -289,8 +297,14 @@ export class SearchListModalComponent implements OnInit {
     
   }
 
-  linkto(item:string){
-    // URL specification here
+  linkto(item:string,rectype:string){
+    if(rectype == 'dap'){
+        return this.dapEDIT+item
+    }else if(rectype == 'dmp'){
+        return this.dmpEDIT+item
+    }else{
+        return ''
+    }
   }
 
   onOutputTypeChange(event: any) {
@@ -367,46 +381,79 @@ export class SearchListModalComponent implements OnInit {
     return tmp
   }
 
+  search(searchTerm: any) {
+    this.searchTerm = searchTerm;
+    console.log('searchJSON: ' + JSON.stringify(searchTerm));
+    const data = {
+        filter: {
+          $and: [
+            {
+                "$text": {
+                    "$search": searchTerm
+                }
+            }
+          ]
+        },
+        permissions: ['read', 'write']
+      };
+  
+    const urlDAP = `${this.dapAPI}/:selected`;
+    const dap$ = this.fetchAdvancedSearchResults(urlDAP,data,'dap');
+    
+    const urlDMP = `${this.dmpAPI}/:selected`;
+    const dmp$ = this.fetchAdvancedSearchResults(urlDMP,data,'dmp');
+
+    this.data$ = forkJoin([dap$, dmp$]).pipe(
+        map(([dapData, dmpData]) => [...dapData, ...dmpData])
+      );
+    
+    }
+
   onSearchClick() {
     //need to build DBIO search JSON here
     let andArray = [
     ];
 
     if(this.keywords !=  undefined) {
-        var keywordsObj = {'name': this.keywords};
+        var keywordsObj = {'data.keyword': this.keywords};
         andArray.push(keywordsObj);
     }
     if(this.theme !=  undefined) {
         var themeObj = {'data.theme': this.keywords};
         andArray.push(themeObj);
-    }/*
+    }
     if(this.status !=  undefined) { 
         var statusObj = {'status.state': this.status};
         andArray.push(statusObj);
-    }*/
+    }
+    if(this.publishedAfter !=  undefined) {
+        var publishedAfterObj = {'status.modified': {'$gte': this.publishedAfter.getTime() / 1000}};
+        andArray.push(publishedAfterObj);
+    }
+    if(this.publishedBefore !=  undefined) {
+        var publishedBeforeObj = {'status.modified': {'$lte': this.publishedBefore.getTime() / 1000}};
+        andArray.push(publishedBeforeObj);
+    }
+    /*
     if(this.selectedOrg !=  undefined) {
         var orgObj = {'org': this.selectedOrg.ORG_ID};
         andArray.push(orgObj);
-    }
+    }*/
     if(this.recordOwner !=  undefined) {
         //may need to switch from people ID to username at some point
         var ownerObj = {'owner': this.recordOwner};
         andArray.push(ownerObj);
     }
+    /*
     if(this.paper != undefined) {
         var paperObj = {'data.paper': this.paper};
         andArray.push(paperObj);
     }
-    var searchJSON = {
-        "$and": andArray
-    };
-    this.data = [];
-    console.log('searchJSON: ' + JSON.stringify(searchJSON));
+    */
+
     const data = {
         filter: {
-          $and: [
-            {'name': { $regex: "test", $options: "i" }}
-          ]
+          $and: andArray
         },
         permissions: ['read', 'write']
       };
@@ -442,7 +489,7 @@ export class SearchListModalComponent implements OnInit {
             console.log("Loading "+responseData.length+" records");
             return responseData.map((record:any) => this.customSerialize(record, type));
           } else {
-            console.log("No records to load");
+            console.log("No records to load for "+type);
             return [];
           }
         })
@@ -614,28 +661,5 @@ export class SearchListModalComponent implements OnInit {
     this.orgSuggestions = this.orgs.filter(val => val.ORG_NAME.toUpperCase().includes($event.query.toUpperCase()))
   }
 
-  search(searchTerm: any) {
-    this.searchTerm = searchTerm;
-    console.log('searchJSON: ' + JSON.stringify(searchTerm));
-    const data = {
-        filter: {
-          $and: [
-            {'name': { $regex: searchTerm, $options: "i" }}
-          ]
-        },
-        permissions: ['read', 'write']
-      };
-  
-    const urlDAP = `${this.dapAPI}/:selected`;
-    const dap$ = this.fetchAdvancedSearchResults(urlDAP,data,'dap');
-    
-    const urlDMP = `${this.dmpAPI}/:selected`;
-    const dmp$ = this.fetchAdvancedSearchResults(urlDMP,data,'dmp');
-
-    this.data$ = forkJoin([dap$, dmp$]).pipe(
-        map(([dapData, dmpData]) => [...dapData, ...dmpData])
-      );
-    
-    }
 
 }
