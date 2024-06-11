@@ -1,18 +1,15 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
+import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter,faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
 import { map } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Checkbox, CheckboxModule } from 'primeng/checkbox'
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { ConfigurationService } from 'oarng';
-import { searchResult } from 'src/app/models/searchResult.model';
 import { SearchAPIService } from 'src/app/shared/search-api.service';
 import { dmap } from '../../../models/dmap.model';
 import { TDocumentDefinitions, StyleDictionary } from 'pdfmake/interfaces';
@@ -100,6 +97,7 @@ export class SearchListModalComponent implements OnInit {
   paper: any;
   publishedBefore: any;
   publishedAfter: any;
+  faMagnifyingGlass=faMagnifyingGlass;
   
   public DMAP: any[]=[];
   orgs = [
@@ -649,7 +647,6 @@ export class SearchListModalComponent implements OnInit {
   }
 
   getPeople($event: any) {
-    //this.suggestions = this.tempOwners.filter(val => val.FULL_NAME.toUpperCase().includes($event.query.toUpperCase()))
     this.apiService.get_NIST_Personnel($event.query.toUpperCase()).subscribe((value) => {
         console.log(value);
     }

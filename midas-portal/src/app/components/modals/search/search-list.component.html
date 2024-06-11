@@ -1,8 +1,9 @@
 <p-tabView header="Header 1">
     <p-tabPanel header="Search Results for '{{searchTerm}}'">
-        <div class="container bg-light p-2">
-            <input #box type="text" class="form-control" pInputText value="{{searchTerm }}" (keyup.enter)="search(box.value)">
-          </div>
+        <div class="container bg-light p-2 d-flex">
+            <input #box type="text" class="form-control custom-input" pInputText value="{{searchTerm }}" (keyup.enter)="search(box.value)">
+            <button pButton class="custom-button" (click)="search(box.value)"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faMagnifyingGlass"></fa-icon>Quick Search</button>
+        </div>
         <p-panel header="Advanced Search" [toggleable]="true" [collapsed]="true">
             Resource Type:
             <p-radioButton label="DMP" name="resourceType" value="dmp" [(ngModel)]="resourceType"
@@ -18,8 +19,8 @@
                 (completeMethod)="getOrgs($event)"></p-autoComplete> &nbsp; &nbsp; &nbsp;
             Record Owner: <p-autoComplete [(ngModel)]="recordOwner" [suggestions]="suggestions" field="FULL_NAME"
                 (completeMethod)="getPeople($event)"></p-autoComplete><br />
-            Published Before: <p-calendar [(ngModel)]="publishedBefore" [showIcon]="true" [appendTo]="'body'"></p-calendar> &nbsp; &nbsp;
-            Published After: <p-calendar [(ngModel)]="publishedAfter" [showIcon]="true" [appendTo]="'body'"></p-calendar> <br />
+            Last modified before: <p-calendar [(ngModel)]="publishedBefore" [showIcon]="true" [appendTo]="'body'"></p-calendar> &nbsp; &nbsp;
+            Last modified after: <p-calendar [(ngModel)]="publishedAfter" [showIcon]="true" [appendTo]="'body'"></p-calendar> <br />
             Process Status: &nbsp; &nbsp; &nbsp;
             <p-radioButton name="status" name="status" value="edit" label="edit" value="edit" [(ngModel)]="status" inputId="edit"></p-radioButton>&nbsp;&nbsp;
             <p-radioButton name="status" name="status" value="processing" label="processing" value="processing" [(ngModel)]="status" inputId="processing"></p-radioButton>&nbsp;&nbsp;
@@ -111,5 +112,13 @@
 <style>
 .ui-calendar .ui-datepicker {
 height : 200px !important;
+}
+
+.custom-input {
+    width: 85%;
+}
+
+.custom-button {
+    width: 15%;
 }
     </style>
