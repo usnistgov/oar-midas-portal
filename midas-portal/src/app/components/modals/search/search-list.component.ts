@@ -3,7 +3,7 @@ import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter,faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
-import { map } from 'rxjs/operators';
+import { map,take,tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -85,6 +85,8 @@ export class SearchListModalComponent implements OnInit {
   processing = false;
   submitted = false;
   published = false;
+  selected: string[] = [];
+  unused:any;
 
   
 
@@ -364,7 +366,12 @@ export class SearchListModalComponent implements OnInit {
    * @returns dap
    */
   public customSerialize(item: any,rectype:string) {
-    console.log(item)
+    //if all items are selected when computing them, adding them to the selected items.
+    if (this.allSelected){
+      this.selected.push(item.id)
+    }
+
+    //serializing data
     let tmp = new dmap();
     tmp.id = item.id
     tmp.rectype =rectype
@@ -403,8 +410,7 @@ export class SearchListModalComponent implements OnInit {
 
     this.data$ = forkJoin([dap$, dmp$]).pipe(
         map(([dapData, dmpData]) => [...dapData, ...dmpData])
-      );
-    
+      );   
     }
 
   onSearchClick() {
@@ -456,7 +462,6 @@ export class SearchListModalComponent implements OnInit {
         permissions: ['read', 'write']
       };
         
-    console.log(data)
     const apiMap = {
         'dmp': this.dmpAPI,
         'dap': this.dapAPI
@@ -482,7 +487,6 @@ export class SearchListModalComponent implements OnInit {
     return this.http.post(url,searchJSON, { headers: { Authorization: "Bearer "+this.authToken }})
       .pipe(
         map((responseData: any) => {
-          console.log(responseData);
           if (responseData) {
             console.log("Loading "+responseData.length+" records");
             return responseData.map((record:any) => this.customSerialize(record, type));
@@ -493,6 +497,8 @@ export class SearchListModalComponent implements OnInit {
         })
       );
   }
+
+
 
   onExportListClick(){
     console.log(this.outputType);
@@ -588,44 +594,48 @@ export class SearchListModalComponent implements OnInit {
     new ngxCsv(tableBody, filename,options);
 }else if (this.outputType == 'json'){
     var tmpData:any;
-    const selectedRecords = this.data.filter((item: Selected)  => item.selected);
-    console.log(selectedRecords)
-    console.log("===============")
-    console.log(this.resourceType)
-    if(this.resourceType == 'dap'){
-        tmpData = this.dapData.filter((dapRecord: any) =>
-            selectedRecords.some((record: Selected) => dapRecord.id === record.id)
-          );
-    }else if(this.resourceType == 'dmp'){
-        tmpData = this.dmpData.filter((dmpRecord: any) => 
-            selectedRecords.some((record: Selected) => dmpRecord.id === record.id)
-          );
-    }
-
-    if (tmpData && tmpData.length !== 0) {
-        const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
-        const filename = `records_${timestamp}.json`;
-        console.log(tmpData);
-        var json = JSON.stringify(tmpData, null, 2);
-        console.log(json);
-        var blob = new Blob([json], {type: "application/json"});
-        var url  = URL.createObjectURL(blob);
-
-        var a = document.createElement('a');
-        a.download = filename;
-        a.href = url;
-        a.click();
-        URL.revokeObjectURL(url);
-      } else {
-        console.log(tmpData)
-        if(selectedRecords.length == 0 ){
-            alert('No records selected. Please select records and try again.')
-        }else if(this.outputType === 'json' && !this.resourceType) {
-          alert('You can only export JSON for a single resource type. Please select a resource type and try again.');
-          return;
+    this.data$.pipe(
+        map(data => data.filter((item: Selected) => item.selected))
+    ).subscribe(selectedRecords => {
+        // You can use selectedRecords here
+        console.log("TEST "+selectedRecords);
+        if(this.resourceType == 'dap'){
+            tmpData = this.dapData.filter((dapRecord: any) =>
+                selectedRecords.some((record: Selected) => dapRecord.id === record.id)
+              );
+        }else if(this.resourceType == 'dmp'){
+            tmpData = this.dmpData.filter((dmpRecord: any) => 
+                selectedRecords.some((record: Selected) => dmpRecord.id === record.id)
+              );
         }
+        
+        if (tmpData && tmpData.length !== 0) {
+            const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+            const filename = `records_${timestamp}.json`;
+            console.log(tmpData);
+            var json = JSON.stringify(tmpData, null, 2);
+            console.log(json);
+            var blob = new Blob([json], {type: "application/json"});
+            var url  = URL.createObjectURL(blob);
     
-    }
+            var a = document.createElement('a');
+            a.download = filename;
+            a.href = url;
+            a.click();
+            URL.revokeObjectURL(url);
+          } else {
+            if(selectedRecords.length == 0 ){
+                alert('No records selected. Please select records and try again.')
+            }else if(this.outputType === 'json' && !this.resourceType) {
+              alert('You can only export JSON for a single resource type. Please select a resource type and try again.');
+              return;
+            }
+        
+        }
+    });
+
+
+    
     }
     else{
         alert('Please select an output type in the Advance Search section and try again.');
@@ -641,9 +651,30 @@ export class SearchListModalComponent implements OnInit {
     // Perform your search logic here
   }
 
+
+  toggleItemSelection(id: string) {
+    console.log('Toggling item selection:', id);
+    if (this.selected.includes(id)){
+      this.selected = this.selected.filter(item => item !== id);
+    }else{
+      this.selected.push(id);
+    }
+    console.log('All Selected data:', this.selected);
+  }
+   
+
   toggleSelectAll() {
     this.allSelected = !this.allSelected;
-    this.data.forEach((item: Selected) => item.selected = this.allSelected);
+  
+  // Assuming this.data$ is your Observable of data
+  // This will show on the UX that all items are selected
+  this.data$ = this.data$.pipe(
+    map(items => items.map(item => ({
+      ...item,
+      selected: this.allSelected
+    })))
+  );
+
   }
 
   getPeople($event: any) {

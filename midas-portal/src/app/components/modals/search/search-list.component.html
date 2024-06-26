@@ -87,7 +87,7 @@
                         'record-dap': item.rectype === 'dap',
                         'record-dmp': item.rectype === 'dmp'
                       }">
-                        <td><input type="checkbox" [(ngModel)]="item.selected" name="recordCheckbox" [value]="item.id"></td>
+                        <td><input type="checkbox" [checked]="item.selected" (change)="toggleItemSelection(item.id)"></td>
                         <td><a href={{linkto(item.id,item.rectype)}} target="_blank">{{item.id}}</a></td>
                         <td>{{item.rectype}}</td>
                         <td>{{item.name}}</td>
