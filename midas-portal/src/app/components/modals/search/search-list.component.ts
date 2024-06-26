@@ -14,7 +14,8 @@ import { SearchAPIService } from 'src/app/shared/search-api.service';
 import { dmap } from '../../../models/dmap.model';
 import { TDocumentDefinitions, StyleDictionary } from 'pdfmake/interfaces';
 import { ngxCsv } from 'ngx-csv/ngx-csv';
-import { Observable, forkJoin, concat } from 'rxjs';
+import { Observable, forkJoin, Subscription } from 'rxjs';
+import { dap } from 'src/app/models/dap.model';
 
 (pdfMake as any).vfs=pdfFonts.pdfMake.vfs;
 
@@ -79,14 +80,17 @@ export class SearchListModalComponent implements OnInit {
   dmpAPI: string;
   dmpEDIT: string;
   dapEDIT: string;
-  dapData=[]
-  dmpData=[]
+  dapData:any=[]
+  dmpData:any=[]
   edit = false;
   processing = false;
   submitted = false;
   published = false;
   selected: string[] = [];
   unused:any;
+  dap$: Observable<any[]>;
+  dmp$: Observable<any[]>;
+  private dapSubscription: Subscription;
 
   
 
@@ -370,7 +374,15 @@ export class SearchListModalComponent implements OnInit {
     if (this.allSelected){
       this.selected.push(item.id)
     }
-
+    if (rectype == 'dap'){
+      if(!this.dapData.find((object: any) => object.id === item.id)){
+        this.dapData.push(item)
+    }
+    }else if(rectype == 'dmp'){
+      if(!this.dmpData.find((object: any) => object.id === item.id)){
+        this.dmpData.push(item)
+      }
+    }
     //serializing data
     let tmp = new dmap();
     tmp.id = item.id
@@ -387,6 +399,8 @@ export class SearchListModalComponent implements OnInit {
   }
 
   search(searchTerm: any) {
+    this.dapData = [];
+    this.dmpData = [];
     this.searchTerm = searchTerm;
     console.log('searchJSON: ' + JSON.stringify(searchTerm));
     const data = {
@@ -408,7 +422,7 @@ export class SearchListModalComponent implements OnInit {
     const urlDMP = `${this.dmpAPI}/:selected`;
     const dmp$ = this.fetchAdvancedSearchResults(urlDMP,data,'dmp');
 
-    this.data$ = forkJoin([dap$, dmp$]).pipe(
+    this.data$ = forkJoin([ dap$, dmp$]).pipe(
         map(([dapData, dmpData]) => [...dapData, ...dmpData])
       );   
     }
@@ -593,22 +607,24 @@ export class SearchListModalComponent implements OnInit {
     const filename = `records_${timestamp}`;
     new ngxCsv(tableBody, filename,options);
 }else if (this.outputType == 'json'){
-    var tmpData:any;
-    this.data$.pipe(
-        map(data => data.filter((item: Selected) => item.selected))
-    ).subscribe(selectedRecords => {
-        // You can use selectedRecords here
-        console.log("TEST "+selectedRecords);
-        if(this.resourceType == 'dap'){
-            tmpData = this.dapData.filter((dapRecord: any) =>
-                selectedRecords.some((record: Selected) => dapRecord.id === record.id)
-              );
-        }else if(this.resourceType == 'dmp'){
-            tmpData = this.dmpData.filter((dmpRecord: any) => 
-                selectedRecords.some((record: Selected) => dmpRecord.id === record.id)
-              );
+  console.log("DAPDATA "+JSON.stringify(this.dapData, null, 2))
+  console.log("DMPDATA "+JSON.stringify(this.dmpData, null, 2))
+  
+        var tmpData: any[] = [];
+        for (let item of this.selected) {
+          if (item.startsWith('mds')) {
+            this.dapSubscription = this.dap$.subscribe((dapData: dmap[]) => {
+              const record = dapData.find((dap: dmap) => dap.id === item);
+              if (record) {
+                tmpData.push(record);
+              }
+            });
+            console.log("AIEAIEAIE "+tmpData)
+          }else if(item.startsWith('mdm')){
+            
         }
-        
+
+      }
         if (tmpData && tmpData.length !== 0) {
             const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
             const filename = `records_${timestamp}.json`;
@@ -624,7 +640,7 @@ export class SearchListModalComponent implements OnInit {
             a.click();
             URL.revokeObjectURL(url);
           } else {
-            if(selectedRecords.length == 0 ){
+            if(this.selected.length == 0 ){
                 alert('No records selected. Please select records and try again.')
             }else if(this.outputType === 'json' && !this.resourceType) {
               alert('You can only export JSON for a single resource type. Please select a resource type and try again.');
@@ -632,15 +648,9 @@ export class SearchListModalComponent implements OnInit {
             }
         
         }
-    });
 
-
-    
-    }
-    else{
-        alert('Please select an output type in the Advance Search section and try again.');
-    }
-}
+      }
+  }
 
 
   onExportRecordsClick(){
