@@ -391,9 +391,9 @@ export class SearchListModalComponent implements OnInit {
     tmp.name = item.name
     tmp.owner = item.owner
     tmp.state = item.status.state
-    tmp.orgid = 12
+    //tmp.orgid = 12
     //tmp.orgid = rectype === 'dmp'  ? item.data.organization[0].ORG_ID : '';
-    //tmp.orgid = rectype === 'dmp' && item.data.organization && item.data.organization.length > 0 ? item.data.organization[0].ORG_ID : '';
+    tmp.orgid = rectype === 'dmp' && item.data.organizations && item.data.organizations.length > 0 ? item.data.organizations[0].ORG_ID : '';
     rectype == 'dap' ? tmp.title= item.data['title'] : tmp.title = ''
     return tmp
   }
@@ -515,25 +515,37 @@ export class SearchListModalComponent implements OnInit {
 
 
   onExportListClick(){
-    console.log(this.outputType);
-    if(this.outputType == 'pdf'){
-    // Get the selected records
-    const selectedRecords = this.data.filter((item: Selected)  => item.selected);
-    console.log('Selected Records:', selectedRecords);
+    if(this.selected.length !== 0 ){
+      var tmpData: any[] = [];
+      console.log(this.outputType);
+      if(this.outputType == 'pdf'){
+        for (let item of this.selected) {
+          if (item.startsWith('mdm')) {
+              tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+          } else if (item.startsWith('mds')) {
+              tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+          }
+      }
 
     // Prepare table data
-    const tableBody = selectedRecords.map((record: dmap) => {
+    const tableBody = tmpData.map((record: any) => {
+      console.log(record)
+      console.log(record.status)
+      console.log(record.status.modifiedDate)
+      console.log(record.status.modifiedDate.split('T'))
+      console.log(record.status.modifiedDate.split('T')[0])
         return [
-            record.rectype,
+            record.id.startsWith('mds') ? "DAP" : "DMP",
             record.id,
             record.name,
             record.owner,
-            record.modifiedDate.toString(), // Convert Date to string
-            record.state,
-            record.orgid.toString(), // Convert number to string
-            record.title
+            record.status.modifiedDate.split('T')[0],
+            record.status.state,
+            record.id.startsWith('mdm')  && record.data.organizations && record.data.organizations.length > 0 ? record.data.organizations[0].ORG_ID : '',
+            record.id.startsWith('mds') ? "no-title" : record.data.title
         ];
     });
+    console.log(tableBody)
 
     // Add table headers
     const tableHeaders = ['Record Type', 'ID', 'Name', 'Owner', 'Modified Date', 'State', 'Org ID', 'Title'];
@@ -577,74 +589,72 @@ export class SearchListModalComponent implements OnInit {
     pdfMake.createPdf(docDefinition).download(filename);
 
     // Perform your search logic here
-}else if (this.outputType == 'csv'){
-    const selectedRecords = this.data.filter((item: Selected)  => item.selected);
-    const tableBody = selectedRecords.map((record: dmap) => {
-        return [
-            record.rectype,
-            record.id,
-            record.name,
-            record.owner,
-            record.modifiedDate.toString(), // Convert Date to string
-            record.state,
-            record.orgid.toString(), // Convert number to string
-            record.title
-        ];
-    });
+    }else if (this.outputType == 'csv'){
+        const selectedRecords = this.data.filter((item: Selected)  => item.selected);
+        const tableBody = selectedRecords.map((record: dmap) => {
+            return [
+                record.rectype,
+                record.id,
+                record.name,
+                record.owner,
+                record.modifiedDate.toString(), // Convert Date to string
+                record.state,
+                record.orgid.toString(), // Convert number to string
+                record.title
+            ];
+        });
 
-    var options = { 
-        fieldSeparator: ',',
-        quoteStrings: '',
-        decimalseparator: '.',
-        showLabels: true, 
-        showTitle: false,
-        useBom: true,
-        noDownload: false,
-        headers: ["Record type", "ID","name","owner","modified date","state","org id","title"]
-      };
+        var options = { 
+            fieldSeparator: ',',
+            quoteStrings: '',
+            decimalseparator: '.',
+            showLabels: true, 
+            showTitle: false,
+            useBom: true,
+            noDownload: false,
+            headers: ["Record type", "ID","name","owner","modified date","state","org id","title"]
+          };
 
-      const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
-    const filename = `records_${timestamp}`;
-    new ngxCsv(tableBody, filename,options);
-}else if (this.outputType == 'json'){
-  if(this.selected.length !== 0 ){
-  console.log("DAPDATA "+JSON.stringify(this.dapData, null, 2))
-  console.log("DMPDATA "+JSON.stringify(this.dmpData, null, 2))
-  var tmpData: any[] = [];
-  if(this.resourceType === 'dmp'){
-    for(let item of this.selected){
-        tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
-    }
-    this.export_json(tmpData);
-  }else if(this.resourceType === 'dap'){  
-    for(let item of this.selected){
-      tmpData.push(this.dapData.find((dap: any) => dap.id === item));
-  }
-  this.export_json(tmpData);
-  }else{
-    const allStartWithMds = this.selected.every(item => item.startsWith('mds'));
-    const allStartWithMdm = this.selected.every(item => item.startsWith('mdm'));
+          const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+        const filename = `records_${timestamp}`;
+        new ngxCsv(tableBody, filename,options);
+    }else if (this.outputType == 'json'){
+      console.log("DAPDATA "+JSON.stringify(this.dapData, null, 2))
+      console.log("DMPDATA "+JSON.stringify(this.dmpData, null, 2))
+      if(this.resourceType === 'dmp'){
+        for(let item of this.selected){
+            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+        }
+        this.export_json(tmpData);
+      }else if(this.resourceType === 'dap'){  
+        for(let item of this.selected){
+          tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+      }
+      this.export_json(tmpData);
+      }else{
+        const allStartWithMds = this.selected.every(item => item.startsWith('mds'));
+        const allStartWithMdm = this.selected.every(item => item.startsWith('mdm'));
 
-    if(allStartWithMds){
-      for(let item of this.selected){
-        tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+        if(allStartWithMds){
+          for(let item of this.selected){
+            tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+          }
+        this.export_json(tmpData);
+        }else if(allStartWithMdm){
+          for(let item of this.selected){
+            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+          }
+          this.export_json(tmpData);
+        }else{
+          alert('You can only export JSON for a single resource type. Please select only dmp or daps  and try again.');
+          return;
+        }
+      }
     }
-    this.export_json(tmpData);
-    }else if(allStartWithMdm){
-      for(let item of this.selected){
-        tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
-    }
-    this.export_json(tmpData);
-    }else{
-      alert('You can only export JSON for a single resource type. Please select only dmp or daps  and try again.');
-      return;
-    }
-  }
     }else{
       alert('No records selected. Please select records and try again.')
       return;
     }
-  }
 }
 
   export_json(tmpData: any[]){
