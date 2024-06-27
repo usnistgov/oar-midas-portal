@@ -607,51 +607,64 @@ export class SearchListModalComponent implements OnInit {
     const filename = `records_${timestamp}`;
     new ngxCsv(tableBody, filename,options);
 }else if (this.outputType == 'json'){
+  if(this.selected.length !== 0 ){
   console.log("DAPDATA "+JSON.stringify(this.dapData, null, 2))
   console.log("DMPDATA "+JSON.stringify(this.dmpData, null, 2))
-  
-        var tmpData: any[] = [];
-        for (let item of this.selected) {
-          if (item.startsWith('mds')) {
-            this.dapSubscription = this.dap$.subscribe((dapData: dmap[]) => {
-              const record = dapData.find((dap: dmap) => dap.id === item);
-              if (record) {
-                tmpData.push(record);
-              }
-            });
-            console.log("AIEAIEAIE "+tmpData)
-          }else if(item.startsWith('mdm')){
-            
-        }
-
-      }
-        if (tmpData && tmpData.length !== 0) {
-            const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
-            const filename = `records_${timestamp}.json`;
-            console.log(tmpData);
-            var json = JSON.stringify(tmpData, null, 2);
-            console.log(json);
-            var blob = new Blob([json], {type: "application/json"});
-            var url  = URL.createObjectURL(blob);
-    
-            var a = document.createElement('a');
-            a.download = filename;
-            a.href = url;
-            a.click();
-            URL.revokeObjectURL(url);
-          } else {
-            if(this.selected.length == 0 ){
-                alert('No records selected. Please select records and try again.')
-            }else if(this.outputType === 'json' && !this.resourceType) {
-              alert('You can only export JSON for a single resource type. Please select a resource type and try again.');
-              return;
-            }
-        
-        }
-
-      }
+  var tmpData: any[] = [];
+  if(this.resourceType === 'dmp'){
+    for(let item of this.selected){
+        tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+    }
+    this.export_json(tmpData);
+  }else if(this.resourceType === 'dap'){  
+    for(let item of this.selected){
+      tmpData.push(this.dapData.find((dap: any) => dap.id === item));
   }
+  this.export_json(tmpData);
+  }else{
+    const allStartWithMds = this.selected.every(item => item.startsWith('mds'));
+    const allStartWithMdm = this.selected.every(item => item.startsWith('mdm'));
 
+    if(allStartWithMds){
+      for(let item of this.selected){
+        tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+    }
+    this.export_json(tmpData);
+    }else if(allStartWithMdm){
+      for(let item of this.selected){
+        tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+    }
+    this.export_json(tmpData);
+    }else{
+      alert('You can only export JSON for a single resource type. Please select only dmp or daps  and try again.');
+      return;
+    }
+  }
+    }else{
+      alert('No records selected. Please select records and try again.')
+      return;
+    }
+  }
+}
+
+  export_json(tmpData: any[]){
+    if (tmpData && tmpData.length !== 0) {
+      const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+      const filename = `records_${timestamp}.json`;
+      console.log(tmpData);
+      var json = JSON.stringify(tmpData, null, 2);
+      console.log(json);
+      var blob = new Blob([json], {type: "application/json"});
+      var url  = URL.createObjectURL(blob);
+
+      var a = document.createElement('a');
+      a.download = filename;
+      a.href = url;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+}
 
   onExportRecordsClick(){
     // Get the selected records
