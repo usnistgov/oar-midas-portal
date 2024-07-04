@@ -674,37 +674,93 @@ export class SearchListModalComponent implements OnInit {
 
 }
 
-flattenObject(obj: any, parentKey = '', separator = '_'): Record<string, any> {
-  let flatObject: Record<string, any> = {};
+flattenObject(obj: any, parentKey = '', delimiter = '_'): any {
+  let flattened: { [key: string]: any } = {};
+
   for (const [key, value] of Object.entries(obj)) {
-      const newKey = parentKey ? `${parentKey}${separator}${key}` : key;
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-          Object.assign(flatObject, this.flattenObject(value, newKey, separator));
-      } else {
-          flatObject[newKey] = value;
-      }
+    const newKey = parentKey ? `${parentKey}${delimiter}${key}` : key;
+
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.assign(flattened, this.flattenObject(value, newKey, delimiter));
+    } else {
+      flattened[newKey] = value;
+    }
   }
-  return flatObject;
+
+  return flattened;
+}
+
+ getFlattenedKeys(obj: any, parentKey = '', delimiter = '_'): string[] {
+  let keys: string[]=[];
+
+  for (const [key, value] of Object.entries(obj)) {
+    const newKey = parentKey ? `${parentKey}${delimiter}${key}` : key;
+
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      keys = keys.concat(this.getFlattenedKeys(value, newKey, delimiter));
+    } else {
+      keys.push(newKey);
+    }
+  }
+
+  return keys;
+}
+
+flattenJson(y: any):string{
+  let out: { [key: string]: any } = {};
+
+  function sanitizeValue(value: any): string {
+    let stringValue = String(value).replace(/"/g, '""'); // Escape double quotes
+    // Enclose the value in double quotes if it contains a comma, quote, or newline
+    if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
+      stringValue = `"${stringValue}"`;
+    }
+    return stringValue;
+  }
+
+  function flatten(x: any): string {
+    console.log('Flattening:', x);
+    if (typeof x === 'object' && !Array.isArray(x) && x !== null) {
+      console.log('Dict:', x);
+      var dict = ''
+      for (const a in x) {
+        console.log('Key:', x[a]);
+        console.log(flatten(x[a]));
+        const tmp = flatten(x[a])
+        dict+=tmp+','
+      }
+      return dict.slice(0,-1)
+    } else if (Array.isArray(x)) {
+      console.log('Array:', x);
+      // Join array elements with a semicolon and sanitize
+      if(typeof x[0] === 'object'){
+        return "Arrays of objects==> what to do ?"
+      }
+      return sanitizeValue(x.join(';'));
+    } else {
+      console.log('Flat:', x);
+      // Apply sanitization to non-object and non-array values
+      return sanitizeValue(x);
+    }
+  }
+
+  return flatten(y);
 }
 
 exportCSV(jsonArray: any[]) {
   console.log('Exporting CSV:', jsonArray);
   // Extract column headers
-  const headers = Object.keys(jsonArray[0]).join(',');
+  const headers = this.getFlattenedKeys(jsonArray[0]).join(',');
   console.log('Headers:', headers);
-
+  var out:string='';
   // Map each json object to a CSV row
-  const rows = jsonArray.map(obj =>
-    Object.values(obj).map(value => {
-      // Convert the value to a string and escape double quotes
-      let stringValue = String(value).replace(/"/g, '""');
-      // Enclose the value in double quotes if it contains a comma, quote, or newline
-      if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
-        stringValue = `"${stringValue}"`;
-      }
-      return stringValue;
-    }).join(',')
-  );
+  const rows = jsonArray.map(obj => {
+    // Map each value in the object, flatten it, and then join with commas
+    const row = Object.values(obj).map(value => this.flattenJson(value)).join(',');
+    // Append the row to out with a newline character
+    out += row + '\n';
+    return row; // Return the row if you need the array of rows as well
+  });
 
   // Combine headers and rows, and separate them by newline
   const csvData = [headers, ...rows].join('\n');
