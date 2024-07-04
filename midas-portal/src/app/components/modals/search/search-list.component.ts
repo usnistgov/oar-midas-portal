@@ -529,11 +529,6 @@ export class SearchListModalComponent implements OnInit {
 
     // Prepare table data
     const tableBody = tmpData.map((record: any) => {
-      console.log(record)
-      console.log(record.status)
-      console.log(record.status.modifiedDate)
-      console.log(record.status.modifiedDate.split('T'))
-      console.log(record.status.modifiedDate.split('T')[0])
         return [
             record.id.startsWith('mds') ? "DAP" : "DMP",
             record.id,
@@ -590,34 +585,37 @@ export class SearchListModalComponent implements OnInit {
 
     // Perform your search logic here
     }else if (this.outputType == 'csv'){
-        const selectedRecords = this.data.filter((item: Selected)  => item.selected);
-        const tableBody = selectedRecords.map((record: dmap) => {
-            return [
-                record.rectype,
-                record.id,
-                record.name,
-                record.owner,
-                record.modifiedDate.toString(), // Convert Date to string
-                record.state,
-                record.orgid.toString(), // Convert number to string
-                record.title
-            ];
-        });
+      console.log("DAPDATA "+JSON.stringify(this.dapData, null, 2))
+      console.log("DMPDATA "+JSON.stringify(this.dmpData, null, 2))
+      if(this.resourceType === 'dmp'){
+        for(let item of this.selected){
+            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+        }
+        this.exportCSV(tmpData);
+      }else if(this.resourceType === 'dap'){  
+        for(let item of this.selected){
+          tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+      }
+      this.exportCSV(tmpData);
+      }else{
+        const allStartWithMds = this.selected.every(item => item.startsWith('mds'));
+        const allStartWithMdm = this.selected.every(item => item.startsWith('mdm'));
 
-        var options = { 
-            fieldSeparator: ',',
-            quoteStrings: '',
-            decimalseparator: '.',
-            showLabels: true, 
-            showTitle: false,
-            useBom: true,
-            noDownload: false,
-            headers: ["Record type", "ID","name","owner","modified date","state","org id","title"]
-          };
-
-          const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
-        const filename = `records_${timestamp}`;
-        new ngxCsv(tableBody, filename,options);
+        if(allStartWithMds){
+          for(let item of this.selected){
+            tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+          }
+        this.exportCSV(tmpData);
+        }else if(allStartWithMdm){
+          for(let item of this.selected){
+            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+          }
+          this.exportCSV(tmpData);
+        }else{
+          alert('You can only export JSON for a single resource type. Please select only dmp or daps  and try again.');
+          return;
+        }
+      }  
     }else if (this.outputType == 'json'){
       console.log("DAPDATA "+JSON.stringify(this.dapData, null, 2))
       console.log("DMPDATA "+JSON.stringify(this.dmpData, null, 2))
@@ -675,6 +673,58 @@ export class SearchListModalComponent implements OnInit {
     }
 
 }
+
+flattenObject(obj: any, parentKey = '', separator = '_'): Record<string, any> {
+  let flatObject: Record<string, any> = {};
+  for (const [key, value] of Object.entries(obj)) {
+      const newKey = parentKey ? `${parentKey}${separator}${key}` : key;
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+          Object.assign(flatObject, this.flattenObject(value, newKey, separator));
+      } else {
+          flatObject[newKey] = value;
+      }
+  }
+  return flatObject;
+}
+
+exportCSV(jsonArray: any[]) {
+  console.log('Exporting CSV:', jsonArray);
+  // Extract column headers
+  const headers = Object.keys(jsonArray[0]).join(',');
+  console.log('Headers:', headers);
+
+  // Map each json object to a CSV row
+  const rows = jsonArray.map(obj =>
+    Object.values(obj).map(value => {
+      // Convert the value to a string and escape double quotes
+      let stringValue = String(value).replace(/"/g, '""');
+      // Enclose the value in double quotes if it contains a comma, quote, or newline
+      if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
+        stringValue = `"${stringValue}"`;
+      }
+      return stringValue;
+    }).join(',')
+  );
+
+  // Combine headers and rows, and separate them by newline
+  const csvData = [headers, ...rows].join('\n');
+  const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+  const filename = `records_${timestamp}.csv`;
+
+  // Create a Blob with the CSV data
+  var blob = new Blob([csvData], { type: "text/csv" });
+  var url = URL.createObjectURL(blob);
+
+  // Create an anchor element and trigger the download
+  var a = document.createElement('a');
+  a.download = filename;
+  a.href = url;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
+
 
   onExportRecordsClick(){
     // Get the selected records
