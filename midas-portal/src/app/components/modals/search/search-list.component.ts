@@ -398,9 +398,21 @@ export class SearchListModalComponent implements OnInit {
     return tmp
   }
 
-  search(searchTerm: any) {
+  reset_forsearch(){
+    if (this.data$ !== undefined) {
+      this.data$ = this.data$.pipe(
+        map(items => items.map(item => ({
+          ...item,
+          selected: !item.selected // This line toggles the `selected` state.
+        })))
+      );
+    }
     this.dapData = [];
     this.dmpData = [];
+  }
+
+  search(searchTerm: any) {
+    this.reset_forsearch()
     this.searchTerm = searchTerm;
     console.log('searchJSON: ' + JSON.stringify(searchTerm));
     const data = {
@@ -428,6 +440,7 @@ export class SearchListModalComponent implements OnInit {
     }
 
   onSearchClick() {
+    this.reset_forsearch()
     //need to build DBIO search JSON here
     let andArray = [
     ];
@@ -516,6 +529,8 @@ export class SearchListModalComponent implements OnInit {
 
   onExportListClick(){
     if(this.selected.length !== 0 ){
+      console.log(this.selected.length)
+      console.log(this.selected)
       var tmpData: any[] = [];
       console.log(this.outputType);
       if(this.outputType == 'pdf'){
@@ -645,14 +660,13 @@ export class SearchListModalComponent implements OnInit {
           this.export_json(tmpData);
         }else{
           alert('You can only export JSON for a single resource type. Please select only dmp or daps  and try again.');
-          return;
         }
       }
     }
     }else{
       alert('No records selected. Please select records and try again.')
-      return;
     }
+    this.selected = [];
 }
 
   export_json(tmpData: any[]){
@@ -719,13 +733,9 @@ flattenJson(y: any):string{
   }
 
   function flatten(x: any): string {
-    console.log('Flattening:', x);
     if (typeof x === 'object' && !Array.isArray(x) && x !== null) {
-      console.log('Dict:', x);
       var dict = ''
       for (const a in x) {
-        console.log('Key:', x[a]);
-        console.log(flatten(x[a]));
         const tmp = flatten(x[a])
         dict+=tmp+','
       }
@@ -734,11 +744,18 @@ flattenJson(y: any):string{
       console.log('Array:', x);
       // Join array elements with a semicolon and sanitize
       if(typeof x[0] === 'object'){
-        return "Arrays of objects==> what to do ?"
+        if ( 'ORG_ID' in x[0]) {
+          var tmp_orga=''
+          for(let i=0; i< x.length;i++){
+            tmp_orga+=x[i].name+' ('+x[i].ORG_ID+')'+';'
+          }
+          return sanitizeValue(tmp_orga.slice(0,-1));
+        }else{
+          return sanitizeValue(String(x[0]));
+        }
       }
       return sanitizeValue(x.join(';'));
     } else {
-      console.log('Flat:', x);
       // Apply sanitization to non-object and non-array values
       return sanitizeValue(x);
     }
