@@ -666,7 +666,14 @@ export class SearchListModalComponent implements OnInit {
     }else{
       alert('No records selected. Please select records and try again.')
     }
+    this.data$ = this.data$.pipe(
+      map(items => items.map(item => ({
+        ...item,
+        selected:this.selected.includes(item.id)
+      })))
+    );
     this.selected = [];
+
 }
 
   export_json(tmpData: any[]){
