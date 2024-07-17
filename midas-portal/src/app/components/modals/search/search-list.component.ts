@@ -544,53 +544,99 @@ export class SearchListModalComponent implements OnInit {
 
     // Prepare table data
     const tableBody = tmpData.map((record: any) => {
+      const type = record.id.startsWith('mds') ? "dap" : "dmp"
         return [
-            record.id.startsWith('mds') ? "DAP" : "DMP",
-            record.id,
+            type,
+            { text: record.id, link: this.linkto(record.id,type), color: 'blue', decoration: 'underline' },
             record.name,
             record.owner,
             record.status.modifiedDate.split('T')[0],
             record.status.state,
-            record.id.startsWith('mdm')  && record.data.organizations && record.data.organizations.length > 0 ? record.data.organizations[0].ORG_ID : '',
+            record.id.startsWith('mdm')  && record.data.organizations && record.data.organizations.length > 0 ? record.data.organizations[0].ORG_ID : 'no-org-code',
             record.id.startsWith('mds') ? "no-title" : record.data.title
         ];
     });
     console.log(tableBody)
 
-    // Add table headers
-    const tableHeaders = ['Record Type', 'ID', 'Name', 'Owner', 'Modified Date', 'State', 'Org ID', 'Title'];
-    const tableHeaders1 = ['Record Typ1e', 'ID1', 'Name1', 'Owner1', 'Modified Date1', 'State1', 'Org ID1', 'Title1'];
-
-    // Create the table
-    const table = {
-        table: {
-            headerRows: 1,
-            widths: ['10%', '10%', '10%', '10%', '10%', '10%', '10%', '10%'],
-            body: [
-                tableHeaders,
-                ...tableBody,
+    const tableHeaders = [
+      { text: 'Type', style: 'tableHeader' },
+      { text: 'Rec #', style: 'tableHeader' },
+      { text: 'Name', style: 'tableHeader' },
+      { text: 'Owner', style: 'tableHeader' },
+      { text: 'Modified Date', style: 'tableHeader' },
+      { text: 'Status', style: 'tableHeader' },
+      { text: 'Org code', style: 'tableHeader' },
+      { text: 'Title', style: 'tableHeader' }
+  ];
+  
+  // Assuming tableBody is defined somewhere in your code and formatted correctly
+  // Each row in tableBody should be wrapped in a style for the body if needed
+  
+  const table = {
+      table: {
+          headerRows: 1,
+          widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
+          body: [
+              tableHeaders,
+              ...tableBody.map(row => row.map(cell => ({ text: cell, style: 'tableBody' }))), // Apply body style to each cell
+          ]
+      }
+  };
+  
+  let docDefinition: TDocumentDefinitions = {
+      content: [
+        { text: 'EDI Dataset Status', style: 'title' }, // Title
+        { text: 'Total records selected : '+tableBody.length, style: 'subtitle' }, // Subtitle
+        { text: '(Click the record number to go to the record)', style: 'subsubtitle' }, // Subtitle
+          table // Add the table to the PDF content
+      ],
+      styles: {
+        title: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10], // Adjust margin as needed
+          alignment:'center'
+      },
+      subtitle: {
+          fontSize: 12,
+          bold: false,
+          margin: [0, 0, 0, 20], // Adjust margin as needed
+          alignment:'center'
+      },
+      tableHeader: {
+        fontSize: 12,
+        bold: true,
+        color: 'white',
+          fillColor: '#7B9BDA', // Background color for headers
+      },
+      tableBody: {
+        fontSize: 10,
+          fillColor: '#F9F1BC', // Background color for body
+        
+      },
+      subsubtitle: {
+        fontSize: 6,
+        bold: false,
+        margin: [0, 0, 0, 0], // Adjust margin as needed
+      },
+    },
+    header: function(currentPage, pageCount) {
+        return {
+            columns: [
+                { text: 'Date: ' + new Date().toLocaleDateString(), alignment: 'left',fontSize: 10},
+                { text: 'Page ' + currentPage.toString() + ' of ' + pageCount, alignment: 'right',fontSize: 10 }
+            ],
+            margin: [40, 20] // Adjust as needed
+        };
+    },
+    footer: function(currentPage, pageCount) {
+        return {
+            columns: [
+                { text: 'Link to portal',link:'https://localhost/portal/landing', color: 'blue', decoration: 'underline' , alignment: 'center', margin: [0, 0, 0, 20] } // Adjust as needed
             ]
-        }
-    };
-
-    let docDefinition: TDocumentDefinitions = {
-        content: [
-            { text: 'Selected Records', style: 'header' },
-            table // Add the table to the PDF content
-        ],
-        styles: {
-            header: {
-                fontSize: 16,
-                bold: true,
-                margin: [0, 0, 0, 5], // bottom margin
-                fillColor: 'blue',
-                color: 'white', // Text color for the header
-            },
-            body: {
-                fillColor: 'yellow',
-            },
-        }
-    };
+        };
+    }
+  };
 
     // Download the PDF
     //I don't want my timestamp to be separated by _ 
