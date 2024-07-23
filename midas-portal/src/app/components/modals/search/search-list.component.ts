@@ -1,22 +1,21 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
+import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter,faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
-import { map } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CheckboxModule } from 'primeng/checkbox'
+import { map,take,tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { ConfigurationService } from 'oarng';
-import { searchResult } from 'src/app/models/searchResult.model';
 import { SearchAPIService } from 'src/app/shared/search-api.service';
 import { dmap } from '../../../models/dmap.model';
 import { TDocumentDefinitions, StyleDictionary } from 'pdfmake/interfaces';
 import { ngxCsv } from 'ngx-csv/ngx-csv';
+import { Observable, forkJoin, Subscription } from 'rxjs';
+import { dap } from 'src/app/models/dap.model';
 
 (pdfMake as any).vfs=pdfFonts.pdfMake.vfs;
 
@@ -66,6 +65,7 @@ export class SearchListModalComponent implements OnInit {
   faListCheck=faUsersViewfinder;
   public records: any;
   public data: any;
+  data$: Observable<any[]>;
   statuses:any[];
   ref: DynamicDialogRef;
   public count:any;
@@ -78,593 +78,34 @@ export class SearchListModalComponent implements OnInit {
   resourceType: any;
   dapAPI: string;
   dmpAPI: string;
+  dmpEDIT: string;
+  dapEDIT: string;
+  dapData:any=[]
+  dmpData:any=[]
+  edit = false;
+  processing = false;
+  submitted = false;
+  published = false;
+  selected: string[] = [];
+  unused:any;
+  dap$: Observable<any[]>;
+  dmp$: Observable<any[]>;
+  private dapSubscription: Subscription;
 
   
 
   keywords: any;
   theme: any;
-  status: string[] = [];
+  status: string;
   selectedOrg: any;
   recordOwner: any;
   output: any = 'grid';
   paper: any;
   publishedBefore: any;
   publishedAfter: any;
+  faMagnifyingGlass=faMagnifyingGlass;
   
   public DMAP: any[]=[];
-
-  dmpData=[
-    {
-      "id": "mdm1:0026",
-      "name": "Standard Reference Materials",
-      "acls": {
-          "read": [
-              "anonymous"
-          ],
-          "write": [
-              "anonymous"
-          ],
-          "admin": [
-              "anonymous"
-          ],
-          "delete": [
-              "anonymous"
-          ]
-      },
-      "owner": "anonymous",
-      "deactivated": null,
-      "status": {
-          "created": 1689021182.820267,
-          "state": "edit",
-          "action": "create",
-          "since": 1689021182.8203456,
-          "modified": 1699921600.8212953,
-          "message": "draft created"
-      },
-      "data": {
-          "title": "Standard Reference Materials",
-          "startDate": "2021-07-08 19:03:27",
-          "endDate": "",
-          "dmpSearchable": "Y",
-          "funding": {
-              "grant_source": "Grant Number",
-              "grant_id": ""
-          },
-          "projectDescription": "Division-wide project to provide statistical support for the NIST Standard Reference Materials program. SED work on this project includes design and analysis of experiments for a wide range of reference materials. Data sets based on measurement results received from NIST scientists and researchers external to NIST will be compiled and analyzed. Simulation data may also be generated to derive results. The anticipated data volume for this project is 200 MB/year.",
-          "organization": [
-              {
-                  "ORG_ID": 776,
-                  "name": "Statistical Engineering Division"
-              }
-          ],
-          "primary_NIST_contact": {
-              "firstName": "William F.",
-              "lastName": "Guthrie"
-          },
-          "contributors": [
-              {
-                  "contributor": {
-                      "firstName": "William F.",
-                      "lastName": "Guthrie"
-                  },
-                  "e_mail": "william.guthrie@nist.gov",
-                  "instituion": "NIST",
-                  "role": "Principal Investigator"
-              }
-          ],
-          "keyWords": [
-              "standard reference materials"
-          ],
-          "dataStorage": [],
-          "dataSize": null,
-          "sizeUnit": "GB",
-          "softwareDevelopment": {
-              "development": "no",
-              "softwareUse": "",
-              "softwareDatabase": "",
-              "softwareWebsite": ""
-          },
-          "technicalResources": [],
-          "ethical_issues": {
-              "ethical_issues_exist": "no",
-              "ethical_issues_description": "",
-              "ethical_issues_report": "",
-              "dmp_PII": "no"
-          },
-          "dataDescription": "No additional requirements: Preliminary working and derived dataData must be backed up using a tested/automated process: Final working and derived data used to generate publishable results will be stored on centrally accessible and backed up Division file systems.Not available to the public: Working and derived dataNot available to the public (when NIST Enterprise Data Inventory system is available): Publishable resultsMade available to the public as described below: Published results will be made available via the SRM Program web site.",
-          "dataCategories": [
-              "Derived Data",
-              "Working Data",
-              "Published Results & SRD",
-              "Publishable Results"
-          ],
-          "preservationDescription": "Working Data; Derived Data; Publishable Results; Published Results: File types used in this project will be primarily text files containing numeric results, but some spectra and image data may also be generated.",
-          "pathsURLs": []
-      },
-      "meta": {},
-      "curators": []
-    },
-    {
-      "id": "mdm1:0025",
-      "name": "Supplementary material for:",
-      "acls": {
-          "read": [
-              "anonymous"
-          ],
-          "write": [
-              "anonymous"
-          ],
-          "admin": [
-              "anonymous"
-          ],
-          "delete": [
-              "anonymous"
-          ]
-      },
-      "owner": "anonymous",
-      "deactivated": null,
-      "status": {
-          "created": 1689021178.207318,
-          "state": "edit",
-          "action": "create",
-          "since": 1689021178.2074027,
-          "modified": 1689021178.2083783,
-          "message": "draft created"
-      },
-      "data": {
-          "title": "Supplementary material for: The detection of carbon dioxide leaks using quasi-tomographic laser absorption spectroscopy",
-          "startDate": "2021-07-08 19:03:27",
-          "endDate": "",
-          "dmpSearchable": "Y",
-          "funding": {
-              "grant_source": "Grant Number",
-              "grant_id": ""
-          },
-          "projectDescription": "The purpose is to satisfy a requirement of the journal Atmospheric Measurement Techniques that the published data be publicly available.  The data concerns the detection of carbon dioxide leaks at sequestration sites.",
-          "organization": [
-              {
-                  "ORG_ID": 685,
-                  "name": "Sensor Science Division"
-              }
-          ],
-          "primary_NIST_contact": {
-              "firstName": "Zachary H.",
-              "lastName": "Levine"
-          },
-          "contributors": [
-              {
-                  "contributor": {
-                      "firstName": "Michael",
-                      "lastName": "Braun"
-                  },
-                  "e_mail": "",
-                  "instituion": "Harris Corp.",
-                  "role": ""
-              },
-              {
-                  "contributor": {
-                      "firstName": "Timothy",
-                      "lastName": "Pernini"
-                  },
-                  "e_mail": "",
-                  "instituion": "Atmospheric and Environmental Research, Inc.",
-                  "role": ""
-              },
-              {
-                  "contributor": {
-                      "firstName": "Jeremy",
-                      "lastName": "Dobler"
-                  },
-                  "e_mail": "",
-                  "instituion": "Harris Corp.",
-                  "role": ""
-              },
-              {
-                  "contributor": {
-                      "firstName": "Nathan",
-                      "lastName": "Blume"
-                  },
-                  "e_mail": "",
-                  "instituion": "Harris Corp.",
-                  "role": ""
-              },
-              {
-                  "contributor": {
-                      "firstName": "Zachary H.",
-                      "lastName": "Levine"
-                  },
-                  "e_mail": "zachary.levine@nist.gov",
-                  "instituion": "NIST",
-                  "role": "Principal Investigator"
-              }
-          ],
-          "keyWords": [
-              "carbon sequestration",
-              "laser absorption spectroscopy"
-          ],
-          "dataStorage": [],
-          "dataSize": null,
-          "sizeUnit": "GB",
-          "softwareDevelopment": {
-              "development": "no",
-              "softwareUse": "",
-              "softwareDatabase": "",
-              "softwareWebsite": ""
-          },
-          "technicalResources": [],
-          "ethical_issues": {
-              "ethical_issues_exist": "no",
-              "ethical_issues_description": "",
-              "ethical_issues_report": "",
-              "dmp_PII": "no"
-          },
-          "dataDescription": "The data includes two parts:  experimental observations and simulation data.  The data are self-described ASCII files.",
-          "dataCategories": [
-              "Published Results & SRD"
-          ],
-          "preservationDescription": "NIST institutional mangement",
-          "pathsURLs": [
-              "nike.nist.gov   SEARCH G2016-0163 for amt-2015-291-suppl.zip"
-          ]
-      },
-      "meta": {},
-      "curators": []
-    },
-    {
-      "id": "mdm1:0024",
-      "name": "GitHub Page Template",
-      "acls": {
-          "read": [
-              "anonymous"
-          ],
-          "write": [
-              "anonymous"
-          ],
-          "admin": [
-              "anonymous"
-          ],
-          "delete": [
-              "anonymous"
-          ]
-      },
-      "owner": "anonymous",
-      "deactivated": null,
-      "status": {
-          "created": 1689021173.6844378,
-          "state": "edit",
-          "action": "create",
-          "since": 1689021173.6845205,
-          "modified": 1731249973.68544,
-          "message": "draft created"
-      },
-      "data": {
-          "title": "GitHub Page Template",
-          "startDate": "2021-07-08 19:03:27",
-          "endDate": "",
-          "dmpSearchable": "Y",
-          "funding": {
-              "grant_source": "Grant Number",
-              "grant_id": ""
-          },
-          "projectDescription": "This template will be available to NIST employees who wish to create a GitHub backed website and place it on NIST pages (pages.nist.gov).",
-          "organization": [
-              {
-                  "ORG_ID": 641,
-                  "name": "Office of Data and Informatics"
-              }
-          ],
-          "primary_NIST_contact": {
-              "firstName": "Casey",
-              "lastName": "Hume"
-          },
-          "contributors": [
-              {
-                  "contributor": {
-                      "firstName": "Casey",
-                      "lastName": "Hume"
-                  },
-                  "e_mail": "casey.hume@nist.gov",
-                  "instituion": "NIST",
-                  "role": "Principal Investigator"
-              }
-          ],
-          "keyWords": [
-              "GitHub pages template"
-          ],
-          "dataStorage": [],
-          "dataSize": null,
-          "sizeUnit": "GB",
-          "softwareDevelopment": {
-              "development": "no",
-              "softwareUse": "",
-              "softwareDatabase": "",
-              "softwareWebsite": ""
-          },
-          "technicalResources": [],
-          "ethical_issues": {
-              "ethical_issues_exist": "no",
-              "ethical_issues_description": "",
-              "ethical_issues_report": "",
-              "dmp_PII": "no"
-          },
-          "dataDescription": "Code is developed in python, html, css, xml and javascript and shared via GitHub's USNISTGOV organization.",
-          "dataCategories": [
-              "Working Data"
-          ],
-          "preservationDescription": "The primary working storage is on a local virtual machine, with primary backup storage on a network drive.  Additional backups are in the GitHub cloud.",
-          "pathsURLs": [
-              "https://github.com/usnistgov/Pages-Template"
-          ]
-      },
-      "meta": {},
-      "curators": []
-    }
-    ]
-
-  //need to add a call to the search API here.
-  //this.loading = true;
-  dapData = [
-    {
-        "id": "mds3:0081",
-        "name": "ZoIrY",
-        "acls":
-        {
-            "read":
-            [
-                "cnd7"
-            ],
-            "write":
-            [
-                "cnd7"
-            ],
-            "admin":
-            [
-                "cnd7"
-            ],
-            "delete":
-            [
-                "cnd7"
-            ]
-        },
-        "owner": "cnd7",
-        "deactivated": null,
-        "status":
-        {
-            "created": 1700154605.5411382,
-            "state": "reviewed",
-            "action": "update",
-            "since": 1700154605.5412595,
-            "modified": 1700154646.185461,
-            "message": "",
-            "createdDate": "2023-11-16T17:10:05",
-            "modifiedDate": "2023-11-16T17:10:46",
-            "sinceDate": "2023-11-16T17:10:05"
-        },
-        "data":
-        {
-            "@id": "ark:/88434/mds3-0081",
-            "title": "Title of Record",
-            "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
-            "@type":
-            [
-                "nrdp:PublicDataResource",
-                "dcat:Resource"
-            ],
-            "doi": "doi:10.18434/mds3-0081",
-            "author_count": 0,
-            "file_count": 0,
-            "nonfile_count": 0,
-            "reference_count": 0
-        },
-        "meta":
-        {
-            "resourceType": "data",
-            "creatorisContact": true,
-            "willUpload": false,
-            "assocPageType": "stand-alone"
-        },
-        "curators":
-        [],
-        "type": "dap"
-    },
-    {
-        "id": "mds3:0068",
-        "name": "H652E",
-        "acls":
-        {
-            "read":
-            [
-                "cnd7"
-            ],
-            "write":
-            [
-                "cnd7"
-            ],
-            "admin":
-            [
-                "cnd7"
-            ],
-            "delete":
-            [
-                "cnd7"
-            ]
-        },
-        "owner": "cnd7",
-        "deactivated": null,
-        "status":
-        {
-            "created": 1695319633.0411932,
-            "state": "edit",
-            "action": "update",
-            "since": 1695319633.041336,
-            "modified": 1695319658.6617084,
-            "message": "",
-            "createdDate": "2023-09-21T18:07:13",
-            "modifiedDate": "2023-09-21T18:07:38",
-            "sinceDate": "2023-09-21T18:07:13"
-        },
-        "data":
-        {
-            "@id": "ark:/88434/mds3-0068",
-            "title": "This is my test record",
-            "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
-            "@type":
-            [
-                "nrdp:PublicDataResource",
-                "dcat:Resource"
-            ],
-            "doi": "doi:10.18434/mds3-0068",
-            "contactPoint":
-            {
-                "fn": "Christopher Davis",
-                "hasEmail": "mailto:christopher.davis@nist.gov",
-                "@type": "vcard:Contact"
-            },
-            "author_count": 0,
-            "file_count": 0,
-            "nonfile_count": 0,
-            "reference_count": 0
-        },
-        "meta":
-        {
-            "resourceType": "data",
-            "creatorisContact": true,
-            "willUpload": false,
-            "assocPageType": "stand-alone"
-        },
-        "curators":
-        [],
-        "type": "dap"
-    },
-    {
-        "id": "mds3:0082",
-        "name": "79hwX",
-        "acls":
-        {
-            "read":
-            [
-                "cnd7"
-            ],
-            "write":
-            [
-                "cnd7"
-            ],
-            "admin":
-            [
-                "cnd7"
-            ],
-            "delete":
-            [
-                "cnd7"
-            ]
-        },
-        "owner": "cnd7",
-        "deactivated": null,
-        "status":
-        {
-            "created": 1700161987.5689886,
-            "state": "edit",
-            "action": "create",
-            "since": 1700161987.5691032,
-            "modified": 1700161987.5742366,
-            "message": "",
-            "createdDate": "2023-11-16T19:13:07",
-            "modifiedDate": "2023-11-16T19:13:07",
-            "sinceDate": "2023-11-16T19:13:07"
-        },
-        "data":
-        {
-            "@id": "ark:/88434/mds3-0082",
-            "title": "Spectroscopy Inferences",
-            "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
-            "@type":
-            [
-                "nrdp:PublicDataResource",
-                "dcat:Resource"
-            ],
-            "doi": "doi:10.18434/mds3-0082",
-            "author_count": 0,
-            "file_count": 0,
-            "nonfile_count": 0,
-            "reference_count": 0
-        },
-        "meta":
-        {
-            "resourceType": "data",
-            "creatorisContact": true,
-            "willUpload": false,
-            "assocPageType": "stand-alone"
-        },
-        "curators":
-        [],
-        "type": "dap"
-    },
-    {
-        "id": "mds3:0115",
-        "name": "Something",
-        "acls":
-        {
-            "read":
-            [
-                "cnd7"
-            ],
-            "write":
-            [
-                "cnd7"
-            ],
-            "admin":
-            [
-                "cnd7"
-            ],
-            "delete":
-            [
-                "cnd7"
-            ]
-        },
-        "owner": "cnd7",
-        "deactivated": null,
-        "status":
-        {
-            "created": 1704378224.7134526,
-            "state": "published",
-            "action": "create",
-            "since": 1704378224.7135918,
-            "modified": 1704378224.7216735,
-            "message": "",
-            "createdDate": "2024-01-04T14:23:44",
-            "modifiedDate": "2024-01-04T14:23:44",
-            "sinceDate": "2024-01-04T14:23:44"
-        },
-        "data":
-        {
-            "@id": "ark:/88434/mds3-0115",
-            "title": "Super Science Data",
-            "_schema": "https://data.nist.gov/od/dm/nerdm-schema/v0.7#",
-            "@type":
-            [
-                "nrdp:PublicDataResource",
-                "dcat:Resource"
-            ],
-            "doi": "doi:10.18434/mds3-0115",
-            "author_count": 0,
-            "file_count": 0,
-            "nonfile_count": 0,
-            "reference_count": 0
-        },
-        "meta":
-        {
-            "resourceType": "data",
-            "creatorisContact": true,
-            "willUpload": false,
-            "assocPageType": "loosely-related"
-        },
-        "curators":
-        [],
-        "type": "dap"
-    }
-]
-  
-
   orgs = [
     {
         "ORG_ID": 13642,
@@ -824,6 +265,8 @@ export class SearchListModalComponent implements OnInit {
       let config = this.cfgsvc.getConfig();
       this.dapAPI = config['dapAPI'];
       this.dmpAPI = config['dmpAPI'];
+      this.dmpEDIT = config['dmpEDIT'];
+      this.dapEDIT = config['dapEDIT'];
       // config values here
       
       this.authToken = this.config.data.authToken
@@ -858,8 +301,14 @@ export class SearchListModalComponent implements OnInit {
     
   }
 
-  linkto(item:string){
-    // URL specification here
+  linkto(item:string,rectype:string){
+    if(rectype == 'dap'){
+        return this.dapEDIT+item
+    }else if(rectype == 'dmp'){
+        return this.dmpEDIT+item
+    }else{
+        return ''
+    }
   }
 
   onOutputTypeChange(event: any) {
@@ -921,6 +370,20 @@ export class SearchListModalComponent implements OnInit {
    * @returns dap
    */
   public customSerialize(item: any,rectype:string) {
+    //if all items are selected when computing them, adding them to the selected items.
+    if (this.allSelected){
+      this.selected.push(item.id)
+    }
+    if (rectype == 'dap'){
+      if(!this.dapData.find((object: any) => object.id === item.id)){
+        this.dapData.push(item)
+    }
+    }else if(rectype == 'dmp'){
+      if(!this.dmpData.find((object: any) => object.id === item.id)){
+        this.dmpData.push(item)
+      }
+    }
+    //serializing data
     let tmp = new dmap();
     tmp.id = item.id
     tmp.rectype =rectype
@@ -928,19 +391,62 @@ export class SearchListModalComponent implements OnInit {
     tmp.name = item.name
     tmp.owner = item.owner
     tmp.state = item.status.state
-    
-    tmp.orgid = rectype === 'dmp'  ? item.data.organization[0].ORG_ID : '';
+    //tmp.orgid = 12
+    //tmp.orgid = rectype === 'dmp'  ? item.data.organization[0].ORG_ID : '';
+    tmp.orgid = rectype === 'dmp' && item.data.organizations && item.data.organizations.length > 0 ? item.data.organizations[0].ORG_ID : '';
     rectype == 'dap' ? tmp.title= item.data['title'] : tmp.title = ''
     return tmp
   }
 
+  reset_forsearch(){
+    if (this.data$ !== undefined) {
+      this.data$ = this.data$.pipe(
+        map(items => items.map(item => ({
+          ...item,
+          selected: !item.selected // This line toggles the `selected` state.
+        })))
+      );
+    }
+    this.dapData = [];
+    this.dmpData = [];
+  }
+
+  search(searchTerm: any) {
+    this.reset_forsearch()
+    this.searchTerm = searchTerm;
+    console.log('searchJSON: ' + JSON.stringify(searchTerm));
+    const data = {
+        filter: {
+          $and: [
+            {
+                "$text": {
+                    "$search": searchTerm
+                }
+            }
+          ]
+        },
+        permissions: ['read', 'write']
+      };
+  
+    const urlDAP = `${this.dapAPI}/:selected`;
+    const dap$ = this.fetchAdvancedSearchResults(urlDAP,data,'dap');
+    
+    const urlDMP = `${this.dmpAPI}/:selected`;
+    const dmp$ = this.fetchAdvancedSearchResults(urlDMP,data,'dmp');
+
+    this.data$ = forkJoin([ dap$, dmp$]).pipe(
+        map(([dapData, dmpData]) => [...dapData, ...dmpData])
+      );   
+    }
+
   onSearchClick() {
+    this.reset_forsearch()
     //need to build DBIO search JSON here
     let andArray = [
     ];
 
     if(this.keywords !=  undefined) {
-        var keywordsObj = {'data.keywords': this.keywords};
+        var keywordsObj = {'data.keyword': this.keywords};
         andArray.push(keywordsObj);
     }
     if(this.theme !=  undefined) {
@@ -951,120 +457,186 @@ export class SearchListModalComponent implements OnInit {
         var statusObj = {'status.state': this.status};
         andArray.push(statusObj);
     }
+    if(this.publishedAfter !=  undefined) {
+        var publishedAfterObj = {'status.modified': {'$gte': this.publishedAfter.getTime() / 1000}};
+        andArray.push(publishedAfterObj);
+    }
+    if(this.publishedBefore !=  undefined) {
+        var publishedBeforeObj = {'status.modified': {'$lte': this.publishedBefore.getTime() / 1000}};
+        andArray.push(publishedBeforeObj);
+    }
+    /*
     if(this.selectedOrg !=  undefined) {
         var orgObj = {'org': this.selectedOrg.ORG_ID};
         andArray.push(orgObj);
-    }
+    }*/
     if(this.recordOwner !=  undefined) {
         //may need to switch from people ID to username at some point
         var ownerObj = {'owner': this.recordOwner};
         andArray.push(ownerObj);
     }
+    /*
     if(this.paper != undefined) {
         var paperObj = {'data.paper': this.paper};
         andArray.push(paperObj);
     }
-    if(this.output != undefined) {
-        var outputObj = {'output': this.output};
-        andArray.push(outputObj);
-    }
+    */
 
-    var searchJSON = {
-        "$and": andArray,
-        "permissions": [
-            "read",
-            "write"
-        ]
-    };
-    this.data = [];
-    console.log('searchJSON: ' + JSON.stringify(searchJSON));
-    
+    const data = {
+        filter: {
+          $and: andArray
+        },
+        permissions: ['read', 'write']
+      };
+        
     const apiMap = {
         'dmp': this.dmpAPI,
         'dap': this.dapAPI
       } as const;
       
       if (this.resourceType === 'dmp' || this.resourceType === 'dap') {
-        const url = `${apiMap[this.resourceType as keyof typeof apiMap]}/:select`;
-        this.fetchAdvancedSearchResults(url, searchJSON, this.data, this.resourceType);
+        const url = `${apiMap[this.resourceType as keyof typeof apiMap]}/:selected`;
+        this.data$ = this.fetchAdvancedSearchResults(url,data, this.resourceType);
       } else {
-        (['dap', 'dmp'] as ("dmp" | "dap")[]).forEach((type: keyof typeof apiMap) => {
-          const url = `${apiMap[type]}/:select`;
-          this.fetchAdvancedSearchResults(url, searchJSON, this.data, type);
-        });
+        const urlDAP = `${this.dapAPI}/:selected`;
+        const dap$ = this.fetchAdvancedSearchResults(urlDAP,data,'dap');
+        
+        const urlDMP = `${this.dmpAPI}/:selected`;
+        const dmp$ = this.fetchAdvancedSearchResults(urlDMP,data,'dmp');
+
+        this.data$ = forkJoin([dap$, dmp$]).pipe(
+            map(([dapData, dmpData]) => [...dapData, ...dmpData])
+        );
       }
-      
   }
 
-  fetchAdvancedSearchResults(url:string,searchJSON:any,data:any[],type:string) {
-    this.http.post(url,JSON.stringify(searchJSON), { headers: { Authorization: "Bearer "+this.authToken }})
-      .pipe(map((responseData: any) => {
-        console.log(responseData)
-        return responseData
-      })).subscribe(records => {
-        console.log("Loading "+records.length+" records");
-        for (let i = 0; i < records.length; i++) {
-          data.push(this.customSerialize(records[i],type))
-        }
-      })
-
+  fetchAdvancedSearchResults(url:string,searchJSON:any,type:string): Observable<any[]> {
+    return this.http.post(url,searchJSON, { headers: { Authorization: "Bearer "+this.authToken }})
+      .pipe(
+        map((responseData: any) => {
+          if (responseData) {
+            console.log("Loading "+responseData.length+" records");
+            return responseData.map((record:any) => this.customSerialize(record, type));
+          } else {
+            console.log("No records to load for "+type);
+            return [];
+          }
+        })
+      );
   }
+
+
 
   onExportListClick(){
-    console.log(this.outputType);
-    if(this.outputType == 'pdf'){
-    // Get the selected records
-    const selectedRecords = this.data.filter((item: Selected)  => item.selected);
-    console.log('Selected Records:', selectedRecords);
+    if(this.selected.length !== 0 ){
+      console.log(this.selected.length)
+      console.log(this.selected)
+      var tmpData: any[] = [];
+      console.log(this.outputType);
+      if(this.outputType == 'pdf'){
+        for (let item of this.selected) {
+          if (item.startsWith('mdm')) {
+              tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+          } else if (item.startsWith('mds')) {
+              tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+          }
+      }
 
     // Prepare table data
-    const tableBody = selectedRecords.map((record: dmap) => {
+    const tableBody = tmpData.map((record: any) => {
+      const type = record.id.startsWith('mds') ? "dap" : "dmp"
         return [
-            record.rectype,
-            record.id,
+            type,
+            { text: record.id, link: this.linkto(record.id,type), color: 'blue', decoration: 'underline' },
             record.name,
             record.owner,
-            record.modifiedDate.toString(), // Convert Date to string
-            record.state,
-            record.orgid.toString(), // Convert number to string
-            record.title
+            record.status.modifiedDate.split('T')[0],
+            record.status.state,
+            record.id.startsWith('mdm')  && record.data.organizations && record.data.organizations.length > 0 ? record.data.organizations[0].ORG_ID : 'no-org-code',
+            record.id.startsWith('mds') ? "no-title" : record.data.title
         ];
     });
+    console.log(tableBody)
 
-    // Add table headers
-    const tableHeaders = ['Record Type', 'ID', 'Name', 'Owner', 'Modified Date', 'State', 'Org ID', 'Title'];
-    const tableHeaders1 = ['Record Typ1e', 'ID1', 'Name1', 'Owner1', 'Modified Date1', 'State1', 'Org ID1', 'Title1'];
-
-    // Create the table
-    const table = {
-        table: {
-            headerRows: 1,
-            widths: ['10%', '10%', '10%', '10%', '10%', '10%', '10%', '10%'],
-            body: [
-                tableHeaders,
-                ...tableBody,
+    const tableHeaders = [
+      { text: 'Type', style: 'tableHeader' },
+      { text: 'Rec #', style: 'tableHeader' },
+      { text: 'Name', style: 'tableHeader' },
+      { text: 'Owner', style: 'tableHeader' },
+      { text: 'Modified Date', style: 'tableHeader' },
+      { text: 'Status', style: 'tableHeader' },
+      { text: 'Org code', style: 'tableHeader' },
+      { text: 'Title', style: 'tableHeader' }
+  ];
+  
+  // Assuming tableBody is defined somewhere in your code and formatted correctly
+  // Each row in tableBody should be wrapped in a style for the body if needed
+  
+  const table = {
+      table: {
+          headerRows: 1,
+          widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
+          body: [
+              tableHeaders,
+              ...tableBody.map(row => row.map(cell => ({ text: cell, style: 'tableBody' }))), // Apply body style to each cell
+          ]
+      }
+  };
+  
+  let docDefinition: TDocumentDefinitions = {
+      content: [
+        { text: 'EDI Dataset Status', style: 'title' }, // Title
+        { text: 'Total records selected : '+tableBody.length, style: 'subtitle' }, // Subtitle
+        { text: '(Click the record number to go to the record)', style: 'subsubtitle' }, // Subtitle
+          table // Add the table to the PDF content
+      ],
+      styles: {
+        title: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10], // Adjust margin as needed
+          alignment:'center'
+      },
+      subtitle: {
+          fontSize: 12,
+          bold: false,
+          margin: [0, 0, 0, 20], // Adjust margin as needed
+          alignment:'center'
+      },
+      tableHeader: {
+        fontSize: 12,
+        bold: true,
+        color: 'white',
+          fillColor: '#7B9BDA', // Background color for headers
+      },
+      tableBody: {
+        fontSize: 10,
+          fillColor: '#F9F1BC', // Background color for body
+        
+      },
+      subsubtitle: {
+        fontSize: 6,
+        bold: false,
+        margin: [0, 0, 0, 0], // Adjust margin as needed
+      },
+    },
+    header: function(currentPage, pageCount) {
+        return {
+            columns: [
+                { text: 'Date: ' + new Date().toLocaleDateString(), alignment: 'left',fontSize: 10},
+                { text: 'Page ' + currentPage.toString() + ' of ' + pageCount, alignment: 'right',fontSize: 10 }
+            ],
+            margin: [40, 20] // Adjust as needed
+        };
+    },
+    footer: function(currentPage, pageCount) {
+        return {
+            columns: [
+                { text: 'Link to portal',link:'https://localhost/portal/landing', color: 'blue', decoration: 'underline' , alignment: 'center', margin: [0, 0, 0, 20] } // Adjust as needed
             ]
-        }
-    };
-
-    let docDefinition: TDocumentDefinitions = {
-        content: [
-            { text: 'Selected Records', style: 'header' },
-            table // Add the table to the PDF content
-        ],
-        styles: {
-            header: {
-                fontSize: 16,
-                bold: true,
-                margin: [0, 0, 0, 5], // bottom margin
-                fillColor: 'blue',
-                color: 'white', // Text color for the header
-            },
-            body: {
-                fillColor: 'yellow',
-            },
-        }
-    };
+        };
+    }
+  };
 
     // Download the PDF
     //I don't want my timestamp to be separated by _ 
@@ -1073,80 +645,211 @@ export class SearchListModalComponent implements OnInit {
     pdfMake.createPdf(docDefinition).download(filename);
 
     // Perform your search logic here
-}else if (this.outputType == 'csv'){
-    const selectedRecords = this.data.filter((item: Selected)  => item.selected);
-    const tableBody = selectedRecords.map((record: dmap) => {
-        return [
-            record.rectype,
-            record.id,
-            record.name,
-            record.owner,
-            record.modifiedDate.toString(), // Convert Date to string
-            record.state,
-            record.orgid.toString(), // Convert number to string
-            record.title
-        ];
-    });
+    }else if (this.outputType == 'csv'){
+      console.log("DAPDATA "+JSON.stringify(this.dapData, null, 2))
+      console.log("DMPDATA "+JSON.stringify(this.dmpData, null, 2))
+      if(this.resourceType === 'dmp'){
+        for(let item of this.selected){
+            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+        }
+        this.exportCSV(tmpData);
+      }else if(this.resourceType === 'dap'){  
+        for(let item of this.selected){
+          tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+      }
+      this.exportCSV(tmpData);
+      }else{
+        const allStartWithMds = this.selected.every(item => item.startsWith('mds'));
+        const allStartWithMdm = this.selected.every(item => item.startsWith('mdm'));
 
-    var options = { 
-        fieldSeparator: ',',
-        quoteStrings: '',
-        decimalseparator: '.',
-        showLabels: true, 
-        showTitle: false,
-        useBom: true,
-        noDownload: false,
-        headers: ["Record type", "ID","name","owner","modified date","state","org id","title"]
-      };
-
-      const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
-    const filename = `records_${timestamp}`;
-    new ngxCsv(tableBody, filename,options);
-}else if (this.outputType == 'json'){
-    var tmpData:any;
-    const selectedRecords = this.data.filter((item: Selected)  => item.selected);
-    console.log(selectedRecords)
-    console.log("===============")
-    console.log(this.resourceType)
-    if(this.resourceType == 'dap'){
-        tmpData = this.dapData.filter((dapRecord: any) =>
-            selectedRecords.some((record: Selected) => dapRecord.id === record.id)
-          );
-    }else if(this.resourceType == 'dmp'){
-        tmpData = this.dmpData.filter((dmpRecord: any) => 
-            selectedRecords.some((record: Selected) => dmpRecord.id === record.id)
-          );
-    }
-
-    if (tmpData && tmpData.length !== 0) {
-        const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
-        const filename = `records_${timestamp}.json`;
-        console.log(tmpData);
-        var json = JSON.stringify(tmpData, null, 2);
-        console.log(json);
-        var blob = new Blob([json], {type: "application/json"});
-        var url  = URL.createObjectURL(blob);
-
-        var a = document.createElement('a');
-        a.download = filename;
-        a.href = url;
-        a.click();
-        URL.revokeObjectURL(url);
-      } else {
-        console.log(tmpData)
-        if(selectedRecords.length == 0 ){
-            alert('No records selected. Please select records and try again.')
-        }else if(this.outputType === 'json' && !this.resourceType) {
-          alert('You can only export JSON for a single resource type. Please select a resource type and try again.');
+        if(allStartWithMds){
+          for(let item of this.selected){
+            tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+          }
+        this.exportCSV(tmpData);
+        }else if(allStartWithMdm){
+          for(let item of this.selected){
+            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+          }
+          this.exportCSV(tmpData);
+        }else{
+          alert('You can only export JSON for a single resource type. Please select only dmp or daps  and try again.');
           return;
         }
-    
+      }  
+    }else if (this.outputType == 'json'){
+      console.log("DAPDATA "+JSON.stringify(this.dapData, null, 2))
+      console.log("DMPDATA "+JSON.stringify(this.dmpData, null, 2))
+      if(this.resourceType === 'dmp'){
+        for(let item of this.selected){
+            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+        }
+        this.export_json(tmpData);
+      }else if(this.resourceType === 'dap'){  
+        for(let item of this.selected){
+          tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+      }
+      this.export_json(tmpData);
+      }else{
+        const allStartWithMds = this.selected.every(item => item.startsWith('mds'));
+        const allStartWithMdm = this.selected.every(item => item.startsWith('mdm'));
+
+        if(allStartWithMds){
+          for(let item of this.selected){
+            tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+          }
+        this.export_json(tmpData);
+        }else if(allStartWithMdm){
+          for(let item of this.selected){
+            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+          }
+          this.export_json(tmpData);
+        }else{
+          alert('You can only export JSON for a single resource type. Please select only dmp or daps  and try again.');
+        }
+      }
     }
+    }else{
+      alert('No records selected. Please select records and try again.')
     }
-    else{
-        alert('Please select an output type in the Advance Search section and try again.');
-    }
+    this.data$ = this.data$.pipe(
+      map(items => items.map(item => ({
+        ...item,
+        selected:this.selected.includes(item.id)
+      })))
+    );
+    this.selected = [];
+
 }
+
+  export_json(tmpData: any[]){
+    if (tmpData && tmpData.length !== 0) {
+      const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+      const filename = `records_${timestamp}.json`;
+      console.log(tmpData);
+      var json = JSON.stringify(tmpData, null, 2);
+      console.log(json);
+      var blob = new Blob([json], {type: "application/json"});
+      var url  = URL.createObjectURL(blob);
+
+      var a = document.createElement('a');
+      a.download = filename;
+      a.href = url;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+}
+
+flattenObject(obj: any, parentKey = '', delimiter = '_'): any {
+  let flattened: { [key: string]: any } = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    const newKey = parentKey ? `${parentKey}${delimiter}${key}` : key;
+
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.assign(flattened, this.flattenObject(value, newKey, delimiter));
+    } else {
+      flattened[newKey] = value;
+    }
+  }
+
+  return flattened;
+}
+
+ getFlattenedKeys(obj: any, parentKey = '', delimiter = '_'): string[] {
+  let keys: string[]=[];
+
+  for (const [key, value] of Object.entries(obj)) {
+    const newKey = parentKey ? `${parentKey}${delimiter}${key}` : key;
+
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      keys = keys.concat(this.getFlattenedKeys(value, newKey, delimiter));
+    } else {
+      keys.push(newKey);
+    }
+  }
+
+  return keys;
+}
+
+flattenJson(y: any):string{
+  let out: { [key: string]: any } = {};
+
+  function sanitizeValue(value: any): string {
+    let stringValue = String(value).replace(/"/g, '""'); // Escape double quotes
+    // Enclose the value in double quotes if it contains a comma, quote, or newline
+    if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
+      stringValue = `"${stringValue}"`;
+    }
+    return stringValue;
+  }
+
+  function flatten(x: any): string {
+    if (typeof x === 'object' && !Array.isArray(x) && x !== null) {
+      var dict = ''
+      for (const a in x) {
+        const tmp = flatten(x[a])
+        dict+=tmp+','
+      }
+      return dict.slice(0,-1)
+    } else if (Array.isArray(x)) {
+      console.log('Array:', x);
+      // Join array elements with a semicolon and sanitize
+      if(typeof x[0] === 'object'){
+        if ( 'ORG_ID' in x[0]) {
+          var tmp_orga=''
+          for(let i=0; i< x.length;i++){
+            tmp_orga+=x[i].name+' ('+x[i].ORG_ID+')'+';'
+          }
+          return sanitizeValue(tmp_orga.slice(0,-1));
+        }else{
+          return sanitizeValue(String(x[0]));
+        }
+      }
+      return sanitizeValue(x.join(';'));
+    } else {
+      // Apply sanitization to non-object and non-array values
+      return sanitizeValue(x);
+    }
+  }
+
+  return flatten(y);
+}
+
+exportCSV(jsonArray: any[]) {
+  console.log('Exporting CSV:', jsonArray);
+  // Extract column headers
+  const headers = this.getFlattenedKeys(jsonArray[0]).join(',');
+  console.log('Headers:', headers);
+  var out:string='';
+  // Map each json object to a CSV row
+  const rows = jsonArray.map(obj => {
+    // Map each value in the object, flatten it, and then join with commas
+    const row = Object.values(obj).map(value => this.flattenJson(value)).join(',');
+    // Append the row to out with a newline character
+    out += row + '\n';
+    return row; // Return the row if you need the array of rows as well
+  });
+
+  // Combine headers and rows, and separate them by newline
+  const csvData = [headers, ...rows].join('\n');
+  const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+  const filename = `records_${timestamp}.csv`;
+
+  // Create a Blob with the CSV data
+  var blob = new Blob([csvData], { type: "text/csv" });
+  var url = URL.createObjectURL(blob);
+
+  // Create an anchor element and trigger the download
+  var a = document.createElement('a');
+  a.download = filename;
+  a.href = url;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
 
 
   onExportRecordsClick(){
@@ -1157,13 +860,33 @@ export class SearchListModalComponent implements OnInit {
     // Perform your search logic here
   }
 
+
+  toggleItemSelection(id: string) {
+    console.log('Toggling item selection:', id);
+    if (this.selected.includes(id)){
+      this.selected = this.selected.filter(item => item !== id);
+    }else{
+      this.selected.push(id);
+    }
+    console.log('All Selected data:', this.selected);
+  }
+   
+
   toggleSelectAll() {
     this.allSelected = !this.allSelected;
-    this.data.forEach((item: Selected) => item.selected = this.allSelected);
+  
+  // Assuming this.data$ is your Observable of data
+  // This will show on the UX that all items are selected
+  this.data$ = this.data$.pipe(
+    map(items => items.map(item => ({
+      ...item,
+      selected: this.allSelected
+    })))
+  );
+
   }
 
   getPeople($event: any) {
-    //this.suggestions = this.tempOwners.filter(val => val.FULL_NAME.toUpperCase().includes($event.query.toUpperCase()))
     this.apiService.get_NIST_Personnel($event.query.toUpperCase()).subscribe((value) => {
         console.log(value);
     }
@@ -1175,34 +898,5 @@ export class SearchListModalComponent implements OnInit {
     this.orgSuggestions = this.orgs.filter(val => val.ORG_NAME.toUpperCase().includes($event.query.toUpperCase()))
   }
 
-  search(searchTerm: any) {
-    console.log(searchTerm)
-    this.data = [];
-    /*
-    var searchJSON = {
-        "$and": searchTerm,
-        "permissions": [
-            "read",
-            "write"
-        ]
-    };
-    
-    const apiMap = {
-    'dmp': this.dmpAPI,
-    'dap': this.dapAPI
-    } as const;
 
-    (['dmp', 'dap'] as const).forEach((type) => {
-    const url = `${apiMap[type]}/:select`;
-    console.log(searchJSON)
-    this.fetchAdvancedSearchResults(url, searchJSON, this.data, type);
-    });
-  */
-  for (let i = 0; i < this.dapData.length; i++) {
-    this.data.push(this.customSerialize(this.dapData[i],"dap"))
-  }
-  for (let i = 0; i < this.dmpData.length; i++) {
-    this.data.push(this.customSerialize(this.dmpData[i],"dmp"))
-  }
-}
 }
