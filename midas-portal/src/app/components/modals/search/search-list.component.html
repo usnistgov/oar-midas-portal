@@ -1,37 +1,62 @@
 <p-tabView header="Header 1">
     <p-tabPanel header="Search Results for '{{searchTerm}}'">
-        <div class="container bg-light p-2 d-flex">
-            <input #box type="text" class="form-control custom-input" pInputText value="{{searchTerm }}" (keyup.enter)="search(box.value)">
-            <button pButton class="custom-button" (click)="search(box.value)"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faMagnifyingGlass"></fa-icon>Quick Search</button>
+        <div class=" bg-light p-2 d-flex justify-content-start">
+            <input #box type="text" class="form-control" pInputText value="{{searchTerm }}" (keyup.enter)="search(box.value)">
+            <button pButton class="custom-button" (click)="onSearchClick()"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faMagnifyingGlass"></fa-icon>Search</button>
         </div>
-        <p-panel header="Advanced Search" [toggleable]="true" [collapsed]="true">
-            Resource Type:
+        <p-panel header="Advanced Search" class="advanced-search-panel" [toggleable]="true" [collapsed]="isAdvancedSearchCollapsed" (onToggle)="toggleAdvancedSearch()">
+            <div class="custom-radio-button">
+            <label for="Resource Type"  style="margin-right:5px" title="Are you looking for DAP, DMP or both ?">Resource Type:</label>
             <p-radioButton label="DMP" name="resourceType" value="dmp" [(ngModel)]="resourceType"
-                inputId="dmp" (change)="onresourceTypeChange($event)"></p-radioButton> &nbsp;
+                inputId="dmp" (change)="onresourceTypeChange($event)" pTooltip="look for Data Management Plans"></p-radioButton> &nbsp;
             <p-radioButton label="DAP" name="resourceType" value="dap" [(ngModel)]="resourceType"
-                inputId="dap" (change)="onresourceTypeChange($event)"></p-radioButton> &nbsp;                
+                inputId="dap" (change)="onresourceTypeChange($event)" pTooltip="look for Data Publication"></p-radioButton> &nbsp;                
             <p-radioButton label="Both" name="resourceType" value="both" [(ngModel)]="resourceType"
-                inputId="both" (change)="onresourceTypeChange($event)"></p-radioButton> &nbsp; <br/>
-            Keywords: <input type="text" pInputText [(ngModel)]="keywords"> &nbsp;&nbsp;&nbsp;
-            Theme: <input type="text" pInputText [(ngModel)]="theme"> <br />
-            NIST Organization: <p-autoComplete [suggestions]="orgSuggestions" [(ngModel)]="selectedOrg" field="ORG_NAME"
-                optionLabel="ORG_NAME" placeholder="Select an organization"
-                (completeMethod)="getOrgs($event)"></p-autoComplete> &nbsp; &nbsp; &nbsp;
-            Record Owner: <p-autoComplete [(ngModel)]="recordOwner" [suggestions]="suggestions" field="FULL_NAME"
-                (completeMethod)="getPeople($event)"></p-autoComplete><br />
-            Last modified before: <p-calendar [(ngModel)]="publishedBefore" [showIcon]="true" [appendTo]="'body'"></p-calendar> &nbsp; &nbsp;
-            Last modified after: <p-calendar [(ngModel)]="publishedAfter" [showIcon]="true" [appendTo]="'body'"></p-calendar> <br />
-            Process Status: &nbsp; &nbsp; &nbsp;
-            <p-radioButton name="status" name="status" value="edit" label="edit" value="edit" [(ngModel)]="status" inputId="edit"></p-radioButton>&nbsp;&nbsp;
-            <p-radioButton name="status" name="status" value="processing" label="processing" value="processing" [(ngModel)]="status" inputId="processing"></p-radioButton>&nbsp;&nbsp;
-            <p-radioButton name="status" name="status" value="submitted" label="submitted" value="submitted" [(ngModel)]="status" inputId="submitted"></p-radioButton>&nbsp;&nbsp;
-            <p-radioButton name="status" name="status" value="published" label="published" value="published" [(ngModel)]="status" inputId="published"></p-radioButton>&nbsp;&nbsp;
-            <br>
-            <br />
+                inputId="both" (change)="onresourceTypeChange($event)" pTooltip="look for both DAP & DMP"></p-radioButton> &nbsp; <br/>
+            </div>
+            <div class="form-group custom-input-box">
+                <div class="custom-sub-input">
+                    <label for="keywords" class="form-label" title="Enter keywords for search">Keywords:</label>
+                    <input type="text" pInputText [(ngModel)]="keywords" id="keywords" pTooltip="Keywords for records" class="form-control">
+                </div>
+            
+                <div class="custom-sub-input">
+                    <label for="theme" class="form-label">Theme:</label>
+                    <input type="text" pInputText [(ngModel)]="theme" id="theme" pTooltip="Theme for records" class="form-control">
+                </div>
+            
+                <div class="custom-sub-input">
+                    <label for="selectedOrg" class="form-label">NIST Organization:</label>
+                    <p-autoComplete [suggestions]="orgSuggestions" [(ngModel)]="selectedOrg" pTooltip="Look for the ORG ID" field="ORG_NAME"
+                        optionLabel="ORG_NAME" placeholder="Select an organization"
+                        (completeMethod)="getOrgs($event)"></p-autoComplete>
+                </div>
+            
+                <div class="custom-sub-input">
+                    <label for="recordOwner" class="form-label">Record Owner:</label>
+                    <p-autoComplete [(ngModel)]="recordOwner" [suggestions]="suggestions" pTooltip="Search by owner of the record" field="FULL_NAME"
+                        (completeMethod)="getPeople($event)"></p-autoComplete>
+                </div>
+            
+                <div class="custom-sub-input">
+                    <label for="publishedBefore" class="form-label">Last modified before:</label>
+                    <p-calendar [(ngModel)]="publishedBefore" [showIcon]="true" [appendTo]="'body'" pTooltip="Records modified after that date"></p-calendar>
+                </div>
+            
+                <div class="custom-sub-input">
+                    <label for="publishedAfter" class="form-label">Last modified after:</label>
+                    <p-calendar [(ngModel)]="publishedAfter" [showIcon]="true" [appendTo]="'body'" pTooltip="Records modified before that date"></p-calendar>
+                </div>
+            </div>
+            <div class="custom-radio-button">
+            <label for="Process Status"  style="margin-right:5px">Process Status:</label>
+            <p-radioButton name="status"  value="edit" label="Editing" [(ngModel)]="status" inputId="edit" pTooltip="Records still edited"></p-radioButton>&nbsp;&nbsp;
+            <p-radioButton name="status"  value="processing" label="Processing" [(ngModel)]="status" inputId="processing" pTooltip="Records under processing"></p-radioButton>&nbsp;&nbsp;
+            <p-radioButton name="status"  value="submitted" label="Submitted" [(ngModel)]="status" inputId="submitted" pTooltip="Submitted records"></p-radioButton>&nbsp;&nbsp;
+            <p-radioButton name="status"  value="published" label="Published" [(ngModel)]="status" inputId="published" pTooltip="Published records"></p-radioButton>&nbsp;&nbsp;
+            </div>
             Associated Paper Publication? &nbsp; &nbsp; <input type="checkbox"><p-checkbox name="paper" value="true"
                 [(ngModel)]="paper" ngDefaultControl></p-checkbox>
-            <br /><br />
-            <button pButton (click)="onSearchClick()" [disabled]="!resourceType">Search</button>
         </p-panel>
         <p-panel header="Exports" [toggleable]="true" [collapsed]="true">
             <br />
@@ -41,7 +66,7 @@
             <p-radioButton label="CSV" name="outputType" value="csv" [(ngModel)]="outputType"
                 inputId="outputCSV" (change)="onOutputTypeChange($event)" [disabled]="resourceType === 'both'" pTooltip="Exports records in a flattened format from JSON to CSV. (Only DAP or DMP)" tooltipPosition="top"></p-radioButton> &nbsp;
             <p-radioButton label="PDF" name="outputType" value="pdf" [(ngModel)]="outputType"
-                inputId="outputPDF" (change)="onOutputTypeChange($event)" pTooltip="Exports a summary view combining both dap and dmps in a PDF format" tooltipPosition="top"></p-radioButton> &nbsp;
+                inputId="outputPDF" (change)="onOutputTypeChange($event)" pTooltip="Exports a summary view combining both DAPs and DMPs in a PDF format" tooltipPosition="top"></p-radioButton> &nbsp;
             <br /><br />
             <button pButton (click)="onExportListClick()" [disabled]="!outputType">Export</button>
         </p-panel>
@@ -114,11 +139,76 @@
 height : 200px !important;
 }
 
-.custom-input {
-    width: 85%;
+
+.custom-radio-button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Aligns items to the left */
+}
+
+.custom-radio-button p-radioButton {
+    margin-right: 10px; /* Adjust spacing between radio buttons */
+}
+
+.custom-radio-button p-radioButton .p-radiobutton-label {
+    margin-left: 5px; /* Space between the radio button and its label */
 }
 
 .custom-button {
     width: 15%;
+    display: inline-flex; /* Use inline-flex to keep the button's inline behavior */
+  align-items: center; /* Center align vertically */
+  justify-content: center; /* Center align horizontally */
+  gap: 5px; /* Optional: adds some space between the icon and the text */
+}
+
+
+.advanced-search-panel .ui-panel-titlebar {
+  padding: 10px; /* Adjust padding as needed */
+  margin-bottom: 20px; /* Adjust bottom margin as needed */
+}
+
+.custom-input-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Adjust the space between each field */
+}
+
+.custom-sub-input {
+    display: flex;
+    flex: 1 1 calc(50% - 20px); /* Two items per row with gap */
+    align-items: center;
+}
+
+.custom-sub-input label {
+    margin-bottom: 5px; /* Space between label and input */
+    margin-right: 5px;
+}
+
+.custom-sub-input input,
+.custom-sub-input p-autoComplete,
+.custom-sub-input p-calendar {
+    padding: 4px; /* Padding inside the input fields */
+    border-radius: 4px; /* Rounded corners for the input fields */
+}
+
+/* Remove additional borders and padding from p-autoComplete and p-calendar */
+.custom-sub-input p-autoComplete .ui-autocomplete,
+.custom-sub-input p-calendar .ui-inputtext {
+    border: none;
+    padding: 0;
+}
+
+.custom-sub-input p-autoComplete .ui-autocomplete input,
+.custom-sub-input p-calendar .ui-inputtext input {
+    padding: 8px;
+    border-radius: 4px;
+}
+
+/* Additional styling for responsiveness and aesthetics */
+@media (max-width: 768px) {
+    .custom-sub-input {
+        flex: 1 1 100%; /* Full width on smaller screens */
+    }
 }
     </style>

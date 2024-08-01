@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild,ChangeDetectorRef } from '@angular/core';
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter,faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
@@ -75,7 +75,7 @@ export class SearchListModalComponent implements OnInit {
   cols!: Column[];
   allSelected: boolean = false;
   outputType:string;
-  resourceType: any;
+  resourceType: string = 'both';
   dapAPI: string;
   dmpAPI: string;
   dmpEDIT: string;
@@ -91,6 +91,7 @@ export class SearchListModalComponent implements OnInit {
   dap$: Observable<any[]>;
   dmp$: Observable<any[]>;
   private dapSubscription: Subscription;
+  isAdvancedSearchCollapsed = true;
 
   
 
@@ -221,7 +222,7 @@ export class SearchListModalComponent implements OnInit {
   constructor(private cfgsvc: ConfigurationService, public datepipe:DatePipe,
                 private http: HttpClient,
               public dialogService: DialogService, public messageService: MessageService,
-              public config:DynamicDialogConfig, private apiService: SearchAPIService,)
+              public config:DynamicDialogConfig, private apiService: SearchAPIService,private cdr: ChangeDetectorRef)
   { }
 
   ngAfterViewInit() {
@@ -315,6 +316,12 @@ export class SearchListModalComponent implements OnInit {
     // Access the selected value from the event
     this.outputType = event.target.value;
     // Perform any other actions based on the selected value
+  }
+
+  toggleAdvancedSearch() {
+    console.log(this.isAdvancedSearchCollapsed)
+    this.isAdvancedSearchCollapsed = !this.isAdvancedSearchCollapsed;
+    this.cdr.detectChanges(); // Manually trigger change detection
   }
 
   onresourceTypeChange(event: any) {
@@ -444,7 +451,10 @@ export class SearchListModalComponent implements OnInit {
     //need to build DBIO search JSON here
     let andArray = [
     ];
-
+    if(this.searchTerm !=  undefined) { 
+        var searchTermObj = {'$text': {'$search': this.searchTerm}};
+        andArray.push(searchTermObj);
+    }
     if(this.keywords !=  undefined) {
         var keywordsObj = {'data.keyword': this.keywords};
         andArray.push(keywordsObj);
