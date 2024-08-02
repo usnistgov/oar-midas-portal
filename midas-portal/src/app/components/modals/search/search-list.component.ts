@@ -445,23 +445,23 @@ export class SearchListModalComponent implements OnInit {
     let andArray = [
     ];
 
-    if(this.keywords !=  undefined) {
+    if(this.keywords) {
         var keywordsObj = {'data.keyword': this.keywords};
         andArray.push(keywordsObj);
     }
-    if(this.theme !=  undefined) {
+    if(this.theme) {
         var themeObj = {'data.theme': this.keywords};
         andArray.push(themeObj);
     }
-    if(this.status !=  undefined) { 
+    if(this.status) { 
         var statusObj = {'status.state': this.status};
         andArray.push(statusObj);
     }
-    if(this.publishedAfter !=  undefined) {
+    if(this.publishedAfter) {
         var publishedAfterObj = {'status.modified': {'$gte': this.publishedAfter.getTime() / 1000}};
         andArray.push(publishedAfterObj);
     }
-    if(this.publishedBefore !=  undefined) {
+    if(this.publishedBefore) {
         var publishedBeforeObj = {'status.modified': {'$lte': this.publishedBefore.getTime() / 1000}};
         andArray.push(publishedBeforeObj);
     }
@@ -470,7 +470,7 @@ export class SearchListModalComponent implements OnInit {
         var orgObj = {'org': this.selectedOrg.ORG_ID};
         andArray.push(orgObj);
     }*/
-    if(this.recordOwner !=  undefined) {
+    if(this.recordOwner) {
         //may need to switch from people ID to username at some point
         var ownerObj = {'owner': this.recordOwner};
         andArray.push(ownerObj);
