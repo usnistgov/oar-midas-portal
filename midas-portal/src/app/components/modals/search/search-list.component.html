@@ -1,7 +1,7 @@
 <p-tabView header="Header 1">
     <p-tabPanel header="Search Results for '{{searchTerm}}'">
         <div class=" bg-light p-2 d-flex justify-content-start">
-            <input #box type="text" class="form-control" pInputText value="{{searchTerm }}" (keyup.enter)="search(box.value)">
+            <input #box type="text" class="form-control" pInputText value="{{searchTerm }}" (keyup.enter)="onSearchClick()">
             <button pButton class="custom-button" (click)="onSearchClick()"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faMagnifyingGlass"></fa-icon>Search</button>
         </div>
         <p-panel header="Advanced Search" class="advanced-search-panel" [toggleable]="true" [collapsed]="isAdvancedSearchCollapsed" (onToggle)="toggleAdvancedSearch()">
