@@ -451,27 +451,27 @@ export class SearchListModalComponent implements OnInit {
     //need to build DBIO search JSON here
     let andArray = [
     ];
-    if(this.searchTerm !=  undefined) { 
+    if(this.searchTerm) { 
         var searchTermObj = {'$text': {'$search': this.searchTerm}};
         andArray.push(searchTermObj);
     }
-    if(this.keywords !=  undefined) {
+    if(this.keywords) {
         var keywordsObj = {'data.keyword': this.keywords};
         andArray.push(keywordsObj);
     }
-    if(this.theme !=  undefined) {
+    if(this.theme) {
         var themeObj = {'data.theme': this.keywords};
         andArray.push(themeObj);
     }
-    if(this.status !=  undefined) { 
+    if(this.status) { 
         var statusObj = {'status.state': this.status};
         andArray.push(statusObj);
     }
-    if(this.publishedAfter !=  undefined) {
+    if(this.publishedAfter) {
         var publishedAfterObj = {'status.modified': {'$gte': this.publishedAfter.getTime() / 1000}};
         andArray.push(publishedAfterObj);
     }
-    if(this.publishedBefore !=  undefined) {
+    if(this.publishedBefore) {
         var publishedBeforeObj = {'status.modified': {'$lte': this.publishedBefore.getTime() / 1000}};
         andArray.push(publishedBeforeObj);
     }
