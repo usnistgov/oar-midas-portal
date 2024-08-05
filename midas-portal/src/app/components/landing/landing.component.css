@@ -89,7 +89,7 @@
   }
   .nav-item:hover {
   /* Add your hover styles here */
-  background-color: #005ea2; /* Change background color on hover */
+  background-color: #005ea24d; /* Change background color on hover */
   color:white;
   
 }
@@ -120,7 +120,8 @@
 
 .Menu-Title{
     color:#EFF6FB;
-    padding-left: 1.5rem;
+   /* padding-left: 1.5rem;
+    padding-right: 1.5rem;*/
     size: 3rem;
     font-size:19px;
 }
