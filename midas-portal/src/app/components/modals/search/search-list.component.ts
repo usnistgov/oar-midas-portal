@@ -480,7 +480,7 @@ export class SearchListModalComponent implements OnInit {
         var orgObj = {'org': this.selectedOrg.ORG_ID};
         andArray.push(orgObj);
     }*/
-    if(this.recordOwner !=  undefined) {
+    if(this.recordOwner) {
         //may need to switch from people ID to username at some point
         var ownerObj = {'owner': this.recordOwner};
         andArray.push(ownerObj);
