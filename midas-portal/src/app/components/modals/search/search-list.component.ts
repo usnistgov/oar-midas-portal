@@ -456,11 +456,12 @@ export class SearchListModalComponent implements OnInit {
         andArray.push(searchTermObj);
     }
     if(this.keywords) {
-        var keywordsObj = {'data.keyword': this.keywords};
+        var keywordsObj = {"data.keyword": { "$in": [this.keywords] }};
         andArray.push(keywordsObj);
     }
     if(this.theme) {
-        var themeObj = {'data.theme': this.keywords};
+       
+        var themeObj = {"data.theme": { "$in": [this.theme] }};
         andArray.push(themeObj);
     }
     if(this.status) { 
