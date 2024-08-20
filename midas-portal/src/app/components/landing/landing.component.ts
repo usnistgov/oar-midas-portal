@@ -105,7 +105,7 @@ export class LandingComponent implements OnInit {
       header: 'Complimentary information',
       width: '30%',
       contentStyle: {"max-height": "500px", "overflow": "auto"},
-      baseZIndex: 10000
+      baseZIndex: 100001
     });
 
     this.ref.onClose.subscribe((data: any) => {
