@@ -19,6 +19,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { PanelModule } from "primeng/panel";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
+import { DialogModule } from 'primeng/dialog';
 import { HttpClientModule } from '@angular/common/http';
 // import { AuthService, WebAuthService, CustomizationService } from './components/auth-service/auth.service';
 // import { LandingComponent } from './components/landing/landing.component';
@@ -32,7 +33,7 @@ import { TabViewModule } from 'primeng/tabview';
 @NgModule({
   declarations: [
     AppComponent,
-    // LandingComponent,
+    // LandingComponent
     // EdiListComponent,
     // RecordsComponent,
     // DmpListComponent,
@@ -55,7 +56,8 @@ import { TabViewModule } from 'primeng/tabview';
     AuthModule,
     AutoCompleteModule,
     ButtonModule,
-    TabViewModule
+    TabViewModule,
+    DialogModule
   ],
   providers: [
 //       fakeBackendProvider,

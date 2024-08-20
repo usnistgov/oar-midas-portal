@@ -2,12 +2,13 @@ import { Component, OnInit, } from '@angular/core';
 import {
   faHouse, faUser, faDashboard, faCloud, faClipboardList,
   faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook, faMicrochip, faMagnifyingGlass
-  , faCircle, faPrint, faPersonCircleQuestion, faBuilding, faSquareCaretDown,faSquareCaretUp
+  , faCircle, faPrint, faPersonCircleQuestion, faBuilding, faSquareCaretDown,faSquareCaretUp, faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'oarng';
 import { SearchListModalComponent } from '../modals/search/search-list.component';
+import { InfoComponent } from '../modals/info/info.component';
 
 
 @Component({
@@ -49,6 +50,7 @@ export class LandingComponent implements OnInit {
   ref: DynamicDialogRef;
   public searchResults: any[] = [];
   submenuCollapsed: boolean[] = [true, true];
+  faInfoCircle = faInfoCircle;
 
 
   public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,
@@ -96,6 +98,21 @@ export class LandingComponent implements OnInit {
       i.children[0].children[5].ariaLabel = "Last page"
 
     }
+  }
+
+  toggleInfo() {
+    this.ref = this.dialogService.open(InfoComponent, {
+      header: 'Complimentary information',
+      width: '30%',
+      contentStyle: {"max-height": "500px", "overflow": "auto"},
+      baseZIndex: 10000
+    });
+
+    this.ref.onClose.subscribe((data: any) => {
+      if (data) {
+        console.log('Dialog closed with data:', data);
+      }
+    });
   }
 
   /**
