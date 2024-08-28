@@ -13,5 +13,6 @@
     "nextcloudUI": "https://nextcloud-dev.nist.gov",
     "auth": {
         "serviceEndpoint": "http://localhost/sso/"
-    }
+    },
+    "infoURL": "http://localhost:4200/assets/infotest/info.html"
 }

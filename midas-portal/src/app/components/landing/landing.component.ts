@@ -102,6 +102,9 @@ export class LandingComponent implements OnInit {
 
   toggleInfo() {
     this.ref = this.dialogService.open(InfoComponent, {
+      data: {
+        fileUrl: 'path/to/your/text/file.txt'
+      },
       header: 'Complimentary information',
       width: '30%',
       contentStyle: {"max-height": "500px", "overflow": "auto"},
