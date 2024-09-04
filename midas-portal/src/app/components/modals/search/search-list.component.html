@@ -14,17 +14,18 @@
             <p-radioButton label="Both" name="resourceType" value="both" [(ngModel)]="resourceType"
                 inputId="both" (change)="onresourceTypeChange($event)" pTooltip="look for both DAP & DMP"></p-radioButton> &nbsp; <br/>
             </div>
+            <div class="custom-sub-input">
+                <label for="keywords" class="form-label" title="Enter keywords for search">Keywords:</label>
+                <input type="text" pInputText [(ngModel)]="keywords" id="keywords" pTooltip="Act as a OR constraint, you can use multiple keywords separated by spaces or comas." class="form-control">
+            </div>
             <div class="form-group custom-input-box">
-                <div class="custom-sub-input">
-                    <label for="keywords" class="form-label" title="Enter keywords for search">Keywords:</label>
-                    <input type="text" pInputText [(ngModel)]="keywords" id="keywords" pTooltip="Keywords for records" class="form-control">
-                </div>
-            
+                
+            <!--
                 <div class="custom-sub-input">
                     <label for="theme" class="form-label">Research Area:</label>
                     <input type="text" pInputText [(ngModel)]="theme" id="theme" pTooltip="Theme for records" class="form-control">
                 </div>
-            
+            -->
                 <div class="custom-sub-input">
                     <label for="selectedOrg" class="form-label">NIST Organization:</label>
                     <p-autoComplete [suggestions]="orgSuggestions" [(ngModel)]="selectedOrg" pTooltip="Look for the ORG ID" field="ORG_NAME"
