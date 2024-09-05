@@ -14,5 +14,6 @@
     "auth": {
         "serviceEndpoint": "http://localhost/sso/"
     },
-    "infoURL": "http://localhost:4200/assets/infotest/info.html"
+    "infoURL": "http://localhost:4200/assets/infotest/info.html",
+    "websocket_dbio" : "ws://localhost:8765"
 }

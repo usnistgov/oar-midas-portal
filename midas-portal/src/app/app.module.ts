@@ -25,6 +25,7 @@ import { HttpClientModule } from '@angular/common/http';
 // import { LandingComponent } from './components/landing/landing.component';
 import { LandingModule } from './components/landing/landing.module';
 import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
+import { WebsocketService } from './shared/websocket.service';
 import { ButtonModule } from 'primeng/button';
 import { TabViewModule } from 'primeng/tabview';
 
@@ -39,6 +40,7 @@ import { TabViewModule } from 'primeng/tabview';
     // DmpListComponent,
     // ReviewListComponent,
     // FileListComponent
+
   ],
   imports: [
     BrowserModule,
@@ -62,6 +64,7 @@ import { TabViewModule } from 'primeng/tabview';
   providers: [
 //       fakeBackendProvider,
       { provide: CONFIG_URL, useValue: "assets/environment.json" },
+      WebsocketService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -9,6 +9,8 @@ import { MessageService } from 'primeng/api';
 import { DapModalComponent } from '../../modals/dap/dap.component';
 import { ConfigurationService } from 'oarng';
 import { dap } from '../../../models/dap.model';
+import { WebsocketService } from '../../../shared/websocket.service';
+
 
 
 @Component({
@@ -35,7 +37,7 @@ export class DapComponent implements OnInit, OnChanges {
   
 
   constructor(private configSvc: ConfigurationService, private http: HttpClient, public datepipe: DatePipe, public dialogService: DialogService
-    , public messageService: MessageService) {
+    , public messageService: MessageService,private webSocketService: WebsocketService) {
   }
 
 
@@ -56,6 +58,13 @@ export class DapComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
       if (this.authToken)
           this.fetchRecords(this.dapAPI);
+      this.webSocketService.messages.subscribe((message) => {
+        this.messageService.addAll([
+          { severity: 'success', summary: 'New Records uploaded', detail: message }
+        ]);
+        console.log("Received message: "+message);
+        this.fetchRecords(this.dapAPI);
+      });
   }
 
 
