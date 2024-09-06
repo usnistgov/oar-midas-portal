@@ -9,6 +9,7 @@ import { DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'oarng';
 import { SearchListModalComponent } from '../modals/search/search-list.component';
 import { InfoComponent } from '../modals/info/info.component';
+import { WebsocketService } from '../../shared/websocket.service';
 
 
 @Component({
@@ -51,16 +52,24 @@ export class LandingComponent implements OnInit {
   public searchResults: any[] = [];
   submenuCollapsed: boolean[] = [true, true];
   faInfoCircle = faInfoCircle;
+  public websocketMessage: string;
 
 
   public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,
-    public messageService: MessageService) {
+    public messageService: MessageService,private websocketService: WebsocketService) {
 
   }
 
 
   ngOnInit(): void {
     this.getUserInfo();
+    this.websocketService.messages.subscribe(message => {
+      this.websocketMessage = message;
+      this.messageService.addAll([
+        { severity: 'success', summary: 'New Records uploaded', detail: message }
+      ]);
+      console.log('New WebSocket message received:', this.websocketMessage);
+    });
   }
 
 

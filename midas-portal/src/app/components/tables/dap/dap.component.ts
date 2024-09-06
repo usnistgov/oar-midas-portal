@@ -24,7 +24,8 @@ import { WebsocketService } from '../../../shared/websocket.service';
   ]
 })
 export class DapComponent implements OnInit, OnChanges {
-  @Input() authToken: string|null;    
+  @Input() authToken: string|null;  
+  @Input() websocketMessage: string|null;   
   @ViewChild('recordsTable') recordsTable: Table;
   faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
   faSquarePlus = faSquarePlus;
@@ -58,13 +59,11 @@ export class DapComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
       if (this.authToken)
           this.fetchRecords(this.dapAPI);
-      this.webSocketService.messages.subscribe((message) => {
-        this.messageService.addAll([
-          { severity: 'success', summary: 'New Records uploaded', detail: message }
-        ]);
-        console.log("Received message: "+message);
+
+      if(this.websocketMessage) {
+        console.log("Received message DAP: "+this.websocketMessage);
         this.fetchRecords(this.dapAPI);
-      });
+      };
   }
 
 

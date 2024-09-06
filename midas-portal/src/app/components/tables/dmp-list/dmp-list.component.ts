@@ -18,6 +18,7 @@ import { dmp } from '../../../models/dmp.model';
 export class DmpListComponent implements OnInit {
   @ViewChild('dmptable') dmpTable: Table;
   @Input() authToken: string|null = null;
+  @Input() websocketMessage: string|null;
   faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
   faSquarePlus = faSquarePlus;
   dmpAPI: string;
@@ -46,6 +47,10 @@ export class DmpListComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
       if (this.authToken)
           this.fetchRecords(this.dmpAPI);
+      if(this.websocketMessage) {
+        console.log("Received message DMP: "+this.websocketMessage);
+        this.fetchRecords(this.dmpAPI);
+      };
   }
 
   /**

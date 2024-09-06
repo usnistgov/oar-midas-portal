@@ -18,6 +18,7 @@ export class ReviewListComponent implements OnInit {
   @ViewChild('reviewtable') reviewTable: Table;
   @Input() authToken: string|null = null;
   @Input() userId: string|undefined|null = null;
+  @Input() websocketMessage: string|null;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   faBook=faBook;
   public records: any;
@@ -56,6 +57,10 @@ export class ReviewListComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
       if (this.authToken && this.userId)
           this.fetchRecords(this.NPSAPI+this.userId);
+      if(this.websocketMessage) {
+        console.log("Received message NPS: "+this.websocketMessage);
+        this.fetchRecords(this.NPSAPI+this.userId);
+      };
   }
 
   /**

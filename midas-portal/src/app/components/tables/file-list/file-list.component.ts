@@ -19,6 +19,7 @@ import { ObjectUtils } from 'primeng/utils';
 })
 export class FileListComponent implements OnInit {
   @Input() authToken: string|null;
+  @Input() websocketMessage: string|null;
   @ViewChild('filetable') fileTable: Table;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   dapAPI: string;
@@ -42,6 +43,10 @@ export class FileListComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges){
     if(this.authToken)
       this.fetchRecords(this.dapAPI)
+    if(this.websocketMessage) {
+      console.log("Received message fm: "+this.websocketMessage);
+      this.fetchRecords(this.dapAPI);
+    };
   }
     
 
