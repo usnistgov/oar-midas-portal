@@ -105,7 +105,14 @@ export class DmpListComponent implements OnInit {
       tmp.orgid = item.data.organizations[0].ORG_ID;
     tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate);
     tmp.owner = item.owner;
-    tmp.primaryContact = item.data.primary_NIST_contact.firstName + ' ' + item.data.primary_NIST_contact.lastName;
+    const contributors = item.data.contributors;
+    for (const contributor of contributors) {
+      if (contributor.primary_contact === 'Yes') {
+        tmp.primaryContact = contributor.firstName + ' ' + contributor.lastName;
+        break; 
+      }
+    }
+
     tmp.description = item.data.projectDescription;
     return tmp;
   }
