@@ -17,7 +17,6 @@ export class InfoComponent {
     public config: DynamicDialogConfig,private http: HttpClient,private sanitizer: DomSanitizer) {
     this.config.dismissableMask = true;
     this.placeholder = this.sanitizer.bypassSecurityTrustHtml(`
-         FROM placeholder
         <p>Please be advised that the maintenance of this website occurs:</p>
         <ul>
           <li><strong>Every Sunday from 9 PM to 10 PM</strong></li>
