@@ -27,8 +27,6 @@ export class ReviewListComponent implements OnInit {
   statuses:any[];
   ref: DynamicDialogRef;
 
-
-
   constructor(private configSvc: ConfigurationService, private http: HttpClient,
               public datepipe:DatePipe,public dialogService: DialogService,
               public messageService: MessageService)
@@ -38,7 +36,7 @@ export class ReviewListComponent implements OnInit {
       let config = this.configSvc.getConfig()
       this.NPSAPI = config['NPSAPI'];
       if (! this.NPSAPI.endsWith('/'))
-          this.NPSAPI += '/';
+        this.NPSAPI += '/';
       this.npsUI = config['npsUI'];
       if (! this.npsUI.endsWith('/'))
           this.npsUI += '/';
@@ -48,14 +46,18 @@ export class ReviewListComponent implements OnInit {
           { label: 'Done', value: 'Done' },
           { label: 'In Progress', value: 'In Progress' }
       ];
+
   }
 
   /**
    * update the state of this component as the result of changes in its parent
    */
   ngOnChanges(changes: SimpleChanges) {
+    setTimeout(() => {
       if (this.authToken && this.userId)
-          this.fetchRecords(this.NPSAPI+this.userId);
+        this.fetchRecords(this.NPSAPI+this.userId);
+    }, 5000);
+    
   }
 
   /**
@@ -76,15 +78,15 @@ export class ReviewListComponent implements OnInit {
     .pipe(map((responseData: any)  => {
       return responseData
     })). subscribe(records => {
+      records = JSON.parse(records);
       if(typeof records !== "string" ){
-      this.data = records;
-      if(typeof this.data !== 'undefined') {
-          console.log("Loading "+records.length+" NPS records");
-          for (let i = 0; i<this.data.length;i++){
-            this.data[i].deadline = new Date(this.data[i].deadline)
-          }
+        this.data = records;
+        if(typeof this.data !== 'undefined') {
+            for (let i = 0; i<this.data.length;i++){
+              this.data[i].deadline = new Date(this.data[i].deadline)
+            }
+        }
       }
-    }
     })
   }
 

@@ -42,12 +42,8 @@ interface Org {
     ORG_ID: number;
     ORG_CD: string;
     ORG_LVL_ID: number;
-    ORG_NFC_LVL_CD: number;
     ORG_NAME: string;
-    EFFECTIVE_DT: string;
     ORG_ACRNM: string;
-    ORG_SHORT_NAME: string;
-    ORG_LOC_ID: number;
     PARENT_ORG_ID: number;
     PARENT_ORG_CD: string;
 }
@@ -212,7 +208,7 @@ export class SearchListModalComponent implements OnInit {
 
   ]
   
-  suggestions: People[] = []
+  public suggestions: People[] = []
   orgSuggestions: Org[] = []
 
   loading: boolean = false;
@@ -903,16 +899,40 @@ exportCSV(jsonArray: any[]) {
 
   }
 
-  getPeople($event: any) {
-    this.apiService.get_NIST_Personnel($event.query.toUpperCase()).subscribe((value) => {
-        console.log(value);
-    }
+  getPeople(this:any, $event: any) {
+    let tempPeople: People[] = [];
+    this.apiService.get_NIST_Personnel($event.query.toUpperCase()).subscribe((value:any) => {
+        value.forEach(function(element:any) {
+          tempPeople.push({PEOPLE_ID: element.peopleID, 
+            FIRST_NAME: element.firstName,
+            LAST_NAME: element.lastName,
+            FULL_NAME: element.lastName + ', ' + element.firstName});
+        });
+
+        this.suggestions = tempPeople;
+      }
     );
     
   }
 
   getOrgs($event: any) {
-    this.orgSuggestions = this.orgs.filter(val => val.ORG_NAME.toUpperCase().includes($event.query.toUpperCase()))
+    let tempOrgs: Org[] = [];
+    this.apiService.get_NIST_Organizations($event.query.toUpperCase()).subscribe((value:any) => {
+        value.forEach(function(element:any) {
+          tempOrgs.push({
+            ORG_NAME: element.orG_Name,
+            ORG_ID: element.orG_ID,
+            ORG_ACRNM: element.orG_ACRNM,
+            ORG_CD: element.orG_CD,
+            ORG_LVL_ID: element.orG_LVL_ID,
+            PARENT_ORG_ID: element.parenT_ORG_ID,
+            PARENT_ORG_CD: element.parenT_ORG_CD
+          });
+        });
+
+        this.orgSuggestions = tempOrgs;
+      }
+    );
   }
 
 

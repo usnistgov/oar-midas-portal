@@ -44,7 +44,7 @@ export class DmpListComponent implements OnInit {
    * update the state of this component as the result of changes in its parent
    */
   ngOnChanges(changes: SimpleChanges) {
-      if (this.authToken)
+      if (this.authToken && this.dmpAPI)
           this.fetchRecords(this.dmpAPI);
   }
 
