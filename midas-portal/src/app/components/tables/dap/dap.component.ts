@@ -2,7 +2,8 @@ import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, Input } from '@
 import {faUpRightAndDownLeftFromCenter,faSquarePlus } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, catchError,tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
@@ -54,8 +55,11 @@ export class DapComponent implements OnInit, OnChanges {
    * update the state of this component as the result of changes in its parent
    */
   ngOnChanges(changes: SimpleChanges) {
-      if (this.authToken)
+      if (this.authToken){
           this.fetchRecords(this.dapAPI);
+      }else{
+        console.log("No token")
+      }
   }
 
 
@@ -88,18 +92,29 @@ export class DapComponent implements OnInit, OnChanges {
  * This function get data from the DBIO
  * @param url is the endpoint of the dbio where we want to get data from
  */
-  public fetchRecords(url: string) {
-    this.http.get(url, { headers: { Authorization: "Bearer "+this.authToken }})
-      .pipe(map((responseData: any) => {
-        return responseData
-      })).subscribe(records => {
-        console.log("Loading "+records.length+" DAP records");
-        this.DAP = [];
-        for (let i = 0; i < records.length; i++) {
-          this.DAP.push(this.customSerialize(records[i]))
-        }
+public fetchRecords(url: string) {
+  this.http.get(url, { headers: { Authorization: "Bearer " + this.authToken }})
+    .pipe(
+      map((responseData: any) => {
+        return responseData;
+      }),
+      tap(records => {
+        console.log("Loading " + records.length + " DAP records");
+      }),
+      catchError((error: any) => {
+        console.error("Error fetching records for DAP:", error);
+        return of([]); // Return an empty array in case of error
       })
-  }
+    )
+    .subscribe(records => {
+      this.DAP = [];
+      for (let i = 0; i < records.length; i++) {
+        const serializedItem = this.customSerialize(records[i]);
+        if (serializedItem !== null)
+          this.DAP.push(this.customSerialize(serializedItem));
+      }
+    });
+}
 
   /**
    * This function serialize the data received from the dbio to the model we defined.
@@ -108,17 +123,22 @@ export class DapComponent implements OnInit, OnChanges {
    * @returns dap
    */
   public customSerialize(item: any) {
-    let tmp = new dap();
-    tmp.doi = item.data['doi']
-    tmp.file_count = item.data['file_count']
-    tmp.id = item.id
-    tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate)
-    tmp.name = item.name
-    tmp.owner = item.owner
-    tmp.state = item.status.state
-    tmp.title = item.data['title']
-    tmp.type = item.meta['resourceType']
-    return tmp
+    try {
+      let tmp = new dap();
+      tmp.doi = item.data['doi'];
+      tmp.file_count = item.data['file_count'];
+      tmp.id = item.id;
+      tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate);
+      tmp.name = item.name;
+      tmp.owner = item.owner;
+      tmp.state = item.status.state;
+      tmp.title = item.data['title'];
+      tmp.type = item.meta['resourceType'];
+      return tmp;
+    } catch (error) {
+      console.error("Error serializing DAP item:", error);
+      return null;
+    }
   }
 
 
