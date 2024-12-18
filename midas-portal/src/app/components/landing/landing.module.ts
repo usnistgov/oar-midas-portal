@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AuthService, WebAuthService ,createAuthService} from '../auth-service/auth.service';
 import { LandingComponent } from './landing.component';
 import {HttpClientModule}   from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
@@ -28,6 +26,10 @@ import { FileListModalComponent } from '../modals/file-list/file-list.component'
 import { DmpListModalComponent } from '../modals/dmp-list/dmp-list.component';
 import { ReviewListModalComponent } from '../modals/review-list/review-list.component';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { SearchListModalComponent } from '../modals/search/search-list.component';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { TabViewModule } from 'primeng/tabview';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
     declarations:[
@@ -39,7 +41,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
         DapModalComponent,
         FileListModalComponent,
         DmpListModalComponent,
-        ReviewListModalComponent
+        ReviewListModalComponent,
+        SearchListModalComponent
     ],
     imports:[
          HttpClientModule,
@@ -57,12 +60,13 @@ import { MultiSelectModule } from 'primeng/multiselect';
          FormsModule,
          ToastModule,
          BrowserModule,
-         MultiSelectModule
+         MultiSelectModule,
+         AutoCompleteModule,
+         TabViewModule,
+         CalendarModule,
          
          
     ],
-    providers:[ HttpClient,
-        { provide: AuthService, useFactory: createAuthService, deps: [ HttpClient ] },DatePipe
-]
+    providers:[ HttpClient,DatePipe]
 })
 export class LandingModule {}

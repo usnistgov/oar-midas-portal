@@ -1,9 +1,9 @@
 
-<p-panel header="My Reviews">
+<p-panel header="My Reviews" pTooltip="Data publications currently under review in the NIST Publication System." tooltipPosition="top">
     <ng-template pTemplate="icons">
-        <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
+        <button pButton class="p-panel-header-icon p-link">
             <!-- <span class="pi pi-cog"></span> -->
-            <a href={{npsUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faListCheck" size="lg" title="Check Reviews"></fa-icon></a>
+            <a href={{npsUI}} target="_blank"><fa-icon [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faBook" size="lg" title="Check Reviews"></fa-icon></a>
        
         </button>
         <p-toast></p-toast>
@@ -12,7 +12,7 @@
         <!-- <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu> -->
 </ng-template>
 <div class="">
-    <p-table #reviewtable [loading]="loading" [rowHover]="true"[value]="data"
+    <p-table #reviewtable  [rowHover]="true"[value]="data"
         [paginator]="true" [rows]="5" [scrollable]="true"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
@@ -27,7 +27,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-item>
             <tr class="tr-class">
-                <td class="td-class"><a href={{linkto(item.name)}} target="_blank">{{item.title}}</a></td>
+                <td class="td-class"><a href={{linkto(item.dataSetID)}} target="_blank">{{item.title}}</a></td>
                 <td class="td-class">{{item.submitterName}}</td>
                 <td class="td-class">{{item.currentReviewer}}</td>
                 <td class="td-class">{{item.currentReviewStep}}</td>

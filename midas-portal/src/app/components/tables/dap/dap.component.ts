@@ -1,9 +1,6 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { faFileEdit, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, Input } from '@angular/core';
+import {faUpRightAndDownLeftFromCenter,faSquarePlus } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
-import { AppConfig } from '../../../config/app.config'
-//import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
@@ -24,51 +21,47 @@ import { dap } from '../../../models/dap.model';
     './dap.component.css'
   ]
 })
-export class DapComponent implements OnInit {
-  @Input() openedAsDialog: boolean = false;
-  @Input() parent: any;
+export class DapComponent implements OnInit, OnChanges {
+  @Input() authToken: string|null;    
+  @ViewChild('recordsTable') recordsTable: Table;
   faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
-  faFileEdit = faFileEdit;
-  public data: any;
-  loading: boolean = true;
+  faSquarePlus = faSquarePlus;
   dapAPI: string;
   dapUI: string;
   dapEDIT: string;
   statuses: any[];
   ref: DynamicDialogRef;
   public DAP: any[] = [];
-
-  dataSource: any;
-
-  @ViewChild('recordsTable') recordsTable: Table;
+  
 
   constructor(private configSvc: ConfigurationService, private http: HttpClient, public datepipe: DatePipe, public dialogService: DialogService
     , public messageService: MessageService) {
   }
 
 
-
-  ngAfterViewInit() {
-
-  }
-
-  async ngOnInit() {
-    let promise = new Promise((resolve) => {
+  ngOnInit() {
       this.dapUI = this.configSvc.getConfig()['dapUI'];
       this.dapAPI = this.configSvc.getConfig()['dapAPI'];
       this.dapEDIT = this.configSvc.getConfig()['dapEDIT'];
-      resolve(this.dapAPI);
-      this.fetchRecords(this.dapAPI);
       this.statuses = [
         { label: 'published', value: 'published' },
         { label: 'edit', value: 'edit' },
         { label: 'reviewed', value: 'reviewed' }
       ];
-
-
-    })
   }
 
+  /**
+   * update the state of this component as the result of changes in its parent
+   */
+  ngOnChanges(changes: SimpleChanges) {
+      if (this.authToken)
+          this.fetchRecords(this.dapAPI);
+  }
+
+
+  /**
+   * this functions open the modal with a bigger view of the dap and passes all the data to the DapModalComponent
+   */
   show() {
     this.ref = this.dialogService.open(DapModalComponent, {
       data: this.DAP,
@@ -80,46 +73,40 @@ export class DapComponent implements OnInit {
       baseZIndex: 10000,
     });
   }
+  
 
+  /**
+   * this function allow to create the link to edit a specific dap
+   * @param item is the id of the dap we want to modify
+   * @returns string that is the link to the dapui interface of the dap
+   */
   linkto(item: string) {
     return this.dapEDIT.concat(item.toString()).concat("?editEnabled=true");
   }
 
-  async getRecords() {
-
-    let records;
-
-    const headerDict = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Allow-Origin': '*',
-      'rejectUnauthorized': 'false'
-    }
-
-    const requestOptions = {
-      headers: new Headers(headerDict)
-    };
-
-    await fetch(this.dapAPI).then(r => r.json()).then(function (r) {
-      return records = r
-    })
-
-    this.loading = false;
-    // return this.records = Object(records);
-  }
-
+/**
+ * This function get data from the DBIO
+ * @param url is the endpoint of the dbio where we want to get data from
+ */
   public fetchRecords(url: string) {
-    this.http.get(url)
+    this.http.get(url, { headers: { Authorization: "Bearer "+this.authToken }})
       .pipe(map((responseData: any) => {
         return responseData
       })).subscribe(records => {
+        console.log("Loading "+records.length+" DAP records");
+        this.DAP = [];
         for (let i = 0; i < records.length; i++) {
           this.DAP.push(this.customSerialize(records[i]))
         }
       })
   }
 
+  /**
+   * This function serialize the data received from the dbio to the model we defined.
+   *  It helps dealing with the data later on in the portal
+   * @param item is the data received form the dbio
+   * @returns dap
+   */
   public customSerialize(item: any) {
     let tmp = new dap();
     tmp.doi = item.data['doi']
@@ -135,10 +122,11 @@ export class DapComponent implements OnInit {
   }
 
 
-  clear(table: Table) {
-    table.clear();
-  }
-
+  /**
+   * little helper for the html to print right tag for status
+   * @param status 
+   * @returns string that correspond to bootstrap key words for button classes
+   */
   getStatus(status: string) {
     switch (status) {
       case 'published':
@@ -151,11 +139,4 @@ export class DapComponent implements OnInit {
     return ""
   }
 
-  titleClick() {
-    console.log(this);
-  }
-
-  filterTable(event: any) {
-    this.recordsTable.filterGlobal(event.target.value, 'contains');
-  }
 }

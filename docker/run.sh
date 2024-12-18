@@ -12,22 +12,25 @@ os=`uname`
 SED_RE_OPT=r
 [ "$os" != "Darwin" ] || SED_RE_OPT=E
 
+ang_dists=midas-portal
+py_dists=
+avail_dists="$ang_dists $py_dists"
+
 function usage {
     cat <<EOF
 
 $prog - build and optionally test the software in this repo via docker
 
 SYNOPSIS
-  $prog [-d|--docker-build] [--dist-dir DIR] [CMD ...] 
-        [DISTNAME|python|angular|java ...] 
+  $prog [-d|--docker-build] [--dist-dir DIR] [-t TESTCL] [MAKEDISTOPTS] 
+        [CMD ...] [DISTNAME|angular ...] 
+        
         
 
 ARGS:
-  python    apply commands to just the python distributions
   angular   apply commands to just the angular distributions
-  java      apply commands to just the java distributions
 
-DISTNAMES:  pdr-lps, pdr-publish, customization-api
+DISTNAMES:  midas-portal
 
 CMDs:
   build     build the software
@@ -36,10 +39,12 @@ CMDs:
   shell     start a shell in the docker container used to build and test
 
 OPTIONS
-  -d        build the required docker containers first
-  -t TESTCL include the TESTCL class of tests when testing; as some classes
-            of tests are skipped by default, this parameter provides a means 
-            of turning them on.
+  -d, --docker-build  build the required docker containers first
+  -t TESTCL           include the TESTCL class of tests when testing; as 
+                        some classes of tests are skipped by default, this 
+                        parameter provides a means of turning them on.
+  --dist-dir          directory to place the output distributions 
+  MAKEDISTOPTS        options accepted by scripts/makedist.angular
 EOF
 }
 
@@ -69,7 +74,7 @@ args=()
 dargs=()
 pyargs=()
 angargs=()
-jargs=()
+dists=()
 testcl=()
 while [ "$1" != "" ]; do
     case "$1" in
@@ -105,16 +110,11 @@ while [ "$1" != "" ]; do
         -*)
             args=(${args[@]} $1)
             ;;
-        python|midas-portal|java)
+        midas-portal)
             comptypes="$comptypes $1"
             ;;
-        midas-portal)
-            wordin midas-portal $comptypes || comptypes="$comptypes midas-portal"
-            angargs=(${args[@]} $1)
-            ;;
-        pdr-publish)
-            wordin python $comptypes || comptypes="$comptypes python"
-            pyargs=(${pyargs[@]} $1)
+        angular)
+            set -- "$@" $ang_dists
             ;;
         build|install|test|shell)
             cmds="$cmds $1"
@@ -132,11 +132,11 @@ done
     dargs=(${dargs[@]} --env OAR_TEST_INCLUDE=\"${testcl[@]}\")
 }
 
-comptypes=`echo $comptypes`
+dists=`echo $dists`
 cmds=`echo $cmds`
-[ -n "$comptypes" ] || comptypes="midas-portal"
+[ -n "$dists" ] || dists="$ang_dists"
 [ -n "$cmds" ] || cmds="build"
-echo "run.sh: Running docker commands [$cmds] on [$comptypes]"
+echo "run.sh: Running docker commands [$cmds] on [$dists]"
 
 testopts="--cap-add SYS_ADMIN"
 volopt="-v ${codedir}:/dev/oar-midas-portal"
@@ -145,7 +145,7 @@ volopt="-v ${codedir}:/dev/oar-midas-portal"
 # changes requiring re-builds.
 # 
 if [ -z "$dodockbuild" ]; then
-    if wordin midas-portal $comptypes; then
+    if wordin midas-portal $dists; then
         if wordin build $cmds; then
             docker_images_built oar-midas-portal/midas-portal || dodockbuild=1
         fi
@@ -158,39 +158,31 @@ fi
     $execdir/dockbuild.sh
 }
 
-if wordin midas-portal $comptypes; then
-    docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
-    if { wordin shell $cmds && [ "$comptypes" == "editable" ]; }; then
-        docmds="$docmds shell"
-    fi
-
-    if [ "$docmds" == "build" ]; then
-        # build only
-        echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
-                       "${args[@]}" "${angargs[@]}"
-        docker run --rm  $volopt "${dargs[@]}" oar-midas-portal/midas-portal build \
-                       "${args[@]}" "${angargs[@]}"
-    fi
+# build distributions, if requested
+#
+if wordin build $cmds; then
+    echo '+' docker run --rm $volopt "${dargs[@]}" \
+                    oar-midas-portal/midas-portal build "${args[@]}" $dists
+    docker run --rm $volopt "${dargs[@]}" \
+           oar-midas-portal/midas-portal build "${args[@]}" $dists
 fi
 
-# if wordin nps $comptypes; then
-#     docmds=`echo $cmds | sed -${SED_RE_OPT}e 's/shell//' -e 's/install//' -e 's/^ +$//'`
-#     if { wordin shell $cmds && [ "$comptypes" == "nps" ]; }; then
-#         docmds="$docmds shell"
-#     fi
+# run tests, if requested
+#
+if wordin test $cmds; then
+    # not yet supported
+    echo '#' test command not yet implemented
+#    echo '+' docker run --rm $volopt "${dargs[@]}" \
+#                    oar-midas-portal/midas-portal test "${args[@]}" $dists
+#    docker run --rm $volopt "${dargs[@]}" \
+#           oar-midas-portal/midas-portal test "${args[@]}" $dists
+fi
 
-#     if [ "$docmds" == "build" ]; then
-#         # build only
-#         echo '+' docker run --rm $volopt "${dargs[@]}" oar-midas-portal/nps build \
-#                        "${args[@]}" "${angargs[@]} -p 5000:5000"
-#         docker run --rm $volopt "${dargs[@]}" -p 5000:5000 oar-midas-portal/nps build \
-#                        "${args[@]}" "${angargs[@]}" 
-#     fi
-# fi
-
-# if wordin pdpserver $cmds; then
-#         echo '+' docker run -ti --rm $volopt "${dargs[@]}" "${envargs[@]}" -p 9090:9090 $PKGNAME/pdpserver \
-#                         "${args[@]}"  "${pyargs[@]}"
-#         exec docker run -ti --rm $volopt "${dargs[@]}" "${envargs[@]}" -p 9090:9090 $PKGNAME/pdpserver \
-#                         "${args[@]}"  "${pyargs[@]}"
-#     fi
+# open a shell, if requested
+#
+if wordin shell $cmds; then
+    echo '+' docker run -ti --rm $volopt "${dargs[@]}"  \
+                    oar-pdr-angular/midas-portal shell "${args[@]}"
+    docker run --rm -ti $volopt "${dargs[@]}" \
+           oar-midas-portal/midas-portal shell
+fi

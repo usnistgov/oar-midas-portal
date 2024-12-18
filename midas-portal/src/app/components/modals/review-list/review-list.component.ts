@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
-import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { ConfigurationService } from 'oarng';
 
 @Component({
   selector: 'app-review-list-modal',
@@ -29,11 +29,14 @@ export class ReviewListModalComponent implements OnInit {
 
   @ViewChild('reviewtable') reviewTable: Table;
 
-  constructor(private appConfig: AppConfig,private http: HttpClient,public datepipe:DatePipe,public dialogService: DialogService
-    , public messageService: MessageService,public config:DynamicDialogConfig) { 
-    
-  }
+  constructor(private cfgsvc: ConfigurationService, public datepipe:DatePipe,
+              public dialogService: DialogService, public messageService: MessageService,
+              public config:DynamicDialogConfig)
+  { }
 
+  /**
+   * This functions injects some JS labels in the HTMl to make it 508 compliant
+   */
   ngAfterViewInit() {
     let filter = document.getElementsByTagName("p-columnfilter");
 
@@ -71,53 +74,44 @@ export class ReviewListModalComponent implements OnInit {
     }
     
   }
+
+  /**
+   * iniating the tables of the modal from data from the landing page
+   */
   async ngOnInit() {
 
-    let promise = new Promise((resolve) => {
-      this.appConfig.getRemoteConfig().subscribe(config => {
-        this.NPSAPI = config.NPSAPI;
-        this.npsUI = config.npsUI;
-        this.data=this.config.data
-        this.count=this.data.length
-      })
-    });
+      let config = this.cfgsvc.getConfig();
+      this.NPSAPI = config['NPSAPI'];
+      this.npsUI = config['npsUI'];
+      
+      this.data=this.config.data
+      console.log(this.data)
+      this.count=this.data.length
 
-
-    
- 
-
-    this.statuses = [
-      { label: 'Pending', value: 'Pending' },
-      { label: 'Done', value: 'Done' },
-      { label: 'In Progress', value: 'In Progress' }
-  ];
+      this.statuses = [
+        { label: 'Pending', value: 'Pending' },
+        { label: 'Done', value: 'Done' },
+        { label: 'In Progress', value: 'In Progress' }
+      ];
   }
 
+  /**
+   * this function allow to create the link to edit a specific nps record
+   * @param item is the id of the dap we want to modify
+   * @returns string that is the link to the npsui interface of the dap
+   */
   linkto(item:string){
-    this.NPSAPI.concat(item.toString())
+    return this.NPSAPI.concat('/Dataset/DataSetDetails?id=').concat(item.toString())
   }
 
-  getStatus(status: string) {
-    switch (status) {
-        case 'Done':
-            return 'success';
-        case 'In Progress':
-            return 'warning';
-        case 'Pending':
-            return 'danger';
-    }
-    return ""
-  }
 
+
+  /**
+   * this function helps to clear the table when doing research
+   * @param table  the table to clear
+   */
   clear(table: Table) {
     table.clear();
 }
 
-  titleClick() {
-    console.log(this);
-  }
-
-  filterTable(event: any) {
-    this.reviewTable.filterGlobal(event.target.value, 'contains');
-  }
 }

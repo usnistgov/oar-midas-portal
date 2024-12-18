@@ -1,31 +1,29 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { CustomizationService } from '../auth-service/auth.service';
-import { AuthService } from '../auth-service/auth.service';
-import { faHouse, faUser, faDashboard, faCloud, faClipboardList,
-faSearch, faFileCirclePlus, faPlus,faBook, faListCheck,faLink,faAddressBook
- ,faCircle, faPrint, faPersonCircleQuestion, faBuilding} from '@fortawesome/free-solid-svg-icons';
-import { AppConfig } from 'src/app/config/app.config';
-import { UserDetails } from '../auth-service/user.interface';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, } from '@angular/core';
+import {
+  faHouse, faUser, faDashboard, faCloud, faClipboardList,
+  faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook, faMicrochip, faMagnifyingGlass
+  , faCircle, faPrint, faPersonCircleQuestion, faBuilding, faSquareCaretDown,faSquareCaretUp, faInfoCircle
+} from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
-import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ToastModule } from 'primeng/toast';
-import { map } from 'rxjs/operators';
+import { DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'oarng';
+import { SearchListModalComponent } from '../modals/search/search-list.component';
+import { InfoComponent } from '../modals/info/info.component';
 
 
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
-  providers:[DialogService,MessageService],
+  providers: [DialogService, MessageService],
   styleUrls: [
     './landing.component.css'
   ]
 })
 export class LandingComponent implements OnInit {
-  faAddressBook=faAddressBook;
+  faAddressBook = faAddressBook;
   faLink = faLink;
+  faSquareCaretUp =faSquareCaretUp;
+  faSquareCaretDown = faSquareCaretDown;
   faCircle = faCircle;
   faBuilding = faBuilding;
   faPlus = faPlus;
@@ -39,167 +37,134 @@ export class LandingComponent implements OnInit {
   faBook=faBook;
   faListCheck=faListCheck;
   faPrint=faPrint;
+  faMicrochip=faMicrochip;
+  faMagnifyingGlass=faMagnifyingGlass;
   faPersonCircleQuestion=faPersonCircleQuestion;
-  private _custsvc: CustomizationService ;
-  public username: string;
-  events: string[] = [];
-  opened: boolean;
-  display = false;
-  filterString: string;
-  userLastName : string;
-  userName: string;
-  userEmail: string;
-  userId: string;
-  userOU: string;
-  userDiv: string;
-  public dap: any;
-  authAPI: string;
-  authRedirect: string;
-  dapAPI: string;
+  userLastName : string|undefined;
+  userName: string|undefined;
+  userEmail: string|undefined;
+  userId: string|undefined;
+  userOU: string|undefined;
+  userDiv: string|undefined;
+  authToken: string|null = null;
+  ref: DynamicDialogRef;
+  public searchResults: any[] = [];
+  submenuCollapsed: boolean[] = [true, true];
+  faInfoCircle = faInfoCircle;
 
-  userDetails: UserDetails;
 
-  public constructor(private authsvc: AuthenticationService,
-                    private appConfig: AppConfig,
-                    private http: HttpClient,public dialogService: DialogService
-                    , public messageService: MessageService) { 
-    
+  public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,
+    public messageService: MessageService) {
+
   }
 
 
   ngOnInit(): void {
-    let promise = new Promise((resolve) => {
-      //this.startEditing(true);
-    
-    console.log('******** authAPI: ' + this.authAPI);
-      this.appConfig.getRemoteConfig().subscribe(config => {
-        this.authAPI = config.authAPI;
-        this.authRedirect = config.authRedirect;
-        console.log('********** calll userinfor ');
-      this.getUserInfo();
-      });
-    })
+    this.getUserInfo();
   }
 
+
+  /**
+   * This functions does two things :
+   * 1- print a pop up to confirm to the user that he's connected
+   * 2- inject some JS labels in the HTMl to make it 508 compliant
+   */
 
   ngAfterViewInit() {
     setTimeout(() => {
+      if (this.userId)
+      {}
+      else{
         this.messageService.addAll([
-            { severity: 'success', summary: 'NIST MIDAS Portal', detail: 'Connected as cnd7'}
+          { severity: 'error', summary: 'Portal login failed', detail: 'Connected as anonymous' }
         ]);
-    })
+    }}, 2000);
 
+    // adding 508 labels to children of column
     let filter = document.getElementsByTagName("p-columnfilter");
-
-    // regular for loop
     var Ar_filter = Array.prototype.slice.call(filter)
     for (let i of Ar_filter) {
-      i.children[0].children[0].ariaLabel="Last Modified"
-      
+      i.children[0].children[0].ariaLabel = "Last Modified"
+
     }
 
+    // adding 508 labels to children of paginator
     let paginator = document.getElementsByTagName("p-paginator");
-
-    // regular for loop
     var Ar_paginator = Array.prototype.slice.call(paginator)
     for (let i of Ar_paginator) {
-        i.children[0].children[1].ariaLabel="First page"
-        i.children[0].children[2].ariaLabel="Previous page"
-        i.children[0].children[4].ariaLabel="Next page"
-        i.children[0].children[5].ariaLabel="Last page"
+      i.children[0].children[1].ariaLabel = "First page"
+      i.children[0].children[2].ariaLabel = "Previous page"
+      i.children[0].children[4].ariaLabel = "Next page"
+      i.children[0].children[5].ariaLabel = "Last page"
 
     }
+  }
 
+  toggleInfo() {
+    this.ref = this.dialogService.open(InfoComponent, {
+      data: {
+        fileUrl: 'path/to/your/text/file.txt'
+      },
+      header: 'Complimentary information',
+      width: '30%',
+      contentStyle: {"max-height": "500px", "overflow": "auto"},
+      baseZIndex: 100001
+    });
 
-    
+    this.ref.onClose.subscribe((data: any) => {
+      if (data) {
+        console.log('Dialog closed with data:', data);
+      }
+    });
+  }
 
-}
+  /**
+   * This method is used to get the user info from the AuthenticationService.
+   * it doesn't take any parameters because the service is used as a lib from oarng
+   * @returns Observable<Credentials> custom model of Crendetials from auth including userID,username,useremail and userOU
+   */
 
   public getUserInfo() {
-    console.log('authAPI: ' + this.authAPI);
-    console.log('authRedirect: ' + this.authRedirect);
+    return this.authsvc.getCredentials().subscribe(
+      creds => {
+        if (!creds || !creds.userId)
+          throw new Error("Missing identity information in credentials");
+        console.log("Logged in as " + creds.userId);
 
-    //make the call to the auth service
-    this.http.get(this.authAPI, { observe: 'response', headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }}).subscribe(response => {
-      console.log('response code: ' + response.status);
-      console.log('user details: ' + response.body);
-      if(response.status != 200) {
-        //redirect to authentication URL
-
-        console.log("Redirecting to " + this.authRedirect + " to authenticate user");
-        window.location.assign(this.authRedirect);        
+        this.userId = creds.userId;
+        this.userName = creds.userAttributes.userName;
+        this.userLastName = creds.userAttributes.userLastName;
+        this.userEmail = creds.userAttributes.userEmail;
+        this.userOU = creds.userAttributes.userOU;
+        if (creds.token)
+          this.authToken = creds.token;
+          //this.authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5ODcxOTAxOSwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.ntiPIo39kG78T7xbVrbJEfw4cz8jn--Bk-t7aRJdvPs"
+      },
+      error => {
+        alert("Unable to determine your identity");
       }
-      else {
-
-         console.log(" userDetails ::"+JSON.parse(JSON.stringify(response.body)))
-         var testToken =  JSON.parse(JSON.stringify(response.body)).token;
-         console.log(" TOKEN ::"+testToken)
-         let responseString = response.body as string;
-         let userDetails = JSON.parse(responseString).userDetails;
-         console.log(" userDetails ::"+userDetails)
-         
-         this.userName = userDetails.userName;
-         this.userLastName = userDetails.userLastName;
-         this.userEmail = userDetails.userEmail;
-         this.userId = userDetails.userId;
-         this.userOU = userDetails.userOU;
-         this.userDiv = userDetails.userDiv + " ("+ userDetails.userDivNum + ")";
-        console.log('username: ' + this.userName);
-      }
-      //this.userDetails = response.body;
-      
-    },
-    httperr => {
-      if (httperr.status == 401) {
-        console.log("Redirecting to " + this.authRedirect + " to authenticate user");
-        window.location.assign(this.authRedirect);  
-     }
-     else if (httperr.status < 100 && httperr.error) {
-       
-         let msg = "Service connection error"
-         if (httperr['message'])
-             msg += ": " + httperr.message
-         if (httperr.error.message)
-             msg += ": " + httperr.error.message
-         if (httperr.status == 0 && httperr.statusText.includes('Unknown'))
-             msg += " (possibly due to CORS restriction?)";
-         alert(msg)
-     }
-     else  {
-        
-         // URL returned some other error status
-         let msg = "Unexpected error during authorization";
-         // TODO: can we get at body of message when an error occurs?
-         // msg += (httperr.body['message']) ? httperr.body['message'] : httperr.statusText;
-         msg += " (" + httperr.status.toString() + " " + httperr.statusText + ")"
-         alert(msg);
-     }
-    }
-    );
+    )/*
+    this.userId="TestId";
+    this.userEmail= "test.user@nist.gov",
+    this.userName= "Test",
+    this.userLastName= "User",
+    this.userOU= "MML",
+    this.authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5ODcxOTAxOSwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.ntiPIo39kG78T7xbVrbJEfw4cz8jn--Bk-t7aRJdvPs"
+*/
   }
 
-  public fetchRecords(url:string){
-    this.http.get(url)
-    .pipe(map((responseData: any)  => {
-      return responseData
-    })). subscribe(records => {
-      this.dap = records
-    })
+ 
+  toggleSubmenu(index: number): void {
+    this.submenuCollapsed[index] = !this.submenuCollapsed[index]; // Toggle the state of the selected submenu
   }
 
+  onSearchKeyUp(value: string) {
 
-  public logintest(){
-    alert("Test");
-    //this.authsvc.getUserInfo();
+    this.ref = this.dialogService.open(SearchListModalComponent, {
+      data: {value: value,authToken:this.authToken},
+      width: '80%',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+    });
   }
-    /**
-     * return true if the user is currently authorized to to edit the resource metadata.
-     * If false, can attempt to gain authorization via a call to authorizeEditing();
-     */
-     public isAuthorized(): boolean {
-      return Boolean(this._custsvc);
-  }
-
-
 }
-

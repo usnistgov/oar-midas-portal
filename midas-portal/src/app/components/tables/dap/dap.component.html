@@ -1,9 +1,8 @@
-<p-panel style="color:#005ea2" header="My Data Publications">
+<p-panel [style]="{color:'#005ea2'}"  header="My Data Publications" pTooltip="Digital asset (e.g. data, software, or service) publications." tooltipPosition="left">
     <ng-template pTemplate="icons">
-        <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
-            <!-- <span class="pi pi-cog"></span> -->
+        <button pButton class="p-panel-header-icon p-link">
             <a href="{{dapUI}}" target="_blank"><fa-icon
-                    [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faFileEdit" size="lg"
+                    [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faSquarePlus" size="lg"
                     title="Create New Record"></fa-icon></a>
         </button>
         <p-toast></p-toast>
@@ -40,7 +39,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-item>
             <tr>
-                <td><a href={{linkto(item.name)}} target="_blank">{{item.name}}</a></td>
+                <td><a href={{linkto(item.id)}} target="_blank">{{item.name}}</a></td>
                 <td>{{item.owner}}</td>
                 <td class="td-class"><p-tag [value]="item.state" [severity]="getStatus(item.state)"></p-tag></td>
                 <td class="td-class">{{this.datepipe.transform(item.modifiedDate,'MM/dd/yyyy')}}</td>

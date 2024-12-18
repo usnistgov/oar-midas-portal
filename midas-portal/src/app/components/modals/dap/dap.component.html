@@ -1,6 +1,6 @@
-<p-panel style="color:#005ea2" header="My Data Publications ({{count}})">
+<p-panel [style]="{color:'#005ea2'}"  header="My Data Publications ({{count}})">
     <ng-template pTemplate="icons">
-        <button pButton class="p-panel-header-icon p-link" (click)="titleClick()">
+        <button pButton class="p-panel-header-icon p-link">
             <!-- <span class="pi pi-cog"></span> -->
             <a href={{dapUI}} target="_blank"><fa-icon
                     [style]="{display: 'inline-block', padding: '5px', color: '#495057'}" [icon]="faFileEdit" size="lg"
@@ -57,7 +57,12 @@
         <ng-template pTemplate="body" let-item let-columns="columns">
             <tr>
                 <td *ngFor="let col of columns">
-                    {{item[col.field]}}
+                    <div *ngIf="col.field=='name'; else rest ">
+                        <a href={{linkto(item.id)}} target="_blank">{{item[col.field]}}</a>
+                    </div>
+                    <ng-template #rest>
+                        {{item[col.field]}}
+                    </ng-template>
                 </td>
                 <td class="td-class"><p-tag [value]="item.state" [severity]="getStatus(item.state)"></p-tag></td>
                 <td class="td-class">{{this.datepipe.transform(item.modifiedDate,'MM/dd/yyyy')}}</td>

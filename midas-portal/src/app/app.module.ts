@@ -2,10 +2,8 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LogInComponent } from './components/log-in/log-in.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './angular-material.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { LandingComponent } from './components/landing/landing.component';
 // import { EdiListComponent } from './components/edi-list/edi-list.component';
@@ -19,20 +17,23 @@ import { AuthModule } from 'oarng';
 import { CONFIG_URL } from 'oarng';
 import { DropdownModule } from 'primeng/dropdown';
 import { PanelModule } from "primeng/panel";
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
+import { DialogModule } from 'primeng/dialog';
 import { HttpClientModule } from '@angular/common/http';
 // import { AuthService, WebAuthService, CustomizationService } from './components/auth-service/auth.service';
 // import { LandingComponent } from './components/landing/landing.component';
 import { LandingModule } from './components/landing/landing.module';
 import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
+import { ButtonModule } from 'primeng/button';
+import { TabViewModule } from 'primeng/tabview';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LogInComponent
-    // LandingComponent,
+    // LandingComponent
     // EdiListComponent,
     // RecordsComponent,
     // DmpListComponent,
@@ -44,7 +45,6 @@ import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
     AppRoutingModule,
     BrowserAnimationsModule,
     AngularMaterialModule,
-    FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
     OARngModule,
@@ -53,9 +53,16 @@ import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
     LandingModule,
     ScrollPanelModule,
     DropdownModule,
-    AuthModule
+    AuthModule,
+    AutoCompleteModule,
+    ButtonModule,
+    TabViewModule,
+    DialogModule
   ],
-  providers: [ fakeBackendProvider, { provide: CONFIG_URL, useValue: "assets/environment.json" }, ],
+  providers: [
+//       fakeBackendProvider,
+      { provide: CONFIG_URL, useValue: "assets/environment.json" },
+  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
