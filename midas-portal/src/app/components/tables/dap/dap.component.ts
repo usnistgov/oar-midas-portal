@@ -55,11 +55,8 @@ export class DapComponent implements OnInit, OnChanges {
    * update the state of this component as the result of changes in its parent
    */
   ngOnChanges(changes: SimpleChanges) {
-      if (this.authToken){
+      if (this.authToken)
           this.fetchRecords(this.dapAPI);
-      }else{
-        console.log("No token")
-      }
   }
 
 

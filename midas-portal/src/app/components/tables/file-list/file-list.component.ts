@@ -41,11 +41,8 @@ export class FileListComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges){
-    if(this.authToken){
+    if(this.authToken)
       this.fetchRecords(this.dapAPI)
-    }else{
-      console.log("No token")
-    }
   }
     
 

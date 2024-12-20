@@ -55,11 +55,8 @@ export class ReviewListComponent implements OnInit {
    * update the state of this component as the result of changes in its parent
    */
   ngOnChanges(changes: SimpleChanges) {
-      if (this.authToken && this.userId){
+      if (this.authToken && this.userId)
           this.fetchRecords(this.NPSAPI+this.userId);
-      }else{
-        console.log("No token")
-      }
   }
 
   /**
