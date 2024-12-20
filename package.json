@@ -9,7 +9,9 @@
         "build-all": "npm run build oarng --prefix ./lib && npm run build midas-portal --prefix ./midas-portal",
         "build": "npm run build midas-portal --prefix ./midas-portal",
         "start": "npm run start midas-portal --prefix ./midas-portal",
-        "test": "jest --config ./midas-portal/jest.config.js --silent"
+        "test": "jest --config ./midas-portal/jest.config.js --silent",
+        "test:watch": "jest --watch",
+        "test:file": "jest --testPathPattern"
     },
     "dependencies": {
         "@fortawesome/angular-fontawesome": "^0.10.2",
@@ -22,6 +24,10 @@
         "primeng": "^16.4.3"
     },
     "devDependencies": {
-        "@types/pdfmake": "^0.2.9"
+        "@types/jest": "^29.5.14",
+        "@types/pdfmake": "^0.2.9",
+        "jest": "^29.7.0",
+        "jest-preset-angular": "^13.1.6",
+        "ts-jest": "^29.2.5"
     }
 }

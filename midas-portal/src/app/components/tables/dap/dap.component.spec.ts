@@ -1,55 +1,74 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DapComponent } from './dap.component';
-import { HttpClient, HttpHandler } from '@angular/common/http';
-import { SharedModule } from 'primeng/api';
-import dapData from 'src/assets/json/dap.json'
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { SimpleChanges } from '@angular/core';
+import { of } from 'rxjs';
 
-describe('RecordsComponent', () => {
+describe('DapComponent', () => {
   let component: DapComponent;
   let fixture: ComponentFixture<DapComponent>;
+  let dialogService: DialogService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[SharedModule],
-      declarations: [ DapComponent ],
-      providers:[HttpClient,HttpHandler]
-    })
-    .compileComponents();
+      declarations: [DapComponent],
+      imports: [HttpClientTestingModule],
+      providers: [DialogService]
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DapComponent);
     component = fixture.componentInstance;
+    dialogService = TestBed.inject(DialogService);
     fixture.detectChanges();
-    component.data=dapData;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('Data received', () => {
-    console.log("pre",component.pre);
-    console.log("after",component.after);
-    console.log("data",component.data)
-    expect(component).toBeTruthy();
+  describe('ngOnChanges', () => {
+    it('should call fetchRecords if authToken is present', () => {
+      const fetchRecordsSpy = jest.spyOn(component, 'fetchRecords');
+      component.authToken = 'test-token';
+      const changes: SimpleChanges = {
+        authToken: {
+          currentValue: 'test-token',
+          previousValue: null,
+          firstChange: true,
+          isFirstChange: () => true
+        }
+      };
+      component.ngOnChanges(changes);
+      expect(fetchRecordsSpy).toHaveBeenCalledWith(component.dapAPI);
+    });
+
+    it('should log "No token" if authToken is not present', () => {
+      const consoleSpy = jest.spyOn(console, 'log');
+      component.authToken = null;
+      const changes: SimpleChanges = {
+        authToken: {
+          currentValue: null,
+          previousValue: 'test-token',
+          firstChange: false,
+          isFirstChange: () => false
+        }
+      };
+      component.ngOnChanges(changes);
+      expect(consoleSpy).toHaveBeenCalledWith('No token');
+    });
   });
 
-/*
-  it('should display data test',()=>{
-    fixture.detectChanges();
-    const titleElementList = fixture.debugElement.queryAll(By.css('[data-role="test"]'))
-    const titleList = titleElementList.map(element=> element.nativeElement.textContent);
-    console.log(titleList.toLocaleString());
-    expect(titleList.toLocaleString()).toEqual("Test")
+  describe('show', () => {
+    it('should open the modal with DapModalComponent', () => {
+      const openSpy = jest.spyOn(dialogService, 'open').mockReturnValue(new DynamicDialogRef());
+      component.show();
+      expect(openSpy).toHaveBeenCalledWith(DapComponent, {
+        data: component.DAP,
+        width: '90%'
+      });
+    });
   });
-
-  it('should display data Name',()=>{
-    fixture.detectChanges();
-    const titleElementList = fixture.debugElement.queryAll(By.css('h2'))
-    const titleList = titleElementList.map(element=> element.nativeElement.textContent);
-    console.log(titleList);
-    expect(titleList.toLocaleString()).toEqual("Test")
-  });
-*/
 });
