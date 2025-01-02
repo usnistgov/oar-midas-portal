@@ -1,8 +1,9 @@
 import { Component, Input, OnInit, OnChanges,SimpleChanges ,ViewChild } from '@angular/core';
-import {faFileImport,faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
+import {faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService,SortEvent } from 'primeng/api';
@@ -99,13 +100,23 @@ convertToBytes(size: string, unit: string): number {
       this.http.get(url, { headers: { Authorization: "Bearer "+this.authToken }})
         .pipe(map((responseData: any) => {
           return responseData
-        })).subscribe(records => {
+        }),
+        tap(records => {
           console.log("Loading "+records.length+" DAP records for File Manager");
+        }),
+        catchError((error: any) => {
+          console.error("Error fetching records for File Manager:", error);
+          return of([]); // Return an empty array in case of error
+        })
+      )
+        .subscribe(records => {
           this.DAP = [];
           for (let i = 0; i < records.length; i++) {
             if(records[i]['file_space']!==undefined){
               if(this.is_complete(records[i])){
-                this.DAP.push(this.customSerialize(records[i]))
+                const serializedItem = this.customSerialize(records[i]);
+                if (serializedItem !== null)
+                  this.DAP.push(serializedItem)
             }
           }
           }
@@ -189,13 +200,18 @@ convertToBytes(size: string, unit: string): number {
 
 
     public customSerialize(item:any){
-      let tmp = new fm()
-      tmp.name = item.name
-      tmp.location = item.file_space['location']
-      tmp.usage = this.formatBytes(parseInt(item.file_space['usage']))
-      tmp.file_count = item.file_space['file_count']
-      tmp.last_modified = new Date(item.file_space.last_modified)
-      return tmp
+      try {
+        let tmp = new fm();
+        tmp.name = item.name;
+        tmp.location = item.file_space['location'];
+        tmp.usage = this.formatBytes(parseInt(item.file_space['usage']));
+        tmp.file_count = item.file_space['file_count'];
+        tmp.last_modified = new Date(item.file_space.last_modified);
+        return tmp;
+      } catch (error) {
+        console.error("Error serializing File Manager item:", error);
+        return null;
+      }
     }
 
 }
