@@ -41,9 +41,6 @@ class NPS(Resource):
 		if self.npsURL == '':
 			self.get_config_values()
 
-		self.npsURL = 'https://tsapps-t.nist.gov/nps/npsapi/api/DataSet/ReviewsForUser'
-		self.nsdSecret = 'Tc567FxCs90tOvy6cWZyPamkC7c8hjbQzO2IKwMt7eVmdSIaNuqp'
-		self.npsTokenSecret = 'a521G90T3716n0x1'
 		print('npsURL: ' + self.npsURL)
 
 
