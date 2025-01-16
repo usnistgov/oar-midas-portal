@@ -40,12 +40,7 @@ interface Selected {
 
 interface Org {
     ORG_ID: number;
-    ORG_CD: string;
-    ORG_LVL_ID: number;
     ORG_NAME: string;
-    ORG_ACRNM: string;
-    PARENT_ORG_ID: number;
-    PARENT_ORG_CD: string;
 }
 
 @Component({
@@ -103,113 +98,11 @@ export class SearchListModalComponent implements OnInit {
   faMagnifyingGlass=faMagnifyingGlass;
   
   public DMAP: any[]=[];
-  orgs = [
-    {
-        "ORG_ID": 13642,
-        "ORG_CD": "68501",
-        "ORG_LVL_ID": 3,
-        "ORG_NFC_LVL_CD": 6,
-        "ORG_NAME": "Thermodynamic Metrology Group",
-        "EFFECTIVE_DT": "2011-10-01",
-        "ORG_ACRNM": "",
-        "ORG_SHORT_NAME": "Thermo Metrology Group",
-        "ORG_LOC_ID": 2,
-        "PARENT_ORG_ID": 13268,
-        "PARENT_ORG_CD": "685"
-    },
-    {
-        "ORG_ID": 13643,
-        "ORG_CD": "68502",
-        "ORG_LVL_ID": 3,
-        "ORG_NFC_LVL_CD": 6,
-        "ORG_NAME": "Fluid Metrology Group",
-        "EFFECTIVE_DT": "2011-10-01",
-        "ORG_ACRNM": "",
-        "ORG_SHORT_NAME": "Fluid Met Grp",
-        "ORG_LOC_ID": 2,
-        "PARENT_ORG_ID": 13268,
-        "PARENT_ORG_CD": "685"
-    },
-    {
-        "ORG_ID": 13443,
-        "ORG_CD": "68503",
-        "ORG_LVL_ID": 3,
-        "ORG_NFC_LVL_CD": 6,
-        "ORG_NAME": "Optical Radiation Group",
-        "EFFECTIVE_DT": "2011-10-01",
-        "ORG_ACRNM": "",
-        "ORG_SHORT_NAME": "Optical Rad Grp",
-        "ORG_LOC_ID": 2,
-        "PARENT_ORG_ID": 13268,
-        "PARENT_ORG_CD": "685"
-    }];
-
-  tempOwners = [
-    {
-        "PEOPLE_ID": 1,
-        "LAST_NAME": "Davis",
-        "FIRST_NAME": "Christopher",
-        "FULL_NAME": "Davis, Christopher"
-    },
-    {
-        "PEOPLE_ID": 2,
-        "LAST_NAME": "Greene",
-        "FIRST_NAME": "Gretchen",
-        "FULL_NAME": "Greene, Gretchen"
-    },
-    {
-        "PEOPLE_ID": 3,
-        "LAST_NAME": "Plante",
-        "FIRST_NAME": "Raymond",
-        "FULL_NAME": "Plante, Raymond"
-    },
-    {
-        "PEOPLE_ID": 4,
-        "LAST_NAME": "Smith",
-        "FIRST_NAME": "Roberta",
-        "FULL_NAME": "Smith, Robert"
-    },
-    {
-        "PEOPLE_ID": 5,
-        "LAST_NAME": "Blonder",
-        "FIRST_NAME": "Niksa",
-        "FULL_NAME": "Blonder, Niksa"
-    },
-    {
-        "PEOPLE_ID": 6,
-        "LAST_NAME": "Walker",
-        "FIRST_NAME": "Steven",
-        "FULL_NAME": "Walker, Steven"
-    },
-    {
-        "PEOPLE_ID": 7,
-        "LAST_NAME": "Gao",
-        "FIRST_NAME": "Jing",
-        "FULL_NAME": "Gao, Jing"
-    },
-    {
-        "PEOPLE_ID": 8,
-        "LAST_NAME": "Lin",
-        "FIRST_NAME": "Chuan",
-        "FULL_NAME": "Lin, Chuan"
-    },
-    {
-        "PEOPLE_ID": 9,
-        "LAST_NAME": "Martins",
-        "FIRST_NAME": "Melvin",
-        "FULL_NAME": "Martins, Melvin"
-    },
-    {
-        "PEOPLE_ID": 10,
-        "LAST_NAME": "Loembe",
-        "FIRST_NAME": "Alex",
-        "FULL_NAME": "Loembe, Alex"
-    }
-
-  ]
   
-  public suggestions: People[] = []
-  orgSuggestions: Org[] = []
+  public suggestions: People[] = [];
+  public orgSuggestions: Org[] = [];
+  peopleIndex: string = '';
+  orgIndex: string = '';
 
   loading: boolean = false;
 
@@ -900,39 +793,100 @@ exportCSV(jsonArray: any[]) {
   }
 
   getPeople(this:any, $event: any) {
-    let tempPeople: People[] = [];
-    this.apiService.get_NIST_Personnel($event.query.toUpperCase()).subscribe((value:any) => {
-        value.forEach(function(element:any) {
-          tempPeople.push({PEOPLE_ID: element.peopleID, 
-            FIRST_NAME: element.firstName,
-            LAST_NAME: element.lastName,
-            FULL_NAME: element.lastName + ', ' + element.firstName});
+    //only begin search process if 2 or more characters are entered
+    if($event.query.length >= 2) {
+      let queryString = $event.query;
+      let tempPeople: People[] = [];
+      console.log('beginning people search');
+      //if we have an index already, search on that
+      if(!this.peopleIndex) {
+        console.log('no index');
+        //no index loaded; make the API call to load index into memory
+        this.apiService.get_NIST_Personnel(queryString.toUpperCase()).subscribe((value:any) => {
+          this.peopleIndex = value;
+          if(this.peopleIndex != null) {
+            this.searchPeopleIndex(queryString);
+          }
         });
-
-        this.suggestions = tempPeople;
       }
-    );
-    
+      else {
+        //index is already present, just filter on it
+        this.searchPeopleIndex(queryString);
+      }
+    }
+    else {
+      console.log('clearing index');
+      //less than two characters entered, make sure the index is cleared
+      this.peopleIndex = null;
+      this.suggestions = [];
+    }
   }
 
-  getOrgs($event: any) {
-    let tempOrgs: Org[] = [];
-    this.apiService.get_NIST_Organizations($event.query.toUpperCase()).subscribe((value:any) => {
-        value.forEach(function(element:any) {
-          tempOrgs.push({
-            ORG_NAME: element.orG_Name,
-            ORG_ID: element.orG_ID,
-            ORG_ACRNM: element.orG_ACRNM,
-            ORG_CD: element.orG_CD,
-            ORG_LVL_ID: element.orG_LVL_ID,
-            PARENT_ORG_ID: element.parenT_ORG_ID,
-            PARENT_ORG_CD: element.parenT_ORG_CD
-          });
-        });
+  searchPeopleIndex(this:any, queryString: string) {
+    console.log('filtering people index');
+    let tempPeople: People[] = [];
+    for(let tempPerson in this.peopleIndex) {
+      if(tempPerson.toUpperCase().includes(queryString.toUpperCase())) {
+        console.log(tempPerson);
+        console.log(this.peopleIndex[tempPerson]);
+        //need to traverse the match, in case there are multiple people in the match
+        for(let item in this.peopleIndex[tempPerson]) {
+          tempPeople.push({PEOPLE_ID: +item,
+            FULL_NAME: this.peopleIndex[tempPerson][item],
+            FIRST_NAME: this.peopleIndex[tempPerson][item].split(',')[1],
+            LAST_NAME: this.peopleIndex[tempPerson][item].split(',')[0],
+          })
+        }
+        this.suggestions = tempPeople;
+      }
+    }
+  }
 
+  searchOrgIndex(this: any, queryString: string) {
+    console.log('filtering org index');
+    let tempOrgs: Org[] = [];
+    for(let tempOrg in this.orgIndex) {
+      if(tempOrg.toUpperCase().includes(queryString.toUpperCase())) {
+        //need to traverse the match, in case there are multiple orgs in the match
+        for(let item in this.orgIndex[tempOrg]) {
+          tempOrgs.push({ORG_ID: +item,
+            ORG_NAME: this.orgIndex[tempOrg][item]
+          })
+        }
         this.orgSuggestions = tempOrgs;
       }
-    );
+    }
+  }
+
+  getOrgs(this: any, $event: any) {
+    //only begin search process if 2 or more characters are entered
+    if($event.query.length >= 2) {
+      let queryString = $event.query;
+      let tempOrgs: Org[] = [];
+      console.log('beginning org search');
+      //if we have an index already, search on that
+      if(!this.orgIndex) {
+        console.log('no index');
+        //no index loaded; make the API call to load index into memory
+        this.apiService.get_NIST_Organizations(queryString.toUpperCase()).subscribe((value:any) => {
+          this.orgIndex = value;
+          if(this.orgIndex != null) {
+            this.searchOrgIndex(queryString);
+          }
+        });
+      }
+      else {
+        //index is already present, just filter on it
+        this.searchOrgIndex(queryString);
+      }
+      
+    }
+    else {
+      console.log('clearing org index');
+      //less than two characters entered, make sure the index is cleared
+      this.orgIndex = null;
+      this.orgSuggestions = [];
+    }
   }
 
 
