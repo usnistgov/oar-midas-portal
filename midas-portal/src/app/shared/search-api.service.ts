@@ -1,15 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ConfigurationService } from 'oarng';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchAPIService {
 
-  constructor(private http: HttpClient)  { }
+  constructor(private configSvc: ConfigurationService, private http: HttpClient)  { 
+    let config = this.configSvc.getConfig()
+    this.peopleAPI = config['peopleURL'];
+    this.orgAPI = config['orgURL'];
+    
+  }
+
+  ngOnInit() {
+  }
   //URL to get a list of mock contacts from MongoDB using python API
-  peopleAPI = "https://nsd-test.nist.gov/nsd/api/v1/People/list"
-  divisionAPI = ""
+  peopleAPI = ""
+  orgAPI = ""
 
   initialParams = {
     "hasCPRRoles": false,
@@ -19,10 +29,16 @@ export class SearchAPIService {
     ]
   }
   
-
   public get_NIST_Personnel(searchTerm: string){
-    this.initialParams.lastName = [searchTerm];
-    return this.http.post(this.peopleAPI, this.initialParams);
+    var url = this.peopleAPI + '?' + searchTerm;
+    console.log('peopleAPI: ' + url);
+    return this.http.get(url);
+  }
+
+  public get_NIST_Organizations(searchTerm: string) {
+    var url = this.orgAPI + '?' + searchTerm;
+    console.log('orgAPI: ' + url);
+    return this.http.get(url);
   }
 
 }
