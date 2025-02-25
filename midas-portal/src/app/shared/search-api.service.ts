@@ -12,6 +12,7 @@ export class SearchAPIService {
     let config = this.configSvc.getConfig()
     this.peopleAPI = config['peopleURL'];
     this.orgAPI = config['orgURL'];
+    this.personAPI = config['personURL'];
     
   }
 
@@ -20,6 +21,7 @@ export class SearchAPIService {
   //URL to get a list of mock contacts from MongoDB using python API
   peopleAPI = ""
   orgAPI = ""
+  personAPI = ""
 
   initialParams = {
     "hasCPRRoles": false,
@@ -32,6 +34,12 @@ export class SearchAPIService {
   public get_NIST_Personnel(searchTerm: string){
     var url = this.peopleAPI + '?' + searchTerm;
     console.log('peopleAPI: ' + url);
+    return this.http.get(url);
+  }
+
+  public get_NIST_Person(searchTerm: string){
+    var url = this.personAPI + searchTerm;
+    console.log('personAPI: ' + url);
     return this.http.get(url);
   }
 

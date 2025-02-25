@@ -29,6 +29,7 @@ interface People {
     LAST_NAME: string;
     FIRST_NAME: string;
     FULL_NAME: string;
+
 }
 
 interface Selected {
@@ -328,6 +329,7 @@ export class SearchListModalComponent implements OnInit {
         },
         permissions: ['read', 'write']
       };
+    console.log(data)
   
     const urlDAP = `${this.dapAPI}/:selected`;
     const dap$ = this.fetchAdvancedSearchResults(urlDAP, data, 'dap').pipe(
@@ -390,15 +392,25 @@ export class SearchListModalComponent implements OnInit {
         var publishedBeforeObj = {'status.modified': {'$lte': this.publishedBefore.getTime() / 1000}};
         andArray.push(publishedBeforeObj);
     }
-    /*
-    if(this.selectedOrg !=  undefined) {
-        var orgObj = {'org': this.selectedOrg.ORG_ID};
-        andArray.push(orgObj);
-    }*/
+    
+    if (this.selectedOrg) {
+      var orgObj = this.selectedOrg.ORG_NAME.replace(/\s*\(.*?\)\s*/g, '').trim();;
+         const orArray =  [
+              { "groupName": orgObj },
+              { "divisionName": orgObj  },
+              { "ouName": orgObj  }
+          ]
+
+      const orQuery = { "$or": orArray };
+      andArray.push(orQuery);
+  }
     if(this.recordOwner) {
         //may need to switch from people ID to username at some point
-        var ownerObj = {'owner': this.recordOwner};
-        andArray.push(ownerObj);
+        this.apiService.get_NIST_Person(this.recordOwner.PEOPLE_ID).subscribe((data: any) => {
+          var ownerObj = {'owner': data.nistUsername};
+          andArray.push(ownerObj);
+        }
+        );
     }
     /*
     if(this.paper != undefined) {
@@ -413,6 +425,7 @@ export class SearchListModalComponent implements OnInit {
         },
         permissions: ['read', 'write']
       };
+      console.log(data)
         
     const apiMap = {
         'dmp': this.dmpAPI,
@@ -867,6 +880,7 @@ exportCSV(jsonArray: any[]) {
         console.log('no index');
         //no index loaded; make the API call to load index into memory
         this.apiService.get_NIST_Personnel(queryString.toUpperCase()).subscribe((value:any) => {
+          console.log(value)
           this.peopleIndex = value;
           if(this.peopleIndex != null) {
             this.searchPeopleIndex(queryString);
@@ -894,7 +908,9 @@ exportCSV(jsonArray: any[]) {
         console.log(tempPerson);
         console.log(this.peopleIndex[tempPerson]);
         //need to traverse the match, in case there are multiple people in the match
+        console.log(this.peopleIndex[tempPerson])
         for(let item in this.peopleIndex[tempPerson]) {
+          console.log(this.peopleIndex[tempPerson][item])
           tempPeople.push({PEOPLE_ID: +item,
             FULL_NAME: this.peopleIndex[tempPerson][item],
             FIRST_NAME: this.peopleIndex[tempPerson][item].split(',')[1],
@@ -913,6 +929,7 @@ exportCSV(jsonArray: any[]) {
       if(tempOrg.toUpperCase().includes(queryString.toUpperCase())) {
         //need to traverse the match, in case there are multiple orgs in the match
         for(let item in this.orgIndex[tempOrg]) {
+
           tempOrgs.push({ORG_ID: +item,
             ORG_NAME: this.orgIndex[tempOrg][item]
           })

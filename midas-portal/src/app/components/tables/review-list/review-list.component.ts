@@ -95,6 +95,7 @@ export class ReviewListComponent implements OnInit {
             this.data[i].deadline = new Date(this.data[i].deadline)
           }
       }
+    }
     })
   }
 

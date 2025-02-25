@@ -125,7 +125,6 @@ convertToBytes(size: string, unit: string): number {
 
     is_complete(obj: any): boolean {
       const requiredKeys = ['location', 'usage', 'file_count'];
-      console.log(obj)
       for (const key of requiredKeys) {
         if (obj.file_space[key] === undefined) {
           return false;
