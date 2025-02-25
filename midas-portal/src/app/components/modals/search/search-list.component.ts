@@ -396,9 +396,9 @@ export class SearchListModalComponent implements OnInit {
     if (this.selectedOrg) {
       var orgObj = this.selectedOrg.ORG_NAME.replace(/\s*\(.*?\)\s*/g, '').trim();;
          const orArray =  [
-              { "groupName": orgObj },
-              { "divisionName": orgObj  },
-              { "ouName": orgObj  }
+              { "data.organizations.groupName": orgObj },
+              { "data.organizations.divisionName": orgObj  },
+              { "data.organizations.ouName": orgObj  }
           ]
 
       const orQuery = { "$or": orArray };
