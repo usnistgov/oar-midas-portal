@@ -108,7 +108,7 @@ public fetchRecords(url: string) {
       for (let i = 0; i < records.length; i++) {
         const serializedItem = this.customSerialize(records[i]);
         if (serializedItem !== null)
-          this.DAP.push(this.customSerialize(serializedItem));
+          this.DAP.push(serializedItem);
       }
     });
 }
