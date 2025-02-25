@@ -92,7 +92,6 @@ export class DmpListComponent implements OnInit {
       .subscribe(records => {
         this.DMP = [];
         for (let i = 0; i < records.length; i++) {
-          console.log(records[i])
           const serializedItem = this.customSerialize(records[i]);
           if (serializedItem !== null)
             this.DMP.push(serializedItem)

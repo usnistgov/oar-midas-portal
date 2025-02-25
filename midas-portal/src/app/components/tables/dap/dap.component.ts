@@ -106,7 +106,6 @@ public fetchRecords(url: string) {
     .subscribe(records => {
       this.DAP = [];
       for (let i = 0; i < records.length; i++) {
-        console.log(records[i])
         const serializedItem = this.customSerialize(records[i]);
         if (serializedItem !== null)
           this.DAP.push(serializedItem);

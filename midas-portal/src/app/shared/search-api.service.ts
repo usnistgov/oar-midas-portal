@@ -33,19 +33,19 @@ export class SearchAPIService {
   
   public get_NIST_Personnel(searchTerm: string){
     var url = this.peopleAPI + '?' + searchTerm;
-    console.log('peopleAPI: ' + url);
+    //console.log('peopleAPI: ' + url);
     return this.http.get(url);
   }
 
   public get_NIST_Person(searchTerm: string){
     var url = this.personAPI + searchTerm;
-    console.log('personAPI: ' + url);
+    //console.log('personAPI: ' + url);
     return this.http.get(url);
   }
 
   public get_NIST_Organizations(searchTerm: string) {
     var url = this.orgAPI + '?' + searchTerm;
-    console.log('orgAPI: ' + url);
+    //console.log('orgAPI: ' + url);
     return this.http.get(url);
   }
 

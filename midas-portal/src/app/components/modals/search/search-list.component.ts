@@ -425,7 +425,7 @@ export class SearchListModalComponent implements OnInit {
         },
         permissions: ['read', 'write']
       };
-      console.log(data)
+      //console.log(data)
         
     const apiMap = {
         'dmp': this.dmpAPI,
@@ -874,13 +874,12 @@ exportCSV(jsonArray: any[]) {
     if($event.query.length >= 2) {
       let queryString = $event.query;
       let tempPeople: People[] = [];
-      console.log('beginning people search');
+      //console.log('beginning people search');
       //if we have an index already, search on that
       if(!this.peopleIndex) {
-        console.log('no index');
+        //console.log('no index');
         //no index loaded; make the API call to load index into memory
         this.apiService.get_NIST_Personnel(queryString.toUpperCase()).subscribe((value:any) => {
-          console.log(value)
           this.peopleIndex = value;
           if(this.peopleIndex != null) {
             this.searchPeopleIndex(queryString);
@@ -893,7 +892,7 @@ exportCSV(jsonArray: any[]) {
       }
     }
     else {
-      console.log('clearing index');
+      //console.log('clearing index');
       //less than two characters entered, make sure the index is cleared
       this.peopleIndex = null;
       this.suggestions = [];
@@ -905,12 +904,8 @@ exportCSV(jsonArray: any[]) {
     let tempPeople: People[] = [];
     for(let tempPerson in this.peopleIndex) {
       if(tempPerson.toUpperCase().includes(queryString.toUpperCase())) {
-        console.log(tempPerson);
-        console.log(this.peopleIndex[tempPerson]);
         //need to traverse the match, in case there are multiple people in the match
-        console.log(this.peopleIndex[tempPerson])
         for(let item in this.peopleIndex[tempPerson]) {
-          console.log(this.peopleIndex[tempPerson][item])
           tempPeople.push({PEOPLE_ID: +item,
             FULL_NAME: this.peopleIndex[tempPerson][item],
             FIRST_NAME: this.peopleIndex[tempPerson][item].split(',')[1],
@@ -929,7 +924,6 @@ exportCSV(jsonArray: any[]) {
       if(tempOrg.toUpperCase().includes(queryString.toUpperCase())) {
         //need to traverse the match, in case there are multiple orgs in the match
         for(let item in this.orgIndex[tempOrg]) {
-
           tempOrgs.push({ORG_ID: +item,
             ORG_NAME: this.orgIndex[tempOrg][item]
           })
@@ -944,10 +938,10 @@ exportCSV(jsonArray: any[]) {
     if($event.query.length >= 2) {
       let queryString = $event.query;
       let tempOrgs: Org[] = [];
-      console.log('beginning org search');
+      //console.log('beginning org search');
       //if we have an index already, search on that
       if(!this.orgIndex) {
-        console.log('no index');
+        //console.log('no index');
         //no index loaded; make the API call to load index into memory
         this.apiService.get_NIST_Organizations(queryString.toUpperCase()).subscribe((value:any) => {
           this.orgIndex = value;
