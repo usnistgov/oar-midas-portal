@@ -10,11 +10,11 @@ import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { ConfigurationService } from 'oarng';
-import { SearchAPIService } from 'src/app/shared/search-api.service';
+import { NISTPerson, SearchAPIService } from 'src/app/shared/search-api.service';
 import { dmap } from '../../../models/dmap.model';
 import { TDocumentDefinitions, StyleDictionary } from 'pdfmake/interfaces';
 import { ngxCsv } from 'ngx-csv/ngx-csv';
-import { Observable, forkJoin, Subscription,of } from 'rxjs';
+import { Observable, forkJoin, Subscription,of ,firstValueFrom} from 'rxjs';
 import { dap } from 'src/app/models/dap.model';
 
 (pdfMake as any).vfs=pdfFonts.pdfMake.vfs;
@@ -356,7 +356,23 @@ export class SearchListModalComponent implements OnInit {
     );
     }
 
-  onSearchClick() {
+    onPublishedBeforeChange(): void {
+      if (this.publishedBefore) {
+        // Reset "Last modified after" when "Last modified before" is modified
+        this.publishedAfter = null;
+      }
+    }
+  
+    onPublishedAfterChange(): void {
+      if (this.publishedAfter) {
+        // Reset "Last modified before" when "Last modified after" is modified
+        this.publishedBefore = null;
+      }
+    }
+
+  
+
+  async onSearchClick() {
     this.reset_forsearch()
     //need to build DBIO search JSON here
     let andArray = [
@@ -404,14 +420,18 @@ export class SearchListModalComponent implements OnInit {
       const orQuery = { "$or": orArray };
       andArray.push(orQuery);
   }
-    if(this.recordOwner) {
-        //may need to switch from people ID to username at some point
-        this.apiService.get_NIST_Person(this.recordOwner.PEOPLE_ID).subscribe((data: any) => {
-          var ownerObj = {'owner': data.nistUsername};
-          andArray.push(ownerObj);
-        }
-        );
+
+
+  if (this.recordOwner) {
+
+    try {
+      var tmpdata: NISTPerson = await firstValueFrom(this.apiService.get_NIST_Person(this.recordOwner.PEOPLE_ID));
+      const ownerObj = { owner: tmpdata.nistUsername};
+      andArray.push(ownerObj);
+    } catch (error) {
+      console.error("Error fetching record owner:", error);
     }
+  }
     /*
     if(this.paper != undefined) {
         var paperObj = {'data.paper': this.paper};
@@ -425,7 +445,8 @@ export class SearchListModalComponent implements OnInit {
         },
         permissions: ['read', 'write']
       };
-      //console.log(data)
+      
+      console.log("after permissions "+JSON.stringify(data))
         
     const apiMap = {
         'dmp': this.dmpAPI,
@@ -434,6 +455,7 @@ export class SearchListModalComponent implements OnInit {
       
       if (this.resourceType === 'dmp' || this.resourceType === 'dap') {
         const url = `${apiMap[this.resourceType as keyof typeof apiMap]}/:selected`;
+        console.log("in if "+data)
         this.data$ = this.fetchAdvancedSearchResults(url, data, this.resourceType).pipe(
           catchError(error => {
             console.error(`Error fetching ${this.resourceType.toUpperCase()} search results:`, error);
@@ -473,6 +495,7 @@ export class SearchListModalComponent implements OnInit {
         map((responseData: any) => {
           if (responseData) {
             console.log("Loading "+responseData.length+" records");
+            console.log(responseData)
             return responseData.map((record:any) => this.customSerialize(record, type));
           } else {
             console.log("No records to load for "+type);
