@@ -149,7 +149,7 @@ export class LandingComponent implements OnInit {
           //this.authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5ODcxOTAxOSwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.ntiPIo39kG78T7xbVrbJEfw4cz8jn--Bk-t7aRJdvPs"
       },
       error => {
-        alert("Unable to determine your identity");
+        alert("Unable to determine your identity,cannot retrieve data.");
       }
     )/*
     this.userId="TestId";

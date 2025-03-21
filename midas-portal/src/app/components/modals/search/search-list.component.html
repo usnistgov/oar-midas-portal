@@ -41,12 +41,13 @@
             
                 <div class="custom-sub-input">
                     <label for="publishedBefore" class="form-label">Last modified before:</label>
-                    <p-calendar [(ngModel)]="publishedBefore" [showIcon]="true" [appendTo]="'body'" pTooltip="Records modified after that date"></p-calendar>
+                    <p-calendar [(ngModel)]="publishedBefore" [showIcon]="true" [appendTo]="'body'" pTooltip="Records modified after that date"
+                    (ngModelChange)="onPublishedBeforeChange()"></p-calendar>
                 </div>
             
                 <div class="custom-sub-input">
                     <label for="publishedAfter" class="form-label">Last modified after:</label>
-                    <p-calendar [(ngModel)]="publishedAfter" [showIcon]="true" [appendTo]="'body'" pTooltip="Records modified before that date"></p-calendar>
+                    <p-calendar [(ngModel)]="publishedAfter" [showIcon]="true" [appendTo]="'body'" pTooltip="Records modified before that date" (ngModelChange)="onPublishedAfterChange()"></p-calendar>
                 </div>
             </div>
             <div class="custom-radio-button">

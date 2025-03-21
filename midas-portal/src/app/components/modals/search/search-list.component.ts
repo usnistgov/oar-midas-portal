@@ -3,18 +3,18 @@ import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import {faUsersViewfinder,faBell,faUpRightAndDownLeftFromCenter,faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
 import {Table} from 'primeng/table';
-import { map,take,tap } from 'rxjs/operators';
+import { catchError,map,take,tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { DialogService,DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { ConfigurationService } from 'oarng';
-import { SearchAPIService } from 'src/app/shared/search-api.service';
+import { NISTPerson, SearchAPIService } from 'src/app/shared/search-api.service';
 import { dmap } from '../../../models/dmap.model';
 import { TDocumentDefinitions, StyleDictionary } from 'pdfmake/interfaces';
 import { ngxCsv } from 'ngx-csv/ngx-csv';
-import { Observable, forkJoin, Subscription } from 'rxjs';
+import { Observable, forkJoin, Subscription,of ,firstValueFrom} from 'rxjs';
 import { dap } from 'src/app/models/dap.model';
 
 (pdfMake as any).vfs=pdfFonts.pdfMake.vfs;
@@ -29,6 +29,7 @@ interface People {
     LAST_NAME: string;
     FIRST_NAME: string;
     FULL_NAME: string;
+
 }
 
 interface Selected {
@@ -40,16 +41,7 @@ interface Selected {
 
 interface Org {
     ORG_ID: number;
-    ORG_CD: string;
-    ORG_LVL_ID: number;
-    ORG_NFC_LVL_CD: number;
     ORG_NAME: string;
-    EFFECTIVE_DT: string;
-    ORG_ACRNM: string;
-    ORG_SHORT_NAME: string;
-    ORG_LOC_ID: number;
-    PARENT_ORG_ID: number;
-    PARENT_ORG_CD: string;
 }
 
 @Component({
@@ -107,113 +99,11 @@ export class SearchListModalComponent implements OnInit {
   faMagnifyingGlass=faMagnifyingGlass;
   
   public DMAP: any[]=[];
-  orgs = [
-    {
-        "ORG_ID": 13642,
-        "ORG_CD": "68501",
-        "ORG_LVL_ID": 3,
-        "ORG_NFC_LVL_CD": 6,
-        "ORG_NAME": "Thermodynamic Metrology Group",
-        "EFFECTIVE_DT": "2011-10-01",
-        "ORG_ACRNM": "",
-        "ORG_SHORT_NAME": "Thermo Metrology Group",
-        "ORG_LOC_ID": 2,
-        "PARENT_ORG_ID": 13268,
-        "PARENT_ORG_CD": "685"
-    },
-    {
-        "ORG_ID": 13643,
-        "ORG_CD": "68502",
-        "ORG_LVL_ID": 3,
-        "ORG_NFC_LVL_CD": 6,
-        "ORG_NAME": "Fluid Metrology Group",
-        "EFFECTIVE_DT": "2011-10-01",
-        "ORG_ACRNM": "",
-        "ORG_SHORT_NAME": "Fluid Met Grp",
-        "ORG_LOC_ID": 2,
-        "PARENT_ORG_ID": 13268,
-        "PARENT_ORG_CD": "685"
-    },
-    {
-        "ORG_ID": 13443,
-        "ORG_CD": "68503",
-        "ORG_LVL_ID": 3,
-        "ORG_NFC_LVL_CD": 6,
-        "ORG_NAME": "Optical Radiation Group",
-        "EFFECTIVE_DT": "2011-10-01",
-        "ORG_ACRNM": "",
-        "ORG_SHORT_NAME": "Optical Rad Grp",
-        "ORG_LOC_ID": 2,
-        "PARENT_ORG_ID": 13268,
-        "PARENT_ORG_CD": "685"
-    }];
-
-  tempOwners = [
-    {
-        "PEOPLE_ID": 1,
-        "LAST_NAME": "Davis",
-        "FIRST_NAME": "Christopher",
-        "FULL_NAME": "Davis, Christopher"
-    },
-    {
-        "PEOPLE_ID": 2,
-        "LAST_NAME": "Greene",
-        "FIRST_NAME": "Gretchen",
-        "FULL_NAME": "Greene, Gretchen"
-    },
-    {
-        "PEOPLE_ID": 3,
-        "LAST_NAME": "Plante",
-        "FIRST_NAME": "Raymond",
-        "FULL_NAME": "Plante, Raymond"
-    },
-    {
-        "PEOPLE_ID": 4,
-        "LAST_NAME": "Smith",
-        "FIRST_NAME": "Roberta",
-        "FULL_NAME": "Smith, Robert"
-    },
-    {
-        "PEOPLE_ID": 5,
-        "LAST_NAME": "Blonder",
-        "FIRST_NAME": "Niksa",
-        "FULL_NAME": "Blonder, Niksa"
-    },
-    {
-        "PEOPLE_ID": 6,
-        "LAST_NAME": "Walker",
-        "FIRST_NAME": "Steven",
-        "FULL_NAME": "Walker, Steven"
-    },
-    {
-        "PEOPLE_ID": 7,
-        "LAST_NAME": "Gao",
-        "FIRST_NAME": "Jing",
-        "FULL_NAME": "Gao, Jing"
-    },
-    {
-        "PEOPLE_ID": 8,
-        "LAST_NAME": "Lin",
-        "FIRST_NAME": "Chuan",
-        "FULL_NAME": "Lin, Chuan"
-    },
-    {
-        "PEOPLE_ID": 9,
-        "LAST_NAME": "Martins",
-        "FIRST_NAME": "Melvin",
-        "FULL_NAME": "Martins, Melvin"
-    },
-    {
-        "PEOPLE_ID": 10,
-        "LAST_NAME": "Loembe",
-        "FIRST_NAME": "Alex",
-        "FULL_NAME": "Loembe, Alex"
-    }
-
-  ]
   
-  suggestions: People[] = []
-  orgSuggestions: Org[] = []
+  public suggestions: People[] = [];
+  public orgSuggestions: Org[] = [];
+  peopleIndex: string = '';
+  orgIndex: string = '';
 
   loading: boolean = false;
 
@@ -377,32 +267,37 @@ export class SearchListModalComponent implements OnInit {
    * @returns dap
    */
   public customSerialize(item: any,rectype:string) {
-    //if all items are selected when computing them, adding them to the selected items.
-    if (this.allSelected){
-      this.selected.push(item.id)
-    }
-    if (rectype == 'dap'){
-      if(!this.dapData.find((object: any) => object.id === item.id)){
-        this.dapData.push(item)
-    }
-    }else if(rectype == 'dmp'){
-      if(!this.dmpData.find((object: any) => object.id === item.id)){
-        this.dmpData.push(item)
+    try {
+      //if all items are selected when computing them, adding them to the selected items.
+      if (this.allSelected){
+        this.selected.push(item.id)
       }
+      if (rectype == 'dap'){
+        if(!this.dapData.find((object: any) => object.id === item.id)){
+          this.dapData.push(item)
+      }
+      }else if(rectype == 'dmp'){
+        if(!this.dmpData.find((object: any) => object.id === item.id)){
+          this.dmpData.push(item)
+        }
+      }
+      //serializing data
+      let tmp = new dmap();
+      tmp.id = item.id
+      tmp.rectype =rectype
+      rectype == 'dap' ? tmp.modifiedDate = new Date(item.status.modifiedDate) : tmp.modifiedDate = new Date(item.status.modified*1000)
+      tmp.name = item.name
+      tmp.owner = item.owner
+      tmp.state = item.status.state
+      //tmp.orgid = 12
+      //tmp.orgid = rectype === 'dmp'  ? item.data.organization[0].ORG_ID : '';
+      tmp.orgid = rectype === 'dmp' && item.data.organizations && item.data.organizations.length > 0 ? item.data.organizations[0].ORG_ID : '';
+      rectype == 'dap' ? tmp.title= item.data['title'] : tmp.title = ''
+      return tmp
+    } catch (error) {
+      console.error("Error serializing item:", error);
+      return null; // Return null or an appropriate default value in case of error
     }
-    //serializing data
-    let tmp = new dmap();
-    tmp.id = item.id
-    tmp.rectype =rectype
-    rectype == 'dap' ? tmp.modifiedDate = new Date(item.status.modifiedDate) : tmp.modifiedDate = new Date(item.status.modified*1000)
-    tmp.name = item.name
-    tmp.owner = item.owner
-    tmp.state = item.status.state
-    //tmp.orgid = 12
-    //tmp.orgid = rectype === 'dmp'  ? item.data.organization[0].ORG_ID : '';
-    tmp.orgid = rectype === 'dmp' && item.data.organizations && item.data.organizations.length > 0 ? item.data.organizations[0].ORG_ID : '';
-    rectype == 'dap' ? tmp.title= item.data['title'] : tmp.title = ''
-    return tmp
   }
 
   reset_forsearch(){
@@ -434,19 +329,50 @@ export class SearchListModalComponent implements OnInit {
         },
         permissions: ['read', 'write']
       };
+    console.log(data)
   
     const urlDAP = `${this.dapAPI}/:selected`;
-    const dap$ = this.fetchAdvancedSearchResults(urlDAP,data,'dap');
+    const dap$ = this.fetchAdvancedSearchResults(urlDAP, data, 'dap').pipe(
+      catchError(error => {
+        console.error("Error fetching DAP search results:", error);
+        return of([]); // Return an empty array in case of error
+      })
+    );
     
     const urlDMP = `${this.dmpAPI}/:selected`;
-    const dmp$ = this.fetchAdvancedSearchResults(urlDMP,data,'dmp');
+    const dmp$ = this.fetchAdvancedSearchResults(urlDMP, data, 'dmp').pipe(
+      catchError(error => {
+        console.error("Error fetching DMP search results:", error);
+        return of([]); // Return an empty array in case of error
+      })
+    );
 
-    this.data$ = forkJoin([ dap$, dmp$]).pipe(
-        map(([dapData, dmpData]) => [...dapData, ...dmpData])
-      );   
+    this.data$ = forkJoin([dap$, dmp$]).pipe(
+      map(([dapData, dmpData]) => [...dapData, ...dmpData]),
+      catchError(error => {
+        console.error("Error combining search results:", error);
+        return of([]); // Return an empty array in case of error
+      })
+    );
     }
 
-  onSearchClick() {
+    onPublishedBeforeChange(): void {
+      if (this.publishedBefore) {
+        // Reset "Last modified after" when "Last modified before" is modified
+        this.publishedAfter = null;
+      }
+    }
+  
+    onPublishedAfterChange(): void {
+      if (this.publishedAfter) {
+        // Reset "Last modified before" when "Last modified after" is modified
+        this.publishedBefore = null;
+      }
+    }
+
+  
+
+  async onSearchClick() {
     this.reset_forsearch()
     //need to build DBIO search JSON here
     let andArray = [
@@ -482,16 +408,30 @@ export class SearchListModalComponent implements OnInit {
         var publishedBeforeObj = {'status.modified': {'$lte': this.publishedBefore.getTime() / 1000}};
         andArray.push(publishedBeforeObj);
     }
-    /*
-    if(this.selectedOrg !=  undefined) {
-        var orgObj = {'org': this.selectedOrg.ORG_ID};
-        andArray.push(orgObj);
-    }*/
-    if(this.recordOwner) {
-        //may need to switch from people ID to username at some point
-        var ownerObj = {'owner': this.recordOwner};
-        andArray.push(ownerObj);
+    
+    if (this.selectedOrg) {
+      var orgObj = this.selectedOrg.ORG_NAME.replace(/\s*\(.*?\)\s*/g, '').trim();;
+         const orArray =  [
+              { "data.organizations.groupName": orgObj },
+              { "data.organizations.divisionName": orgObj  },
+              { "data.organizations.ouName": orgObj  }
+          ]
+
+      const orQuery = { "$or": orArray };
+      andArray.push(orQuery);
+  }
+
+
+  if (this.recordOwner) {
+
+    try {
+      var tmpdata: NISTPerson = await firstValueFrom(this.apiService.get_NIST_Person(this.recordOwner.PEOPLE_ID));
+      const ownerObj = { owner: tmpdata.nistUsername};
+      andArray.push(ownerObj);
+    } catch (error) {
+      console.error("Error fetching record owner:", error);
     }
+  }
     /*
     if(this.paper != undefined) {
         var paperObj = {'data.paper': this.paper};
@@ -505,6 +445,8 @@ export class SearchListModalComponent implements OnInit {
         },
         permissions: ['read', 'write']
       };
+      
+      console.log("after permissions "+JSON.stringify(data))
         
     const apiMap = {
         'dmp': this.dmpAPI,
@@ -513,16 +455,36 @@ export class SearchListModalComponent implements OnInit {
       
       if (this.resourceType === 'dmp' || this.resourceType === 'dap') {
         const url = `${apiMap[this.resourceType as keyof typeof apiMap]}/:selected`;
-        this.data$ = this.fetchAdvancedSearchResults(url,data, this.resourceType);
+        console.log("in if "+data)
+        this.data$ = this.fetchAdvancedSearchResults(url, data, this.resourceType).pipe(
+          catchError(error => {
+            console.error(`Error fetching ${this.resourceType.toUpperCase()} search results:`, error);
+            return of([]); // Return an empty array in case of error
+          })
+        );
       } else {
         const urlDAP = `${this.dapAPI}/:selected`;
-        const dap$ = this.fetchAdvancedSearchResults(urlDAP,data,'dap');
-        
+        const dap$ = this.fetchAdvancedSearchResults(urlDAP, data, 'dap').pipe(
+          catchError(error => {
+            console.error("Error fetching DAP search results:", error);
+            return of([]); // Return an empty array in case of error
+          })
+        );
+    
         const urlDMP = `${this.dmpAPI}/:selected`;
-        const dmp$ = this.fetchAdvancedSearchResults(urlDMP,data,'dmp');
-
+        const dmp$ = this.fetchAdvancedSearchResults(urlDMP, data, 'dmp').pipe(
+          catchError(error => {
+            console.error("Error fetching DMP search results:", error);
+            return of([]); // Return an empty array in case of error
+          })
+        );
+    
         this.data$ = forkJoin([dap$, dmp$]).pipe(
-            map(([dapData, dmpData]) => [...dapData, ...dmpData])
+          map(([dapData, dmpData]) => [...dapData, ...dmpData]),
+          catchError(error => {
+            console.error("Error combining search results:", error);
+            return of([]); // Return an empty array in case of error
+          })
         );
       }
   }
@@ -533,6 +495,7 @@ export class SearchListModalComponent implements OnInit {
         map((responseData: any) => {
           if (responseData) {
             console.log("Loading "+responseData.length+" records");
+            console.log(responseData)
             return responseData.map((record:any) => this.customSerialize(record, type));
           } else {
             console.log("No records to load for "+type);
@@ -544,203 +507,207 @@ export class SearchListModalComponent implements OnInit {
 
 
 
-  onExportListClick(){
-    if(this.selected.length !== 0 ){
-      console.log(this.selected.length)
-      console.log(this.selected)
-      var tmpData: any[] = [];
-      console.log(this.outputType);
-      if(this.outputType == 'pdf'){
-        for (let item of this.selected) {
-          if (item.startsWith('mdm')) {
-              tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
-          } else if (item.startsWith('mds')) {
-              tmpData.push(this.dapData.find((dap: any) => dap.id === item));
-          }
-      }
-
-    // Prepare table data
-    const tableBody = tmpData.map((record: any) => {
-      const type = record.id.startsWith('mds') ? "dap" : "dmp"
-        return [
-            type,
-            { text: record.id, link: this.linkto(record.id,type), color: 'blue', decoration: 'underline' },
-            record.name,
-            record.owner,
-            record.status.modifiedDate.split('T')[0],
-            record.status.state,
-            record.id.startsWith('mdm')  && record.data.organizations && record.data.organizations.length > 0 ? record.data.organizations[0].ORG_ID : 'no-org-code',
-            record.id.startsWith('mds') ? "no-title" : record.data.title
-        ];
-    });
-    console.log(tableBody)
-
-    const tableHeaders = [
-      { text: 'Type', style: 'tableHeader' },
-      { text: 'Rec #', style: 'tableHeader' },
-      { text: 'Name', style: 'tableHeader' },
-      { text: 'Owner', style: 'tableHeader' },
-      { text: 'Modified Date', style: 'tableHeader' },
-      { text: 'Status', style: 'tableHeader' },
-      { text: 'Org code', style: 'tableHeader' },
-      { text: 'Title', style: 'tableHeader' }
-  ];
+  onExportListClick() {
+    try {
+      if (this.selected.length !== 0) {
+        var tmpData: any[] = [];
+        if (this.outputType == 'pdf') {
+          try {
+            for (let item of this.selected) {
+              if (item.startsWith('mdm')) {
+                tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+              } else if (item.startsWith('mds')) {
+                tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+              }
+            }
   
-  // Assuming tableBody is defined somewhere in your code and formatted correctly
-  // Each row in tableBody should be wrapped in a style for the body if needed
+            // Prepare table data
+            const tableBody = tmpData.map((record: any) => {
+              const type = record.id.startsWith('mds') ? "dap" : "dmp";
+              return [
+                type,
+                { text: record.id, link: this.linkto(record.id, type), color: 'blue', decoration: 'underline' },
+                record.name,
+                record.owner,
+                record.status.modifiedDate.split('T')[0],
+                record.status.state,
+                record.id.startsWith('mdm') && record.data.organizations && record.data.organizations.length > 0 ? record.data.organizations[0].ORG_ID : 'no-org-code',
+                record.id.startsWith('mds') ? "no-title" : record.data.title
+              ];
+            });
   
-  const table = {
-      table: {
-          headerRows: 1,
-          widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
-          body: [
-              tableHeaders,
-              ...tableBody.map(row => row.map(cell => ({ text: cell, style: 'tableBody' }))), // Apply body style to each cell
-          ]
-      }
-  };
+            const tableHeaders = [
+              { text: 'Type', style: 'tableHeader' },
+              { text: 'Rec #', style: 'tableHeader' },
+              { text: 'Name', style: 'tableHeader' },
+              { text: 'Owner', style: 'tableHeader' },
+              { text: 'Modified Date', style: 'tableHeader' },
+              { text: 'Status', style: 'tableHeader' },
+              { text: 'Org code', style: 'tableHeader' },
+              { text: 'Title', style: 'tableHeader' }
+            ];
   
-  let docDefinition: TDocumentDefinitions = {
-      content: [
-        { text: 'EDI Dataset Status', style: 'title' }, // Title
-        { text: 'Total records selected : '+tableBody.length, style: 'subtitle' }, // Subtitle
-        { text: '(Click the record number to go to the record)', style: 'subsubtitle' }, // Subtitle
-          table // Add the table to the PDF content
-      ],
-      styles: {
-        title: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 0, 0, 10], // Adjust margin as needed
-          alignment:'center'
-      },
-      subtitle: {
-          fontSize: 12,
-          bold: false,
-          margin: [0, 0, 0, 20], // Adjust margin as needed
-          alignment:'center'
-      },
-      tableHeader: {
-        fontSize: 12,
-        bold: true,
-        color: 'white',
-          fillColor: '#7B9BDA', // Background color for headers
-      },
-      tableBody: {
-        fontSize: 10,
-          fillColor: '#F9F1BC', // Background color for body
-        
-      },
-      subsubtitle: {
-        fontSize: 6,
-        bold: false,
-        margin: [0, 0, 0, 0], // Adjust margin as needed
-      },
-    },
-    header: function(currentPage, pageCount) {
-        return {
-            columns: [
-                { text: 'Date: ' + new Date().toLocaleDateString(), alignment: 'left',fontSize: 10},
-                { text: 'Page ' + currentPage.toString() + ' of ' + pageCount, alignment: 'right',fontSize: 10 }
-            ],
-            margin: [40, 20] // Adjust as needed
-        };
-    },
-    footer: function(currentPage, pageCount) {
-        return {
-            columns: [
-                { text: 'Link to portal',link:'https://localhost/portal/landing', color: 'blue', decoration: 'underline' , alignment: 'center', margin: [0, 0, 0, 20] } // Adjust as needed
-            ]
-        };
-    }
-  };
-
-    // Download the PDF
-    //I don't want my timestamp to be separated by _ 
-    const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
-    const filename = `records_${timestamp}.pdf`;
-    pdfMake.createPdf(docDefinition).download(filename);
-
-    // Perform your search logic here
-    }else if (this.outputType == 'csv'){
-      console.log("DAPDATA "+JSON.stringify(this.dapData, null, 2))
-      console.log("DMPDATA "+JSON.stringify(this.dmpData, null, 2))
-      if(this.resourceType === 'dmp'){
-        for(let item of this.selected){
-            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+            const table = {
+              table: {
+                headerRows: 1,
+                widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
+                body: [
+                  tableHeaders,
+                  ...tableBody.map(row => row.map(cell => ({ text: cell, style: 'tableBody' }))), // Apply body style to each cell
+                ]
+              }
+            };
+  
+            let docDefinition: TDocumentDefinitions = {
+              content: [
+                { text: 'EDI Dataset Status', style: 'title' }, // Title
+                { text: 'Total records selected : ' + tableBody.length, style: 'subtitle' }, // Subtitle
+                { text: '(Click the record number to go to the record)', style: 'subsubtitle' }, // Subtitle
+                table // Add the table to the PDF content
+              ],
+              styles: {
+                title: {
+                  fontSize: 18,
+                  bold: true,
+                  margin: [0, 0, 0, 10], // Adjust margin as needed
+                  alignment: 'center'
+                },
+                subtitle: {
+                  fontSize: 12,
+                  bold: false,
+                  margin: [0, 0, 0, 20], // Adjust margin as needed
+                  alignment: 'center'
+                },
+                tableHeader: {
+                  fontSize: 12,
+                  bold: true,
+                  color: 'white',
+                  fillColor: '#7B9BDA', // Background color for headers
+                },
+                tableBody: {
+                  fontSize: 10,
+                  fillColor: '#F9F1BC', // Background color for body
+                },
+                subsubtitle: {
+                  fontSize: 6,
+                  bold: false,
+                  margin: [0, 0, 0, 0], // Adjust margin as needed
+                },
+              },
+              header: function (currentPage, pageCount) {
+                return {
+                  columns: [
+                    { text: 'Date: ' + new Date().toLocaleDateString(), alignment: 'left', fontSize: 10 },
+                    { text: 'Page ' + currentPage.toString() + ' of ' + pageCount, alignment: 'right', fontSize: 10 }
+                  ],
+                  margin: [40, 20] // Adjust as needed
+                };
+              },
+              footer: function (currentPage, pageCount) {
+                return {
+                  columns: [
+                    { text: 'Link to portal', link: 'https://localhost/portal/landing', color: 'blue', decoration: 'underline', alignment: 'center', margin: [0, 0, 0, 20] } // Adjust as needed
+                  ]
+                };
+              }
+            };
+  
+            // Download the PDF
+            const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
+            const filename = `records_${timestamp}.pdf`;
+            pdfMake.createPdf(docDefinition).download(filename);
+          } catch (error) {
+            console.error("Error generating PDF:", error);
+          }
+  
+        } else if (this.outputType == 'csv') {
+          try {
+            if (this.resourceType === 'dmp') {
+              for (let item of this.selected) {
+                tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+              }
+              this.exportCSV(tmpData);
+            } else if (this.resourceType === 'dap') {
+              for (let item of this.selected) {
+                tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+              }
+              this.exportCSV(tmpData);
+            } else {
+              const allStartWithMds = this.selected.every(item => item.startsWith('mds'));
+              const allStartWithMdm = this.selected.every(item => item.startsWith('mdm'));
+  
+              if (allStartWithMds) {
+                for (let item of this.selected) {
+                  tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+                }
+                this.exportCSV(tmpData);
+              } else if (allStartWithMdm) {
+                for (let item of this.selected) {
+                  tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+                }
+                this.exportCSV(tmpData);
+              } else {
+                alert('You can only export CSV for a single resource type. Please select only dmp or daps and try again.');
+                return;
+              }
+            }
+          } catch (error) {
+            console.error("Error generating CSV:", error);
+          }
+  
+        } else if (this.outputType == 'json') {
+          try {
+            if (this.resourceType === 'dmp') {
+              for (let item of this.selected) {
+                tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+              }
+              this.export_json(tmpData);
+            } else if (this.resourceType === 'dap') {
+              for (let item of this.selected) {
+                tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+              }
+              this.export_json(tmpData);
+            } else {
+              const allStartWithMds = this.selected.every(item => item.startsWith('mds'));
+              const allStartWithMdm = this.selected.every(item => item.startsWith('mdm'));
+  
+              if (allStartWithMds) {
+                for (let item of this.selected) {
+                  tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+                }
+                this.export_json(tmpData);
+              } else if (allStartWithMdm) {
+                for (let item of this.selected) {
+                  tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
+                }
+                this.export_json(tmpData);
+              } else {
+                alert('You can only export JSON for a single resource type. Please select only dmp or daps and try again.');
+              }
+            }
+          } catch (error) {
+            console.error("Error generating JSON:", error);
+          }
         }
-        this.exportCSV(tmpData);
-      }else if(this.resourceType === 'dap'){  
-        for(let item of this.selected){
-          tmpData.push(this.dapData.find((dap: any) => dap.id === item));
+      } else {
+        alert('No records selected. Please select records and try again.');
       }
-      this.exportCSV(tmpData);
-      }else{
-        const allStartWithMds = this.selected.every(item => item.startsWith('mds'));
-        const allStartWithMdm = this.selected.every(item => item.startsWith('mdm'));
-
-        if(allStartWithMds){
-          for(let item of this.selected){
-            tmpData.push(this.dapData.find((dap: any) => dap.id === item));
-          }
-        this.exportCSV(tmpData);
-        }else if(allStartWithMdm){
-          for(let item of this.selected){
-            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
-          }
-          this.exportCSV(tmpData);
-        }else{
-          alert('You can only export JSON for a single resource type. Please select only dmp or daps  and try again.');
-          return;
-        }
-      }  
-    }else if (this.outputType == 'json'){
-      console.log("DAPDATA "+JSON.stringify(this.dapData, null, 2))
-      console.log("DMPDATA "+JSON.stringify(this.dmpData, null, 2))
-      if(this.resourceType === 'dmp'){
-        for(let item of this.selected){
-            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
-        }
-        this.export_json(tmpData);
-      }else if(this.resourceType === 'dap'){  
-        for(let item of this.selected){
-          tmpData.push(this.dapData.find((dap: any) => dap.id === item));
-      }
-      this.export_json(tmpData);
-      }else{
-        const allStartWithMds = this.selected.every(item => item.startsWith('mds'));
-        const allStartWithMdm = this.selected.every(item => item.startsWith('mdm'));
-
-        if(allStartWithMds){
-          for(let item of this.selected){
-            tmpData.push(this.dapData.find((dap: any) => dap.id === item));
-          }
-        this.export_json(tmpData);
-        }else if(allStartWithMdm){
-          for(let item of this.selected){
-            tmpData.push(this.dmpData.find((dmp: any) => dmp.id === item));
-          }
-          this.export_json(tmpData);
-        }else{
-          alert('You can only export JSON for a single resource type. Please select only dmp or daps  and try again.');
-        }
-      }
+    } catch (error) {
+      console.error("Error processing export:", error);
     }
-    }else{
-      alert('No records selected. Please select records and try again.')
-    }
+  
     this.data$ = this.data$.pipe(
       map(items => items.map(item => ({
         ...item,
-        selected:this.selected.includes(item.id)
+        selected: this.selected.includes(item.id)
       })))
     );
     this.selected = [];
-
-}
+  }
 
   export_json(tmpData: any[]){
     if (tmpData && tmpData.length !== 0) {
+      try {
       const timestamp = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '');
       const filename = `records_${timestamp}.json`;
       console.log(tmpData);
@@ -754,13 +721,16 @@ export class SearchListModalComponent implements OnInit {
       a.href = url;
       a.click();
       URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error exporting JSON:", error);
+    }
     }
 
 }
 
 flattenObject(obj: any, parentKey = '', delimiter = '_'): any {
   let flattened: { [key: string]: any } = {};
-
+  try{
   for (const [key, value] of Object.entries(obj)) {
     const newKey = parentKey ? `${parentKey}${delimiter}${key}` : key;
 
@@ -772,11 +742,15 @@ flattenObject(obj: any, parentKey = '', delimiter = '_'): any {
   }
 
   return flattened;
+} catch (error) {
+  console.error("Error flattening object:", error);
+  return {}; // Return an empty object in case of error
+}
 }
 
  getFlattenedKeys(obj: any, parentKey = '', delimiter = '_'): string[] {
   let keys: string[]=[];
-
+  try{
   for (const [key, value] of Object.entries(obj)) {
     const newKey = parentKey ? `${parentKey}${delimiter}${key}` : key;
 
@@ -785,12 +759,18 @@ flattenObject(obj: any, parentKey = '', delimiter = '_'): any {
     } else {
       keys.push(newKey);
     }
+    
   }
 
   return keys;
+} catch (error) {
+  console.error("Error getting flattened keys:", error);
+  return []; // Return an empty array in case of error
+}
 }
 
 flattenJson(y: any):string{
+  try {
   let out: { [key: string]: any } = {};
 
   function sanitizeValue(value: any): string {
@@ -832,9 +812,14 @@ flattenJson(y: any):string{
   }
 
   return flatten(y);
+} catch (error) {
+  console.error("Error flattening JSON:", error);
+  return ''; // Return an empty object in case of error
+}
 }
 
 exportCSV(jsonArray: any[]) {
+  try{
   console.log('Exporting CSV:', jsonArray);
   // Extract column headers
   const headers = this.getFlattenedKeys(jsonArray[0]).join(',');
@@ -847,6 +832,7 @@ exportCSV(jsonArray: any[]) {
     // Append the row to out with a newline character
     out += row + '\n';
     return row; // Return the row if you need the array of rows as well
+    
   });
 
   // Combine headers and rows, and separate them by newline
@@ -864,6 +850,9 @@ exportCSV(jsonArray: any[]) {
   a.href = url;
   a.click();
   URL.revokeObjectURL(url);
+} catch (error) {
+  console.error("Error exporting CSV:", error);
+}
 }
 
 
@@ -903,16 +892,99 @@ exportCSV(jsonArray: any[]) {
 
   }
 
-  getPeople($event: any) {
-    this.apiService.get_NIST_Personnel($event.query.toUpperCase()).subscribe((value) => {
-        console.log(value);
+  getPeople(this:any, $event: any) {
+    //only begin search process if 2 or more characters are entered
+    if($event.query.length >= 2) {
+      let queryString = $event.query;
+      let tempPeople: People[] = [];
+      //console.log('beginning people search');
+      //if we have an index already, search on that
+      if(!this.peopleIndex) {
+        //console.log('no index');
+        //no index loaded; make the API call to load index into memory
+        this.apiService.get_NIST_Personnel(queryString.toUpperCase()).subscribe((value:any) => {
+          this.peopleIndex = value;
+          if(this.peopleIndex != null) {
+            this.searchPeopleIndex(queryString);
+          }
+        });
+      }
+      else {
+        //index is already present, just filter on it
+        this.searchPeopleIndex(queryString);
+      }
     }
-    );
-    
+    else {
+      //console.log('clearing index');
+      //less than two characters entered, make sure the index is cleared
+      this.peopleIndex = null;
+      this.suggestions = [];
+    }
   }
 
-  getOrgs($event: any) {
-    this.orgSuggestions = this.orgs.filter(val => val.ORG_NAME.toUpperCase().includes($event.query.toUpperCase()))
+  searchPeopleIndex(this:any, queryString: string) {
+    console.log('filtering people index');
+    let tempPeople: People[] = [];
+    for(let tempPerson in this.peopleIndex) {
+      if(tempPerson.toUpperCase().includes(queryString.toUpperCase())) {
+        //need to traverse the match, in case there are multiple people in the match
+        for(let item in this.peopleIndex[tempPerson]) {
+          tempPeople.push({PEOPLE_ID: +item,
+            FULL_NAME: this.peopleIndex[tempPerson][item],
+            FIRST_NAME: this.peopleIndex[tempPerson][item].split(',')[1],
+            LAST_NAME: this.peopleIndex[tempPerson][item].split(',')[0],
+          })
+        }
+        this.suggestions = tempPeople;
+      }
+    }
+  }
+
+  searchOrgIndex(this: any, queryString: string) {
+    console.log('filtering org index');
+    let tempOrgs: Org[] = [];
+    for(let tempOrg in this.orgIndex) {
+      if(tempOrg.toUpperCase().includes(queryString.toUpperCase())) {
+        //need to traverse the match, in case there are multiple orgs in the match
+        for(let item in this.orgIndex[tempOrg]) {
+          tempOrgs.push({ORG_ID: +item,
+            ORG_NAME: this.orgIndex[tempOrg][item]
+          })
+        }
+        this.orgSuggestions = tempOrgs;
+      }
+    }
+  }
+
+  getOrgs(this: any, $event: any) {
+    //only begin search process if 2 or more characters are entered
+    if($event.query.length >= 2) {
+      let queryString = $event.query;
+      let tempOrgs: Org[] = [];
+      //console.log('beginning org search');
+      //if we have an index already, search on that
+      if(!this.orgIndex) {
+        //console.log('no index');
+        //no index loaded; make the API call to load index into memory
+        this.apiService.get_NIST_Organizations(queryString.toUpperCase()).subscribe((value:any) => {
+          this.orgIndex = value;
+          if(this.orgIndex != null) {
+            this.searchOrgIndex(queryString);
+          }
+        });
+      }
+      else {
+        //index is already present, just filter on it
+        this.searchOrgIndex(queryString);
+      }
+      
+    }
+    else {
+      console.log('clearing org index');
+      //less than two characters entered, make sure the index is cleared
+      this.orgIndex = null;
+      this.orgSuggestions = [];
+    }
   }
 
 

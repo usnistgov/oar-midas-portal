@@ -12,6 +12,11 @@ import binascii
 from flask import Flask, jsonify, request, json
 from flask_restful import Resource, Api
 from flask_cors import CORS
+import datetime 
+import jwt
+import os
+from dateutil.relativedelta import relativedelta
+import numpy as np
 
 # creating the flask app
 app = Flask(__name__)
@@ -23,47 +28,84 @@ api = Api(app)
 # resource to get NPS records for user
 class NPS(Resource):
 
-	def get(self, username):
-		token = self.get_auth_token()
-		userid = username
-		api_url = 'https://tsapps-t.nist.gov/nps/npsapi' + '/api/DataSet/ReviewsForUser'
-		print('api_url: ' + api_url)
+	npsURL = ''
+	npsTokenURL = ''
+	npsTokenSecret = ''
 
-		api_call_headers = {'Authorization': 'Bearer ' + token}
+	def __init__(self) -> None:
+		self.get_config_values()
+
+	def get(self, username):
+
+		print('npsURL: ' + self.npsURL)
+		if self.npsURL == '':
+			self.get_config_values()
+
+		print('npsURL: ' + self.npsURL)
+
+		claims = claims = {
+			'iss': 'NIST_ASD',
+			'iat': datetime.datetime.now(),
+			'exp': datetime.datetime.now() + datetime.timedelta(days=10),
+			"aud": "ASD_API",
+			"scope": "dataset",
+			"username": username
+		}
+		token = jwt.encode(claims, self.nsdSecret, algorithm='HS256')
+		userid = username
+		print(token)
+
+		api_call_headers = {'Authorization': 'Bearer ' + token,
+					  'Content-Type': 'application/json',
+					  'Accept': 'application/json'}
 		payload = {
 			"nistId": 0,
 			"userName": username
 		}
-		api_call_response = requests.post(api_url, json=payload, headers=api_call_headers)
-
-		print(api_call_response.text)
-
-		response = app.response_class(
-     	   	response=api_call_response.text,
-        	status=200,
-        	mimetype='application/json'
-    	)
-		#response = jsonify(api_call_response.text)
-		response.headers.add('Access-Control-Allow-Origin', '*')
+		print(self.npsURL)
+		api_call_response = requests.post(self.npsURL, json=payload, headers=api_call_headers)
+		print(api_call_response)
+		
+		response = jsonify(api_call_response.text)
 
 		return response
 	
 	def get_auth_token(self):
 
-		url = 'https://tsapps-t.nist.gov/nps/npsidp/connect/token'
 		client_id = 'MIDAS'
-		client_secret = 'a521G90T3716n0x1'
 
 		response = requests.post(
-			url, 
+			self.npsTokenURL, 
 			data={'grant_type': 'client_credentials'},
-			auth=(client_id, client_secret),
+			auth=(client_id, self.npsTokenSecret),
 		)
 
 		return response.json()["access_token"]
+	
+	def get_config_values(self):
+		"""read config values from env file and get API information"""
+		try: 
+			print(os.environ)
+			#configurl = os.getenv("CONFIG_URL")
+			configurl = "http://localhost:8084/midas-nps/local"
+			print("Read config *********** ")
+			resp = requests.get(configurl)
+			print("code: " + str(resp.status_code))
+			if resp.status_code >= 400:
+				print("Exception reading config data:"+configurl)
+				# exit()
+			ct = resp.headers.get('content-type','')
+        	# print("format:"+ct)
+			testconfig = resp.json()
+        	# print("testconfig 1:::", testconfig)
+			self.npsURL = testconfig['propertySources'][0]['source']['npsURL']
+			self.npsTokenSecret = testconfig['propertySources'][0]['source']['nsdSecret']
+			self.npsTokenURL = testconfig['propertySources'][0]['source']['npsTokenURL']
 
-
-
+		except Exception as e:	
+			print("Error reading config file")
+			print(str(e))
+			
 # adding the defined resources along with their corresponding urls
 api.add_resource(NPS, '/nps/<string:username>')
 

@@ -1,0 +1,8 @@
+
+> build
+> npm run build midas-portal --prefix ./midas-portal
+
+
+> oar-midas-angular@0.0.1 build
+> ng build midas-portal
+

@@ -2,7 +2,8 @@ import { Component, OnInit, SimpleChanges, ViewChild, Input } from '@angular/cor
 import { faUpRightAndDownLeftFromCenter,faSquarePlus } from '@fortawesome/free-solid-svg-icons';
 import { Table } from 'primeng/table';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
@@ -45,7 +46,7 @@ export class DmpListComponent implements OnInit {
    * update the state of this component as the result of changes in its parent
    */
   ngOnChanges(changes: SimpleChanges) {
-      if (this.authToken)
+      if (this.authToken && this.dmpAPI)
           this.fetchRecords(this.dmpAPI);
       if(this.websocketMessage) {
         if (this.websocketMessage.toLowerCase().includes("dap")) {
@@ -85,11 +86,21 @@ export class DmpListComponent implements OnInit {
     this.http.get(url, { headers: { Authorization: "Bearer "+this.authToken }})
       .pipe(map((responseData: any) => {
         return responseData
-      })).subscribe(records => {
+      }),
+      tap(records => {
         console.log("Loading "+records.length+" DMP records");
+      }),
+      catchError((error: any) => {
+        console.error("Error fetching records for DMP:", error);
+        return of([]); // Return an empty array in case of error
+      })
+    )
+      .subscribe(records => {
         this.DMP = [];
         for (let i = 0; i < records.length; i++) {
-          this.DMP.push(this.customSerialize(records[i]))
+          const serializedItem = this.customSerialize(records[i]);
+          if (serializedItem !== null)
+            this.DMP.push(serializedItem)
         }
       })
   }
@@ -102,17 +113,29 @@ export class DmpListComponent implements OnInit {
    * @returns dmp
    */
   public customSerialize(item: any) {
-    let tmp = new dmp();
-    tmp.id = item.id;
-    tmp.name = item.name;
-    tmp.orgid = 0;
-    if (item.data.organizations && item.data.organizations.length > 0)
-      tmp.orgid = item.data.organizations[0].ORG_ID;
-    tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate);
-    tmp.owner = item.owner;
-    tmp.primaryContact = item.data.primary_NIST_contact.firstName + ' ' + item.data.primary_NIST_contact.lastName;
-    tmp.description = item.data.projectDescription;
-    return tmp;
+    try {
+      let tmp = new dmp();
+      tmp.id = item.id;
+      tmp.name = item.name;
+      tmp.orgid = 0;
+      if (item.data.organizations && item.data.organizations.length > 0) {
+        tmp.orgid = item.data.organizations[0].ORG_ID;
+      }
+      tmp.modifiedDate = item.status.modifiedDate = new Date(item.status.modifiedDate);
+      tmp.owner = item.owner;
+      const contributors = item.data.contributors;
+      for (const contributor of contributors) {
+        if (contributor.primary_contact === 'Yes') {
+          tmp.primaryContact = contributor.firstName + ' ' + contributor.lastName;
+          break;
+        }
+      }
+      tmp.description = item.data.projectDescription;
+      return tmp;
+    } catch (error) {
+      console.error("Error serializing DMP item:", error);
+      return null;
+    }
   }
 
 }
