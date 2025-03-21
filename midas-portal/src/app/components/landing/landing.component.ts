@@ -68,7 +68,6 @@ export class LandingComponent implements OnInit {
       this.messageService.addAll([
         { severity: 'success', summary: 'New Records uploaded', detail: message }
       ]);
-      console.log('New WebSocket message received:', this.websocketMessage);
     });
   }
 

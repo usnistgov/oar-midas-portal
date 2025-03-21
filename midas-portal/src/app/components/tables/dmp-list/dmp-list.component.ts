@@ -48,8 +48,9 @@ export class DmpListComponent implements OnInit {
       if (this.authToken)
           this.fetchRecords(this.dmpAPI);
       if(this.websocketMessage) {
-        console.log("Received message DMP: "+this.websocketMessage);
-        this.fetchRecords(this.dmpAPI);
+        if (this.websocketMessage.toLowerCase().includes("dap")) {
+          this.fetchRecords(this.dmpAPI);
+        }
       };
   }
 
@@ -83,7 +84,6 @@ export class DmpListComponent implements OnInit {
   private fetchRecords(url: string) {
     this.http.get(url, { headers: { Authorization: "Bearer "+this.authToken }})
       .pipe(map((responseData: any) => {
-        console.log("TEST"+responseData)
         return responseData
       })).subscribe(records => {
         console.log("Loading "+records.length+" DMP records");

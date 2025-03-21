@@ -15,5 +15,5 @@
         "serviceEndpoint": "http://localhost/sso/"
     },
     "infoURL": "http://localhost:4200/assets/infotest/info.html",
-    "websocket_dbio" : "ws://localhost:8765"
+    "websocket_dbio" : "ws://localhost/midas-ws"
 }

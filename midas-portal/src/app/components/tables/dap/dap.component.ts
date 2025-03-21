@@ -61,8 +61,10 @@ export class DapComponent implements OnInit, OnChanges {
           this.fetchRecords(this.dapAPI);
 
       if(this.websocketMessage) {
-        console.log("Received message DAP: "+this.websocketMessage);
-        this.fetchRecords(this.dapAPI);
+        if (this.websocketMessage.toLowerCase().includes("dap")) {
+          console.log("The message contains the word 'dap'. Fetching records...");
+          this.fetchRecords(this.dapAPI);
+        }
       };
   }
 

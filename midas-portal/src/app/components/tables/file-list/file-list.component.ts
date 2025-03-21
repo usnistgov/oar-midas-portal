@@ -44,8 +44,10 @@ export class FileListComponent implements OnInit {
     if(this.authToken)
       this.fetchRecords(this.dapAPI)
     if(this.websocketMessage) {
-      console.log("Received message fm: "+this.websocketMessage);
-      this.fetchRecords(this.dapAPI);
+      if (this.websocketMessage.toLowerCase().includes("dap")) {
+        console.log("The message contains the word 'dap'. Fetching records...");
+        this.fetchRecords(this.dapAPI);
+      }
     };
   }
     

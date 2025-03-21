@@ -58,8 +58,9 @@ export class ReviewListComponent implements OnInit {
       if (this.authToken && this.userId)
           this.fetchRecords(this.NPSAPI+this.userId);
       if(this.websocketMessage) {
-        console.log("Received message NPS: "+this.websocketMessage);
-        this.fetchRecords(this.NPSAPI+this.userId);
+        if (this.websocketMessage.toLowerCase().includes("dap")) {
+          this.fetchRecords(this.NPSAPI+this.userId);
+        }
       };
   }
 
