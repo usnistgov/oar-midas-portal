@@ -1,4 +1,4 @@
-import { Component, OnInit, } from '@angular/core';
+import { Component, OnInit,SimpleChanges } from '@angular/core';
 import {
   faHouse, faUser, faDashboard, faCloud, faClipboardList,
   faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook, faMicrochip, faMagnifyingGlass
@@ -63,13 +63,8 @@ export class LandingComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUserInfo();
-    this.websocketService.messages.subscribe(message => {
-      this.websocketMessage = message;
-      this.messageService.addAll([
-        { severity: 'success', summary: 'New Records uploaded', detail: message }
-      ]);
-    });
   }
+
 
 
   /**
@@ -144,8 +139,17 @@ export class LandingComponent implements OnInit {
         this.userLastName = creds.userAttributes.userLastName;
         this.userEmail = creds.userAttributes.userEmail;
         this.userOU = creds.userAttributes.userOU;
-        if (creds.token)
+        
+        if (creds.token){
           this.authToken = creds.token;
+          this.websocketService.connect(this.authToken);
+          this.websocketService.messages.subscribe(message => {
+            this.websocketMessage = message;
+            this.messageService.addAll([
+              { severity: 'success', summary: 'New Records uploaded', detail: message }
+            ]);
+          });
+        }
           //this.authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5ODcxOTAxOSwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.ntiPIo39kG78T7xbVrbJEfw4cz8jn--Bk-t7aRJdvPs"
       },
       error => {

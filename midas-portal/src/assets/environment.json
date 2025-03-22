@@ -15,7 +15,7 @@
         "serviceEndpoint": "http://localhost/sso/"
     },
     "infoURL": "http://localhost:4200/assets/infotest/info.html",
-    "websocket_dbio" : "ws://localhost/midas-ws",
+    "websocket_dbio" : "wss://localhost/midas-ws",
     "peopleURL": "http://localhost/midas/nsd/oar1/people/index",
     "orgURL": "http://localhost/midas/nsd/oar1/orgs/index",
     "personURL": "http://localhost/midas/nsd/oar1/people/"
