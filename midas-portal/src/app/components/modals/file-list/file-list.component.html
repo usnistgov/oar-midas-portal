@@ -30,7 +30,7 @@
                 <td class="td-class"><a href={{item.location}} target="_blank">{{item.name}}</a></td>
                 <td class="td-class">{{item.usage}}</td>
                 <td class="td-class">{{item.file_count}}</td>
-                <td>{{this.datepipe.transform(item.last_modified,'MM/dd/yyyy')}}</td>
+                <td>{{ item.last_modified ? (item.last_modified | date: 'MM/dd/yyyy') : 'N/A' }}</td>
             </tr>
         </ng-template>
     </p-table>

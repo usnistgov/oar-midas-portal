@@ -49,6 +49,7 @@ export class FileListComponent implements OnInit {
         console.log("The message contains the word 'dap'. Fetching records...");
         this.fetchRecords(this.dapAPI);
       }
+      console.log()
     };
   }
     
