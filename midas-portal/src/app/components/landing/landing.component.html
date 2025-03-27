@@ -3,11 +3,24 @@
   <!-- Sidebar -->
   <p-toast></p-toast>
     <div class="row flex-nowrap">
-        <div class="col-auto col-md-3 col-xl-2 px-0 sidebar-landing">
+        <div class="col-auto col-md-3 col-xl-2 px-0 sidebar-landing" [ngClass]="{'collapsed': isSidebarCollapsed}">
+          <button class="btn btn-primary toggle-sidebar-btn" (click)="toggleSidebar()">
+            <fa-icon [icon]="isSidebarCollapsed ? faBars : faTimes"></fa-icon>
+          </button>
+          <p-sidebar [(visible)]="isSidebarCollapsed" styleClass="custom-sidebar" [modal]="false">
+            <h3>Left Sidebar</h3>
+            blablabla
+        </p-sidebar>
+        <p-button 
+    type="button" 
+    class="mr-2" 
+    (onClick)="isSidebarCollapsed = true" 
+    icon="pi pi-arrow-right" />
             <div class="d-flex flex-column align-items-center align-items-sm-start">
               <li class="list-group-header col-12 sidebar-separator-title d-flex align-items-center justify-content-center menu-collapsed">
                 <span class="Menu-Title"><fa-icon [style]="{display: 'inline-block', padding: '3px', color: 'white'}" [icon]="faMagnifyingGlass"></fa-icon>Search & Export</span>
             </li>
+            
             <ul class="nav flex-column align-items-center align-items-sm-start w-100" id="menu">
               <li class="nav-item w-100" style="padding-left: 10px;">
                 <div class="container bg-light p-2">
@@ -101,6 +114,8 @@
                 <hr>
             </div>
         </div>
+
+        
         <div class="col p-4">
           <div class="row">
             <div class="col-lg-6 col-md-12 col-sm-12">
@@ -139,6 +154,9 @@
 
 
 <style>
+
+
+
   /* Optional: Adjust the width and padding of the container */
 .container {
   max-width: 400px; /* Adjust as needed */
@@ -190,6 +208,16 @@
   cursor: pointer;
   z-index: 100001;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure the p-sidebar matches the height of its parent container */
+.custom-sidebar {
+  height: 100%; /* Match the height of the parent container */
+  position: relative; /* Ensure it stays within the parent container */
+  top: 0;
+  left: 0;
+  width: 60px; /* Adjust the width as needed */
+  background-color: #EFF6FB; /* Optional: Set a background color */
 }
 
 .info-bubble fa-icon {

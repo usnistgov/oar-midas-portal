@@ -66,7 +66,15 @@
     background-color:#eff6fb;
     width: 200px;
     min-height: 100vh;
+    transition: width 0.3s ease;
   }
+
+    /* Sidebar collapsed state */
+  .sidebar-landing.collapsed {
+    width: 60px; /* Adjust as needed */
+    transition: width 0.3s ease;
+  }
+
 
 
   .nav-link-sub{
@@ -78,6 +86,49 @@
     background-color:#005ea2;
     color: white; /* Change text color on hover */
   }
+
+  /* Hide the content inside the sidebar when collapsed */
+.sidebar-landing.collapsed .d-flex {
+  visibility: hidden; /* Hide the content */
+  opacity: 0; /* Smoothly fade out the content */
+  transition: opacity 0.3s ease;
+}
+
+/* Show the content when the sidebar is expanded */
+.sidebar-landing .d-flex {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* Sidebar collapsed state */
+.sidebar-landing.collapsed {
+  width: 60px; /* Adjust as needed */
+  transition: width 0.3s ease;
+}
+
+/* Hide all sidebar content except the faMagnifyingGlass icon */
+.sidebar-landing.collapsed .sidebar-content {
+  display: none; /* Hide all other content */
+}
+
+/* Ensure the faMagnifyingGlass icon remains visible */
+.sidebar-landing.collapsed .fa-magnifying-glass {
+  visibility: visible;
+  opacity: 1;
+  cursor: pointer;
+}
+
+/* Sidebar expanded state */
+.sidebar-landing .sidebar-content {
+  display: block; /* Show content when expanded */
+}
+
+/* Smooth transitions for visibility */
+.sidebar-landing .sidebar-content,
+.sidebar-landing.collapsed .fa-magnifying-glass {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
 
 
   .nav-link{
@@ -138,6 +189,8 @@
     color: #EFF6FB;
 
 }
+
+
 
 @media (max-width: 768px) {
   .sidebar-landing {

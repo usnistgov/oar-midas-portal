@@ -2,13 +2,14 @@ import { Component, OnInit, } from '@angular/core';
 import {
   faHouse, faUser, faDashboard, faCloud, faClipboardList,
   faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook, faMicrochip, faMagnifyingGlass
-  , faCircle, faPrint, faPersonCircleQuestion, faBuilding, faSquareCaretDown,faSquareCaretUp, faInfoCircle
+  , faCircle, faPrint, faPersonCircleQuestion, faBuilding, faSquareCaretDown,faSquareCaretUp, faInfoCircle, faBars, faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'oarng';
 import { SearchListModalComponent } from '../modals/search/search-list.component';
 import { InfoComponent } from '../modals/info/info.component';
+
 
 
 @Component({
@@ -40,6 +41,8 @@ export class LandingComponent implements OnInit {
   faMicrochip=faMicrochip;
   faMagnifyingGlass=faMagnifyingGlass;
   faPersonCircleQuestion=faPersonCircleQuestion;
+  faBars=faBars;
+  faTimes=faTimes;
   userLastName : string|undefined;
   userName: string|undefined;
   userEmail: string|undefined;
@@ -51,6 +54,7 @@ export class LandingComponent implements OnInit {
   public searchResults: any[] = [];
   submenuCollapsed: boolean[] = [true, true];
   faInfoCircle = faInfoCircle;
+  isSidebarCollapsed = false; 
 
 
   public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,
@@ -116,6 +120,10 @@ export class LandingComponent implements OnInit {
         console.log('Dialog closed with data:', data);
       }
     });
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
 
   /**
