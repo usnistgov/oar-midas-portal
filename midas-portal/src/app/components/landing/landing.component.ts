@@ -9,6 +9,7 @@ import { DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'oarng';
 import { SearchListModalComponent } from '../modals/search/search-list.component';
 import { InfoComponent } from '../modals/info/info.component';
+import { SidebarModule } from 'primeng/sidebar';
 
 
 
@@ -55,6 +56,7 @@ export class LandingComponent implements OnInit {
   submenuCollapsed: boolean[] = [true, true];
   faInfoCircle = faInfoCircle;
   isSidebarCollapsed = false; 
+  sidebarVisible: boolean = false;
 
 
   public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,

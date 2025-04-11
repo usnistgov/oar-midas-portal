@@ -1,202 +1,62 @@
-.table-dashboard{
-    padding-bottom: 1%;
-    height: auto;
+/* Ensure the row container uses Flexbox */
+.row {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  height: 100vh; /* Ensure the row takes the full viewport height */
 }
 
-:host ::ng-deep .p-panel-header
-{
-  background: #EFF6FB;
-  border: 1px solid #005ea2;
-  padding: 0.2rem;
-  color:#005ea2;
-}
-
-:host ::ng-deep .p-dialog-header{
-    padding:0.3rem;
-}
-
-:host ::ng-deep .p-panel-content
-{
-  padding: 0.5rem;
-}
-
-:host ::ng-deep .p-paginator-bottom
-{
-  padding: 0.2rem;
-}
-
-:host ::ng-deep .p-datatable-tbody > tr > td {
-  padding: 0.3rem;
-}
-
-:host ::ng-deep .p-datatable .p-datatable-thead > tr > th 
-{
-  padding: 0.3rem;
-}
-
-:host ::ng-deep .p-datatable .p-datatable-header{
-    padding:0.5rem 0.5rem;
-}
-
-
-
-
-/* Separators */
-.sidebar-separator-title {
-    background-color: #005ea2;
-    height: 50px;
-    color: #fff;
-
-}
-
-.nav-item {
-    display: flex;
-    align-items: flex-start; /* Center items vertically */
-    position: relative;
-    flex-direction: column;
-}
-
-  .sidebar-icon{
-    position: absolute;
-    right: 0;
-    padding: 5px; /* Adjust padding as needed */
-  }
-
-  .sidebar-landing{
-    background-color:#eff6fb;
-    width: 200px;
-    min-height: 100vh;
-    transition: width 0.3s ease;
-  }
-
-    /* Sidebar collapsed state */
-  .sidebar-landing.collapsed {
-    width: 60px; /* Adjust as needed */
-    transition: width 0.3s ease;
-  }
-
-
-
-  .nav-link-sub{
-    color:#005ea2;
-    padding-left:10px;
-  }
-
-  .nav-link-sub:hover{
-    background-color:#005ea2;
-    color: white; /* Change text color on hover */
-  }
-
-  /* Hide the content inside the sidebar when collapsed */
-.sidebar-landing.collapsed .d-flex {
-  visibility: hidden; /* Hide the content */
-  opacity: 0; /* Smoothly fade out the content */
-  transition: opacity 0.3s ease;
-}
-
-/* Show the content when the sidebar is expanded */
-.sidebar-landing .d-flex {
-  visibility: visible;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-/* Sidebar collapsed state */
-.sidebar-landing.collapsed {
-  width: 60px; /* Adjust as needed */
+/* Sidebar Styles */
+.sidebar-landing {
+  background-color: #EFF6FB;
   transition: width 0.3s ease;
+  overflow: hidden;
 }
 
-/* Hide all sidebar content except the faMagnifyingGlass icon */
-.sidebar-landing.collapsed .sidebar-content {
-  display: none; /* Hide all other content */
+.sidebar-landing.collapsed {
+  width: 60px; /* Collapsed width */
 }
 
-/* Ensure the faMagnifyingGlass icon remains visible */
-.sidebar-landing.collapsed .fa-magnifying-glass {
-  visibility: visible;
-  opacity: 1;
-  cursor: pointer;
+.sidebar-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
 }
 
-/* Sidebar expanded state */
-.sidebar-landing .sidebar-content {
-  display: block; /* Show content when expanded */
+/* Sidebar Header in Collapsed State */
+.sidebar-landing.collapsed .sidebar-header {
+  justify-content: left; /* Center the button horizontally */
 }
 
-/* Smooth transitions for visibility */
-.sidebar-landing .sidebar-content,
-.sidebar-landing.collapsed .fa-magnifying-glass {
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+.sidebar-content {
+  padding: 20px;
 }
 
-
-  .nav-link{
-    color:#005ea2;
-  }
-
-  .nav-link:hover{
-    color: white; /* Change text color on hover */
-  }
-  .nav-item:hover {
-  /* Add your hover styles here */
-  background-color: #005ea24d; /* Change background color on hover */
-  color:white;
-  
+.sidebar-content ul {
+  list-style: none;
+  padding: 0;
 }
 
-.nav-item:hover .nav-link {
-    color: white;
-
+.sidebar-content ul li {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
 }
 
-.simple:hover .nav-link {
-  font-style: italic;
-  font-weight: bold;
+.sidebar-content ul li fa-icon {
+  margin-right: 10px;
 }
 
-
-
-/* Define styles for the default state of the anchor tag inside the list item */
-.nav-item > ul > li > a:hover {
-  /* Add your hover styles here */
-  text-decoration: none; /* Remove underline on hover */
-  color: white; /* Change text color on hover */
-  font-style: italic;
-  font-weight: bold;
+.sidebar-content ul li span {
+  white-space: nowrap;
 }
 
-
-
-
-.Menu-Title{
-    color:#EFF6FB;
-   /* padding-left: 1.5rem;
-    padding-right: 1.5rem;*/
-    size: 3rem;
-    font-size:19px;
+/* Main Content */
+.main-content {
+  flex: 1; /* Take up the remaining space */
+  padding: 20px;
+  transition: margin-left 0.3s ease;
 }
 
-.links{
-    padding-left:20px;
-    color: #005EA2;
-    background: #EFF6FB;
-    border: none;
+.main-content.expanded {
+  margin-left: 0px; /* Adjust to match collapsed sidebar width */
 }
-.links:hover{
-
-    background-color: #005EA2;
-    color: #EFF6FB;
-
-}
-
-
-
-@media (max-width: 768px) {
-  .sidebar-landing {
-      display: none;
-  }
-  
-}
-
-
