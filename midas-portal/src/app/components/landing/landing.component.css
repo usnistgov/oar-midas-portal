@@ -1,27 +1,24 @@
-.table-dashboard{
-    padding-bottom: 1%;
-    height: auto;
+.table-dashboard {
+  padding-bottom: 1%;
+  height: auto;
 }
 
-:host ::ng-deep .p-panel-header
-{
+:host ::ng-deep .p-panel-header {
   background: #EFF6FB;
   border: 1px solid #005ea2;
   padding: 0.2rem;
-  color:#005ea2;
+  color: #005ea2;
 }
 
-:host ::ng-deep .p-dialog-header{
-    padding:0.3rem;
+:host ::ng-deep .p-dialog-header {
+  padding: 0.3rem;
 }
 
-:host ::ng-deep .p-panel-content
-{
+:host ::ng-deep .p-panel-content {
   padding: 0.5rem;
 }
 
-:host ::ng-deep .p-paginator-bottom
-{
+:host ::ng-deep .p-paginator-bottom {
   padding: 0.2rem;
 }
 
@@ -29,74 +26,52 @@
   padding: 0.3rem;
 }
 
-:host ::ng-deep .p-datatable .p-datatable-thead > tr > th 
-{
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
   padding: 0.3rem;
 }
 
-:host ::ng-deep .p-datatable .p-datatable-header{
-    padding:0.5rem 0.5rem;
+:host ::ng-deep .p-datatable .p-datatable-header {
+  padding: 0.5rem 0.5rem;
 }
-
-
-
 
 /* Separators */
 .sidebar-separator-title {
-    background-color: #005ea2;
-    height: 50px;
-    color: #fff;
+  background-color: #005ea2;
+  height: 50px;
+  color: #fff;
+}
 
+.col.p-2 {
+  position: relative; /* Ensure the col container is the reference for positioning */
 }
 
 .nav-item {
-    display: flex;
-    align-items: flex-start; /* Center items vertically */
-    position: relative;
-    flex-direction: column;
+  display: flex;
+  align-items: flex-start; /* Center items vertically */
+  position: relative;
+  flex-direction: column;
 }
 
-  .sidebar-icon{
-    position: absolute;
-    right: 0;
-    padding: 5px; /* Adjust padding as needed */
-  }
+.sidebar-icon {
+  position: absolute;
+  right: 0;
+}
 
-  .sidebar-landing{
-    background-color:#eff6fb;
-    width: 200px;
-    min-height: 100vh;
-  }
+.nav-link {
+  color: #005ea2;
+}
 
+.nav-link:hover {
+  color: white; /* Change text color on hover */
+}
 
-  .nav-link-sub{
-    color:#005ea2;
-    padding-left:10px;
-  }
-
-  .nav-link-sub:hover{
-    background-color:#005ea2;
-    color: white; /* Change text color on hover */
-  }
-
-
-  .nav-link{
-    color:#005ea2;
-  }
-
-  .nav-link:hover{
-    color: white; /* Change text color on hover */
-  }
-  .nav-item:hover {
-  /* Add your hover styles here */
+.nav-item:hover {
   background-color: #005ea24d; /* Change background color on hover */
-  color:white;
-  
+  color: white;
 }
 
 .nav-item:hover .nav-link {
-    color: white;
-
+  color: white;
 }
 
 .simple:hover .nav-link {
@@ -104,46 +79,303 @@
   font-weight: bold;
 }
 
+.Menu-Title {
+  color: #EFF6FB;
+  font-size: 19px;
+}
 
+.links {
+  padding-left: 20px;
+  color: #005EA2;
+  background: #EFF6FB;
+  border: none;
+}
 
-/* Define styles for the default state of the anchor tag inside the list item */
-.nav-item > ul > li > a:hover {
-  /* Add your hover styles here */
-  text-decoration: none; /* Remove underline on hover */
-  color: white; /* Change text color on hover */
-  font-style: italic;
-  font-weight: bold;
+.links:hover {
+  background-color: #005EA2;
+  color: #EFF6FB;
+}
+
+.container {
+  max-width: 400px; /* Adjust as needed */
+  padding: 10px; /* Adjust as needed */
+}
+
+.bg-light {
+  background-color: #EFF6FB; /* Light blue color */
+}
+
+.form-control {
+  width: 100%;
+  border: 1px solid #ced4da; /* Adjust border color */
+  border-radius: 4px; /* Adjust border radius */
+  padding: 0.375rem 0.75rem; /* Adjust padding */
+}
+
+.form-control:focus {
+  border-color: red; /* Adjust focus border color */
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(97, 104, 112, 0.25); /* Adjust focus box shadow */
+}
+
+.info-bubble {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100001;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.info-bubble fa-icon {
+  font-size: 24px;
+}
+
+.sidebar-landing.collapsed {
+  width: 35px; /* Collapsed width */
+  background-color: white;
+}
+
+.sidebar-header-in {
+  display: none;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.sidebar-landing.collapsed .sidebar-header-in {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-landing {
+  position: relative; /* Ensure the sidebar is the reference for positioning */
+  width: 200px;
+  min-height: 100vh;
+  background-color: #EFF6FB;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  padding: 0; /* Remove any padding */
+}
+
+.hidden {
+  display: none !important; /* Ensure it overrides any other display rules */
+}
+
+.sidebar-header-out {
+  position: absolute; /* Position it relative to the nearest positioned ancestor */
+  top: 0; /* Align it to the top */
+  left: 0; /* Align it to the left */
+  width: 30px; /* Set the width of the header */
+  height: 30px; /* Set the height of the header */
+  display: flex;
+  justify-content: center; /* Center the button horizontally */
+  align-items: flex-start; /* Center the button vertically */
+  background-color: transparent; /* Match the sidebar background */
+  border: none; /* Optional: Add a border for better visibility */
+  z-index: 10; /* Ensure it stays above other elements */
+}
+
+.container.d-flex {
+  display: flex; /* Enable flexbox layout */
+  gap: 10px; /* Add spacing between the input and button */
+}
+
+.close-btn {
+  background-color: transparent; /* Make the button background transparent */
+  border: none; /* Remove the border */
+  box-shadow: none; /* Remove any box shadow initially */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+  cursor: pointer; /* Ensure it looks clickable */
+  display: flex; /* Use flexbox for alignment */
+  justify-content: center; /* Center the icon horizontally */
+  align-items: flex-start; /* Center the icon vertically */
+  width: 30px; /* Set the width of the button */
+  height: 30px; /* Set the height of the button */
+  transition: box-shadow 0.3s ease, background-color 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* Add a subtle background color on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow on hover */
+}
+
+.close-btn fa-icon {
+  color: #005ea2 !important; /* Set the arrow color to blue */
+  font-size: 20px; /* Adjust the size of the arrow */
+  position: relative;
+}
+
+.close-btn:hover fa-icon {
+  color: #003f7d !important; /* Darken the arrow color slightly on hover */
+}
+
+/* Menubar styles */
+.menubar {
+  display: none; /* Hidden by default */
+  background-color: #005ea2; /* Blue background */
+  color: white;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menubar .menu-btn {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.menubar .menu-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.menubar .menu-items li {
+  display: inline-block;
+}
+
+.menubar .menu-items li a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.menubar .menu-items li a:hover {
+  text-decoration: underline;
+}
+
+.col.p-4 {
+  position: relative; /* Ensure the sidebar-header-out is positioned relative to this container */
+}
+
+.horizontal-menu{
+  display:none;
 }
 
 
-
-
-.Menu-Title{
-    color:#EFF6FB;
-   /* padding-left: 1.5rem;
-    padding-right: 1.5rem;*/
-    size: 3rem;
-    font-size:19px;
-}
-
-.links{
-    padding-left:20px;
-    color: #005EA2;
-    background: #EFF6FB;
-    border: none;
-}
-.links:hover{
-
-    background-color: #005EA2;
-    color: #EFF6FB;
-
-}
-
+/* Media query to hide the sidebar and show the menubar */
 @media (max-width: 768px) {
   .sidebar-landing {
-      display: none;
+    display: none; /* Hide the sidebar */
+  }
+
+  .sidebar-header-out {
+    display: none; /* Show the header */
+  }
+
+  .horizontal-menu {
+    display:flex; /* Show the horizontal menu */
+    flex-direction: column ;
+    background-color: #005ea2; /* Blue background */
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
   
+  .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .menu-search {
+    flex: 1;
+    margin-left:5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+  }
+  
+  .menu-toggle-btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  
+  .menu-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  .menu-item {
+    position: relative;
+    margin: 5px 10px;
+  }
+  
+  .menu-link {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .menu-link:hover {
+    background-color: #005ea2; /* Darker blue on hover */
+  }
+  
+  .submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #005ea2; /* Darker blue */
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+    display: none;
+    z-index:1000;
+  }
+  
+  .submenu-link {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    display: block;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submenu-link:hover {
+    background-color: #003f7d; /* Blue on hover */
+  }
+
+  .submenu:not(.hidden) {
+    display: block; /* Show the submenu when the 'hidden' class is removed */
+  }
+  
+  .hidden {
+    display: none !important;
+  }
+
+
 }
-
-

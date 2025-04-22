@@ -2,13 +2,16 @@ import { Component, OnInit, } from '@angular/core';
 import {
   faHouse, faUser, faDashboard, faCloud, faClipboardList,
   faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook, faMicrochip, faMagnifyingGlass
-  , faCircle, faPrint, faPersonCircleQuestion, faBuilding, faSquareCaretDown,faSquareCaretUp, faInfoCircle
+  , faCircle, faPrint, faPersonCircleQuestion, faBuilding, faSquareCaretDown,faSquareCaretUp, faInfoCircle, faArrowLeft,faBars
 } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'oarng';
 import { SearchListModalComponent } from '../modals/search/search-list.component';
 import { InfoComponent } from '../modals/info/info.component';
+import { MenubarModule } from 'primeng/menubar';
+import { AvatarModule } from 'primeng/avatar';
+import { BadgeModule } from 'primeng/badge';
 
 
 @Component({
@@ -49,8 +52,13 @@ export class LandingComponent implements OnInit {
   authToken: string|null = null;
   ref: DynamicDialogRef;
   public searchResults: any[] = [];
-  submenuCollapsed: boolean[] = [true, true];
+  submenuCollapsed: boolean[] = [true, true,true,true];
   faInfoCircle = faInfoCircle;
+  isSidebarCollapsed = false; 
+  faArrowLeft = faArrowLeft;
+  faBars = faBars;
+  isSmallScreen: boolean = false; // Flag to track if the screen is small
+  isMenuOpen: boolean = false;
 
 
   public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,
@@ -58,10 +66,15 @@ export class LandingComponent implements OnInit {
 
   }
 
-
   ngOnInit(): void {
     this.getUserInfo();
+    this.checkScreenSize();
+    window.addEventListener('resize', this.checkScreenSize.bind(this));
   }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.checkScreenSize.bind(this));
+}
 
 
   /**
@@ -117,6 +130,27 @@ export class LandingComponent implements OnInit {
       }
     });
   }
+
+  checkScreenSize(): void {
+    this.isSmallScreen = window.innerWidth <= 768;
+}
+
+  toggleSidebar(): void {
+    console.log("toggleSidebar, isSidebarCollapsed: ", this.isSidebarCollapsed);
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    const sidebarHeaderOut = document.querySelector('.sidebar-header-out') as HTMLElement;
+    if (this.isSidebarCollapsed) {
+      sidebarHeaderOut.classList.add('hidden');
+    } else {
+      sidebarHeaderOut.classList.remove('hidden');
+    }
+  }
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  
 
   /**
    * This method is used to get the user info from the AuthenticationService.
