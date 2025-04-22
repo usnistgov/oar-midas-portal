@@ -27,8 +27,6 @@ import { LandingModule } from './components/landing/landing.module';
 import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
 import { ButtonModule } from 'primeng/button';
 import { TabViewModule } from 'primeng/tabview';
-import { BadgeModule } from 'primeng/badge';
-import { AvatarModule } from 'primeng/avatar';
 
 
 
@@ -59,10 +57,7 @@ import { AvatarModule } from 'primeng/avatar';
     AutoCompleteModule,
     ButtonModule,
     TabViewModule,
-    DialogModule,
-    PanelModule,
-    BadgeModule,
-    AvatarModule,
+    DialogModule
   ],
   providers: [
 //       fakeBackendProvider,
