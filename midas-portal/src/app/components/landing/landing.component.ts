@@ -52,7 +52,6 @@ export class LandingComponent implements OnInit {
   public searchResults: any[] = [];
   submenuCollapsed: boolean[] = [true, true];
   faInfoCircle = faInfoCircle;
-  public websocketMessage: string;
 
 
   public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,
@@ -145,9 +144,6 @@ export class LandingComponent implements OnInit {
           this.authToken = creds.token;
           this.websocketService.connect(this.authToken);
           this.websocketService.messages.subscribe(message => {
-            console.log("WebSocket message received-:", message);
-            this.websocketMessage = this.websocketService.getRecord(message); 
-            console.log("WebSocket message received after getRecord:", message);
             this.messageService.addAll([this.websocketService.toHumanReadable(message)
             ]);
           });

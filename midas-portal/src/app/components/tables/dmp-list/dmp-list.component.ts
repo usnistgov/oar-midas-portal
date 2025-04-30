@@ -49,7 +49,7 @@ export class DmpListComponent implements OnInit {
       if (this.authToken && this.dmpAPI)
           this.fetchRecords(this.dmpAPI);
       if(this.websocketMessage) {
-        if (this.websocketMessage.toLowerCase().includes("dap")) {
+        if (this.websocketMessage.toLowerCase().includes("dmp")) {
           this.fetchRecords(this.dmpAPI);
         }
       };
