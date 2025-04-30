@@ -145,8 +145,10 @@ export class LandingComponent implements OnInit {
           this.authToken = creds.token;
           this.websocketService.connect(this.authToken);
           this.websocketService.messages.subscribe(message => {
+            console.log("WebSocket message received-:", message);
             this.websocketMessage = this.websocketService.getRecord(message); 
-            this.messageService.addAll([this.websocketService.toHumanReadable(message)
+            console.log("WebSocket message received after getRecord:", message);
+            this.messageService.addAll([this.websocketService.toHumanReadable(this.websocketMessage)
             ]);
           });
         }
