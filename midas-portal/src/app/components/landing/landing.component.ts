@@ -148,7 +148,7 @@ export class LandingComponent implements OnInit {
             console.log("WebSocket message received-:", message);
             this.websocketMessage = this.websocketService.getRecord(message); 
             console.log("WebSocket message received after getRecord:", message);
-            this.messageService.addAll([this.websocketService.toHumanReadable(this.websocketMessage)
+            this.messageService.addAll([this.websocketService.toHumanReadable(message)
             ]);
           });
         }
