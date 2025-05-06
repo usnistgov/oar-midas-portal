@@ -80,10 +80,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "midas-portal:build:production"
+                          "buildTarget": "midas-portal:build:production"
                         },
                         "development": {
-                            "browserTarget": "midas-portal:build:development"
+                          "buildTarget": "midas-portal:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -91,7 +91,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "wizard:build"
+                      "buildTarget": "wizard:build"
                     }
                 }
             }
