@@ -14,10 +14,9 @@ export class WebsocketService {
   }
 
   public connect(authToken:string): void {
-    console.log("test")
     const websocketUrl = this.configSvc.getConfig()['websocket_dbio'];
-    const websocketUrlWithToken = `${websocketUrl}?token=${encodeURIComponent(authToken)}`;
-    this.socket = new WebSocket(websocketUrlWithToken);
+    //const websocketUrlWithToken = `${websocketUrl}?token=${encodeURIComponent(authToken)}`;
+    this.socket = new WebSocket(websocketUrl);
 
     this.socket.onopen = () => {
       console.log('WebSocket connection established');
