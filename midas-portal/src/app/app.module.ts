@@ -20,7 +20,7 @@ import { PanelModule } from "primeng/panel";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import { DialogModule } from 'primeng/dialog';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 // import { AuthService, WebAuthService, CustomizationService } from './components/auth-service/auth.service';
 // import { LandingComponent } from './components/landing/landing.component';
 import { LandingModule } from './components/landing/landing.module';
@@ -31,42 +31,35 @@ import { TabViewModule } from 'primeng/tabview';
 
 
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    // LandingComponent
-    // EdiListComponent,
-    // RecordsComponent,
-    // DmpListComponent,
-    // ReviewListComponent,
-    // FileListComponent
-
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    AngularMaterialModule,
-    FormsModule,
-    ReactiveFormsModule,
-    OARngModule,
-    FrameModule,
-    HttpClientModule,
-    LandingModule,
-    ScrollPanelModule,
-    DropdownModule,
-    AuthModule,
-    AutoCompleteModule,
-    ButtonModule,
-    TabViewModule,
-    DialogModule
-  ],
-  providers: [
-//       fakeBackendProvider,
-      { provide: CONFIG_URL, useValue: "assets/environment.json" },
-      WebsocketService
-  ],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        // LandingComponent
+        // EdiListComponent,
+        // RecordsComponent,
+        // DmpListComponent,
+        // ReviewListComponent,
+        // FileListComponent
+    ],
+    bootstrap: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        AngularMaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        OARngModule,
+        FrameModule,
+        LandingModule,
+        ScrollPanelModule,
+        DropdownModule,
+        AuthModule,
+        AutoCompleteModule,
+        ButtonModule,
+        TabViewModule,
+        DialogModule], providers: [
+        //       fakeBackendProvider,
+        { provide: CONFIG_URL, useValue: "assets/environment.json" },
+        WebsocketService,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

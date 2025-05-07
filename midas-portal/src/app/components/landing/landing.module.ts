@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { LandingComponent } from './landing.component';
-import {HttpClientModule}   from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi }   from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { AngularMaterialModule } from '../../angular-material.module';
 import { DapComponent } from '../tables/dap/dap.component';
@@ -31,8 +31,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TabViewModule } from 'primeng/tabview';
 import { CalendarModule } from 'primeng/calendar';
 
-@NgModule({
-    declarations:[
+@NgModule({ declarations: [
         LandingComponent,
         DapComponent,
         DmpListComponent,
@@ -43,30 +42,22 @@ import { CalendarModule } from 'primeng/calendar';
         DmpListModalComponent,
         ReviewListModalComponent,
         SearchListModalComponent
-    ],
-    imports:[
-         HttpClientModule,
-         AngularMaterialModule,
-         PanelModule,
-         AccordionModule,
-         MenuModule,
-         ButtonModule,
-         RadioButtonModule,
-         FontAwesomeModule,
-         TableModule,
-         TagModule,
-         DropdownModule,
-         SidebarModule,
-         FormsModule,
-         ToastModule,
-         BrowserModule,
-         MultiSelectModule,
-         AutoCompleteModule,
-         TabViewModule,
-         CalendarModule,
-         
-         
-    ],
-    providers:[ HttpClient,DatePipe]
-})
+    ], imports: [AngularMaterialModule,
+        PanelModule,
+        AccordionModule,
+        MenuModule,
+        ButtonModule,
+        RadioButtonModule,
+        FontAwesomeModule,
+        TableModule,
+        TagModule,
+        DropdownModule,
+        SidebarModule,
+        FormsModule,
+        ToastModule,
+        BrowserModule,
+        MultiSelectModule,
+        AutoCompleteModule,
+        TabViewModule,
+        CalendarModule], providers: [HttpClient, DatePipe, provideHttpClient(withInterceptorsFromDi())] })
 export class LandingModule {}
