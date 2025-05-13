@@ -10,6 +10,8 @@ import { MessageService } from 'primeng/api';
 import { DapModalComponent } from '../../modals/dap/dap.component';
 import { ConfigurationService } from 'oarng';
 import { dap } from '../../../models/dap.model';
+import { WebsocketService } from '../../../shared/websocket.service';
+
 
 
 @Component({
@@ -23,7 +25,8 @@ import { dap } from '../../../models/dap.model';
   ]
 })
 export class DapComponent implements OnInit, OnChanges {
-  @Input() authToken: string|null;    
+  @Input() authToken: string|null;  
+  @Input() websocketMessage: string|null;   
   @ViewChild('recordsTable') recordsTable: Table;
   faUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
   faSquarePlus = faSquarePlus;
@@ -36,7 +39,7 @@ export class DapComponent implements OnInit, OnChanges {
   
 
   constructor(private configSvc: ConfigurationService, private http: HttpClient, public datepipe: DatePipe, public dialogService: DialogService
-    , public messageService: MessageService) {
+    , public messageService: MessageService,private webSocketService: WebsocketService) {
   }
 
 
@@ -57,6 +60,13 @@ export class DapComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
       if (this.authToken)
           this.fetchRecords(this.dapAPI);
+
+      if(this.websocketMessage) {
+        if (this.websocketMessage.toLowerCase().includes("dap")) {
+          console.log("The message contains the word 'dap'. Fetching records...");
+          this.fetchRecords(this.dapAPI);
+        }
+      };
   }
 
 

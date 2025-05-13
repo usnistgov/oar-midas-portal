@@ -105,22 +105,22 @@
           <div class="row">
             <div class="col-lg-6 col-md-12 col-sm-12">
               <div class="table-dashboard">
-                <app-dmp-list [authToken]="authToken"></app-dmp-list>
+                <app-dmp-list [authToken]="authToken" [websocketMessage]="websocketMessage"></app-dmp-list>
               </div>
             </div>
             <div class="col-lg-6 col-md-12 col-sm-12">
               <div class="table-dashboard">
-                <app-dap [authToken]="authToken"></app-dap>
+                <app-dap [authToken]="authToken" [websocketMessage]="websocketMessage"></app-dap>
               </div>
             </div>
             <div class="col-lg-6 col-md-12 col-sm-12">
               <div class="table-dashboard">
-                <app-review-list [authToken]="authToken" [userId]="userId"></app-review-list>
+                <app-review-list [authToken]="authToken" [userId]="userId" [websocketMessage]="websocketMessage"></app-review-list>
                 </div>
             </div>
             <div class="col-lg-6 col-md-12 col-sm-12">
               <div class="table-dashboard">
-                <app-file-list [authToken]="authToken" ></app-file-list>
+                <app-file-list [authToken]="authToken" [websocketMessage]="websocketMessage" ></app-file-list>
               </div>
             </div>
           </div>

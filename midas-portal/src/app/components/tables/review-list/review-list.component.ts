@@ -19,6 +19,7 @@ export class ReviewListComponent implements OnInit {
   @ViewChild('reviewtable') reviewTable: Table;
   @Input() authToken: string|null = null;
   @Input() userId: string|undefined|null = null;
+  @Input() websocketMessage: string|null;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   faBook=faBook;
   public records: any;
@@ -56,8 +57,14 @@ export class ReviewListComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
     setTimeout(() => {
       if (this.authToken && this.userId)
-        this.fetchRecords(this.NPSAPI+this.userId);
+          this.fetchRecords(this.NPSAPI+this.userId);
     }, 5000);
+
+    if(this.websocketMessage) {
+      if (this.websocketMessage.toLowerCase().includes("dap")) {
+        this.fetchRecords(this.NPSAPI+this.userId);
+      }
+    };
     
   }
 

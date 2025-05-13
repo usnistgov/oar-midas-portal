@@ -1,4 +1,4 @@
-import { Component, OnInit, } from '@angular/core';
+import { Component, OnInit,SimpleChanges } from '@angular/core';
 import {
   faHouse, faUser, faDashboard, faCloud, faClipboardList,
   faSearch, faFileCirclePlus, faPlus, faBook, faListCheck, faLink, faAddressBook, faMicrochip, faMagnifyingGlass
@@ -9,6 +9,7 @@ import { DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import { AuthenticationService } from 'oarng';
 import { SearchListModalComponent } from '../modals/search/search-list.component';
 import { InfoComponent } from '../modals/info/info.component';
+import { WebsocketService } from '../../shared/websocket.service';
 
 
 @Component({
@@ -51,10 +52,11 @@ export class LandingComponent implements OnInit {
   public searchResults: any[] = [];
   submenuCollapsed: boolean[] = [true, true];
   faInfoCircle = faInfoCircle;
+  websocketMessage: string|null;
 
 
   public constructor(private authsvc: AuthenticationService, public dialogService: DialogService,
-    public messageService: MessageService) {
+    public messageService: MessageService,private websocketService: WebsocketService) {
 
   }
 
@@ -62,6 +64,7 @@ export class LandingComponent implements OnInit {
   ngOnInit(): void {
     this.getUserInfo();
   }
+
 
 
   /**
@@ -136,8 +139,17 @@ export class LandingComponent implements OnInit {
         this.userLastName = creds.userAttributes.userLastName;
         this.userEmail = creds.userAttributes.userEmail;
         this.userOU = creds.userAttributes.userOU;
-        if (creds.token)
+        
+        
+        if (creds.token) {
           this.authToken = creds.token;
+          this.websocketService.connect(this.authToken);
+          this.websocketService.messages.subscribe(message => {
+            this.websocketMessage = message;
+            this.messageService.addAll([this.websocketService.toHumanReadable(message)
+            ]);
+          });
+        }
           //this.authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5ODcxOTAxOSwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.ntiPIo39kG78T7xbVrbJEfw4cz8jn--Bk-t7aRJdvPs"
       },
       error => {
@@ -151,6 +163,7 @@ export class LandingComponent implements OnInit {
     this.userOU= "MML",
     this.authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0SWQiLCJ1c2VyRW1haWwiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsImV4cCI6MTY5ODcxOTAxOSwidXNlck5hbWUiOiJUZXN0VXNlciIsInVzZXJMYXN0TmFtZSI6IlRlc3RMYXN0In0.ntiPIo39kG78T7xbVrbJEfw4cz8jn--Bk-t7aRJdvPs"
 */
+  
   }
 
  

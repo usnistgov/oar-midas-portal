@@ -20,6 +20,7 @@ import { ObjectUtils } from 'primeng/utils';
 })
 export class FileListComponent implements OnInit {
   @Input() authToken: string|null;
+  @Input() websocketMessage: string|null;
   @ViewChild('filetable') fileTable: Table;
   faUpRightAndDownLeftFromCenter=faUpRightAndDownLeftFromCenter;
   dapAPI: string;
@@ -43,6 +44,13 @@ export class FileListComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges){
     if(this.authToken)
       this.fetchRecords(this.dapAPI)
+    if(this.websocketMessage) {
+      if (this.websocketMessage.toLowerCase().includes("dap")) {
+        console.log("The message contains the word 'dap'. Fetching records...");
+        this.fetchRecords(this.dapAPI);
+      }
+      console.log()
+    };
   }
     
 
