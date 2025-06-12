@@ -1,0 +1,34 @@
+<a mat-list-item [routerLink]="isInternalRoute(item()) ? item().link : null"
+  [href]="!isInternalRoute(item()) ? item().link : null" routerLinkActive="selected-menu-item" #rla="routerLinkActive"
+  (click)="item().subItems ? toggleNestedMenu() : null" [activated]="rla.isActive" class="menu-item">
+  <mat-icon matListItemIcon [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'">
+    {{ item().icon }}
+  </mat-icon>
+
+  <span matListItemTitle *ngIf="!collapsed()">
+    {{ item().name }}
+  </span>
+
+  <span matListItemMeta *ngIf="item().subItems && !collapsed()">
+    <mat-icon>
+      {{ nestedMenuOpened() ? 'expand_less' : 'expand_more' }}
+    </mat-icon>
+  </span>
+</a>
+
+
+<!-- also hide the sub-items container whenever the sidebar is collapsed -->
+<ng-container *ngIf="item().subItems && nestedMenuOpened() && !collapsed()">
+  <div *ngFor="let subItem of item().subItems">
+    <a mat-list-item [href]="subItem.link" target="_blank" rel="noopener" (click)="setActive(subItem)"
+      [activated]="subItem === activeItem" class="menu-item" [class.indented]="!collapsed()">
+      <mat-icon matListItemIcon [fontSet]="subItem === activeItem ? 'material-icons' : 'material-icons-outlined'">
+        {{ subItem.icon }}
+      </mat-icon>
+
+      <span matListItemTitle *ngIf="!collapsed()">
+        {{ subItem.name }}
+      </span>
+    </a>
+  </div>
+</ng-container>

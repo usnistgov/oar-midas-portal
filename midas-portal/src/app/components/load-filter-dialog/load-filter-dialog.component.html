@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Select a Saved Filter</h1>
+
+<div mat-dialog-content>
+  <mat-radio-group [(ngModel)]="selected" class="filter-radio-group">
+    <div *ngFor="let name of data.filterNames" class="filter-item">
+      <!-- 1) radio on the left -->
+      <mat-radio-button class="filter-radio" [value]="name"></mat-radio-button>
+
+      <!-- 2) name spans the center -->
+      <span class="filter-label">{{ name }}</span>
+
+      <!-- 3) delete button on the right -->
+      <button mat-icon-button class="delete-button" (click)="delete(name); $event.stopPropagation()"
+        matTooltip="Delete Filter" color="warn">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </mat-radio-group>
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="dialogRef.close()" color="primary">
+    Cancel
+  </button>
+  <button mat-flat-button color="primary" [disabled]="!selected" (click)="load()">
+    Load
+  </button>
+</mat-dialog-actions>

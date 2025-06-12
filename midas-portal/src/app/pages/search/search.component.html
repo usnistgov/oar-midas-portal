@@ -1,0 +1,430 @@
+<div class="search-container">
+    <div class="search-panel" [class.loading]="isLoading">
+        <div class="loading-overlay" *ngIf="isLoading">
+            <mat-progress-spinner mode="indeterminate" diameter="50" color="primary"></mat-progress-spinner>
+        </div>
+
+        <div class="search-content">
+            <div class="search-bar">
+                <div class="search-controls">
+                    <mat-form-field appearance="outline" class="search-field small large">
+                        <mat-icon matPrefix>search</mat-icon>
+                        <input matInput placeholder="Search dmp, dap..." [(ngModel)]="searchTerm"
+                            (keydown.enter)="performSearch()" />
+                    </mat-form-field>
+
+
+                    <button mat-flat-button color="primary" style="height: 40px" (click)="performSearch()">
+                        <mat-icon>search</mat-icon>
+                        Search
+                    </button>
+                    <button *ngIf="searchPerformed && searchTerm" mat-stroked-button class="clear-button"
+                        color="primary" style="height: 40px" (click)="clearFilters()">
+                        <mat-icon>clear</mat-icon>
+                        Clear
+                    </button>
+
+                </div>
+
+                <div class="export-button">
+                    <button mat-raised-button color="primary" [matMenuTriggerFor]="exportMenu" (click)="toggleMenu()">
+                        Export
+                        <mat-icon iconPositionEnd>download</mat-icon>
+                    </button>
+
+                    <!-- Export Options Menu -->
+                    <mat-menu #exportMenu="matMenu" class="export-menu">
+                        <button mat-menu-item (click)="exportData('json')">Export as JSON</button>
+                        <button mat-menu-item (click)="exportData('csv')">Export as CSV</button>
+                        <button mat-menu-item (click)="exportData('pdf')">Export as PDF</button>
+                    </mat-menu>
+                </div>
+            </div>
+
+
+            <!-- Advanced Search Panel -->
+            <mat-expansion-panel [(expanded)]="advancedSearchExpanded">
+                <mat-expansion-panel-header class="panel-header">
+                    <mat-panel-title class="panel-title">
+                        Advanced Search
+                        <button mat-icon-button class="help-icon" matTooltip="" (click)="openHelpDialog($event)">
+                            <mat-icon>help</mat-icon>
+                        </button>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+
+                <div class="advanced-search-content">
+                    <div class="filter-field-wrapper ">
+                        <mat-form-field class="filter-field large filter-field-keywords x-small-form-input"
+                            appearance="outline">
+                            <mat-label>Keywords</mat-label>
+                            <mat-chip-grid color="primary" #chipGrid aria-label="Enter keywords">
+                                <mat-chip-row *ngFor="let keyword of pendingKeywords;" (removed)="remove(keyword)"
+                                    [editable]="true" (edited)="edit(keyword, $event)"
+                                    [aria-description]="'press enter to edit ' + keyword">
+                                    {{ keyword }}
+                                    <button matChipRemove [attr.aria-label]="'remove ' + keyword">
+                                        <mat-icon>cancel</mat-icon>
+                                    </button>
+                                </mat-chip-row>
+                                <input placeholder="New keyword..." [matChipInputFor]="chipGrid"
+                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                    [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)" />
+                            </mat-chip-grid>
+                        </mat-form-field>
+
+                        <span class="material-symbols-outlined help-icon" matTooltip="Enter keywords that...">
+                            help
+                        </span>
+                    </div>
+
+                    <div class="filter-fields-container">
+                        <mat-form-field appearance="outline" class="filter-field x-small-form-input">
+                            <mat-label>Organization Unit</mat-label>
+                            <input #orgInput matInput [formControl]="orgUnitControl" [matAutocomplete]="orgAuto"
+                                placeholder="Filter by Org Unit" />
+                            <mat-autocomplete #orgAuto="matAutocomplete">
+                                <mat-option *ngFor="let unit of orgSuggestions" [value]="unit">
+                                {{ unit }}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+
+                        <span class="material-symbols-outlined help-icon"
+                            matTooltip="The NIST organization that owns the record.">help</span>
+                        <mat-form-field appearance="outline" class="filter-field x-small-form-input">
+                            <mat-label>Record Owner</mat-label>
+                            <input type="text" matInput [formControl]="ownerControl" [matAutocomplete]="ownerAuto"
+                                placeholder="Type to filter owners" />
+                            <mat-autocomplete #ownerAuto="matAutocomplete">
+                                <mat-option *ngFor="let owner of peopleSuggestions" [value]="owner">
+                                    {{ owner }}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+
+                        <span class="material-symbols-outlined help-icon"
+                            matTooltip="The owner of the record.">help</span>
+
+                    </div>
+
+                    <!-- Date Filters -->
+                    <div class="date-filters-row x-small-form-input">
+                        <mat-form-field appearance="outline" class="filter-field x-small-form-input">
+                            <mat-label>Last Modified Filter</mat-label>
+                            <mat-select [(ngModel)]="dateFilterType" (selectionChange)="onDateFilterChange()">
+                                <mat-option value="exact">Exact Date</mat-option>
+                                <mat-option value="before">Before Date</mat-option>
+                                <mat-option value="after">After Date</mat-option>
+                                <mat-option value="between">Between Dates</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field *ngIf="dateFilterType === 'exact'" appearance="outline"
+                            class="filter-field x-small-form-input">
+                            <mat-label>Exact Date</mat-label>
+                            <input matInput [matDatepicker]="picker" [(ngModel)]="exactDate" />
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker xPosition="end"></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field *ngIf="dateFilterType === 'before'" appearance="outline"
+                            class="filter-field x-small-form-input">
+                            <mat-label>Date Before</mat-label>
+                            <input matInput [matDatepicker]="pickerBefore" [(ngModel)]="beforeDate" />
+                            <mat-datepicker-toggle matSuffix [for]="pickerBefore"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerBefore xPosition="end"></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field *ngIf="dateFilterType === 'after'" appearance="outline"
+                            class="filter-field x-small-form-input">
+                            <mat-label>Date After</mat-label>
+                            <input matInput [matDatepicker]="pickerAfter" [(ngModel)]="afterDate" />
+                            <mat-datepicker-toggle matSuffix [for]="pickerAfter"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerAfter xPosition="end"></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field *ngIf="dateFilterType === 'between'" appearance="outline"
+                            class="filter-field x-small-form-input">
+                            <mat-label>Date Range</mat-label>
+                            <mat-date-range-input disableRipple [rangePicker]="pickerBetween">
+                                <input matStartDate placeholder="Start date" name="startDate"
+                                    [(ngModel)]="dateRange.start" />
+                                <input matEndDate placeholder="End date" name="endDate" [(ngModel)]="dateRange.end" />
+                            </mat-date-range-input>
+                            <mat-datepicker-toggle matSuffix [for]="pickerBetween"></mat-datepicker-toggle>
+                            <mat-date-range-picker #pickerBetween xPosition="end"></mat-date-range-picker>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Resource Type -->
+                    <div class="field-wrapper chip-field">
+                        <label class="field-label">
+                            Resource Type
+                            <span class=" material-symbols-outlined help-icon"
+                                matTooltip="The resource type of the record.">help</span>
+                        </label>
+
+                        <mat-chip-listbox aria-orientation="horizontal" multiple class="chip-listbox"
+                            [formControl]="resourceTypeControl">
+                            <mat-chip-option *ngFor="let rt of resourceTypes" [value]="rt.toLowerCase()">
+                                {{ rt }}
+                            </mat-chip-option>
+                        </mat-chip-listbox>
+                    </div>
+
+                    <!-- Process Status -->
+                    <div class="field-wrapper chip-field">
+                        <label class="field-label">
+                            Process Status
+                            <span class="material-symbols-outlined help-icon"
+                                matTooltip="The process status of the record.">help</span>
+                        </label>
+
+                        <mat-chip-listbox aria-orientation="horizontal" multiple class="chip-listbox"
+                            [formControl]="statusControl">
+                            <mat-chip-option *ngFor="let s of statuses" [value]="s.value">
+                                {{ s.label }}
+                            </mat-chip-option>
+                        </mat-chip-listbox>
+                    </div>
+
+
+                    <div class="field-wrapper">
+                        <label class="field-label">
+                            Associated Paper Publication?
+                            <span class="material-symbols-outlined help-icon"
+                                matTooltip="Is this record associated with a paper publication?">help</span>
+                        </label>
+                        <mat-checkbox class="checkbox" color="primary" labelPosition="before"
+                            [(ngModel)]="hasPaperPublication">
+                        </mat-checkbox>
+                    </div>
+
+                    <!-- Buttons Container -->
+                    <div class="buttons-container">
+                        <div class="filters-buttons">
+                            <button mat-flat-button color="primary" style="height: 40px" (click)="saveFilters()">
+                                <mat-icon>star</mat-icon>
+                                Save Filter
+                            </button>
+                            <button mat-flat-button color="primary" style="height: 40px" (click)="loadFilters()">
+                                <mat-icon>replay</mat-icon>
+                                Load Filter
+                            </button>
+                        </div>
+                        <div class="buttons-container-right">
+                            <button mat-stroked-button color="primary" style="height: 40px"
+                                [disabled]="pendingFilterCount === 0" (click)="cancelAdvancedSearch()">
+                                <mat-icon>cancel</mat-icon>Cancel
+                            </button>
+                            <button mat-raised-button color="primary" style="height: 40px"
+                                [disabled]="pendingFilterCount === 0" (click)="applyAdvancedSearch()">
+                                <mat-icon>check</mat-icon>Apply Filters
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </mat-expansion-panel>
+            <!-- filter-status message -->
+            <div class="filter-status" *ngIf="hasFilters() && activeFilterCount() > 0">
+                <!-- group icon + count -->
+                <div class="filter-header">
+                    <mat-icon class="filter-icon">filter_list</mat-icon>
+                    <span class="filter-count">
+                        {{ activeFilterCount() }}
+                        filter{{ activeFilterCount() === 1 ? '' : 's' }} active:
+                    </span>
+                </div>
+
+                <!-- filter pills -->
+                <div class="filter-chips">
+                    <span class="filter-chip" *ngFor="let part of filterParts()">
+                        {{ part }}
+                    </span>
+                </div>
+
+                <!-- clear button -->
+                <button mat-raised-button color="warn" class="pill-button" (click)="clearFilters()">
+                    <mat-icon>delete</mat-icon>
+                    Clear Filters
+                </button>
+            </div>
+
+
+
+            <div class="table-wrapper mat-elevation-z3">
+                <!-- Left side: column toggles -->
+                <div class="table-controls">
+                    <!-- Left side: column toggles -->
+                    <div class="column-toggles">
+                        <ng-container *ngFor="let col of allColumns">
+                            <mat-checkbox [checked]="displayedColumns.includes(col.key)" color="primary"
+                                (change)="toggleColumn(col.key, $event.checked)">
+                                {{ col.label }}
+                            </mat-checkbox>
+                        </ng-container>
+                    </div>
+                    <!-- Right side: clear filters -->
+                    <div class="table-buttons">
+                        <div class="theme-2">
+                            <button mat-stroked-button color="accent" style="height: 40px"
+                                matTooltip="Re-fetch data from the server and re‐apply current filters.">
+                                <mat-icon>sync</mat-icon>
+                                Refresh
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <table mat-table [dataSource]="dataSource" matSort class="advanced-search-table" cdkDropList
+                    cdkDropListOrientation="horizontal" [cdkDropListData]="displayedColumns"
+                    (cdkDropListDropped)="dropColumn($event)">
+                    <!-- ID Column -->
+                    <ng-container matColumnDef="id">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+                        <td mat-cell *matCellDef="let d">
+                            <a [href]="linkto(d.id, d.type?.toLowerCase())" target="_blank">
+                                {{ d.id }}
+                            </a>
+                        </td>
+                    </ng-container>
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
+                            <div class="header-cell-content">
+                                <mat-icon class="drag-icon" cdkDragHandle>drag_indicator</mat-icon>
+                                <span class="header-label">Name</span>
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let d">
+                            {{ d.name }}
+                        </td>
+                    </ng-container>
+
+                    <!-- Owner Column -->
+                    <ng-container matColumnDef="owner">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
+                            <div class="header-cell-content">
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                    drag_indicator
+                                </span>
+                                Owner
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let d">{{ d.owner }}</td>
+                    </ng-container>
+
+                    <!-- Primary Contact Column -->
+                    <ng-container matColumnDef="primaryContact">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
+                            <div class="header-cell-content">
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                    drag_indicator
+                                </span>
+                                Primary NIST Contact
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let d">{{ d.primaryContact }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="organizationUnit">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
+                            <div class="header-cell-content">
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                    drag_indicator
+                                </span>
+                                Org Unit
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let d">
+                            {{ d.organizationUnit || '—' }}
+                        </td>
+                    </ng-container>
+
+
+                    <!-- Type Column -->
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
+                            <div class="header-cell-content">
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                    drag_indicator
+                                </span>
+                                Type
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let d">{{ d.type || '—' }}</td>
+                    </ng-container>
+
+                    <!-- Status Column -->
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
+                            <div class="header-cell-content">
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                    drag_indicator
+                                </span>
+                                Status
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let item">
+                            <span class="status-chip" [ngClass]="getStatusClass(item.status)">
+                                {{ item.status.toUpperCase() }}
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <!-- Modified Date Column -->
+                    <ng-container matColumnDef="modifiedDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
+                            <div class="header-cell-content">
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                    drag_indicator
+                                </span>
+                                Last Modified
+                            </div>
+                        <td mat-cell *matCellDef="let d">
+                            {{ d.modifiedDate | date: 'MM/dd/yyyy' }}
+                        </td>
+                    </ng-container>
+                    <!-- Actions Column -->
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef>Actions</th>
+                        <td mat-cell *matCellDef="let d">
+                            <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #actionMenu="matMenu">
+                                <button mat-menu-item (click)="viewData(d)">
+                                    <mat-icon class="material-icons-outlined">visibility</mat-icon>
+                                    <span>View Data</span>
+                                </button>
+                                <button mat-menu-item (click)="visitPage(d)">
+                                    <mat-icon class="material-icons-outlined">open_in_new</mat-icon>
+                                    <span>Visit Page</span>
+                                </button>
+                                <button mat-menu-item (click)="editData(d)">
+                                    <mat-icon class="material-icons-outlined">edit</mat-icon>
+                                    <span>Edit Data</span>
+                                </button>
+                            </mat-menu>
+                        </td>
+                    </ng-container>
+
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns" cdkDropList
+                        cdkDropListOrientation="horizontal" [cdkDropListData]="displayedColumns"
+                        (cdkDropListDropped)="dropColumn($event)"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+                <mat-paginator [length]="length()" [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons [pageSize]="15">
+                </mat-paginator>
+            </div>
+
+        </div>
+    </div>
+</div>

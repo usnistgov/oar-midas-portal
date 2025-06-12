@@ -1,0 +1,216 @@
+/*==========================
+  Footer Base Layout
+===========================*/
+#footer {
+    position: sticky;
+    background: #000;
+    color: white;
+    padding: 10px 0;
+    z-index: 1000;
+  }
+
+.footer__inner {
+    padding: 20px;
+}
+
+#footer a {
+    color: white;
+    text-decoration: none;
+}
+
+img {
+    border: 0;
+    max-width: 100%;
+    height: auto;
+}
+
+#footer .footer__logo img {
+    width: 200px;
+    margin-left: 1em;
+}
+
+/*==========================
+    Footer Contact & Address
+  ===========================*/
+#footer .footer__contact {
+    font-size: 12px;
+    line-height: 10px;
+    border-bottom: 0.1px solid #202020;
+    padding-bottom: 0.6rem;
+    margin-left: 1.5em;
+}
+
+.footer__address {
+    line-height: 12px;
+}
+
+/*==========================
+    Social Media Section
+  ===========================*/
+#footer .social-links {
+    float: right;
+    margin-right: 1em;
+}
+
+.item-list li {
+    display: inline;
+    list-style: none;
+    padding: 0 0.2rem 0 0;
+    margin-bottom: 1.5rem;
+}
+
+.social-btn {
+    margin-right: 12px;
+    height: 34px;
+    color: gray;
+    padding: 0;
+}
+
+.social-btn:hover,
+.social-btn:visited,
+.social-btn:active {
+    color: gray;
+}
+
+.social-btn--large {
+    height: 60px;
+}
+
+.svg-inline--fa {
+    height: 1.5em !important;
+}
+
+.social-btn i {
+    transition: background-color 300ms ease;
+}
+
+.social-btn i:before {
+    font-size: 28px;
+    line-height: 40px;
+    height: 60px;
+    width: 60px;
+    text-align: center;
+    display: inline-block;
+}
+
+
+.social-btn i:hover {
+    color: #fff;
+    background: gray;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    display: inline-block;
+}
+
+/* Hover background colors per platform */
+.social-btn i.fa-facebook:hover {
+    background: #3a5897;
+}
+
+.social-btn i.fa-linkedin:hover {
+    background: #04669A;
+}
+
+.social-btn i.fa-instagram:hover {
+    background: rgb(182, 1, 253);
+}
+
+.social-btn i.fa-x-twitter:hover {
+    background: #49c9f2;
+}
+
+.social-btn i.fa-youtube:hover {
+    background: #e52d27;
+}
+
+.social-btn i.fa-rss:hover {
+    background: #fd8f00;
+}
+
+.social-btn i.fa-envelope:hover {
+    background: #999;
+}
+
+/* For govdelivery */
+
+/* Hide external link marker span */
+.social-btn .ext,
+span.ext {
+    display: none;
+}
+
+/*==========================
+    Footer Menu Links
+  ===========================*/
+.menu--footer-menu {
+    clear: both;
+    margin-bottom: 0.3rem;
+    line-height: 18px;
+    text-align: center;
+}
+
+.menu--footer-menu ul.menu {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.menu--footer-menu ul.menu li {
+    display: inline-block;
+    font-size: 0.9rem;
+    margin-left: 0;
+    padding: 0;
+}
+
+.menu--footer-menu ul.menu li:before {
+    content: '|';
+    margin: 0 5px;
+    color: inherit;
+}
+
+.menu--footer-menu ul.menu li.first:before {
+    content: none;
+}
+
+.menu--footer-menu ul.menu li a {
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+/*==========================
+    Utility
+  ===========================*/
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.element-invisible,
+.element-focusable,
+#navigation .block-menu .block__title,
+#navigation .block-menu-block .block__title {
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+}
+
+.field-items img {
+    width: 100%;
+}
+
+/* Compatibility and Reset Tweaks */
+ul,
+menu,
+dir,
+dl,
+ol {
+    margin: 0 0 1.25rem 1rem;
+    padding: 0 0 0 2rem;
+    list-style-type: disc;
+}

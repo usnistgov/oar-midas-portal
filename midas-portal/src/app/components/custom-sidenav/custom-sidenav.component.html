@@ -1,0 +1,26 @@
+<!-- Sidenav Header -->
+<div class="sidenav-header">
+  <img src="assets/images/profile-avatar.png" alt="profile avatar" [width]="profilePicSize()"
+    [height]="profilePicSize()" />
+
+  <div class="header-text" [class.visible]="showHeaderText()">
+    <h3>{{ userName }} {{ userLastName }} ({{ winId }})</h3>
+    <!-- Group is hardcoded as 'MML' here. TODO: possible to get this from auth info? -->
+    <p>MML</p>
+  </div>
+</div>
+
+<!-- Menu List -->
+<mat-nav-list>
+  @for (item of menuItems(); track item.key) {
+  <app-menu-item [item]="item" [collapsed]="sideNavCollapsed()"></app-menu-item>
+  }
+</mat-nav-list>
+
+<button
+  class="info-bubble"
+  (click)="openMaintenanceNotice()"
+  aria-label="Show maintenance notice"
+>
+  <mat-icon>info</mat-icon>
+</button>

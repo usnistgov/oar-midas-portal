@@ -1,0 +1,227 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// ======================================
+// 1) Define shared palettes (M2 palettes)
+// ======================================
+$warn-red   : mat.m2-define-palette(mat.$m2-red-palette, 600);
+
+// Primary Blue theme
+$pb-primary : mat.m2-define-palette(mat.$m2-blue-palette);
+$pb-accent  : mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+
+// Indigo-Pink theme
+$ip-primary : mat.m2-define-palette(mat.$m2-indigo-palette);
+$ip-accent  : mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+
+// Cyan-Orange theme
+$co-primary : mat.m2-define-palette(mat.$m2-cyan-palette);
+$co-accent  : mat.m2-define-palette(mat.$m2-orange-palette);
+
+// Teal-Cyan theme
+$tc-primary : mat.m2-define-palette(mat.$m2-teal-palette);
+$tc-accent  : mat.m2-define-palette(mat.$m2-cyan-palette, A200, A100, A400);
+
+// DeepPurple-Amber theme
+$da-primary : mat.m2-define-palette(mat.$m2-deep-purple-palette);
+$da-accent  : mat.m2-define-palette(mat.$m2-amber-palette, A200, A100, A400);
+
+// ======================================
+// 2) Theme Objects (light + dark variants)
+// ======================================
+// Primary Blue
+$pb-light : mat.m2-define-light-theme((
+  color: ( primary: $pb-primary, accent: $pb-accent, warn: $warn-red )
+));
+$pb-dark  : mat.m2-define-dark-theme((
+  color: ( primary: $pb-primary, accent: $pb-accent, warn: $warn-red )
+));
+
+// Indigo-Pink
+$ip-light : mat.m2-define-light-theme((
+  color: ( primary: $ip-primary, accent: $ip-accent, warn: $warn-red )
+));
+$ip-dark  : mat.m2-define-dark-theme((
+  color: ( primary: mat.m2-define-palette(mat.$m2-pink-palette, 700), accent: $ip-accent, warn: $warn-red )
+));
+
+// Cyan-Orange
+$co-light : mat.m2-define-light-theme((
+  color: ( primary: $co-primary, accent: $co-accent, warn: $warn-red )
+));
+$co-dark  : mat.m2-define-dark-theme((
+  color: ( primary: $co-primary, accent: $co-accent, warn: $warn-red )
+));
+
+// Teal-Cyan
+$tc-light : mat.m2-define-light-theme((
+  color: ( primary: $tc-primary, accent: $tc-accent, warn: $warn-red )
+));
+$tc-dark  : mat.m2-define-dark-theme((
+  color: ( primary: $tc-primary, accent: $tc-accent, warn: $warn-red )
+));
+
+// DeepPurple-Amber
+$da-light : mat.m2-define-light-theme((
+  color: ( primary: $da-primary, accent: $da-accent, warn: $warn-red )
+));
+$da-dark  : mat.m2-define-dark-theme((
+  color: ( primary: mat.m2-define-palette(mat.$m2-deep-purple-palette, 100), accent: $da-accent, warn: $warn-red )
+));
+
+// ======================================
+// 3) Emit component color styles per theme+variant
+// ======================================
+.theme-light.light {
+  @include mat.all-component-colors($pb-light);
+}
+.theme-light.dark {
+  @include mat.all-component-colors($pb-dark);
+}
+
+.theme-1.light {
+  @include mat.all-component-colors($ip-light);
+}
+.theme-1.dark {
+  @include mat.all-component-colors($ip-dark);
+}
+
+.theme-2.light {
+  @include mat.all-component-colors($co-light);
+}
+.theme-2.dark {
+  @include mat.all-component-colors($co-dark);
+}
+
+.theme-3.light {
+  @include mat.all-component-colors($tc-light);
+}
+.theme-3.dark {
+  @include mat.all-component-colors($tc-dark);
+}
+
+.theme-4.light {
+  @include mat.all-component-colors($da-light);
+}
+.theme-4.dark {
+  @include mat.all-component-colors($da-dark);
+}
+
+// ======================================
+// Utility classes
+// ======================================
+
+// Prevent background scroll when sidebar open
+.no-scroll {
+  position: fixed !important;
+  width: 100%;
+  height: 100%;
+  overflow: hidden !important;
+}
+
+// Remove default margins & horizontal overflow
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
+
+// Base body styles
+body {
+  background-color: transparent;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// ======================================
+// Stats component helpers
+// ======================================
+.row.mb-8 {
+  // align icon + number vertically
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.stat {
+  // large stat number
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1;
+  min-width: 50px;
+}
+
+.row.mb-8 mat-icon {
+  // slightly smaller icon
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.stat-subtext {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  margin: 0;
+  color: #ccc;
+}
+
+.stat-subtext p {
+  margin: 0;
+  font-weight: 600;
+  color: #d1495b;
+}
+
+.text-green {
+  color: #d1495b;
+}
+
+// ======================================
+// Table & menu resets
+// ======================================
+html {
+  --mat-table-header-container-height: 24px;
+  --mat-table-footer-container-height: 24px;
+  --mat-table-row-item-container-height: 44px;
+  --mat-menu-container-shape: 20px;
+}
+
+.mat-mdc-menu-content {
+  // remove menu padding
+  padding: 0 !important;
+}
+
+// ======================================
+// Drag & drop feedback
+// ======================================
+.cdk-drop-list-dragging {
+  opacity: 0.5;
+  border-left: #102C57 solid 4px;
+  padding-left: 8px;
+}
+
+// ======================================
+// Form-field density presets
+// ======================================
+.small-form-input {
+  @include mat.form-field-density(-1);
+}
+.x-small-form-input {
+  @include mat.form-field-density(-4);
+}
+
+// ======================================
+// Helpers
+// ======================================
+.hide-element {
+  display: none !important;
+}
+
+// Error-snackbar variant styling
+.mat-mdc-snack-bar-container.error-snackbar {
+  --mdc-snackbar-container-color: #2196f3 !important;
+  --mat-mdc-snack-bar-button-color: #fff !important;
+  --mdc-snackbar-supporting-text-color: #fff !important;
+}
