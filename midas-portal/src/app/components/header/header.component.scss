@@ -1,0 +1,62 @@
+/* ──────────────────────────────────────────────────────
+   Sticky page header that remains at top during scroll
+────────────────────────────────────────────────────── */
+.header-container {
+    position: sticky;              /* Stick to top of viewport */
+    top: 0;                        /* Ensure it hugs the very top */
+    background-color: #000000;     /* Solid black background */
+    width: 100%;                   /* Full width of viewport */
+    min-height: 2em;               /* At least two lines of text tall */
+    padding: 1em;                  /* Breathing room inside header */
+    z-index: 1000 !important;      /* Always on top of other content */
+  }
+  
+  /* ──────────────────────────────────────────────────────
+     Flex container for logo and title, clickable to go home
+  ────────────────────────────────────────────────────── */
+  .logo-container {
+    display: flex;                 /* Arrange children in a row */
+    align-items: flex-start;       /* Top-align items vertically */
+    cursor: pointer;               /* Indicate this is clickable */
+    gap: 0.5em;                    /* Space between logo image/text */
+  }
+  
+  /* ──────────────────────────────────────────────────────
+     Logo image sizing
+  ────────────────────────────────────────────────────── */
+  .logo-img {
+    height: 2em;                   /* Scale logo height consistently */
+  }
+  
+  /* ──────────────────────────────────────────────────────
+     Text block next to logo, stacked vertically
+  ────────────────────────────────────────────────────── */
+  .logo-text-block {
+    display: flex;
+    flex-direction: column;        /* Title lines stacked */
+    justify-content: center;       /* Vertically center text */
+    color: white;                  /* White text on black header */
+    line-height: 1.1;              /* Tight line spacing */
+    font-weight: 500;              /* Medium weight for readability */
+  }
+  
+  /* ──────────────────────────────────────────────────────
+     Individual title lines styling
+  ────────────────────────────────────────────────────── */
+  .logo-text {
+    font-size: 1em;                /* Standard body text size */
+  }
+  
+  /* ──────────────────────────────────────────────────────
+     Version badge next to logo
+  ────────────────────────────────────────────────────── */
+  .badge {
+    align-self: flex-start;        /* Align badge to top of container */
+    color: black;                  /* Dark text for contrast */
+    background-color: #f0f0f0;     /* Light grey capsule background */
+    font-size: 10px;               /* Small text size */
+    padding: 0.25em 0.6em;         /* Capsule-shaped padding */
+    border-radius: 999px;          /* Fully rounded pill shape */
+    margin-top: 2px;               /* Slight lift from baseline */
+  }
+  

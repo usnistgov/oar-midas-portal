@@ -1,0 +1,3882 @@
+[
+    {
+      "id": "mdm1:0001",
+      "status": {
+        "created_by": "midas/dsn1",
+        "state": "edit",
+        "action": "update",
+        "created": 1738954544.9913733,
+        "since": 1738954544.9913733,
+        "modified": 1740684083.2451959,
+        "message": "",
+        "byWho": "dsn1",
+        "createdDate": "2025-02-07T18:55:44",
+        "modifiedDate": "2025-02-27T19:21:23",
+        "sinceDate": "2025-02-07T18:55:44"
+      },
+      "name": "Test ",
+      "acls": {
+        "read": [
+          "dsn1",
+          "grp0:public"
+        ],
+        "write": [
+          "dsn1"
+        ],
+        "admin": [
+          "dsn1"
+        ],
+        "delete": [
+          "dsn1"
+        ]
+      },
+      "owner": "dsn1",
+      "deactivated": null,
+      "data": {
+        "title": "Complete test",
+        "startDate": "2025-02-07",
+        "dmpSearchable": "no",
+        "funding": {
+          "grant_source": "Operating Unit",
+          "grant_id": ""
+        },
+        "projectDescription": "Test complete description here",
+        "organizations": [
+          {
+            "groupName": "Data Sciences Group",
+            "divisionName": "Office of Data and Informatics",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Raymond",
+            "lastName": "Plante",
+            "orcid": "0000-0002-9279-4877",
+            "emailAddress": "raymond.plante@nist.gov",
+            "groupOrgID": 13998,
+            "groupNumber": "64102",
+            "groupName": "Data Sciences Group",
+            "divisionOrgID": 13666,
+            "divisionNumber": "641",
+            "divisionName": "Office of Data and Informatics",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": ""
+          }
+        ],
+        "keywords": [
+          "test new "
+        ],
+        "dataSize": "12",
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "yes",
+          "softwareUse": "internal",
+          "softwareDatabase": "yes",
+          "softwareWebsite": "yes"
+        },
+        "technicalResources": [
+          "another test "
+        ],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "1234",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Low"
+          ],
+          "cui": []
+        },
+        "dataDescription": "New generated data is public",
+        "dataCategories": [
+          "Published Results and SRD"
+        ],
+        "preservationDescription": "Test preservation",
+        "dataAccess": "HEre ",
+        "pathsURLs": [
+          "one ",
+          " two ",
+          " three"
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0002",
+      "status": {
+        "created_by": "midas/dsn1",
+        "state": "edit",
+        "action": "update",
+        "created": 1739985664.2441895,
+        "since": 1739985664.2441895,
+        "modified": 1742406861.1252072,
+        "message": "",
+        "createdDate": "2025-02-19T17:21:04",
+        "modifiedDate": "2025-03-19T17:54:21",
+        "sinceDate": "2025-02-19T17:21:04"
+      },
+      "name": "New Short",
+      "acls": {
+        "read": [
+          "dsn1",
+          "grp0:public"
+        ],
+        "write": [
+          "dsn1"
+        ],
+        "admin": [
+          "dsn1"
+        ],
+        "delete": [
+          "dsn1"
+        ]
+      },
+      "owner": "dsn1",
+      "deactivated": null,
+      "data": {
+        "title": "Testing DMP ",
+        "startDate": "2025-02-19",
+        "dmpSearchable": "no",
+        "funding": {
+          "grant_source": "Grant Number",
+          "grant_id": ""
+        },
+        "projectDescription": "Updated description",
+        "organizations": [
+          {
+            "groupName": "",
+            "divisionName": "NIST Research Library and Museum",
+            "ouName": "Management Resources"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Deoyani",
+            "lastName": "Nandrekar Heinis",
+            "orcid": "",
+            "emailAddress": "deoyani.nandrekarheinis@nist.gov",
+            "groupOrgID": 13998,
+            "groupNumber": "64102",
+            "groupName": "Data Sciences Group",
+            "divisionOrgID": 13666,
+            "divisionNumber": "641",
+            "divisionName": "Office of Data and Informatics",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": ""
+          }
+        ],
+        "keywords": [
+          "a",
+          " b",
+          " c"
+        ],
+        "dataSize": "1",
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "a",
+          " b"
+        ],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [],
+          "cui": []
+        },
+        "dataDescription": "",
+        "dataCategories": [],
+        "preservationDescription": "",
+        "dataAccess": "",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0003",
+      "status": {
+        "created_by": "midas/mnm16",
+        "state": "edit",
+        "action": "create",
+        "created": 1739987349.113227,
+        "since": 1739987349.113227,
+        "modified": 1739987349.1156416,
+        "message": "draft created",
+        "createdDate": "2025-02-19T17:49:09",
+        "modifiedDate": "2025-02-19T17:49:09",
+        "sinceDate": "2025-02-19T17:49:09"
+      },
+      "name": "test0001",
+      "acls": {
+        "read": [
+          "mnm16",
+          "grp0:public"
+        ],
+        "write": [
+          "mnm16"
+        ],
+        "admin": [
+          "mnm16"
+        ],
+        "delete": [
+          "mnm16"
+        ]
+      },
+      "owner": "mnm16",
+      "deactivated": null,
+      "data": {
+        "title": "",
+        "startDate": "",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Grant Number",
+          "grant_id": ""
+        },
+        "projectDescription": "",
+        "organizations": [],
+        "contributors": [],
+        "keywords": [],
+        "dataSize": null,
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [],
+          "cui": []
+        },
+        "dataDescription": "",
+        "dataCategories": [],
+        "preservationDescription": "",
+        "dataAccess": "",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0004",
+      "status": {
+        "created_by": "midas/blondern",
+        "state": "edit",
+        "action": "update",
+        "created": 1741113780.980155,
+        "since": 1741113780.980155,
+        "modified": 1743605277.4543798,
+        "message": "",
+        "byWho": "blondern",
+        "createdDate": "2025-03-04T18:43:00",
+        "modifiedDate": "2025-04-02T14:47:57",
+        "sinceDate": "2025-03-04T18:43:00"
+      },
+      "name": "Nik test1",
+      "acls": {
+        "read": [
+          "blondern",
+          "grp0:public"
+        ],
+        "write": [
+          "blondern"
+        ],
+        "admin": [
+          "blondern"
+        ],
+        "delete": [
+          "blondern"
+        ]
+      },
+      "owner": "blondern",
+      "deactivated": null,
+      "data": {
+        "title": "Full dmp test3",
+        "startDate": "2025-03-21",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Operating Unit",
+          "grant_id": ""
+        },
+        "projectDescription": "Test DMP",
+        "organizations": [
+          {
+            "groupName": "Chemical Informatics Group",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "John",
+            "lastName": "Smith",
+            "orcid": "",
+            "emailAddress": "js@example.com",
+            "groupOrgID": 0,
+            "groupNumber": "",
+            "groupName": "",
+            "divisionOrgID": 0,
+            "divisionNumber": "",
+            "divisionName": "",
+            "ouOrgID": 0,
+            "ouNumber": "",
+            "ouName": "",
+            "primary_contact": "No",
+            "institution": "example1",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Nik",
+            "lastName": "Blonder",
+            "orcid": "0000-0003-4103-9801",
+            "emailAddress": "niksa.blonder@nist.gov",
+            "groupOrgID": 13705,
+            "groupNumber": "64604",
+            "groupName": "Chemical Informatics Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Contact Person"
+          }
+        ],
+        "keywords": [],
+        "dataSize": null,
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [],
+          "cui": []
+        },
+        "dataDescription": "",
+        "dataCategories": [],
+        "preservationDescription": "********************ggggggggggggggggggggg",
+        "dataAccess": "lksjdhlskjdhlsakjdhlak",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0005",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1741298719.8399363,
+        "since": 1741298719.8399363,
+        "modified": 1742846824.7707117,
+        "message": "",
+        "byWho": "jlau",
+        "createdDate": "2025-03-06T22:05:19",
+        "modifiedDate": "2025-03-24T20:07:04",
+        "sinceDate": "2025-03-06T22:05:19"
+      },
+      "name": "CHIPS 1.01 - 2D and WBG Reliability",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Evaluation of 2D and WBG Material Quality toward Device Reliability",
+        "startDate": "2024-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "This project provides the necessary measurement infrastructure to enable high confidence in manufacturing reliable devices containing advanced materials (herein 2D and wide-band gap materials). Reliability and provenance are often not considered early in electronics development, but they are essential steps of advanced electronic systems necessary for national security and defense applications.  This project addresses a significant pitfall in electronics for national security that are based on wide-band gap materials and builds out measurement framework for early adoption of next-generation electronics containing 2D materials as functional components.\nFirst Challenge: Most GaN material and resulting high-frequency and power devices are manufactured overseas. This prevents these advanced devices from being utilized for domestic national security and defense needs because device and material provenance cannot be established.  Alternatively, materials and products from domestic suppliers are largely untested with regards to material quality, wafer-to-wafer reproducibility, and device performance. Together, these shortcomings mean that national security needs are effectively handicapped because modern GaN electronics cannot be used.\n\nSecond Challenge: While the use of 2D materials for microelectronics is called out in the Strategic Opportunities for U.S. Semiconductor Manufacturing Integration of 2D materials, and these materials are actively developed by Intel, TSMC and IMEC, material stress, strain and defect states, and deviations from theoretical performance are examples of challenges that all must be overcome to build reliability into these electronics as they are scaled up. Many of the material aspects that contribute to the advantageous properties of 2D materials (i.e., single-layer of exposed atoms) lead to a complex matrix of problems currently limiting implementation of 2D material-based electronics. Material integration, material stress, strain and defect states, and deviations from theoretical performance are examples of challenges that all must be overcome to build reliability into these electronics as they are scaled up.  \n\nThis project will (1) remove roadblocks in qualifying GaN electronics from domestic sources and provide guidance on measurements that address reliability in wide-band-gap materials, and (2) overcome the early challenges preventing use of 2D semiconductors and provide the essential metrologies for evaluating material quality and methods for evaluating reliability of 2D logic devices for ultimate CMOS scaling.\n",
+        "organizations": [
+          {
+            "groupName": "Fundamental Electrical Measurements Group",
+            "divisionName": "Quantum Measurement Division",
+            "ouName": "Physical Measurement Laboratory"
+          },
+          {
+            "groupName": "Nanoscale Reliability Group",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Russell",
+            "lastName": "Evans",
+            "orcid": "0000-0002-2134-238X",
+            "emailAddress": "russell.evans@nist.gov",
+            "groupOrgID": 13712,
+            "groupNumber": "64705",
+            "groupName": "Nanoscale Reliability Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Jason",
+            "lastName": "Holm",
+            "orcid": "0000-0001-9542-7979",
+            "emailAddress": "jason.holm@nist.gov",
+            "groupOrgID": 13712,
+            "groupNumber": "64705",
+            "groupName": "Nanoscale Reliability Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Yanfei",
+            "lastName": "Yang",
+            "orcid": "0000-0003-0406-7416",
+            "emailAddress": "yanfei.yang@nist.gov",
+            "groupOrgID": 13639,
+            "groupNumber": "68405",
+            "groupName": "Fundamental Electrical Measurements Group",
+            "divisionOrgID": 13267,
+            "divisionNumber": "684",
+            "divisionName": "Quantum Measurement Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Albert",
+            "lastName": "Davydov",
+            "orcid": "0000-0003-4512-2311",
+            "emailAddress": "albert.davydov@nist.gov",
+            "groupOrgID": 13850,
+            "groupNumber": "64203",
+            "groupName": "Functional Nanostructured Materials Group",
+            "divisionOrgID": 13668,
+            "divisionNumber": "642",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Julia",
+            "lastName": "Sharp",
+            "orcid": "0000-0002-9428-6518",
+            "emailAddress": "julia.sharp@nist.gov",
+            "groupOrgID": 13532,
+            "groupNumber": "77603",
+            "groupName": "Applied and Computational Statistics Group",
+            "divisionOrgID": 13290,
+            "divisionNumber": "776",
+            "divisionName": "Statistical Engineering Division",
+            "ouOrgID": 13216,
+            "ouNumber": "77",
+            "ouName": "Information Technology Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Jason",
+            "lastName": "Killgore",
+            "orcid": "0000-0002-8458-6680",
+            "emailAddress": "jason.killgore@nist.gov",
+            "groupOrgID": 13712,
+            "groupNumber": "64705",
+            "groupName": "Nanoscale Reliability Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Pavel",
+            "lastName": "Kabos",
+            "orcid": "0000-0003-2847-6636",
+            "emailAddress": "pavel.kabos@nist.gov",
+            "groupOrgID": 13940,
+            "groupNumber": "68609",
+            "groupName": "Quantitative Nanostructure Characterization Group",
+            "divisionOrgID": 13269,
+            "divisionNumber": "686",
+            "divisionName": "Applied Physics Division ",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Wei-Chang",
+            "lastName": "Yang",
+            "orcid": "0000-0002-7481-7916",
+            "emailAddress": "david.yang@nist.gov",
+            "groupOrgID": 13850,
+            "groupNumber": "64203",
+            "groupName": "Functional Nanostructured Materials Group",
+            "divisionOrgID": 13668,
+            "divisionNumber": "642",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Riccardo",
+            "lastName": "Torsi",
+            "orcid": "0000-0001-7748-1074",
+            "emailAddress": "riccardo.n.torsi@nist.gov",
+            "groupOrgID": 13639,
+            "groupNumber": "68405",
+            "groupName": "Fundamental Electrical Measurements Group",
+            "divisionOrgID": 13267,
+            "divisionNumber": "684",
+            "divisionName": "Quantum Measurement Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Angela",
+            "lastName": "Hight Walker",
+            "orcid": "0000-0003-1385-0672",
+            "emailAddress": "angela.hightwalker@nist.gov",
+            "groupOrgID": 13639,
+            "groupNumber": "68405",
+            "groupName": "Fundamental Electrical Measurements Group",
+            "divisionOrgID": 13267,
+            "divisionNumber": "684",
+            "divisionName": "Quantum Measurement Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Elisabeth",
+            "lastName": "Mansfield",
+            "orcid": "0000-0003-2463-0966",
+            "emailAddress": "elisabeth.mansfield@nist.gov",
+            "groupOrgID": 13712,
+            "groupNumber": "64705",
+            "groupName": "Nanoscale Reliability Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [
+          "Device reliability",
+          " wide bandgap materials",
+          " GaN devices",
+          " 2D semiconductors",
+          " materials integration",
+          " provenance",
+          " material characterization"
+        ],
+        "dataSize": "1",
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "Boulder PIF",
+          " BMF 2D materials exfoliation",
+          " reliability equipment",
+          " humidity/temperature controlled chamber with monitoring electronics",
+          " 642 4-point probe",
+          " 686 Asylum optical microscope with MFP-3D AFM and PrimeNano ScanWave Pro",
+          " 686 Keysight AFM",
+          " 684 Raman Microscope\n",
+          "NEW Parametric Analyzer",
+          " \nNEW SEM Probe Station",
+          " NEW Raman PL microscope",
+          " NEW Environmental Chamber",
+          " NEW Electrical/thermal biasing TEM Holder",
+          " NEW Environmentally chamber",
+          " NEW MFP-3D Controller",
+          " NEW Controller and mode upgrades for PIF Bruker Icon",
+          " NEW Cryostat",
+          " NEW Motorized stacking station\nNew BMF FIB with ToF-SIMS\n",
+          "BMF Probe Station "
+        ],
+        "instruments": [
+          {
+            "name": "631968",
+            "description_url": "681 SEM"
+          },
+          {
+            "name": "927910",
+            "description_url": "Leo SEM"
+          },
+          {
+            "name": "936834",
+            "description_url": "Gemini SEM"
+          },
+          {
+            "name": "630901",
+            "description_url": "643 STEM"
+          },
+          {
+            "name": "644764",
+            "description_url": "642 ETEM "
+          },
+          {
+            "name": "936834",
+            "description_url": "Zeiss Gemini with t-SEM capability "
+          }
+        ],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Medium"
+          ],
+          "cui": [
+            "BII",
+            "Proprietary"
+          ]
+        },
+        "dataDescription": "In collaboration with Intel, Sandia National Laboratory, and Kansas City National Security Campus this project will characterize semiconductor materials (both 2D and GaN) and provide materials characterization, reliability data and provenance information. Materials are tracked via spreadsheet. Metadata from instruments are maintained by the instrument owners and not the project itself.  Measurement data will include: electron microscopy data (Major EM formats, TIFs), scanning probe data (primarily proprietary formats), optical spectroscopy data (txt, csv format), electrical and transport data (txt, csv format). Also included are proprietary ToF-SIMS data and Labview data formats. Analyzed data formats are still being determined. \n\n",
+        "dataCategories": [
+          "Published Results and SRD",
+          "Publishable",
+          "Working",
+          "Derived"
+        ],
+        "preservationDescription": "Data will be preserved according to NIST policy and the rules established in the MTA/CRADA. ",
+        "dataAccess": "Data resulting from MTA with Intel is considered proprietary information, and should be access controlled.\nProject will use the MIDAS and METISto publish and disseminate appropriate data. \n",
+        "pathsURLs": [
+          "Data exchange with Intel is done through MS Teams Drive provided by Intel.",
+          "Data will be preserved according to NIST policy and the rules established in the MTA/CRADA. "
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0006",
+      "status": {
+        "created_by": "midas/blondern",
+        "state": "edit",
+        "action": "update",
+        "created": 1741629517.4720218,
+        "since": 1741629517.4720218,
+        "modified": 1741789824.4434302,
+        "message": "",
+        "createdDate": "2025-03-10T17:58:37",
+        "modifiedDate": "2025-03-12T14:30:24",
+        "sinceDate": "2025-03-10T17:58:37"
+      },
+      "name": "Nik Test 2",
+      "acls": {
+        "read": [
+          "blondern",
+          "grp0:public"
+        ],
+        "write": [
+          "blondern"
+        ],
+        "admin": [
+          "blondern"
+        ],
+        "delete": [
+          "blondern"
+        ]
+      },
+      "owner": "blondern",
+      "deactivated": null,
+      "data": {
+        "title": "Test 2 ed",
+        "startDate": "",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Contract Number",
+          "grant_id": ""
+        },
+        "projectDescription": "",
+        "organizations": [
+          {
+            "groupName": "Chemical Informatics Group",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Niksa",
+            "lastName": "Blonder",
+            "orcid": "0000-0003-4103-9801",
+            "emailAddress": "niksa.blonder@nist.gov",
+            "groupOrgID": 13705,
+            "groupNumber": "64604",
+            "groupName": "Chemical Informatics Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": ""
+          }
+        ],
+        "keywords": [],
+        "dataSize": null,
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [],
+          "cui": []
+        },
+        "dataDescription": "",
+        "dataCategories": [],
+        "preservationDescription": "",
+        "dataAccess": "",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0007",
+      "status": {
+        "created_by": "midas/blondern",
+        "state": "edit",
+        "action": "update",
+        "created": 1741789856.148463,
+        "since": 1741789856.148463,
+        "modified": 1741790003.8097692,
+        "message": "",
+        "createdDate": "2025-03-12T14:30:56",
+        "modifiedDate": "2025-03-12T14:33:23",
+        "sinceDate": "2025-03-12T14:30:56"
+      },
+      "name": "nik_test3",
+      "acls": {
+        "read": [
+          "blondern",
+          "grp0:public"
+        ],
+        "write": [
+          "blondern"
+        ],
+        "admin": [
+          "blondern"
+        ],
+        "delete": [
+          "blondern"
+        ]
+      },
+      "owner": "blondern",
+      "deactivated": null,
+      "data": {
+        "title": "test 33",
+        "startDate": "",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Operating Unit",
+          "grant_id": ""
+        },
+        "projectDescription": "",
+        "organizations": [],
+        "contributors": [],
+        "keywords": [],
+        "dataSize": null,
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [],
+          "cui": []
+        },
+        "dataDescription": "",
+        "dataCategories": [],
+        "preservationDescription": "",
+        "dataAccess": "",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0008",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1742846926.0852296,
+        "since": 1742846926.0852296,
+        "modified": 1742847938.235632,
+        "message": "",
+        "createdDate": "2025-03-24T20:08:46",
+        "modifiedDate": "2025-03-24T20:25:38",
+        "sinceDate": "2025-03-24T20:08:46"
+      },
+      "name": "CHIPS 1.02 - Gas Flow Properties",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Gas Flow and Properties:  Standards and Models for Flow Metering Semiconductor Gases at Flows from 10 \u03bcL/min to 1 L/min",
+        "startDate": "2024-05-17",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "Numerous gases are used in the production of semiconductor chips, and the accurate metering of these gases into the process chamber is critical for maximizing device throughput and yield. Many of these gases are hazardous, and flow standards for hazardous gases do not exist, forcing the industry to rely on approximate \u201cmeter factors\u201d to extrapolate a meter calibration carried out with nitrogen to the actual process gas. Our project will improve this situation by providing standards for the metering of hazardous gases. These will include physical models for meter performance across gas species and the gas thermophysical property data needed in those models; they will be validated by a flow standard operating with a range of semiconductor process gases. These models and properties will enable a meter calibrated with nitrogen to provide accurate measurements of hazardous process gases.",
+        "organizations": [
+          {
+            "groupName": "Thermodynamics Research Center Group",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouName": "Material Measurement Laboratory"
+          },
+          {
+            "groupName": "Thermophysical Properties of Fluids Group",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouName": "Material Measurement Laboratory"
+          },
+          {
+            "groupName": "Fluid Metrology Group",
+            "divisionName": "Sensor Science Division",
+            "ouName": "Physical Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Tara",
+            "lastName": "Fortin",
+            "orcid": "0000-0001-6150-8930",
+            "emailAddress": "tara.fortin@nist.gov",
+            "groupOrgID": 13714,
+            "groupNumber": "64708",
+            "groupName": "Thermophysical Properties of Fluids Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Chris",
+            "lastName": "Muzny",
+            "orcid": "0000-0003-1153-983X",
+            "emailAddress": "chris.muzny@nist.gov",
+            "groupOrgID": 13709,
+            "groupNumber": "64701",
+            "groupName": "Thermodynamics Research Center Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Marcia",
+            "lastName": "Huber",
+            "orcid": "0000-0002-7976-741X",
+            "emailAddress": "marcia.huber@nist.gov",
+            "groupOrgID": 13714,
+            "groupNumber": "64708",
+            "groupName": "Thermophysical Properties of Fluids Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Mark",
+            "lastName": "McLinden",
+            "orcid": "0000-0002-1082-309X",
+            "emailAddress": "mark.mclinden@nist.gov",
+            "groupOrgID": 13714,
+            "groupNumber": "64708",
+            "groupName": "Thermophysical Properties of Fluids Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Aaron",
+            "lastName": "Johnson",
+            "orcid": "0000-0001-9699-4676",
+            "emailAddress": "aaron.johnson@nist.gov",
+            "groupOrgID": 13643,
+            "groupNumber": "68502",
+            "groupName": "Fluid Metrology Group",
+            "divisionOrgID": 13268,
+            "divisionNumber": "685",
+            "divisionName": "Sensor Science Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Keith",
+            "lastName": "Gillis",
+            "orcid": "",
+            "emailAddress": "keith.gillis@nist.gov",
+            "groupOrgID": 13643,
+            "groupNumber": "68502",
+            "groupName": "Fluid Metrology Group",
+            "divisionOrgID": 13268,
+            "divisionNumber": "685",
+            "divisionName": "Sensor Science Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Jodie",
+            "lastName": "Pope",
+            "orcid": "",
+            "emailAddress": "jodie.pope@nist.gov",
+            "groupOrgID": 13643,
+            "groupNumber": "68502",
+            "groupName": "Fluid Metrology Group",
+            "divisionOrgID": 13268,
+            "divisionNumber": "685",
+            "divisionName": "Sensor Science Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [
+          "Gas meter calibration",
+          " mass flow controller",
+          " MFC",
+          " gas thermophysical properties",
+          " low-uncertainty primary flow standards",
+          " process gases",
+          " inert gases",
+          " viscometer",
+          " semiconductor production",
+          " nitrogen",
+          " argon",
+          " helium",
+          " xenon",
+          " sulfur hexafluoride",
+          " carbon tetrafluoride",
+          " hexafluoroethane",
+          " octafluorocyclobutane",
+          " hydrogen",
+          " oxygen",
+          " methane",
+          " nitrous oxide",
+          " density",
+          " viscosity"
+        ],
+        "dataSize": "10",
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "Here is the revised list:\n\n(685) Small fume hood",
+          " (685) Helium leak detector",
+          " (685) Temperature controlled enclosure",
+          " (685) Flow meters",
+          " gas regulators",
+          " and flow accessories",
+          " (685) Temperature and Pressure sensors",
+          " (647) Densimeter & Resonator",
+          "(647) Computing cluster"
+        ],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Medium"
+          ],
+          "cui": [
+            "BII",
+            "Proprietary"
+          ]
+        },
+        "dataDescription": "This project produces data in two phases. The first phase is the thermophysical property measurements (i.e., density, heat capacity, viscosity (derived)) and modeling (i.e., thermodynamic equations of state and viscosity models) of a targeted list of semiconductor process gases. The results of these measurements will be published as Standard Reference Data.\n\nThe second phase of this project consists of measurements that result from a custom-built primary gas flow standard. These measurements are dependent on the results of the first phase and precise measurements of mass flow controller (MFC) dimensions, gas volume, and ambient temperature and pressure. Data from these measurements will enable the derivation of flow rates for the list of process gases and their uncertainties, which will, in turn, lead to models for any generic MFC. \n\nAll data described above are recorded in text formats. Data processing is done with a mixture of Excel, Matlab, and custom scripts. Labview is used for data acquisition.\n",
+        "dataCategories": [
+          "Published Results and SRD",
+          "Publishable",
+          "Working",
+          "Derived"
+        ],
+        "preservationDescription": "Data will live on the CFS2 servers for the long term unless they are moved to the new Lake Erie server. The team plans on publishing as much as possible for preservation and archival purposes. For things that can\u2019t be published a long-term location will need to be found or a disposition/destruction decision will be made. ",
+        "dataAccess": "Text/.csv files will be published via MIDAS/METIS and possibly as supplemental materials on publisher sites. ",
+        "pathsURLs": [
+          "CSF2E",
+          " CSF2W",
+          " Lake Erie (to come)",
+          " local computers where data is acquired"
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0009",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "create",
+        "created": 1742848441.843402,
+        "since": 1742848441.843402,
+        "modified": 1742848441.846701,
+        "message": "draft created",
+        "createdDate": "2025-03-24T20:34:01",
+        "modifiedDate": "2025-03-24T20:34:01",
+        "sinceDate": "2025-03-24T20:34:01"
+      },
+      "name": "CHIPS 1.03 - Gas spectroscopy",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Optical Impurity Analysis of Semiconductor Gases for Enhanced Quality Systems",
+        "startDate": "2024-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "This project will create measurement technology, reference data and materials to perform trace impurity gas analysis at new levels of precision. The strategy is to develop measurement technologies, properties data and standards focused on contaminant identification to support uniform materials quality and traceability. New and updated documentary standards will assure manufacturers receiving materials of the provenance and consistency in the quality when purchased\u2014and quickly alert stakeholders to changes in supply. New measurement technology with increased sensitivity and throughput for detection of gas contaminants can be deployed throughout the supply chain, including reliable and traceable isotopic analysis for material provenance.\n\nIf successful, impurity analysis on carbon monoxide (CO), carbon dioxide (CO2) and nitrous oxide (N2O) at the part-per-trillion (ppt) or lower level in commercial gases and after point-of-use gas purifiers is expected in 1\u20133 years. Benchmarked spectral reference data on hard-to-measure laser gases, etchants, and implant gases like sulfur hexafluoride (SF6), hydrogen fluoride (HF), and silane (SiH4) will be shared in widely used public databases for the direct application by industry in their optical diagnostics. Finally, gas primary standards for common trace impurities will be developed. After five years, the development of documentary standards and the dissemination of new NIST Standard Reference Materials\u00ae characterized by the new gas primary standards will enable the specialty gas industry to measure and verify higher quality gas products being sold directly to the semiconductor manufacturing industry.\n",
+        "organizations": [
+          {
+            "groupName": "Gas Sensing Metrology Group",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          },
+          {
+            "groupName": "Optical Measurements Group",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Eisen",
+            "lastName": "Gross",
+            "orcid": "0000-0002-1251-3570",
+            "emailAddress": "eisen.gross@nist.gov",
+            "groupOrgID": 14070,
+            "groupNumber": "64610",
+            "groupName": "Optical Measurements Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Christina",
+            "lastName": "Cecelski",
+            "orcid": "0000-0001-6782-3106",
+            "emailAddress": "christina.cecelski@nist.gov",
+            "groupOrgID": 13704,
+            "groupNumber": "64603",
+            "groupName": "Gas Sensing Metrology Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Jennifer",
+            "lastName": "Carney",
+            "orcid": "0000-0002-7506-5584",
+            "emailAddress": "jennifer.carney@nist.gov",
+            "groupOrgID": 13704,
+            "groupNumber": "64603",
+            "groupName": "Gas Sensing Metrology Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Adam",
+            "lastName": "Fleisher",
+            "orcid": "0000-0001-9216-0607",
+            "emailAddress": "adam.fleisher@nist.gov",
+            "groupOrgID": 14070,
+            "groupNumber": "64610",
+            "groupName": "Optical Measurements Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [
+          "spectral reference data",
+          " laser spectroscopy",
+          " molecular spectroscopy",
+          " cavity ring-down spectroscopy",
+          " optical frequency combs",
+          " etchants",
+          " implant gases",
+          " gas primary standards",
+          " gas contaminants",
+          " Standard Reference Material (SRM)",
+          " Primary Gas Standard",
+          " Process Gas",
+          " Impurity",
+          " Impurity Detection"
+        ],
+        "dataSize": "500",
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "Optical frequency comb system- 1.56 \u03bcm",
+          "Optical frequency comb system- 4.4 \u00b5m to 4.7 \u00b5m",
+          "External cavity diode laser- 1.51 \u00b5m to 1.62 \u00b5m",
+          "Telops M1k infrared camera",
+          "Automated weighing system"
+        ],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Low"
+          ],
+          "cui": []
+        },
+        "dataDescription": "Measurement technique: direct frequency comb spectroscopy (DFCS)\nInstrument(s):  Optical frequency comb systems (1.56 \u03bcm and 4.4 \u00b5m to 4.7 \u00b5m), Telops M1k infrared camera \nMeasurand(s): gas speciation, isotopic composition \nData type and file format: 2D images in .tif format. Videos (for time-dependent measurements)\n\nMeasurement technique: cavity-enhanced absorption spectroscopy (CEAS) \nInstrument(s): External cavity diode laser, 1.51 \u00b5m to 1.62 \u00b5m\nMeasurand(s):\nData type and file format:\n\n\nMeasurement technique: two-photon absorption, cavity ring-down spectroscopy (CRDS) \nInstrument(s): External cavity diode laser, 1.51 \u00b5m to 1.62 \u00b5m\nMeasurand(s): molecular absorption \nData type and file format:  spectra in .txt format\n\n\nMeasurement technique: Fourier Transform Spectroscopy\nInstrument(s):\nMeasurand(s):\nData type and file format: 2D images in proprietary vendor formats\n\nMeasurement technique: Gas Chromatography \nInstrument(s):\nMeasurand(s):\nData type and file format: proprietary vendor formats\n\nComputation Technique(s): Simulation\nTool: Matlab\nProduct: simulation\nData type and file format:\n\nComputation Technique(s): Optical ray tracing\nTool: Ansys Zemax \nProduct: Model of optical instrument\nData type and file format: \n",
+        "dataCategories": [
+          "Published Results and SRD",
+          "Publishable",
+          "Working",
+          "Derived"
+        ],
+        "preservationDescription": "All data will be preserved in their original folder structure on Lake Huron",
+        "dataAccess": "Data will be published via the MIDAS/METIS route. ",
+        "pathsURLs": [
+          "\\\\lake-huron-smb.nist.gov\\chips\\CHIPS 1.03 - Gas spectroscopy"
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0010",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1742848586.9212003,
+        "since": 1742848586.9212003,
+        "modified": 1742849496.480736,
+        "message": "",
+        "createdDate": "2025-03-24T20:36:26",
+        "modifiedDate": "2025-03-24T20:51:36",
+        "sinceDate": "2025-03-24T20:36:26"
+      },
+      "name": "CHIPS 1.04 - Aerosol and solution contaminants",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Advanced Chemical Metrology for Semiconductor Cleaning Chemicals: Organic Contaminants, Native Particles and Precursors, and Rapid Particle and Impurity Characterization",
+        "startDate": "0024-10-12",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "The goal of the proposal is to develop metrology that enables the accurate monitoring of impurities in ultrapure water (UPW) at target levels called out by IRDS.  The realization of this goal during the project period will be demonstrated by: 1) the development of measurement procedures for critical organic contaminants at 1 ppb or below, 2) the development of measurement procedures for non-critical organics below 3 ppb, 3) identification and/or development of challenge materials with a range of chemical and physical properties for testing the efficiency of ultrafiltration systems, 4) the development of UPW0 for quantifying ultrafilter performance to particles as small as 1.5 nm at number densities below 1 \u00d7 105 L-1, and 5) development of methods for rapid surface particle-, and impurity detection and quantification in water/non-water solvents in the concentration range of interest.",
+        "organizations": [
+          {
+            "groupName": "Nano Materials Research Group",
+            "divisionName": "Materials Measurement Science Division",
+            "ouName": "Material Measurement Laboratory"
+          },
+          {
+            "groupName": "Chemical Process and Nuclear Measurements Group",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          },
+          {
+            "groupName": "Organic Chemical Metrology Group",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Shinichiro",
+            "lastName": "Muramoto",
+            "orcid": "0000-0003-3135-375X",
+            "emailAddress": "shinichiro.muramoto@nist.gov",
+            "groupOrgID": 13682,
+            "groupNumber": "64305",
+            "groupName": "Surface and Trace Chemical Analysis Group",
+            "divisionOrgID": 13677,
+            "divisionNumber": "643",
+            "divisionName": "Materials Measurement Science Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Chun Ning",
+            "lastName": "Mao",
+            "orcid": "0000-0003-0453-5283",
+            "emailAddress": "chunning.mao@nist.gov",
+            "groupOrgID": 13706,
+            "groupNumber": "64605",
+            "groupName": "Chemical Process and Nuclear Measurements Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Babak",
+            "lastName": "Nikoobakht",
+            "orcid": "0000-0003-4369-683X",
+            "emailAddress": "babak.nikoobakht@nist.gov",
+            "groupOrgID": 13680,
+            "groupNumber": "64303",
+            "groupName": "Nano Materials Research Group",
+            "divisionOrgID": 13677,
+            "divisionNumber": "643",
+            "divisionName": "Materials Measurement Science Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "James",
+            "lastName": "Radney",
+            "orcid": "0000-0001-7324-8769",
+            "emailAddress": "jimmy.radney@nist.gov",
+            "groupOrgID": 13706,
+            "groupNumber": "64605",
+            "groupName": "Chemical Process and Nuclear Measurements Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Jacolin",
+            "lastName": "Murray",
+            "orcid": "0000-0001-8063-3139",
+            "emailAddress": "jacolin.murray@nist.gov",
+            "groupOrgID": 13703,
+            "groupNumber": "64602",
+            "groupName": "Organic Chemical Metrology Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [
+          "Ultra-pure water (UPW)",
+          " organic contaminant",
+          " elemental contaminant",
+          " impurities",
+          " processing",
+          " mass spectroscopy",
+          " chromatography",
+          " surface analysis",
+          " detection limit",
+          " impurity detection",
+          " concentration protocol",
+          " concentrating",
+          " trapping",
+          " native particles and precursors"
+        ],
+        "dataSize": "4",
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "9010-03     Kanomax    Scanning Threshold Particle Counter 3",
+          "3082     TSI         Electrostatic classifier",
+          "3756\tTSI\tUltrafine Condensation Particle Counter ",
+          "3756\tTSI\tUltrafine Condensation Particle Counter "
+        ],
+        "instruments": [
+          {
+            "name": "944190",
+            "description_url": "Sciex\t6500+\tLC Qtrap\t"
+          },
+          {
+            "name": "618358",
+            "description_url": "Sciex\t4000\tLC-MS/MS\t"
+          },
+          {
+            "name": "6344814",
+            "description_url": "Sciex\tAPI 5000\tLC-MS/MS\t"
+          },
+          {
+            "name": "N110077",
+            "description_url": "Thermo\tTSQ 8000 EVO\tGC-MS/MS\t"
+          },
+          {
+            "name": "N130301",
+            "description_url": "Agilent\t5977B\tGC-MSD\t"
+          },
+          {
+            "name": "643470",
+            "description_url": "Agilent\t5975C\tGC-MSD\t"
+          },
+          {
+            "name": "646950",
+            "description_url": "Agilent \t7890A\tGC-FID\t"
+          },
+          {
+            "name": "N121056",
+            "description_url": "Agilent\t7250\tGC/Q-TOF\t"
+          },
+          {
+            "name": "N113556",
+            "description_url": "3775\tTSI\tCondensation Particle Counter\t"
+          },
+          {
+            "name": "N106282",
+            "description_url": "3775\tTSI\tCondensation Particle Counter\t"
+          },
+          {
+            "name": "N103997",
+            "description_url": "3775\tTSI\tCondensation Particle Counter\t"
+          },
+          {
+            "name": "636971",
+            "description_url": "3775\tTSI\tCondensation Particle Counter\t"
+          },
+          {
+            "name": "N135647",
+            "description_url": "3756\tTSI\tUltrafine Condensation Particle Counter \t"
+          },
+          {
+            "name": "N135646",
+            "description_url": "3482\tTSI\tElectrospray Aerosol Generator\t"
+          },
+          {
+            "name": "N104962",
+            "description_url": "3089\tTSI\tNanometer Aerosol Sampler\t"
+          },
+          {
+            "name": "618693",
+            "description_url": "3089\tTSI\tNanometer Aerosol Sampler\t"
+          },
+          {
+            "name": "N135649",
+            "description_url": "3088\tTSI\tAdvanced Aerosol Neutralizer\t"
+          },
+          {
+            "name": "N135648",
+            "description_url": "3088\tTSI\tAdvanced Aerosol Neutralizer\t"
+          },
+          {
+            "name": "N106281",
+            "description_url": "3082\tTSI\tElectrostatic classifier\t"
+          },
+          {
+            "name": "N103968",
+            "description_url": "3080\tTSI\tElectrostatic classifier"
+          },
+          {
+            "name": "636970",
+            "description_url": "3080\tTSI\tElectrostatic classifier with long DMA\t"
+          },
+          {
+            "name": "636969",
+            "description_url": "3080\tTSI\tElectrostatic classifier"
+          },
+          {
+            "name": "N104000",
+            "description_url": "3601\tKanomax\tAerosol Particle Mass Analyzer II"
+          },
+          {
+            "name": "N113570",
+            "description_url": "Vertex 70\tBruker\tFTIR"
+          }
+        ],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "yes",
+          "ethical_issues_description": "One lab may need to be reclassified as a BSL lab.",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Low"
+          ],
+          "cui": []
+        },
+        "dataDescription": "Data will be generated by three separate program thrusts: (1) organic contaminant identification and quantification, (2) native particulate and the precursors, and (3) rapid surface particle chromatography. \n\nMeasurement technique(s): Optical Spectroscopy\nInstrument(s): \n\u2022\tVertex 70\tBruker\tFTIR\tN113570\n\u2022\tRaman microscope Bruker (tag unknown)\nMeasurand(s): surface chemistry, molecular identification\nData type(s) and file format(s): FTIR produces spectra in a proprietary format. Raman microscope produces images and spectra in a proprietary format. \n~~~~~~~~~~~~~~~\n\nMeasurement technique(s): Gas-chromatography/Mass spectroscopy (GC/MS)\nInstrument(s): \n\u2022\tAgilent\t7250\tGC/Q-TOF\tN121056\n\u2022\tAgilent \t7890A\tGC-FID\t646950\n\u2022\tAgilent\t5975C\tGC-MSD\t643470\n\u2022\tAgilent\t5977B\tGC-MSD\tN130301\n\u2022\tThermo\tTSQ 8000 EVO\tGC-MS/MS\tN110077\n\u2022\tSciex\tAPI 5000\tLC-MS/MS\t6344814\n\u2022\tSciex\t4000\tLC-MS/MS\t618358\n\u2022\tSciex\t6500+\tLC Qtrap\t944190\n\u2022\tHigh resolution mass spectrometer (to be procured)\nMeasurand(s): organic contaminants, measurands determined by non-targeted analysis\nData type(s) and file format(s): Systems above use proprietary file formats. Agilent systems produce data using Chemstation or Masshunter (extension .D files produce). Sciex instruments produce data from Analyst software (extension .wiff), Thermo instruments use Xcalibur or Chromeleon software.  The data files for the high resolution mass spectrometer will depend on what system is procured. mzML and CVS data files may also be generated.  \n~~~~~~~~~~~~~~~\n\nMeasurement technique(s): Particulates assessment and counting\nInstrument(s): \n\u2022\t3601\t     Kanomax     Aerosol Particle Mass Analyzer II\tN104000\n\u2022\t9010-03     Kanomax    Scanning Threshold Particle Counter 3\n\u2022\t3080\tTSI\tElectrostatic classifier\t636969\n\u2022\t3080\tTSI\tElectrostatic classifier with long DMA\t636970\n\u2022\t3080\tTSI\tElectrostatic classifier\tN103968\n\u2022\t3082\tTSI\tElectrostatic classifier\tN106281\n\u2022\t3082\tTSI\tElectrostatic classifier\n\u2022\t3088\tTSI\tAdvanced Aerosol Neutralizer\tN135648\n\u2022\t3088\tTSI\tAdvanced Aerosol Neutralizer\tN135649\n\u2022\t3088\tTSI\tAdvanced Aerosol Neutralizer\t\n\u2022\t3088\tTSI\tAdvanced Aerosol Neutralizer\t\n\u2022\t3089\tTSI\tNanometer Aerosol Sampler\t618693\n\u2022\t3089\tTSI\tNanometer Aerosol Sampler\tN104962\n\u2022\t3482\tTSI\tElectrospray Aerosol Generator\tN135646\n\u2022\t3756\tTSI\tUltrafine Condensation Particle Counter \tN135647\n\u2022\t3756\tTSI\tUltrafine Condensation Particle Counter \n\u2022\t3756\tTSI\tUltrafine Condensation Particle Counter \n\u2022\t3775\tTSI\tCondensation Particle Counter\t636971\n\u2022\t3775\tTSI\tCondensation Particle Counter\tN113556\n\u2022\t3775\tTSI\tCondensation Particle Counter\tN103997\n\u2022\t3775\tTSI\tCondensatin Particle Counter\tN106282\n\n\nMeasurand(s): Particle size distribution, count, electrical activity.\nData type(s) and file format(s): TSI instruments produce data in proprietary .s82,.s80 .c75 or .c56 formats that are then exported to .csv format.\n\n~~~~~~~~~~~~~~~\n\nMeasurement technique(s): Microscopy and Secondary Ion Mass Spectrometry (SIMS)\nInstrument(s): \n\u2022\tScanning electron microscope (638660)\n\u2022\tCustom optical microscope with HeCd laser for ultraviolet, red, and near-infrared imaging\n\u2022\tRaman Microscope (tag unknown)\n\u2022\tSecondary Ion Mass Spectrometer  (587117)\nMeasurand(s): dimensions and distribution of contaminants (microscopy), particle adsorption/desorption (scanning electron microscopy, SIMS)\nData type(s) and file format(s): Scanning electron microscope (638660) produces 2D images in .tif format. Custom optical microscope produces 2D images in .tif or .jpg formats. Raman microscope produces images and spectra in a proprietary format. \n~~~~~~~~~~~~~~~\n\n\nComputation Technique(s): Finite-Difference Time-Domain Method\nTool(s): Ansys Lumerical\nProduct(s): Optoelectronics and electromagnetics simulation\nData type(s) and file format(s):\n~~~~~~~~~~~~~~~\n\n\nComputation Technique(s): Finite Element Method\nTool(s): COMSOL - Wave Optics Module\nProduct(s): \nData type(s) and file format(s):\n",
+        "dataCategories": [
+          "Published Results and SRD",
+          "Publishable",
+          "Working",
+          "Derived"
+        ],
+        "preservationDescription": "Once the data is analyzed it will be permanently saved on Lake Huron. The team will also be using MML ResData \u2013 the data is preserved though through enterprise means.",
+        "dataAccess": "Data will be made discoverable and accessible via METIS and the NIST PDR.\n\n",
+        "pathsURLs": [
+          "ResData",
+          "OneNote",
+          "\\\\lake-huron-smb.nist.gov\\chips\\CHIPS 1.04 - Aerosol and solution contaminants "
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0011",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1742849601.8796976,
+        "since": 1742849601.8796976,
+        "modified": 1742849939.9705608,
+        "message": "",
+        "createdDate": "2025-03-24T20:53:21",
+        "modifiedDate": "2025-03-24T20:58:59",
+        "sinceDate": "2025-03-24T20:53:21"
+      },
+      "name": "CHIPS 1.05 - Contaminants in Solids",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Metrology of Purity and Contaminants in Solid Materials",
+        "startDate": "2024-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "Chips manufacturers use a variety of high-purity solid materials, such as silicon, germanium, copper, gold, silver, GeSi, AlGaN, etc., in their processes.  Reliable chips require that these source materials be extremely pure and that they be qualified based on overall purity and priority contaminants.  For bulk materials (e.g., sputtering targets), direct solids analysis techniques, notably glow discharge mass spectrometry (GDMS), are used for purity evaluation.  GDMS is used because of its extremely low detection limits, which lead to unsurpassed quality in bulk purity evaluations.  However, relative measurement uncertainty for a given contaminant is often not better than a factor of two or more, because of the lack of matrix-matched certified reference materials with which to calibrate it.  Consequently, characterization of the materials used in the industry is not as robust as needed considering necessary changes in materials vendors and ever more stringent industry requirements.  Development of SRMs consisting of these extremely pure source materials and having certified purity assay values, as well as certified values for priority contaminants and information on spatial heterogeneity, will enable improved instrument calibration and validation, resulting in much better source materials characterization, which directly translate to higher productivity and lower risk of material waste. \nWe will develop new Standard Reference Materials (SRMs), Reference Materials (RMs), and Research Grade Test Materials (RGTMs) of high-purity solids currently lacking in chips manufacturing, enabling more effective, efficient, and comparable characterizations of source materials, as well as process control improvements.  To achieve these goals, we will develop new NIST capabilities in glow discharge mass spectrometry (GDMS) and laser-based analytical methods, and we will significantly lower detection limits for existing NIST nuclear techniques.",
+        "organizations": [
+          {
+            "groupName": "Neutron Physics Group",
+            "divisionName": "Radiation Physics Division",
+            "ouName": "Physical Measurement Laboratory"
+          },
+          {
+            "groupName": "Chemical Informatics Group",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          },
+          {
+            "groupName": "Chemical Process and Nuclear Measurements Group",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          },
+          {
+            "groupName": "Inorganic Chemical Metrology Group",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Maria Isabel",
+            "lastName": "Vega Martinez",
+            "orcid": "0000-0002-3094-7866",
+            "emailAddress": "maria.vegamartinez@nist.gov",
+            "groupOrgID": 13706,
+            "groupNumber": "64605",
+            "groupName": "Chemical Process and Nuclear Measurements Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Nicholas",
+            "lastName": "Sharp",
+            "orcid": "0000-0002-3926-1246",
+            "emailAddress": "nicholas.sharp@nist.gov",
+            "groupOrgID": 13706,
+            "groupNumber": "64605",
+            "groupName": "Chemical Process and Nuclear Measurements Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Shannon",
+            "lastName": "Hoogerheide",
+            "orcid": "0000-0002-5243-4586",
+            "emailAddress": "shannon.hoogerheide@nist.gov",
+            "groupOrgID": 13433,
+            "groupNumber": "68203",
+            "groupName": "Neutron Physics Group",
+            "divisionOrgID": 13279,
+            "divisionNumber": "682",
+            "divisionName": "Radiation Physics Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Nathan",
+            "lastName": "Mahynski",
+            "orcid": "0000-0002-0008-8749",
+            "emailAddress": "nathan.mahynski@nist.gov",
+            "groupOrgID": 13705,
+            "groupNumber": "64604",
+            "groupName": "Chemical Informatics Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "John",
+            "lastName": "Molloy",
+            "orcid": "0009-0003-8901-5494",
+            "emailAddress": "john.molloy@nist.gov",
+            "groupOrgID": 13702,
+            "groupNumber": "64601",
+            "groupName": "Inorganic Chemical Metrology Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Huaiyu",
+            "lastName": "Chen-Mayer",
+            "orcid": "0000-0002-4810-0073",
+            "emailAddress": "heather.chen-mayer@nist.gov",
+            "groupOrgID": 13706,
+            "groupNumber": "64605",
+            "groupName": "Chemical Process and Nuclear Measurements Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Michael",
+            "lastName": "Winchester",
+            "orcid": "0000-0002-7436-7599",
+            "emailAddress": "mwinchester@nist.gov",
+            "groupOrgID": 13702,
+            "groupNumber": "64601",
+            "groupName": "Inorganic Chemical Metrology Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [
+          "high-purity solid materials",
+          " glow discharge mass spectrometry (GDMS)",
+          " certified purity assay values",
+          " Standard Reference Materials (SRM)",
+          " Reference Materials (RM)",
+          " and Research Grade Test Materials (RGTM)",
+          " neutron activation analysis",
+          " portable neutron generators",
+          " laser-based mass spectrometry",
+          " machine learning"
+        ],
+        "dataSize": "1.5",
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "(New) DD Neutron Generator ",
+          "Quadrupole ICP-MS ",
+          "Microwave sample digestion system ",
+          "INAA/PGAA/NDP facilities at the NCNR "
+        ],
+        "instruments": [
+          {
+            "name": "946931",
+            "description_url": "DT Neutron Generator"
+          },
+          {
+            "name": "619914",
+            "description_url": "DD Neutron Generator"
+          }
+        ],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Low"
+          ],
+          "cui": []
+        },
+        "dataDescription": "The data from this project will be generated as GDMS is developed and a RGTM is created. The RGTM will be the basis of an interlaboratory study where more data will be collected. \nVarious \nMass Spectrometry techniques will be used to generate elemental analysis data, spatial distribution of contaminant data and an actual purity assay.  \n\u2022\tGlow Discharge Mass Spectrometry (GDMS): 1D spectrum, Mass vs. intensity (instrument does not exist today) \n\u2022\tLaser Induced Breakdown Spectroscopy (LIBS): 1D spectrum, Mass vs. intensity plus location data (x,y, and potentially z) \n\u2022\tLaser Ablation Inductively Coupled Plasma Mass Spectrometry (LA-ICP-MS): (same instrument as above, but is now operating in the break-down mode, therefore, same measurement axes as above instrument. \n\u2022\tSecondary Ion Mass Spectrometry (SIMS): 1D spectrum = Mass vs. intensity, and  2D mode = x-y raster, then gives same structure as LIBS. \n\nNuclear techniques will allow for the following data generation:\n\n\u2022\tInstrumental Neutron Activation Analysis (INAA):  1D plot where the x-axis = gamma ray energy / channel number, and the y-axis = gamma counts. AND 2D = coincidence measurement, you have energies on X&Y in the Z direction = timing of events.  \n\u2022\t Prompt Gamma Activation Analysis (PGAA): this is a subset of neutron analysis, subset of the INAA. Same gamma spectrum  \n\u2022\tNeutron Depth Profiling (NDP) \n\u2022\tCommon data formats for nuclear techniques:\no\tAscii, Canberra = .cnf file (proprietary) but convertible to IAEA format. Another format is the Ortec format \no\t Analysis package = Genie 2000 (Canberra), Meastro (Ortec), PeakEZ from Oakridge. \no\t BRF = US package that does complete spectrum analysis. Reads all formats. \n\nThis nuclear spectra data will then be used to train ML models. These models will be used to build predictive capabilities and provide detector characterization.\n",
+        "dataCategories": [
+          "Publishable",
+          "Published Results and SRD",
+          "Working",
+          "Derived"
+        ],
+        "preservationDescription": "Preservation will occur by saving the data to the Lake Huron server ((\\\\lake-huron-smb.nist.gov\\CHIPS 1.05 - Contaminants in Solids) and publishing models through MIDAS/METIS.",
+        "dataAccess": "Beyond copies of the models preserved in MIDAS/METIS we also will publish the models in a model repository such as HuggingFace and possibly Weights and Biases. ",
+        "pathsURLs": [
+          "(\\\\lake-huron-smb.nist.gov\\CHIPS 1.05 - Contaminants in Solids",
+          "instrument computers "
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0012",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1742917317.6805453,
+        "since": 1742917317.6805453,
+        "modified": 1742919365.3823702,
+        "message": "",
+        "createdDate": "2025-03-25T15:41:57",
+        "modifiedDate": "2025-03-25T16:16:05",
+        "sinceDate": "2025-03-25T15:41:57"
+      },
+      "name": "CHIPS 2.01 - Thermal AFM",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Accurate Mapping of Thermal Properties at the Nanoscale",
+        "startDate": "2023-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "Precise measurements of thermal properties at the nanoscale are needed for engineering of both advanced and heterogeneously integrated electronic devices but are currently unattainable. We will radically advance thermal properties metrology by developing a new tool for mapping thermal conductivity (\u03b7), interfacial thermal conductance (G) and chemical composition at the nanoscale, with high throughput (20 ms/pixel) and high precision (\u0394\u03b7 <5%, \u0394G <10%), concurrently. Thermal properties will be obtained by measuring the transient photothermal expansion of a sample with high spatial (\u224810 nm) and temporal (\u22484 ns) resolutions using NIST-made optomechanical AFM probes and wide-bandwidth detection. Synergistically, we will develop a far-field, super-resolution microscope capable of mapping thermal properties with \u2248 500 nm resolution, ultrahigh throughput \u2248 5 \u00b5s/pixel (\u2248 24 million times faster than the state-of-the-art) and with depth sensitivity up to \u2248 100 \u03bcm.\n\nThis project will:\n1.\tFurther develop the photothermal induced resonance (PTIR) microscope by modifying an AFM with optomechanical probes, a custom excitation laser and by expanding the spectral range of the detection laser while developing advanced data processing routines.\n2.\tDevelop a Super-resolution photothermal microscope \u2013 which will use a CW visible detection laser and a high bandwidth detector to measure the time-domain thermalization of the sample at once, either in reflection or transmission.\n",
+        "organizations": [
+          {
+            "groupName": "Nanoscale Spectroscopy Group",
+            "divisionName": "Nanoscale Device Characterization Division",
+            "ouName": "Physical Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Junyeob",
+            "lastName": "Song",
+            "orcid": "0000-0001-6369-823X",
+            "emailAddress": "junyeob.song@nist.gov",
+            "groupOrgID": 14039,
+            "groupNumber": "68101",
+            "groupName": "Photonics and Optomechanics Group",
+            "divisionOrgID": 14037,
+            "divisionNumber": "681",
+            "divisionName": "Microsystems and Nanotechnology Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Chad",
+            "lastName": "Cruz",
+            "orcid": "0009-0008-1811-4504",
+            "emailAddress": "chad.cruz@nist.gov",
+            "groupOrgID": 14045,
+            "groupNumber": "68312",
+            "groupName": "Nanoscale Spectroscopy Group",
+            "divisionOrgID": 13266,
+            "divisionNumber": "683",
+            "divisionName": "Nanoscale Device Characterization Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Devon",
+            "lastName": "Jakob",
+            "orcid": "0000-0002-6534-4803",
+            "emailAddress": "devon.jakob@nist.gov",
+            "groupOrgID": 14045,
+            "groupNumber": "68312",
+            "groupName": "Nanoscale Spectroscopy Group",
+            "divisionOrgID": 13266,
+            "divisionNumber": "683",
+            "divisionName": "Nanoscale Device Characterization Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Jared",
+            "lastName": "Wahlstrand",
+            "orcid": "0000-0003-3734-8767",
+            "emailAddress": "jared.wahlstrand@nist.gov",
+            "groupOrgID": 14045,
+            "groupNumber": "68312",
+            "groupName": "Nanoscale Spectroscopy Group",
+            "divisionOrgID": 13266,
+            "divisionNumber": "683",
+            "divisionName": "Nanoscale Device Characterization Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Vladimir",
+            "lastName": "Aksyuk",
+            "orcid": "0000-0002-9653-4722",
+            "emailAddress": "vladimir.aksyuk@nist.gov",
+            "groupOrgID": 14039,
+            "groupNumber": "68101",
+            "groupName": "Photonics and Optomechanics Group",
+            "divisionOrgID": 14037,
+            "divisionNumber": "681",
+            "divisionName": "Microsystems and Nanotechnology Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Andrea",
+            "lastName": "Centrone",
+            "orcid": "0000-0002-2919-3366",
+            "emailAddress": "andrea.centrone@nist.gov",
+            "groupOrgID": 14045,
+            "groupNumber": "68312",
+            "groupName": "Nanoscale Spectroscopy Group",
+            "divisionOrgID": 13266,
+            "divisionNumber": "683",
+            "divisionName": "Nanoscale Device Characterization Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [
+          "Nanoscale thermal properties mapping",
+          " thermal properties metrology",
+          " thermal conductivity",
+          " interfacial thermal conductance",
+          " nanoscale spectroscopy",
+          " nanoscale chemical imaging",
+          " photothermal induced resonance (PTIR)",
+          " photothermal expansion dynamic",
+          " Super-resolution photothermal microscopy",
+          " depth resolved thermal properties"
+        ],
+        "dataSize": "1.5",
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "NEW AFM with wide bandwidth controller and optical access",
+          " NEW CW wavelength-tunable detection laser",
+          " NEW High repetition rate-10 ns pulsed wavelength-tunable mid-IR excitation laser",
+          " NEW super resolution photothermal microscope (from Photothermal)",
+          " NEW 80 W fs near-IR tunable laser for 2-photon absorption",
+          "o\tEKSPLA NT277 wavelength tunable pulsed mid-IR excitation laser (part of 644845) ",
+          "o\tM-squared Firefly wavelength tunable pulsed mid-IR excitation laser (part of 644845)",
+          "\u2022\t2-photon absorption pump-probe"
+        ],
+        "instruments": [
+          {
+            "name": "N127068",
+            "description_url": "DAQ computer (part of 2-photon absorption pump-probe)"
+          },
+          {
+            "name": "N116573",
+            "description_url": "Light Conversion Carbide 40 with Orpheus OPA (part of 2-photon absorption pump-probe)"
+          },
+          {
+            "name": "862361",
+            "description_url": "DAQ computer (part of 644845)"
+          },
+          {
+            "name": "932079",
+            "description_url": "Toptica CTL 1500 CW tunable detection laser (part of 644845)"
+          },
+          {
+            "name": "644845",
+            "description_url": "Anasys Instruments NanoIR-1 AFM/ PTIR"
+          }
+        ],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Medium"
+          ],
+          "cui": [
+            "BII",
+            "Proprietary"
+          ]
+        },
+        "dataDescription": "The two experimental branches of this project leverage  the photothermal expansion physics associated to the absorption of short laser pulses in a sample.-absorption  \n\t\nBoth the AFM and super-resolution microscope will leverage wide bandwidth detection and electronics to measure, at once, the photothermal transient of the sample with high spatial and temporal resolutions. In the AFM, the optomechanical AFM probe tip transduces the local time-domain photothermal expansion of the sample and a detector which is fiber coupled to the probe senses the tip position. The super-resolution microscope uses a CW laser and a far-field detector to transduce the time-domain photothermal transient of the sample (i.e., changes of the sample refractive index) either in transmission or reflection. Data will consist of local nanoscale signal transients obtained either by maintaining the probe stationary and sweeping the excitation laser wavelength (local spectra), or by maintaining the excitation laser wavelength fixed and scanning the probe (AFM tip or CW detection laser) on the sample surface (2D nanoscale maps). 3D nanoscale maps will be obtained with the super-resolution microscope by scanning in 3D a two-photon absorption beam to generate a localized heat source at depth in the sample. Derived data from the raw data will yield maps of composition, thermal conductivity (\u03b7), interfacial thermal conductance (G), sample topography with nanoscale resolution.\n\n\nWhen using conventional AFM probes for routine AFM measurements the dataset will be more limited and the data will be in proprietary formats (.axz). Preliminary two-photon absorption measurements will be stored in the HDF5 format. \n\nPump-probe measurements use a Princeton Instruments proprietary format, SPE, and data after averaging is stored in HDF5 format. \nThe non thermal data (AFM maps, IR spectra) are saved on Ansys instrument/Bruker proprietary format  .axz but those are typically much smaller files.\n\n",
+        "dataCategories": [
+          "Published Results and SRD",
+          "Publishable",
+          "Working",
+          "Derived"
+        ],
+        "preservationDescription": "Jared: we plan to keep for the long term all data that shows some signal after averaging (which reduces the storage requirements by 10000x) and at our discretion keep raw data that we think may benefit from further processing (removing outlier frames, more sophisticated analysis).\n \nAndrea and Vladimir: currently we save in progress data on cfs2e.nist.gov, then would organize it to the best of our ability there. Currently the time domain PTIR data can be evaluated offline after recording. In the future we hope to develop near real time routines for data visualization and analysis and would be able to determine more quickly if data are worth saving of not.\n",
+        "dataAccess": "Published data will be made available via MIDAS.",
+        "pathsURLs": [
+          "\\\\cfs2e.nist.gov\\683\\NLSdata",
+          "\\\\cfs2e.nist.gov\\681\\MEMS"
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0013",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1742935315.4072022,
+        "since": 1742935315.4072022,
+        "modified": 1742935976.2077386,
+        "message": "",
+        "createdDate": "2025-03-25T20:41:55",
+        "modifiedDate": "2025-03-25T20:52:56",
+        "sinceDate": "2025-03-25T20:41:55"
+      },
+      "name": "CHIPS 2.02 - Electron Tomography",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Advanced analytical electron tomography for materials development and failure analysis in semiconductor devices",
+        "startDate": "2023-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "Project Description:\nWe propose to develop quantitative, atomic-resolution methods for the three-dimensional characterization of complex semiconductor devices via electron tomography.  By coupling advance specimen preparation, cutting edge electron microscopy instrumentation, and AI-driven data collection and reconstruction, we will deliver a robust suite of measurement tools to the semiconductor industry, addressing multiple CHIPs grand challenges in the process.   \n\nThis project will:\n\u00b7\tDemonstrate the feasibility of sub-nanoscale and atomic electron tomography for real-world semiconductor device samples;\n\u00b7\tUse advanced data acquisition methods and reconstruction algorithms to achieve maximum contrast and spatial resolution in tomograms;\n\u00b7\tDevelop data processing methods to extract quantitative metrics from ET 3D reconstructions;\n\u00b7\tConduct live reconstructions during data acquisition at the microscope;\n\u00b7\tResearch automation of ET workflow for industry;\n\u00b7\tIntegrate AI-based approaches to data acquisition, processing, and reconstruction \no\tAI will be used to reduce noise in 3D tomograms\no\tAI will be used to select specimen orientation to speed up data acquisition and reduce electron dose.\no\tAI-based reconstruction models will be integrated with the data acquisition framework for live feed-back loop\no\tAI framework still to be explored\no\tNew AI architectures with application to the 3D analysis of sub-nanoscale devices will be tested and implemented; and, \n\u00b7\tProduce new measurement methods for immediate use by the semiconductor industry.\n",
+        "organizations": [
+          {
+            "groupName": "Materials Structure and Data Group",
+            "divisionName": "Materials Measurement Science Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Adele",
+            "lastName": "Peskin",
+            "orcid": "0000-0003-4913-5566",
+            "emailAddress": "adele.peskin@nist.gov",
+            "groupOrgID": 13529,
+            "groupNumber": "77502",
+            "groupName": "Information Systems Group",
+            "divisionOrgID": 13289,
+            "divisionNumber": "775",
+            "divisionName": "Software and Systems Division",
+            "ouOrgID": 13216,
+            "ouNumber": "77",
+            "ouName": "Information Technology Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Aaron",
+            "lastName": "Kusne",
+            "orcid": "0000-0001-8904-2087",
+            "emailAddress": "aaron.kusne@nist.gov",
+            "groupOrgID": 13681,
+            "groupNumber": "64304",
+            "groupName": "Data and AI-Driven Materials Science Group",
+            "divisionOrgID": 13677,
+            "divisionNumber": "643",
+            "divisionName": "Materials Measurement Science Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Antonio",
+            "lastName": "Cardone",
+            "orcid": "0000-0001-8534-9313",
+            "emailAddress": "antonio.cardone@nist.gov",
+            "groupOrgID": 13529,
+            "groupNumber": "77502",
+            "groupName": "Information Systems Group",
+            "divisionOrgID": 13289,
+            "divisionNumber": "775",
+            "divisionName": "Software and Systems Division",
+            "ouOrgID": 13216,
+            "ouNumber": "77",
+            "ouName": "Information Technology Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Joe",
+            "lastName": "Chalfoun",
+            "orcid": "0000-0001-8901-7076",
+            "emailAddress": "joe.chalfoun@nist.gov",
+            "groupOrgID": 13529,
+            "groupNumber": "77502",
+            "groupName": "Information Systems Group",
+            "divisionOrgID": 13289,
+            "divisionNumber": "775",
+            "divisionName": "Software and Systems Division",
+            "ouOrgID": 13216,
+            "ouNumber": "77",
+            "ouName": "Information Technology Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Andrew",
+            "lastName": "Herzing",
+            "orcid": "0000-0001-5944-2610",
+            "emailAddress": "andrew.herzing@nist.gov",
+            "groupOrgID": 13684,
+            "groupNumber": "64308",
+            "groupName": "Materials Structure and Data Group",
+            "divisionOrgID": 13677,
+            "divisionNumber": "643",
+            "divisionName": "Materials Measurement Science Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [
+          "Electron tomography",
+          " 3-D characterization",
+          " electron microscopy",
+          " AI automation",
+          " STEM"
+        ],
+        "dataSize": "1",
+        "sizeUnit": "TB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "\u00b7\tNEW CNST S/TEM",
+          "\u00b7\tNEW CNST FIB"
+        ],
+        "instruments": [
+          {
+            "name": "N102362",
+            "description_url": "Fischione NanoMill"
+          }
+        ],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Medium"
+          ],
+          "cui": [
+            "BII",
+            "Proprietary"
+          ]
+        },
+        "dataDescription": "Description of Generated Data (free text):\nThe research project will create the following types of data:\n\u2022\tMicroscopy images -> tomograms (dm3, dm4, ThermoFisher proprietary, mrc, detector dependent (tbd))\n\u2022\tDiffraction patterns (dm3, dm4, ThermoFisher proprietary, detector dependent (tbd))\n\u2022\tSpectroscopy (potentially) - dm3, dm4, ThermoFisher proprietary, detector dependent (tbd)\n\u2022\tSpectrum images (hyperspectral) dm3, dm4, ThermoFisher proprietary, detector dependent (tbd)\n\u2022\tData processing pipeline (ipynb, Python scripts, Matlab scripts, HDF5 files)\n\u2022\tAI training data, training plots, synthetic data. AI architectures\nIn the following formats:\n\u2022\tGatan formats (dm4), FEI MRC files (header with binary image(s) after it, but the head changes depending on how it collects the data), SerialEM MRC files (slightly different from FEI MRC files)\n\u2022\tPreprocessing and AI co-pilot may require HDF5 conversion.\n\u2022\tTIF (synthetic)\n",
+        "dataCategories": [
+          "Publishable",
+          "Working",
+          "Derived"
+        ],
+        "preservationDescription": "Data collected in this project is maintained and preserved in the following manner. Data taken on the ResData network is backed up to Amazon Glacier. There is further manual back up for high-value datasets. Team members from ITL use the ISG-Nas server which is also automatically backed up. ",
+        "dataAccess": "Data will be published to MIDAS or another CHIPS-specific data repository.  Some data may be covered by a CRADA with Intel and will require internal approval prior to publication.",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0014",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1742936068.2223074,
+        "since": 1742936068.2223074,
+        "modified": 1742936580.1586864,
+        "message": "",
+        "createdDate": "2025-03-25T20:54:28",
+        "modifiedDate": "2025-03-25T21:03:00",
+        "sinceDate": "2025-03-25T20:54:28"
+      },
+      "name": "6.07 - X-ray Fluorescence Metrology",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Metrology of x-ray fundamental parameters for silicon microelectronics analysis",
+        "startDate": "2024-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "We propose to employ NIST-designed advanced x-ray spectrometers, arrays of cryogenic, superconducting x-ray microcalorimeters, to measure x-ray fluorescence spectra of numerous pure elements and chemical compounds of relevance to the semiconductor industry. The excellent energy resolution and high efficiency of the transition-edge sensors (TESs) make them ideal for quantitative analysis of the fundamental atomic data that govern the spectra. \nThe objective of the current work is to measure fundamental atomic data about x-ray emissions, and to do so with metrological accuracy and careful understanding of uncertainties. The resulting data will be the basis for a new reference database, either in the NIST SRD series, or as a CHIPS-specific data product. If successful, this database would expand upon the existing SRD-128 or produce a new SRD product. \n",
+        "organizations": [
+          {
+            "groupName": "Quantum Calorimeters Group",
+            "divisionName": "Quantum Sensors Division",
+            "ouName": "Physical Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Joseph",
+            "lastName": "Tan",
+            "orcid": "0000-0002-7762-022X",
+            "emailAddress": "joseph.tan@nist.gov",
+            "groupOrgID": 13439,
+            "groupNumber": "68401",
+            "groupName": "Atomic Spectroscopy Group",
+            "divisionOrgID": 13267,
+            "divisionNumber": "684",
+            "divisionName": "Quantum Measurement Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Daniel",
+            "lastName": "Schmidt",
+            "orcid": "0000-0002-5764-0194",
+            "emailAddress": "dan.schmidt@nist.gov",
+            "groupOrgID": 14268,
+            "groupNumber": "68711",
+            "groupName": "Device Fabrication Group",
+            "divisionOrgID": 13270,
+            "divisionNumber": "687",
+            "divisionName": "Quantum Sensors Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Kelsey",
+            "lastName": "Morgan",
+            "orcid": "0000-0002-6597-1030",
+            "emailAddress": "kelsey.morgan@nist.gov",
+            "groupOrgID": 14270,
+            "groupNumber": "68712",
+            "groupName": "Quantum Calorimeters Group",
+            "divisionOrgID": 13270,
+            "divisionNumber": "687",
+            "divisionName": "Quantum Sensors Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Galen",
+            "lastName": "O'Neil",
+            "orcid": "0000-0003-3450-2263",
+            "emailAddress": "galen.oneil@nist.gov",
+            "groupOrgID": 14270,
+            "groupNumber": "68712",
+            "groupName": "Quantum Calorimeters Group",
+            "divisionOrgID": 13270,
+            "divisionNumber": "687",
+            "divisionName": "Quantum Sensors Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Daniel",
+            "lastName": "Swetz",
+            "orcid": "0000-0002-8192-2175",
+            "emailAddress": "daniel.swetz@nist.gov",
+            "groupOrgID": 14270,
+            "groupNumber": "68712",
+            "groupName": "Quantum Calorimeters Group",
+            "divisionOrgID": 13270,
+            "divisionNumber": "687",
+            "divisionName": "Quantum Sensors Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Joseph",
+            "lastName": "Fowler",
+            "orcid": "0000-0002-8079-0895",
+            "emailAddress": "joe.fowler@nist.gov",
+            "groupOrgID": 14270,
+            "groupNumber": "68712",
+            "groupName": "Quantum Calorimeters Group",
+            "divisionOrgID": 13270,
+            "divisionNumber": "687",
+            "divisionName": "Quantum Sensors Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [
+          "x-ray fluorescence spectra",
+          " atomic x-ray reference data",
+          " low energy XRF analysis",
+          " energies of M-shell x-ray lines",
+          " x-ray emissions",
+          " cryogenic superconducting x-ray microcalorimeter",
+          " spectroscopic measurements",
+          " TES sensors",
+          " x-ray atomic parameters"
+        ],
+        "dataSize": "5",
+        "sizeUnit": "TB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [],
+          "cui": []
+        },
+        "dataDescription": "The project will be generating data through both experimental and computational methods. Experimentally, the project utilizes a Transition-Edge Sensor (TES) array to measure the X-ray fluorescence spectra of various materials. The TES array is a cryogenic microcalorimeter that detects the temperature rise caused by X-ray photons, which is then converted into an electrical signal. The measurement process involves exposing a sample to an X-ray source, and the TES array detects the fluorescence X-rays emitted by the sample. The resulting data is a time series of pulse records, which are then processed to extract the X-ray energies and their corresponding uncertainties. The processed data is stored in a custom binary file format, known as \"ljh files\", which contains metadata and raw 16-bit numbers representing the timing information and temperature data. The experimental data will be distilled down to energy distributions or spectra, which will be the primary data product.\n\nComputationally, the project involves simulations of atomic theory to calculate X-ray energies, which will be used to support the experimental measurements. The computational data will be generated using High-Performance Computing (HPC) resources, such as the Blackbird, Redwing, or other clusters. The simulations will produce data on the theoretical X-ray energies and their uncertainties, which will be used to validate the experimental results. The computational data will likely be stored in a format suitable for HPC output, although the specific file format is not mentioned. The project also involves data processing and analysis using custom algorithms, such as the pulse processing algorithm, which will be used to extract the X-ray energies from the experimental data. The algorithm and simulation data may be published through the METAS portal, allowing for easy discovery and access by other researchers. Overall, the project will generate a range of data types, from raw experimental data to processed spectra and computational simulations, which will be stored in various file formats and made available through different channels.",
+        "dataCategories": [],
+        "preservationDescription": "",
+        "dataAccess": "",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0015",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1743088040.9935763,
+        "since": 1743088040.9935763,
+        "modified": 1745240820.7752714,
+        "message": "",
+        "byWho": "jlau",
+        "createdDate": "2025-03-27T15:07:20",
+        "modifiedDate": "2025-04-21T13:07:00",
+        "sinceDate": "2025-03-27T15:07:20"
+      },
+      "name": "CHIPS 6.07 - X-ray Fluorescence Metrology",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Metrology of x-ray fundamental parameters for silicon microelectronics analysis",
+        "startDate": "2024-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "We propose to employ NIST-designed advanced x-ray spectrometers, arrays of cryogenic, superconducting x-ray microcalorimeters, to measure x-ray fluorescence spectra of numerous pure elements and chemical compounds of relevance to the semiconductor industry. The excellent energy resolution and high efficiency of the transition-edge sensors (TESs) make them ideal for quantitative analysis of the fundamental atomic data that govern the spectra. \nThe objective of the current work is to measure fundamental atomic data about x-ray emissions, and to do so with metrological accuracy and careful understanding of uncertainties. The resulting data will be the basis for a new reference database, either in the NIST SRD series, or as a CHIPS-specific data product. If successful, this database would expand upon the existing SRD-128 or produce a new SRD product. ",
+        "organizations": [
+          {
+            "groupName": "",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Avirup ",
+            "lastName": "Roy",
+            "orcid": "",
+            "emailAddress": "avirup.roy@nist.gov",
+            "groupOrgID": 0,
+            "groupNumber": "",
+            "groupName": "",
+            "divisionOrgID": 0,
+            "divisionNumber": "",
+            "divisionName": "",
+            "ouOrgID": 0,
+            "ouNumber": "",
+            "ouName": "",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Jonathan",
+            "lastName": "Dean",
+            "orcid": "0000-0002-8719-9467",
+            "emailAddress": "jonathan.dean@nist.gov",
+            "groupOrgID": 0,
+            "groupNumber": "",
+            "groupName": "",
+            "divisionOrgID": 0,
+            "divisionNumber": "",
+            "divisionName": "",
+            "ouOrgID": 0,
+            "ouNumber": "",
+            "ouName": "",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          }
+        ],
+        "keywords": [],
+        "dataSize": null,
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [],
+          "cui": []
+        },
+        "dataDescription": "",
+        "dataCategories": [],
+        "preservationDescription": "",
+        "dataAccess": "",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0016",
+      "status": {
+        "created_by": "midas/blondern",
+        "state": "edit",
+        "action": "update",
+        "created": 1743177983.4454687,
+        "since": 1743177983.4454687,
+        "modified": 1743178263.2980828,
+        "message": "",
+        "createdDate": "2025-03-28T16:06:23",
+        "modifiedDate": "2025-03-28T16:11:03",
+        "sinceDate": "2025-03-28T16:06:23"
+      },
+      "name": "test 0325_01",
+      "acls": {
+        "read": [
+          "blondern",
+          "grp0:public"
+        ],
+        "write": [
+          "blondern"
+        ],
+        "admin": [
+          "blondern"
+        ],
+        "delete": [
+          "blondern"
+        ]
+      },
+      "owner": "blondern",
+      "deactivated": null,
+      "data": {
+        "title": "test 1",
+        "startDate": "",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Grant Number",
+          "grant_id": ""
+        },
+        "projectDescription": "",
+        "organizations": [
+          {
+            "groupName": "Chemical Informatics Group",
+            "divisionName": "Chemical Sciences Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Niksa",
+            "lastName": "Blonder",
+            "orcid": "0000-0003-4103-9801",
+            "emailAddress": "niksa.blonder@nist.gov",
+            "groupOrgID": 13705,
+            "groupNumber": "64604",
+            "groupName": "Chemical Informatics Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          },
+          {
+            "firstName": "Gretchen",
+            "lastName": "Campbell",
+            "orcid": "",
+            "emailAddress": "gretchen.campbell@nist.gov",
+            "groupOrgID": 13441,
+            "groupNumber": "68404",
+            "groupName": "Laser Cooling and Trapping Group",
+            "divisionOrgID": 13267,
+            "divisionNumber": "684",
+            "divisionName": "Quantum Measurement Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Contact Person"
+          }
+        ],
+        "keywords": [],
+        "dataSize": null,
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [],
+        "instruments": [
+          {
+            "name": "insrtrument 1",
+            "description_url": "luldkjdl"
+          }
+        ],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [],
+          "cui": []
+        },
+        "dataDescription": "",
+        "dataCategories": [],
+        "preservationDescription": "~~~~~~~~~~~~~~~\nkjhlkjh\n~~~~~~~~~~~~",
+        "dataAccess": "",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0017",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1743441497.5057025,
+        "since": 1743441497.5057025,
+        "modified": 1743443057.420365,
+        "message": "",
+        "createdDate": "2025-03-31T17:18:17",
+        "modifiedDate": "2025-03-31T17:44:17",
+        "sinceDate": "2025-03-31T17:18:17"
+      },
+      "name": "CHIPS 2.03 - EUV Photolithography",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Advanced Metrology to Enable Next-Generation EUV Photoresists",
+        "startDate": "2023-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "Project Description:\nThe semiconductor industry continues to push for smaller features, more integration, and increased yield. New photoresist chemistries and advances in extreme ultraviolet lithography are enabling this trend. However, this is inhibited by a lack of measurements describing heterogeneities in chemistry that contribute to the quality of photoresist patterns at these smaller dimensions. This includes fundamental questions into how the EUV exposure changes the resist chemistry and its spatial extent, and the underlying mechanisms that produce those changes. Our proposed NIST team will characterize the properties of advanced lithographic materials, measure nanoscale chemical distributions, and study the patterning process in situ. This will be accomplished by further developing a suite of metrology techniques which have tailored sensitivity to both the chemistry and structure of the photoresists and how the exposure processes influence critical dimensions and edge roughness. Completion of the project will provide industry with a roadmap to rapid characterization of new EUV resist formulations and processing approaches that will further enable high yield manufacturing and accelerate US industry competitiveness in this space.\n\nThis project will:\n1.\tConduct soft X-ray whole film spectroscopy (reflectivity) and vertical depth profiling for photoresists and underlayers: \na.\tProduce an absorption spectroscopy data library for EUV and DSA materials\nb.\tcompare spectroscopic collection modalities including electron yield, transmission, and low-dose imaging.\n2.\tEUV latent image characterization using soft X-ray scattering\na.\tDevelop soft X-ray scattering approaches to display of chemical heterogeneity within latent images (i.e., three-dimensional spatial extent of chemical changes undergone by EUV photoresists during exposure and subsequent processing steps), with nanoscale resolution.\nb.\tBeamline modifications (camera upgrade and sample holder redesign from 4 to 5 axes) to enable fully three-dimensional measurements of the latent image.\n3.\tCharacterization of block copolymers for EUV pattern rectification - Correlate commensurability between the block co-polymer (BCP) and the EUV pattern relates to the device line-edge roughness (LER).\n4.\tReal-time AFM probe methods for monitoring of photoresist development \u2013 in situ AFM measurements of the resist development process using NIST\u2019s nanophotonic AFM probes and on-chip integrated microdisk photonic resonators for readout.",
+        "organizations": [
+          {
+            "groupName": "Polymers Processing Group",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Regis",
+            "lastName": "Kline",
+            "orcid": "0000-0003-4693-9083",
+            "emailAddress": "r.kline@nist.gov",
+            "groupOrgID": 13974,
+            "groupNumber": "64206",
+            "groupName": "Polymers Processing Group",
+            "divisionOrgID": 13668,
+            "divisionNumber": "642",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Priyanka",
+            "lastName": "Ketkar",
+            "orcid": "0000-0001-8891-4808",
+            "emailAddress": "priyanka.ketkar@nist.gov",
+            "groupOrgID": 13974,
+            "groupNumber": "64206",
+            "groupName": "Polymers Processing Group",
+            "divisionOrgID": 13668,
+            "divisionNumber": "642",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "James",
+            "lastName": "Liddle",
+            "orcid": "0000-0002-2508-7910",
+            "emailAddress": "james.liddle@chips.gov",
+            "groupOrgID": 14038,
+            "groupNumber": "68100",
+            "groupName": "Microsystems and Nanotechnology - HQ",
+            "divisionOrgID": 14037,
+            "divisionNumber": "681",
+            "divisionName": "Microsystems and Nanotechnology Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Dean",
+            "lastName": "DeLongchamp",
+            "orcid": "0000-0003-0840-0757",
+            "emailAddress": "dean.delongchamp@nist.gov",
+            "groupOrgID": 13974,
+            "groupNumber": "64206",
+            "groupName": "Polymers Processing Group",
+            "divisionOrgID": 13668,
+            "divisionNumber": "642",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Vladimir",
+            "lastName": "Aksyuk",
+            "orcid": "0000-0002-9653-4722",
+            "emailAddress": "vladimir.aksyuk@nist.gov",
+            "groupOrgID": 14039,
+            "groupNumber": "68101",
+            "groupName": "Photonics and Optomechanics Group",
+            "divisionOrgID": 14037,
+            "divisionNumber": "681",
+            "divisionName": "Microsystems and Nanotechnology Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Julia",
+            "lastName": "Murphy",
+            "orcid": "0000-0001-6334-559X",
+            "emailAddress": "julia.murphy@nist.gov",
+            "groupOrgID": 13974,
+            "groupNumber": "64206",
+            "groupName": "Polymers Processing Group",
+            "divisionOrgID": 13668,
+            "divisionNumber": "642",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Daniel",
+            "lastName": "Sunday",
+            "orcid": "0000-0002-6840-535X",
+            "emailAddress": "daniel.sunday@nist.gov",
+            "groupOrgID": 13974,
+            "groupNumber": "64206",
+            "groupName": "Polymers Processing Group",
+            "divisionOrgID": 13668,
+            "divisionNumber": "642",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [
+          "EUV",
+          " photoresist",
+          " block co-polymer",
+          " X-ray scattering",
+          " X-ray spectroscopy",
+          " X-ray reflectivity",
+          " X-ray absorption",
+          " soft X-ray",
+          " line-edge roughness",
+          " nanophotonic AFM"
+        ],
+        "dataSize": "120",
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "Brookhaven National Laboratory NSLS-II  Beamline SST-1 ",
+          "NIST RSoXS measurement station and Brookhaven National Laboratory",
+          "(NEW) Soft X-ray Reflectometer",
+          "(NEW) SST1 Soft X-ray Detector Upgrade",
+          "(NEW) AFM",
+          "CNST NanoFab",
+          "\nCFS2E",
+          "\nResData",
+          "\nBNL central storage",
+          "\nglados.nist.gov (HPC)",
+          "CTCMS"
+        ],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Medium"
+          ],
+          "cui": [
+            "BII",
+            "Proprietary"
+          ]
+        },
+        "dataDescription": "The beamline data will consist of x-ray absorption spectra. Spectroscopy data are organized into data libraries under different material types. Scattering measurements will produce images, from which an important parameter, the line edge roughness (LER) will be extracted. pyHyperscattering  (https://github.com/usnistgov/PyHyperScattering), is an open-source data reduction library that is used by this project.\n\nThe AFM data will consist of images, but may also contain other data types. The contract to this new AFM has not yet been awarded, so it is difficult provide a data description at this time. \n",
+        "dataCategories": [
+          "Published Results and SRD",
+          "Publishable",
+          "Working",
+          "Derived"
+        ],
+        "preservationDescription": "MML ResData is archival and is backed up to Amazon Glacier.\nBNL central file server is fully backed up by BNL.\nCFS2E is backed-up by OISM\n",
+        "dataAccess": "For data which can be released the current plan is to include it in journal publications. With as much of the raw data as possible included in the supplemental information. ",
+        "pathsURLs": [
+          "Beamline data data is saved on ResData in well-organized folders - under the PI\u2019s project folder. \nBeamline data is also saved on BNL central file server.\n\n\nAFM data will be saved on the control computer.\n"
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0018",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1743444014.5411427,
+        "since": 1743444014.5411427,
+        "modified": 1744907840.2167203,
+        "message": "",
+        "byWho": "jlau",
+        "createdDate": "2025-03-31T18:00:14",
+        "modifiedDate": "2025-04-17T16:37:20",
+        "sinceDate": "2025-03-31T18:00:14"
+      },
+      "name": "CHIPS 2.04 - APT",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Atom Probe Tomography: Nanostructured Semiconductor Materials, Interfaces, and Devices",
+        "startDate": "2023-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "The semiconductor industry requires sub-nm, 3-dimensional quantitative elemental mapping of materials, nanoscale structures, and devices with high analytical sensitivity for process development, failure analysis, and competitive engineering. Atom probe tomography (APT) is recognized by industry as the method that can address these goals. However, commercially available atom probe tomography instruments and methodologies are inadequate. This project will make critical metrology advancements in APT instrumentation, experimental methods, data analysis, and modeling and simulation. With these new tools, industry will increase yield, improve device performance, and accelerate time to market. \n\nThis project will:\n1.\tImprove instrument design\n2.\tPublish best-practice guides, white papers for industry\n3.\tNIST data on optimal specimen geometry, data collection parameters, and analysis techniques.\na.\tOptimize extraction wavelength for each material\nb.\tMeasurement standardization\n4.\tMeasurements on complex materials, structures, and devices (i.e., not test samples)\n5.\tA simulation tool for modeling specimen apex electrostatics.\n6.\t(possibly) tech transfer of new next-generation APT instrument",
+        "organizations": [
+          {
+            "groupName": "Nanoscale Reliability Group",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Jacob",
+            "lastName": "Garcia",
+            "orcid": "0000-0002-4491-4408",
+            "emailAddress": "jacob.garcia@nist.gov",
+            "groupOrgID": 13712,
+            "groupNumber": "64705",
+            "groupName": "Nanoscale Reliability Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Norman",
+            "lastName": "Sanford",
+            "orcid": "0000-0003-3678-185X",
+            "emailAddress": "norman.sanford@nist.gov",
+            "groupOrgID": 13940,
+            "groupNumber": "68609",
+            "groupName": "Quantitative Nanostructure Characterization Group",
+            "divisionOrgID": 13269,
+            "divisionNumber": "686",
+            "divisionName": "Applied Physics Division ",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Luis",
+            "lastName": "Miaja Avila",
+            "orcid": "0000-0003-0864-8357",
+            "emailAddress": "luis.miajaavila@nist.gov",
+            "groupOrgID": 13940,
+            "groupNumber": "68609",
+            "groupName": "Quantitative Nanostructure Characterization Group",
+            "divisionOrgID": 13269,
+            "divisionNumber": "686",
+            "divisionName": "Applied Physics Division ",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Benjamin",
+            "lastName": "Caplins",
+            "orcid": "0000-0002-4925-9537",
+            "emailAddress": "benjamin.caplins@nist.gov",
+            "groupOrgID": 13712,
+            "groupNumber": "64705",
+            "groupName": "Nanoscale Reliability Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Ann",
+            "lastName": "Debay",
+            "orcid": "0000-0001-9933-3267",
+            "emailAddress": "chiaramonti@nist.gov",
+            "groupOrgID": 13712,
+            "groupNumber": "64705",
+            "groupName": "Nanoscale Reliability Group",
+            "divisionOrgID": 13707,
+            "divisionNumber": "647",
+            "divisionName": "Applied Chemicals and Materials Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [
+          "Atom probe tomography",
+          " instrumentation development",
+          " 3D atomic maps",
+          " device geometry"
+        ],
+        "dataSize": "500",
+        "sizeUnit": "GB",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "NEW CAMECA Invizo Atom Probe",
+          "\nNEW Thermo Fisher Scios FIB/SEM",
+          "\nNEW Thermo Fisher Helios FIB/SEM",
+          "\nNEW Thermo Fisher Apreo SEM",
+          "\nNEW CHIPS TEM1 Boulder",
+          "\nNEW CHIPS TEM2 Boulder",
+          " \nNEW 5th harmonic ultrafast laser source",
+          "\nNEW Sum frequency generation ultrafast laser source \n"
+        ],
+        "instruments": [
+          {
+            "name": "927910",
+            "description_url": "Zeiss LEO SEM "
+          },
+          {
+            "name": "936855",
+            "description_url": "Zeiss Auriga FIB/SEM"
+          },
+          {
+            "name": "936834",
+            "description_url": "Zeiss Gemini SEM "
+          },
+          {
+            "name": "939760",
+            "description_url": "Thermo Fisher Scios FIB"
+          },
+          {
+            "name": "936856",
+            "description_url": "JEOL ARM-200F TEM"
+          },
+          {
+            "name": "949668",
+            "description_url": "NIST/CAMECA Experimental Atom Probe"
+          },
+          {
+            "name": "936854",
+            "description_url": "CAMECA LEAP4000 Atom Probe"
+          }
+        ],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Medium"
+          ],
+          "cui": [
+            "BII"
+          ]
+        },
+        "dataDescription": "There are four general sources of data:\n1.\tAtom Probe Tomography (ATP) Data (raw)\na.\tLegacy ATP format = RHIT. This is a proprietary data format which will go away at some point.\nb.\tNew ATP format = \u201cATP\u201d. Also proprietary, but some parts of this raw data is exportable to something more open like Python and MatLab.\n2.\tAPT analysis data: \na.\tAnalysis data in proprietary formats (POS, ePOS).\nb.\tMass spectrum range files (.txt)\nc.\tAnalysis states (.analysis)\n\n3.\tSupport electron microscopy data. \na.\tFocused ion beam (FIB) data \u2013 these are in TIFF formats. \nb.\tScanning electron microscopy (SEM) images\u2013 Images are in TIFF format. \nc.\tScanning/Transmission electron microscopy (S/TEM) data: May contain images, diffraction patterns, 4D STEM data, tomography data, EELS data, EFTEM images, other new formats possible with the new instruments.\nd.\tX-ray spectroscopy data format:\ni.\tZeiss LEO SEM (927910) has an EDAX system and generate data in EDAX format\nBMF Auriga FIB (936855) has an EDAX system and generate data in EDAX format\nii.\t New CHIPS TEM 1 is a Talos, it will have a DualX detector, format unknown right now.\niii.\tNew CHIPS TEM 2 is a Spectra, it will have a SuperX detector, format unknown right now.\n\n4.\tSimulation data:\na.\tSoftware: Matlab . File format\u201d \u201cFIG\u201d file and text files. Expected volume ~  500 GB/year. \nb.\tSoftware: Ansys. Package is \u201cLumerical.\u201d Software tool is called \u201cCharge\u201d. Have not yet had a successful run, so file format/volume unknown.\n\n",
+        "dataCategories": [
+          "Derived",
+          "Working",
+          "Publishable",
+          "Published Results and SRD"
+        ],
+        "preservationDescription": "A local copy of the instrument data (for both ATPs, 647-owned microscopes) are kept with the instrument, but is automatically copied to a read-only file location (Boulder NAS) via MML-data plumbing. 647-owned electron microscopy data is part of the electron microscopy (EM) Nexus. The preservation description can be found in the NexusLIMS DMP (ref. MIDAS EDI record #2245). ",
+        "dataAccess": "Presently, data generated by Nexus microscopes (all 647-owned) microscopes are discoverable via NexusLIMS (ref. MIDAS EDI record #2245). There are plans to add new microscopes, as well as BMF-owned microscopes to NexusLIMS to make those data discoverable. Data acquired as a part of a CRADA will not be made discoverable.\n\nAs for simulation data there are no plans to make these discoverable, but we hope to discuss this soon. \n",
+        "pathsURLs": [],
+        "dataSizeDescription": "Annual"
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0019",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "create",
+        "created": 1743449916.6490383,
+        "since": 1743449916.6490383,
+        "modified": 1743449916.652052,
+        "message": "draft created",
+        "byWho": "jlau",
+        "createdDate": "2025-03-31T19:38:36",
+        "modifiedDate": "2025-03-31T19:38:36",
+        "sinceDate": "2025-03-31T19:38:36"
+      },
+      "name": "CHIPS 2.05 - CDSAXS",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Critical Dimension Small Angle X-ray Scattering (CDSAXS) for Next Generation in-line Metrology",
+        "startDate": "2023-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "The semiconductor industry is in need of new in-line dimensional metrology methods to measure the size and shape of nanoscale structures such as gate-all-around transistors, 3D-NAND, and 3D-DRAM for process control. \n\nThe NIST-developed CDSAXS method has recently been commercialized for characterization of 3D-NAND contact holes and has the potential to provide need measurements of GAA nanosheet transistor and through silicon vias (TSV). The primary limitation of CDSAXS is measurement throughput due to the lack of compact X-ray sources with sufficient brightness. The scattering intensity, and thus the measurement time, scales with the square of the height of the structure   \nThe industry needs NIST to use their unique expertise in the CDSAXS method to provide continued support through advanced measurement and standard development. \n\nThere are three thrusts to the project: 1) Demonstration of CDSAXS on next generation devices such as GAA nanosheets and TSVs using a best available laboratory SAXS system and synchrotron facilities, 2) Collaboration with X-ray source developers to identify potential game changing X-ray technology and to direct their efforts to the CDSAXS application, and 3) Development and certification of new IP-neutral industrial-relevant test structures and leveraging of NSTC capabilities.",
+        "organizations": [
+          {
+            "groupName": "Polymers Processing Group",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouName": "Material Measurement Laboratory"
+          }
+        ],
+        "contributors": [
+          {
+            "firstName": "Daniel",
+            "lastName": "Sunday",
+            "orcid": "0000-0002-6840-535X",
+            "emailAddress": "daniel.sunday@nist.gov",
+            "groupOrgID": 13974,
+            "groupNumber": "64206",
+            "groupName": "Polymers Processing Group",
+            "divisionOrgID": 13668,
+            "divisionNumber": "642",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          },
+          {
+            "firstName": "Regis",
+            "lastName": "Kline",
+            "orcid": "0000-0003-4693-9083",
+            "emailAddress": "r.kline@nist.gov",
+            "groupOrgID": 13974,
+            "groupNumber": "64206",
+            "groupName": "Polymers Processing Group",
+            "divisionOrgID": 13668,
+            "divisionNumber": "642",
+            "divisionName": "Materials Science and Engineering Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "Yes",
+            "institution": "NIST",
+            "role": "Project Leader"
+          }
+        ],
+        "keywords": [],
+        "dataSize": "500",
+        "sizeUnit": "GB",
+        "dataSizeDescription": "Annual",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "\u2022\tLaboratory SAXS system ",
+          "\u2022\tSynchrotron facilities",
+          "\u2022\tSEM  - Andras\u2019 FEI FIB/SEM",
+          "\u2022\tNew SAXS system"
+        ],
+        "instruments": [
+          {
+            "name": "N101779",
+            "description_url": "detector computer, Laboratory SAXS system "
+          },
+          {
+            "name": "857112",
+            "description_url": "instrument computer, Laboratory SAXS system"
+          },
+          {
+            "name": "N110633",
+            "description_url": "source, Laboratory SAXS system"
+          },
+          {
+            "name": "633627 ",
+            "description_url": "main chamber, Laboratory SAXS system"
+          },
+          {
+            "name": "N106398",
+            "description_url": "detector,  Laboratory SAXS system "
+          }
+        ],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Medium"
+          ],
+          "cui": [
+            "BII",
+            "Proprietary"
+          ]
+        },
+        "dataDescription": "Data is X-ray scattering data \u2013 for a single sample, there would be ~100 incident angle/set up (each set is from 500-1000 MB per sample, but is highly compressible. The conversion to images is a few MB each). At that point there is a processing step that turns all the scattering data into an image. Users care about being able to perform inverse modeling to create the same structure that will create this observed scattering pattern. The end user cares about seeing the share distribution model. The modeling people want to see the raw data. \nMonte Carlo Markov chain (reverse calculations by inverse iterative modelling) is a few GB in size if/when a full run is saved.",
+        "dataCategories": [
+          "Derived",
+          "Working",
+          "Publishable"
+        ],
+        "preservationDescription": "Everything is saved on ResData, nothing is deleted",
+        "dataAccess": "",
+        "pathsURLs": [
+          "Resdata\\saxs8542"
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0020",
+      "status": {
+        "created_by": "midas/blondern",
+        "state": "edit",
+        "action": "create",
+        "created": 1743605346.0819921,
+        "since": 1743605346.0819921,
+        "modified": 1743605346.0891132,
+        "message": "draft created",
+        "byWho": "blondern",
+        "createdDate": "2025-04-02T14:49:06",
+        "modifiedDate": "2025-04-02T14:49:06",
+        "sinceDate": "2025-04-02T14:49:06"
+      },
+      "name": "Nik test 3",
+      "acls": {
+        "read": [
+          "blondern",
+          "grp0:public"
+        ],
+        "write": [
+          "blondern"
+        ],
+        "admin": [
+          "blondern"
+        ],
+        "delete": [
+          "blondern"
+        ]
+      },
+      "owner": "blondern",
+      "deactivated": null,
+      "data": {
+        "title": "test 3",
+        "startDate": "",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Grant Number",
+          "grant_id": ""
+        },
+        "projectDescription": "",
+        "organizations": [],
+        "contributors": [
+          {
+            "firstName": "Niksa",
+            "lastName": "Blonder",
+            "orcid": "0000-0003-4103-9801",
+            "emailAddress": "niksa.blonder@nist.gov",
+            "groupOrgID": 13705,
+            "groupNumber": "64604",
+            "groupName": "Chemical Informatics Group",
+            "divisionOrgID": 13700,
+            "divisionNumber": "646",
+            "divisionName": "Chemical Sciences Division",
+            "ouOrgID": 13213,
+            "ouNumber": "63",
+            "ouName": "Material Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": ""
+          }
+        ],
+        "keywords": [],
+        "dataSize": null,
+        "sizeUnit": "GB",
+        "dataSizeDescription": "",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [],
+          "cui": []
+        },
+        "dataDescription": "",
+        "dataCategories": [],
+        "preservationDescription": "",
+        "dataAccess": "",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0021",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "create",
+        "created": 1745247243.8718061,
+        "since": 1745247243.8718061,
+        "modified": 1745247243.9287791,
+        "message": "draft created",
+        "byWho": "jlau",
+        "createdDate": "2025-04-21T14:54:03",
+        "modifiedDate": "2025-04-21T14:54:03",
+        "sinceDate": "2025-04-21T14:54:03"
+      },
+      "name": "CHIPS 2.06 - Electron-Solid Interactions",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Electron-Solid Interactions",
+        "startDate": "2023-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "\u2022\tThe accuracy of SEM (scanning electron microscopy) is limited by uncertainties associated with our poor knowledge of electron-solid interactions. \n\u2022\tThe predicted inelastic mean free paths of existing models differ by a factor of 5 or more in the relevant low energy regime.  \n\u2022\tPredicted secondary electron yields for important CHIPS-relevant materials differ by factors of 2 or 3. Secondary electron yield measurements are variable from laboratory to laboratory. This renders quantitative interpretation difficult. \n\u2022\tIndustry needs good simulations of backscattered electron yields from beams of 30 keV to 100 keV because new technologies have deeply buried interfaces. \n\u2022\tNeed models that can account for charging. \n \nProject goals/to-do: \n\u2022\tProject will finish building and will characterize a new yield measurement system.\n\u2022\tYield measurement system will produce secondary-electron and backscattered-electron yields and energy spectra as functions of beam energy and beam angle on various materials. Data will be used to test and refine models.\n\u2022\tProject will initially plan to pattern the upper surface of thin silicon membranes in the NIST NanoFab. Pattern topography will be measured in secondary electron and transmitted modes. Comparison will be used to test and refine models.\n\u2022\tNew models: Will use DFT with the Bethe-Salpeter equation to compute electron energy loss functions and derive scattering properties. Electron-phonon scattering and charging processes will be modeled. Refine and iterate as data become available. \n\u2022\tValidated beam-solid interaction models will be incorporated into a simulator (JMONSEL) where they can be used for quantitative metrology.\n\u2022\tPublishing yield and topographic data on well-characterized CHIPS-relevant materials: Cu, Ni, Ag, Au, Si, and others to start, insulators (SiO2, Si3N4) later.\n\u2022\tProject will enable simulation of e-beam measurements of devices with buried interfaces. \n",
+        "organizations": [],
+        "contributors": [],
+        "keywords": [
+          "Dimensional metrology",
+          " electron yield",
+          " electron-solid interaction modeling"
+        ],
+        "dataSize": "300",
+        "sizeUnit": "GB",
+        "dataSizeDescription": "Annual",
+        "softwareDevelopment": {
+          "development": "yes",
+          "softwareUse": "both",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "SEM",
+          " TEM",
+          " Yield measurement UHV system",
+          " NanoFab tools",
+          " Raritan cluster",
+          " Software licenses: for LabView",
+          " Mathematica",
+          " Box"
+        ],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Low"
+          ],
+          "cui": []
+        },
+        "dataDescription": "The following assumptions were used:\n\u2022\t(important) Spectra ~60MB each\n\u2022\t(Important) Images 10 MB to 10 GBs\n\u2022\t(important) Mathematica notebooks 100\u2019s of MB\n\u2022\t(important) DFT+ BSE = kB per output\n\u2022\t(important) Dielectric as a function of both momentum transfer and angle. \n\u2022\t(important) LabView codes on GitLab (100 GB)\n\u2022\t(unimportant) Computation data has lots of wavefunction files that are large.\n",
+        "dataCategories": [
+          "Published Results and SRD",
+          "Publishable",
+          "Working",
+          "Derived"
+        ],
+        "preservationDescription": "(1) Enterprise backup of local host, (2) CFS2E and Elwood are both automatically backed up. (3) OneDrive is used as a mirror for local host, (4) GitLab and Box have their own enterprise back-up solutions (we believe). (5) DFT+BSE data (on Raritan) are not backed up. Final optical spectra files will be sent to OneDrive, which is Office 365 backed up.",
+        "dataAccess": "No plans to make data discoverable and accessible beyond internal NIST team for now. However, this team would like help developing repositories to disseminate Yield spectra, and dimensional measurements for the external community. Have not thoroughly thought about publicly disseminating the JMONSEL code for the fear of having to provide tech support (writing and disseminating open-source software is not the goal of this project). \n\nNISTMonte, JMONSEL, and many other packages live in the larger EPQ project, and they call each other\u2019s routines extensively at the following location on GitHub - https://github.com/jsvillar/EPQ \n",
+        "pathsURLs": [
+          "\u2022\tCFS2E path(s): ): \\\\cfs2e.nist.gov\\68_PML\\681\\681A\\internal\\jvillar\\linewidth\\jvillar\\projects\\SEMmodeling\\JMONSEL_projects\\CHIPS  (Likely archive location)\n\u2022\tElwood path(s): \\\\elwood\\681\\internal\\MND_Projects\\YieldMeasurement\n\u2022\tOneDrive path(s):\no\t//nistgov-my.sharepoint.com/:f:/r/personal/inm4_nist_gov/Documents/Desktop/DFT_BSE_complex_dielectric_function?csf=1&web=1&e=WNc2qV\no\t//nistgov-my.sharepoint.com/:f:/r/personal/jvillar_nist_gov/Documents/My Documents/ActiveProjects/CHIPS?csf=1&web=1&e=1KeYuM\n\u2022\tGitLab path(s): https://gitlab.nist.gov/gitlab/oism_lab_automation_team/electronyieldinvacuum/rfa \n\u2022\tGitHub - https://github.com/jsvillar/EPQ\n\u2022\tBox URL(s): YamaneMeasurementIntercomparisons2023 | Powered by Box\n\u2022\tLocal host (ipaddress+paths): \\\\129.6.128.68\\d$\\jvillar\\localProjects\\ActiveProjects\\CHIPS\nNote: Data may be stored here long-term or short-term depending on the reason it is here. In either case",
+          " this machine is subscribed to the nightly back-up service. The Two reasons: \n1.\tDuring long-running simulations",
+          " scripts and outputs are stored on a local drive to avoid slow network communication and the risk of network outages interrupting the simulation. Even though OneDrive files are both local and in the cloud",
+          " OneDrive copes poorly with files that are frequently updated (like a simulation output file that is updated with new results every few seconds or minutes). For example",
+          " it may try to keep a very long file history with thousands of versions",
+          " and it can compete for file access: OneDrive to upload the latest version",
+          " the simulator to append the latest result. In this case the data are stored here during the simulation",
+          " then transferred to the ActiveProjects/CHIPS folder on OneDrive.\n2.\tA folder may exceed OneDrive\u2019s limits for either size of data or number of files. In that case",
+          " it is stored here and kept synchronized (by periodically manually running Microsoft SyncToy) with a copy in the JMONSEL_projects\\CHIPS folder on CFS2E.\n\u2022\tRaritan path(s): /wrk/inm4 (Data is normally only stored here temporarily before being transferred to OneDrive) \u2013\n"
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0022",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "create",
+        "created": 1745249456.4505222,
+        "since": 1745249456.4505222,
+        "modified": 1745249456.5091603,
+        "message": "draft created",
+        "byWho": "jlau",
+        "createdDate": "2025-04-21T15:30:56",
+        "modifiedDate": "2025-04-21T15:30:56",
+        "sinceDate": "2025-04-21T15:30:56"
+      },
+      "name": "CHIPS 2.09 - DPC 4D-STEM",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Overcoming Barriers: Nanoscale Interface Metrology and Electrical Characterization for Advanced Electronics",
+        "startDate": "2023-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "\u2022\tDevelopment of new microelectronics and semiconductor devices based on thin-film, nanostructured and multi-layer materials is hampered by the lack of understanding of electric fields in these structures. Models of device behavior, including failure analysis, are limited because designers assume each material has the properties of its pure bulk material.\n\u2022\tAtomic scale measurement of electric field is possible with aberration-corrected scanning transmission electron microscopy (STEM) and an appropriate detector but requires careful collection and processing of extremely large data sets and is complicated by interfaces.\n\u2022\tDevelopment of this measurement for application to thin-film and multilayer device interfaces will provide an atomic level understanding of electric fields at interfaces and enable accurate prediction of band offsets for continued development of ever-shrinking devices.\nProject Goals:\n\u2022\tProcure an aberration-corrected STEM with segmented and pixelated electron detectors.\n\u2022\tFabricate TEM lamella from representative multi-layer materials and devices; identify techniques that minimize preparation related artifacts.\n\u2022\tCollect and analyze 4-D STEM datasets to determine optimum data collection conditions.\n\u2022\tCompare and optimize data analysis methods.\n\u2022\tDeliver electric field maps of device interfaces to partners in the CMOS and WBG industries. \n\u2022\tCompare measurements of a single specimen from multiple STEM instruments using different detectors and detector-specific data formats, to develop standardized measurement procedures.\n\u2022\tAnalyze the impact of sample preparation parameters and instrument settings on measurement results to establish standardized procedures.\n\u2022\tPublish data capture, data reduction and analysis software through public channels (journals, NIST servers or services).",
+        "organizations": [],
+        "contributors": [],
+        "keywords": [
+          "scanning transmission electron microscopy",
+          " differential phase contrast",
+          " DPC",
+          " 4D-STEM",
+          " atomic scale electric field",
+          " semiconductor interface electric field"
+        ],
+        "dataSize": "10",
+        "sizeUnit": "TB",
+        "dataSizeDescription": "Annual",
+        "softwareDevelopment": {
+          "development": "yes",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "FIB",
+          " STEM",
+          " BMF",
+          " high-performance data storage",
+          " fast networking for large dataset transport.\nResearch Equipment Network (REN) for raw data access and backup.\nNexusLIMS integration for FIB",
+          " microscopy data and sample tracking.\nGlobus and SciServer have strong potential for the data reduction \u201capp\u201d.\n"
+        ],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Low"
+          ],
+          "cui": []
+        },
+        "dataDescription": "\u2022\tFIB and SEM images of specimens (10 GB/year) \n\u2022\t4-D STEM diffraction patterns (20 TB/year) in vendor/detector-specific data formats (dm3, dm4, JEOL, TIF)\n\u2022\tInstrument settings and data collection metadata (1 GB/year)\n\u2022\tElectric field maps of specimens (10 GB/year)\n\u2022\tVersion-controlled software source code (1 GB/year)",
+        "dataCategories": [
+          "Derived",
+          "Working",
+          "Publishable",
+          "Published Results and SRD"
+        ],
+        "preservationDescription": "\u2022\tRaw data on the REN is mirrored to BoulderNAS. Another copy sent to division network drive (cfs2w), which is backed up.\n\u2022\tIntermediate/processed data is on Alexana\u2019s and Edwin\u2019s computers, which are backed up daily (Edge Monitor).\n\u2022\tPublication-quality data is also on localhost, backed up daily at noon.",
+        "dataAccess": "\u2022\tNo plans at present",
+        "pathsURLs": []
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    },
+    {
+      "id": "mdm1:0023",
+      "status": {
+        "created_by": "midas/jlau",
+        "state": "edit",
+        "action": "update",
+        "created": 1745256742.245481,
+        "since": 1745256742.245481,
+        "modified": 1745258201.8722885,
+        "message": "",
+        "byWho": "jlau",
+        "createdDate": "2025-04-21T17:32:22",
+        "modifiedDate": "2025-04-21T17:56:41",
+        "sinceDate": "2025-04-21T17:32:22"
+      },
+      "name": "CHIPS 2.07 - EUV Scatterometry",
+      "acls": {
+        "read": [
+          "jlau",
+          "grp0:public"
+        ],
+        "write": [
+          "jlau"
+        ],
+        "admin": [
+          "jlau"
+        ],
+        "delete": [
+          "jlau"
+        ]
+      },
+      "owner": "jlau",
+      "deactivated": null,
+      "data": {
+        "title": "Extreme Ultraviolet Scatterometry",
+        "startDate": "2023-10-01",
+        "dmpSearchable": "yes",
+        "funding": {
+          "grant_source": "Division Project Tracking Number",
+          "grant_id": ""
+        },
+        "projectDescription": "https://inet.nist.gov/files/euv-scatterometrybarnesproject-planinetpdf/pdf \nIndustry roadmaps show that infrared, visible, and ultraviolet approaches will barely yield adequate results for Gate All Around (GAA) devices and fail for Complementary Field Effect Transistors (CFETs); our goal is demonstrating the feasibility of extreme ultraviolet (EUV, \uf06c = 13.5 nm) scatterometry in the 10 nm to 150 nm spectral region for industrial tech transfer. For industrial optics-based measurements such as scatterometry, focused research must begin now to address high-throughput measurements of the dimensional properties of new materials and devices such as GAA and CFETs.  This non-destructive technique will allow the characterization of surfaces, buried features, interfaces, and devices with increased resolution, sensitivity, accuracy, and throughput.  Only using these shorter wavelengths can process control metrology keep pace with cutting-edge and future microelectronics and semiconductor manufacturing, while maintaining a competitive U.S. advantage. Present optical methods cannot go below 10 nm in feature sizes.\n\n\nThis project will: \n\u2022\tDevelop two new measurement capabilities: \no\tSynchrotron-based EUV ellipsometry for thin film optical properties characterization  \no\tLab-based EUV Scatterometry for dimensional and materials measurements of patterned features \n \n\u2022\tUse coupled wave theory to determine the sensitivity to scattering (evaluate parameters such as wavelengths, incident angles, polarizations, and diffraction orders) from specimen of varying dimensional and material parameters. These simulations will also demonstrate feasibility of scatterometry in the EUV band. \n\u2022\tConduct EUV diffractometry in collaboration with Prof. Margaret Murnane Group at the University of Colorado \n\u2022\tCreate a Mueller Matrix ellipsometer, which will be used to demonstrate spectroscopic ellipsometry characterization of thickness and optical constants of thin films on a substrate.\n\u2022\tEstablish CRADA with companies like KLA and Onto Innovation \n\u2022\tCompare Synchrotron results with Tabletop EUV High-harmonic generation (HHG) results. \n\u2022\tPerform Tabletop EUV HHG scatterometry for CRADA partners, NSTC, and refine measurement techniques. \n",
+        "organizations": [],
+        "contributors": [
+          {
+            "firstName": "Steven",
+            "lastName": "Grantham",
+            "orcid": "0000-0002-8218-512X",
+            "emailAddress": "steven.grantham@nist.gov",
+            "groupOrgID": 13443,
+            "groupNumber": "68503",
+            "groupName": "Optical Radiation Group",
+            "divisionOrgID": 13268,
+            "divisionNumber": "685",
+            "divisionName": "Sensor Science Division",
+            "ouOrgID": 13214,
+            "ouNumber": "68",
+            "ouName": "Physical Measurement Laboratory",
+            "primary_contact": "No",
+            "institution": "NIST",
+            "role": "Project Member"
+          }
+        ],
+        "keywords": [
+          "EUV",
+          " extreme ultraviolet",
+          " EUV optics",
+          " scatterometry",
+          " dimensional metrology"
+        ],
+        "dataSize": "500",
+        "sizeUnit": "GB",
+        "dataSizeDescription": "Annual",
+        "softwareDevelopment": {
+          "development": "no",
+          "softwareUse": "",
+          "softwareDatabase": "",
+          "softwareWebsite": ""
+        },
+        "technicalResources": [
+          "2 x J.A. Woolham ellipsometers",
+          "\n\nNIST SURF-III BL3",
+          " \nEUV HHG laser - KM Labs RAEA + XUUS 5",
+          "\n2 sample positioning stages for High vacuum and ultra-high vacuum",
+          "\nPair of HV-compatible custom-built four-bounce mirror mounts rotatable about a central axis",
+          "\nNew HV chamber housing the HV motion stages and polarizer mounts and associated turbomolecular pumps",
+          "\nUHV compatible EUV sensitive CCD camera",
+          " \n10 nm \u2013 200 nm spectrometer",
+          " \nSEM",
+          " \nLithography",
+          " \nSolid Works (NIST has license)",
+          "\nLabView (NIST has license)",
+          "\nRaritan cluster"
+        ],
+        "instruments": [],
+        "ethical_issues": {
+          "irb_number": "",
+          "ethical_issues_exist": "no",
+          "ethical_issues_description": "",
+          "ethical_issues_report": ""
+        },
+        "security_and_privacy": {
+          "data_sensitivity": [
+            "Medium"
+          ],
+          "cui": [
+            "BII",
+            "Proprietary"
+          ]
+        },
+        "dataDescription": "The project\u2019s data will be generated via multiple instruments, but typically elliposometry data is text based, diffractometers produce images, and scatterometry also produces text formats.\nAll output formats will be open. \n",
+        "dataCategories": [
+          "Published Results and SRD",
+          "Publishable",
+          "Working",
+          "Derived"
+        ],
+        "preservationDescription": "CFS2E and OneDrive are both enterprise services backed up by OISM.",
+        "dataAccess": "\u2022\tInternally: Data is available in the shared OneDrive, Teams, OneNote, email, paper notebook\n\u2022\tExternally: Data will be expanded into publications. Fitting algorithms are published to https://github.com/usnistgov/pySCATMECH. Data from this project will be available through https://www.nist.gov/metis.\n\u2022\t\n\n",
+        "pathsURLs": [
+          "Code: https://github.com/usnistgov/pySCATMECH",
+          "\nInstrument data: CFS2E",
+          "\nAnalysis data: user\u2019s OneDrive"
+        ]
+      },
+      "meta": {},
+      "curators": [],
+      "type": "dmp"
+    }
+  ]

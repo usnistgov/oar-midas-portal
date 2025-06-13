@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Choose Theme</h2>
+<mat-dialog-content class="selector-content">
+    <!-- Family radios -->
+    <mat-radio-group [(ngModel)]="data.family" (ngModelChange)="preview()" class="family-grid">
+        <mat-radio-button *ngFor="let fam of families" [value]="fam.value" class="family-card">
+            {{ fam.label }}
+        </mat-radio-button>
+    </mat-radio-group>
+
+    <mat-divider class="centered-divider"></mat-divider>
+
+    <!-- Dark mode toggle -->
+    <mat-slide-toggle labelPosition="after" [checked]="data.variant === 'dark'" (change)="
+      data.variant = $event.checked ? 'dark' : 'light'; preview()">
+        Dark Mode
+    </mat-slide-toggle>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button color="primary" (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="apply()">Apply</button>
+</mat-dialog-actions>

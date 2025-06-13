@@ -4,7 +4,6 @@ import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
-    debugger;
     await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule
@@ -21,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'midas-portal'`, () => {
+  it(`should have as title 'new-midas-portal'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('midas-portal');
+    expect(app.title).toEqual('new-midas-portal');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('midas-portal app is running!');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, new-midas-portal');
   });
 });
