@@ -11,7 +11,7 @@
 
 # The parent should be an ancestor image of the operational container
 # 
-FROM node:16.17-bullseye-slim
+FROM node:20-bullseye-slim
 
 RUN sed -e '/bullseye-updates/ s/^deb/#deb/' /etc/apt/sources.list \
     > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list

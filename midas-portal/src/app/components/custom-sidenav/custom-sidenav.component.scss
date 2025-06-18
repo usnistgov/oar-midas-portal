@@ -1,0 +1,98 @@
+/* turn the whole sidebar into a vertical flex container */
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:host {
+  --mdc-list-item-graphic-margin: 16px;
+  --mdc-list-item-leading-icon-margin: 16px;
+  --mdc-list-item-horizontal-padding: 8px;
+}
+
+.sidenav-header {
+  padding-top: 24px;
+  text-align: center;
+  min-height: 160px;
+
+  img {
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+
+  .header-text {
+    height: 3rem;
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.5rem;
+      color: var(--mat-badge-background-color);
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.header-text {
+  opacity: 0;
+}
+
+.header-text.visible {
+  opacity: 1;
+  transition: opacity 250ms ease-in;
+}
+
+mat-nav-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.sidenav-footer {
+  margin-top: auto;
+  padding: 10px;
+  text-align: left;
+
+  border-top: 1px solid rgb(0, 0, 0, 0.2);
+
+  height: 20px;
+
+  mat-icon {
+    margin-left: 11px;
+    color: var(--mat-badge-background-color);
+  }
+}
+
+.info-bubble {
+  position: fixed;
+  bottom: 32px;
+  left: 32px;
+  z-index: 10001;
+  background: #fff;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; // Ensure no extra space
+
+  mat-icon {
+    color: var(--mat-badge-background-color);
+    font-size: 28px; // or 32px for a larger icon
+    line-height: 1;
+    width: 1em;
+    height: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
