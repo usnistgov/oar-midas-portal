@@ -20,7 +20,7 @@ export class DashboardService {
   /** Widgets the user has already added to their dashboard */
   readonly addedWidgets = signal<Widget[]>([]);
 
-  private readonly DEFAULT_WIDGET_IDS = [5, 6];
+  private readonly DEFAULT_WIDGET_IDS = [5, 6, 7, 8];
 
   /** Widgets still available to add (registry minus added) */
   readonly widgetsToAdd = computed(() => {
