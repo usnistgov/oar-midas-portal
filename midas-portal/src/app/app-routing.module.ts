@@ -5,10 +5,6 @@ import { SearchComponent } from './pages/search/search.component';
 
 const routes: Routes = [
   {
-    path: '**',
-    redirectTo: 'dashboard'
-  },
-  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'dashboard',
