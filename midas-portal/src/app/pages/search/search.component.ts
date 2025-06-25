@@ -46,6 +46,17 @@ export interface Dmp {
   keywords?: string[];
 }
 
+export interface Dap {
+  id: string;
+  name: string;
+  owner: string;
+  type?: string | undefined;
+  primaryContact: string;
+  modifiedDate: Date;
+}
+
+
+type DmpOrDap = Dmp | Dap;
 
 @Component({
   selector: 'app-search',
@@ -56,13 +67,9 @@ export class SearchComponent {
   /** Key codes for MatChipInput (ENTER, COMMA) */
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
-  // Hard-coded defaults
-  private readonly DEFAULT_DMP_EDIT = 'https://mdstest.nist.gov/midas/dmpui/edit/';
-  private readonly DEFAULT_DAP_EDIT = 'https://mdstest.nist.gov/midas/dapui/edit/od/id/';
-
   /** Whether to add chip on blur */
   readonly addOnBlur = true;
-
+  
   // inject snackabars and dialogs
   private _snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
@@ -99,6 +106,7 @@ export class SearchComponent {
   orgSuggestions: string[] = [];  
   peopleIndex: { id: string, fullName: string, lastName: string, firstName: string }[] | null = null;  // Cached people
   peopleSuggestions: string[] = [];   
+  
     
   /** Available resource types (for chip list) */
   resourceTypes = ['DMP', 'DAP'];
@@ -156,6 +164,7 @@ export class SearchComponent {
 
   /** Signal holding the full DMP list */
   private _dmpList = signal<Dmp[]>([]);
+  private _dapList = signal<Dap[]>([]);
   /** Unique list of all org units, derived from `_dmpList` */
   organizationUnits = computed(() =>
     Array.from(new Set(this._dmpList().map(d => d.organizationUnit ?? '')))
@@ -166,7 +175,8 @@ export class SearchComponent {
     Array.from(new Set(this._dmpList().map(d => d.owner))).sort()
   );
 
-  dataSource = new MatTableDataSource<Dmp>([]);
+  
+  dataSource = new MatTableDataSource<DmpOrDap>([]);
 
   /** Master list of table columns */
   allColumns = [
@@ -225,11 +235,11 @@ export class SearchComponent {
 
   // Compute base URLs, falling back if not set
   get dmpEDIT(): string {
-    return this.config['dmpEDIT']?.value || this.DEFAULT_DMP_EDIT;
+    return this.config['dmpEDIT']?.value
   }
 
   get dapEDIT(): string {
-    return this.config['dapEDIT']?.value || this.DEFAULT_DAP_EDIT;
+    return this.config['dapEDIT']?.value
   }
 
   orgUnits = computed(() =>
@@ -528,11 +538,16 @@ searchOrgIndex(queryString: string): void {
    * or toggles the "has paper publication" filter.
    */
   applyFilters() {
-    const crit = this.currentCriteria();
-    const filtered = this.filterService.filterDmpList(this._dmpList(), crit);
-    this.dataSource.data = filtered;
-    this.paginator?.firstPage();
-  }
+  const crit = this.currentCriteria();
+  console.log('Applying filters:', crit);
+  const merged: DmpOrDap[] = [
+    ...this._dmpList(),
+    ...this._dapList()
+  ];
+  const filtered = this.filterService.filterDmpOrDapList(merged, crit);
+  this.dataSource.data = filtered;
+  this.paginator?.firstPage();
+}
 
   /**
    * Clears all filters and simulates loading (used by "Clear Filters" button).
@@ -726,14 +741,20 @@ searchOrgIndex(queryString: string): void {
     this.isLoading = true;
 
     this.dataService.getDmps().pipe(
-      catchError(err => {
-        return of([]);
-      }),
+      catchError(err => of([])),
       finalize(() => this.isLoading = false)
-    )
-      .subscribe(list => {
-        this._dmpList.set(list);
-      });
+    ).subscribe(list => {
+      console.log('Loaded DMPs:', list[1]);
+      this._dmpList.set(list);
+      this.updateDataSource();
+    });
+    this.dataService.getDaps().pipe(
+      catchError(err => of([]))
+    ).subscribe(list => {
+      console.log('Loaded DAPs:', list[1]);
+      this._dapList.set(list);
+      this.updateDataSource();
+    });
 
     // wire the OrgUnit autocomplete
     this.orgUnitControl.valueChanges.subscribe(value => {
@@ -770,6 +791,14 @@ searchOrgIndex(queryString: string): void {
       maxWidth: '80vw',
       data: {}
     });
+  }
+
+  private updateDataSource() {
+    const merged: DmpOrDap[] = [
+      ...this._dmpList(),
+      ...this._dapList()
+    ];
+    this.dataSource.data = merged;
   }
 
 

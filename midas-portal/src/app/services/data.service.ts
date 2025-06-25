@@ -198,7 +198,8 @@ export class DataService {
       name: raw.name,
       owner: raw.owner,
       primaryContact: primary?.emailAddress || '',
-      modifiedDate: new Date(raw.status.modifiedDate)
+      modifiedDate: new Date(raw.status.modifiedDate),
+      type: raw.type
     };
   }
 
