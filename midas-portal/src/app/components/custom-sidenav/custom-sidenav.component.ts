@@ -105,7 +105,7 @@ export class CustomSidenavComponent implements OnInit {
         this.userName     = attrs['userName'];
         this.userLastName = attrs['userLastName'];
         this.winId        = attrs['winId'];
-        this.group        = attrs['Group'];
+        this.group        = attrs['userOU'];
       },
       error: err => {
         alert("Unable to determine your identity, cannot retrieve data.");
@@ -127,8 +127,8 @@ export class CustomSidenavComponent implements OnInit {
       return;
     }
 
-    const dmpUrl = cfg['dmpUI']?.value;
-    const dapUrl = cfg['dapUI']?.value;
+    const dmpUrl = this.dataService.dmpUI;
+    const dapUrl = this.dataService.dapUI;
 
     if (!dmpUrl && !dapUrl) return;
 

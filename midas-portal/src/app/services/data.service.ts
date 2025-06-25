@@ -250,20 +250,4 @@ export class DataService {
     return this.configService.getConfig()['nextcloudUI'] 
   }
 
-  /** Dummy user‐info endpoint 
-   * TODO: get this from service - oarng not working atm due to compatibility issues.
-  */
-
-  getUser(): Observable<UserResponse> {
-    return of({
-      userDetails: {
-        userId: 'one1',
-        userEmail: 'omarilias.elmimouni@nist.gov',
-        userName: 'Omar Ilias',
-        userLastName: 'El Mimouni',
-        winId: 'one1',
-        Group: '77ITL'
-      }
-    });
-  }
 }
