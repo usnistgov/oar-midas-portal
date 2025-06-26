@@ -1,21 +1,38 @@
 <!-- Sidenav Header -->
 <div class="sidenav-header">
-  <img src="assets/images/profile-avatar.png" alt="profile avatar" [width]="profilePicSize()"
-    [height]="profilePicSize()" />
+  <img src="assets/images/profile-avatar.png" alt="profile avatar" [width]="profilePicSize()" [height]="profilePicSize()" />
 
   <div class="header-text" [class.visible]="showHeaderText()">
     <h3>{{ userName }} {{ userLastName }} ({{ winId }})</h3>
-    <!-- Group is hardcoded as 'MML' here. TODO: possible to get this from auth info? -->
     <p>{{ group }}</p>
   </div>
+
+  <button mat-icon-button (click)="toggleSidenav()" matTooltip="Collapse/Expand">
+    <mat-icon>
+      <span class="material-symbols-outlined toolbar-menu-icon">
+          {{ sideNavCollapsed() ? 'left_panel_open' : 'left_panel_close' }}
+        </span>
+    </mat-icon>
+  </button>
 </div>
+
 
 <!-- Menu List -->
 <mat-nav-list>
   @for (item of menuItems(); track item.key) {
-  <app-menu-item [item]="item" [collapsed]="sideNavCollapsed()"></app-menu-item>
+    <app-menu-item [item]="item" [collapsed]="sideNavCollapsed()"></app-menu-item>
   }
 </mat-nav-list>
+
+<!-- Settings and Theme Buttons -->
+<div class="sidenav-actions">
+  <button mat-icon-button (click)="openSettings()" matTooltip="Settings">
+    <mat-icon class="material-symbols-outlined">settings</mat-icon>
+  </button>
+  <button mat-icon-button (click)="openThemeSelector()" matTooltip="Theme">
+    <mat-icon>palette</mat-icon>
+  </button>
+</div>
 
 <button
   class="info-bubble"

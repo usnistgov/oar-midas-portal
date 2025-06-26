@@ -62,7 +62,6 @@ import { DataService } from './services/data.service';
 import { ExportService } from './services/export.service';
 import { SearchFilterService } from './services/search-filter.service';
 import { FrameModule, OARngModule,CONFIG_URL } from 'oarng';
-import { DemoComponent } from './pages/widgets/demo/demo.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +86,6 @@ import { DemoComponent } from './pages/widgets/demo/demo.component';
     LoadFilterDialogComponent,
     SettingsDialogComponent,
     ThemeSelectorDialogComponent,
-    DemoComponent,
 
 
   ],

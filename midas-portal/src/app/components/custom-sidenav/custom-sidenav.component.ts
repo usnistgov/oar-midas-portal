@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MaintenanceNoticeComponent } from '../maintenance-notice/maintenance-notice.component';
 import { DataService, UserResponse } from '../../services/data.service';
 import { AuthenticationService } from 'oarng';
+import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
+import { ThemeSelectorData, ThemeSelectorDialogComponent } from '../theme-selector-dialog/theme-selector-dialog.component';
 
 export type MenuItem = {
   key: string;
@@ -12,6 +14,9 @@ export type MenuItem = {
   subItems?: MenuItem[];
 };
 
+export type FamilyName = 'theme-light' | 'theme-1' | 'theme-2' | 'theme-3' | 'theme-4';
+export type Variant = 'light' | 'dark';
+
 @Component({
   selector: 'app-custom-sidenav',
   templateUrl: './custom-sidenav.component.html',
@@ -19,17 +24,33 @@ export type MenuItem = {
 })
 export class CustomSidenavComponent implements OnInit {
   /** Reactive signal representing the collapsed state */
-  readonly sideNavCollapsed = signal(false);
+  readonly sideNavCollapsed = signal<boolean>(
+    JSON.parse(localStorage.getItem('sidenavCollapsed') ?? 'false')
+  );
+
+  readonly sideNavWidth = computed(() => this.sideNavCollapsed() ? '64px' : '320px');
+
+  toggleSidenav() {
+    this.sideNavCollapsed.update(value => {
+      const newValue = !value;
+      localStorage.setItem('sidenavCollapsed', JSON.stringify(newValue));
+      // Update showHeaderText with a delay when expanding, immediately when collapsing
+      if (!newValue) {
+        setTimeout(() => this.showHeaderText.set(true), 100);
+      } else {
+        this.showHeaderText.set(false);
+      }
+      return newValue;
+    });
+  }
 
   /** Used to control visibility of text in header (fades in/out when collapsing) */
-  readonly showHeaderText = signal(false);
+  readonly showHeaderText = signal(!this.sideNavCollapsed());
 
   /** Dynamically resize profile picture based on collapsed state */
   readonly profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '86');
 
-  /** User details 
-   * TODO: group this in an interface
-  */
+  /** User details */
   userName?: string;
   userLastName?: string;
   winId?: string;
@@ -71,21 +92,13 @@ export class CustomSidenavComponent implements OnInit {
     }
   ]);
 
-  /**
-   * Input setter that responds to the collapsed state from parent component.
-   * Applies visual behaviors like delayed header text reveal.
-   */
-  @Input() set collapsed(value: boolean) {
-    this.sideNavCollapsed.set(value);
-
-    if (!value) {
-      // Expand behavior: delay text appearance slightly for a smooth transition
-      setTimeout(() => this.showHeaderText.set(true), 100);
-    } else {
-      // Collapse behavior: hide text immediately
-      this.showHeaderText.set(false);
-    }
-  }
+  // Theme and settings logic
+  readonly family = signal<FamilyName>(
+    (localStorage.getItem('appFamily') as FamilyName) || 'theme-light'
+  );
+  readonly variant = signal<Variant>(
+    (localStorage.getItem('appVariant') as Variant) || 'light'
+  );
 
   constructor(
     private dialog: MatDialog,
@@ -95,6 +108,13 @@ export class CustomSidenavComponent implements OnInit {
 
   /** Fetch user data and apply config-based menu link overrides */
   ngOnInit(): void {
+    // Ensure showHeaderText is correct on init
+    if (!this.sideNavCollapsed()) {
+      setTimeout(() => this.showHeaderText.set(true), 100);
+    } else {
+      this.showHeaderText.set(false);
+    }
+
     this.authsvc.getCredentials().subscribe({
       next: creds => {
         if (!creds?.userId) {
@@ -163,6 +183,36 @@ export class CustomSidenavComponent implements OnInit {
       maxWidth: '80vw',
       data: {
         message: 'Temporarily down for maintenance. Please check back soon!'
+      }
+    });
+  }
+
+  /** Opens the custom app settings dialog. */
+  openSettings() {
+    const ref = this.dialog.open(SettingsDialogComponent, { width: '400px' });
+    ref.afterClosed().subscribe(result => {
+      if (result?.refresh) {
+        window.location.reload();
+      }
+    });
+  }
+
+  /** Opens the theme selector dialog. */
+  openThemeSelector() {
+    const dialogRef = this.dialog.open(ThemeSelectorDialogComponent, {
+      data: { family: this.family(), variant: this.variant() }
+    });
+
+    dialogRef.afterClosed().subscribe((res: ThemeSelectorData | undefined) => {
+      if (res) {
+        this.family.set(res.family);
+        this.variant.set(res.variant);
+        localStorage.setItem('appFamily', res.family);
+        localStorage.setItem('appVariant', res.variant);
+        // Optionally update document classes here if needed
+        const docEl = document.documentElement;
+        docEl.classList.remove('theme-light', 'theme-1', 'theme-2', 'theme-3', 'theme-4', 'light', 'dark');
+        docEl.classList.add(res.family, res.variant);
       }
     });
   }
