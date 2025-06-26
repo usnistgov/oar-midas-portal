@@ -31,6 +31,8 @@ export class DataService {
   readonly daps = this._daps.asReadonly();
   private _files = signal<File[]>([]);
   readonly files = this._files.asReadonly();
+  private _reviews = signal<Review[]>([]);
+  readonly reviews = this._reviews.asReadonly();
 
   private config = JSON.parse(localStorage.getItem('appConfig') || '{}') as Record<string, any>;
   private credsService = inject(CredentialsService);
@@ -158,6 +160,11 @@ export class DataService {
   setFiles(files: File[]) {
     //console.log('[setFiles] Setting Files:', files);
     this._files.set(files);
+  }
+
+  setReviews(reviews: Review[]) {
+    //console.log('[setReviews] Setting Reviews:', reviews);
+    this._reviews.set(reviews);
   }
 
   /**
