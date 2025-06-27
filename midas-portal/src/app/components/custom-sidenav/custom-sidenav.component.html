@@ -24,22 +24,20 @@
   }
 </mat-nav-list>
 
-<!-- Settings and Theme Buttons -->
-<div class="sidenav-actions">
-  <!--
-  <button mat-icon-button (click)="openSettings()" matTooltip="Settings">
-    <mat-icon class="material-symbols-outlined">settings</mat-icon>
+<div class="sidenav-sticky-actions">
+  <button
+    class="info-bubble"
+    (click)="openMaintenanceNotice()"
+    aria-label="Show maintenance notice"
+  >
+    <mat-icon>info</mat-icon>
   </button>
-  -->
-  <button mat-icon-button (click)="openThemeSelector()" matTooltip="Theme">
+  <button
+    class="info-bubble"
+    (click)="openThemeSelector()"
+    aria-label="Theme"
+    matTooltip="Theme"
+  >
     <mat-icon>palette</mat-icon>
   </button>
 </div>
-
-<button
-  class="info-bubble"
-  (click)="openMaintenanceNotice()"
-  aria-label="Show maintenance notice"
->
-  <mat-icon>info</mat-icon>
-</button>

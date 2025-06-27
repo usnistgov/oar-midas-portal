@@ -172,24 +172,27 @@ export class DataService {
  * TODO: this is for dev purposes only --- SHOULD CHANGE!
  */
   private mapToDmp(raw: any): Dmp {
-    // find the primary NIST contact
-    const primary = (raw.data?.contributors as any[] || [])
-      .find(c => c.primary_contact === 'Yes');
+  // Find the primary NIST contact
+  const primary = (raw.data?.contributors as any[] || [])
+    .find(c => c.primary_contact === 'Yes');
 
-    return {
-      id: raw.id,
-      name: raw.name,
-      owner: raw.owner,
-      primaryContact: primary?.emailAddress || '',
-      organizationUnit:
-        raw.data?.organizations?.[0]?.ouName || '',
-      modifiedDate: new Date(raw.status.modifiedDate),
-      type: raw.type,
-      status: raw.status.state,
-      hasPublication: raw.data?.dmpSearchable === 'yes',
-      keywords: raw.data?.keywords || []
-    };
-  }
+  const primaryContact = primary
+    ? `${primary.firstName ?? ''} ${primary.lastName ?? ''}`.trim()
+    : '';
+
+  return {
+    id: raw.id,
+    name: raw.name,
+    owner: raw.owner,
+    primaryContact,
+    organizationUnit: raw.data?.organizations?.[0]?.ouName || '',
+    modifiedDate: new Date(raw.status.modifiedDate),
+    type: raw.type,
+    status: raw.status.state,
+    hasPublication: raw.data?.dmpSearchable === 'yes',
+    keywords: raw.data?.keywords || []
+  };
+}
 
   /**
    * Transforms a raw DAP JSON object into the Dap model.
