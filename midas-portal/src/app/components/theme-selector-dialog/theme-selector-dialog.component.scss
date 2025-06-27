@@ -1,0 +1,42 @@
+.selector-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 360px;
+}
+
+.family-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.family-card {
+    /* make each radio fill its grid cell */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+
+    /* prevent the label from wrapping */
+    .mat-radio-label-content {
+        /* if the content still needs to wrap, allow overflow but no wrap-break */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.toggle-wrapper {
+    padding-top: 0.5rem;
+}
+
+.centered-divider {
+    width: calc(100% - 16px);
+    margin: 0 auto;
+    margin-top: 16px;
+}
+
+mat-slide-toggle {
+    margin-left: 8px;
+}

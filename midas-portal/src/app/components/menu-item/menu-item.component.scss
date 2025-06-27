@@ -1,0 +1,29 @@
+.mat-mdc-list-item {
+    height: 45px !important;
+}
+
+.menu-item {
+    border-left: 5px solid;
+    border-left-color: transparent;
+    border-radius: 0;
+    // transition: all 500ms ease-in-out;
+}
+
+.selected-menu-item {
+    border-left: 5px solid;
+    border-left-color: var(--mat-badge-background-color);
+    border-radius: 0;
+    background-color: rgba($color: #000000, $alpha: 0.05);
+}
+
+.mat-mdc-nav-list .mat-mdc-list-item {
+    border-radius: 0 !important;
+}
+
+.indented {
+    --mat-list-list-item-leading-icon-start-space: 32px;
+}
+
+.mat-mdc-list-item.mdc-list-item--with-leading-icon.mdc-list-item--with-one-line {
+    height: 45px;
+}

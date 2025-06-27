@@ -1,0 +1,35 @@
+:host {
+    display: block;
+    border-radius: 5px;
+}
+
+.container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    padding: 4px;
+    padding-left: 16px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: inherit;
+    background-color: #134B70;
+    color: white;
+}
+  
+  /* Absolute position the scrolling region */
+  .widget-content {
+    position: absolute;
+    top: calc(3rem + 4px);        /* header height + top padding */
+    right: 8px;                   
+    bottom: 8px;                  
+    left: 16px;                  
+    overflow: auto;
+    padding-top: 4px;
+  }
+
+
+.settings-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+}   
