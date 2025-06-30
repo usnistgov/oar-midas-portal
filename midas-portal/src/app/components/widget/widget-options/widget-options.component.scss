@@ -1,0 +1,55 @@
+:host {
+    position: absolute;
+    z-index: 2;
+    background: var(--mat-toolbar-container-background-color);
+    color: var(--mat-toolbar-container-text-color);
+    top: 0;
+    left: 0;
+    border-radius: inherit;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+
+    > div {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .mat-button-toggle-group {
+        border-radius: 50px !important;
+        --mat-standard-button-toggle-height: 16px
+    }
+}
+
+.close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.move-forward-button{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0px;
+}
+
+.move-backward-button{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0px;
+}
+
+.remove-widget-button{
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--mdc-filled-text-field-error-hover-label-text-color);
+}

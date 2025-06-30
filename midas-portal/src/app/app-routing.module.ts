@@ -1,10 +1,26 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { LandingComponent } from './components/landing/landing.component';
+import { RouterModule, Routes } from '@angular/router';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { SearchComponent } from './pages/search/search.component';
+
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'landing' },
-  { path: 'landing', component: LandingComponent}
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'dashboard',
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent
+
+  },
+  {
+    path: 'search',
+    component: SearchComponent
+
+  }
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

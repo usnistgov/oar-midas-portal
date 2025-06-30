@@ -1,0 +1,143 @@
+<div class="dashboard-container">
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="title">Midas Dashboard</div>
+
+        <div class="dashboard-actions">
+            <!-- Add Widget Button -->
+            <button mat-raised-button color="primary" class="pill-button" [matMenuTriggerFor]="menu"
+                [disabled]="dashboardService.widgetsToAdd().length === 0">
+                <mat-icon>add_circle</mat-icon>
+                Add Widget
+            </button>
+
+            <!-- Filters Sidebar Toggle 
+            <button mat-stroked-button color="primary" class="pill-button" (click)="toggleSidebar()">
+                <mat-icon>tune</mat-icon>
+                Filters
+            </button>
+            -->
+        </div>
+
+        <!-- Add Widget Menu -->
+        <mat-menu #menu="matMenu" panelClass="widget-menu">
+            @if (dashboardService.widgetsToAdd().length > 0) {
+            @for (w of dashboardService.widgetsToAdd(); track w.id) {
+            <button mat-menu-item (click)="dashboardService.addWidget(w)">
+                <mat-icon>dashboard_customize</mat-icon>
+                {{ w.label }}
+            </button>
+            }
+            }
+        </mat-menu>
+    </div>
+
+    <!-- Overlay (click to close sidebar) -->
+    <div class="overlay" *ngIf="isSidebarVisible()" (click)="toggleSidebar()"></div>
+
+    <!-- Widget Grid Container -->
+    <div #widgetsContainer class="widgets-container" cdkDropListGroup>
+        @for (w of dashboardService.addedWidgets(); track w.id) {
+        <app-widget *ngIf="credsService.token() && credsService.userId()" cdkDropList [data]="w" [cdkDropListData]="w.id" (cdkDropListDropped)="drop($event)"></app-widget>
+        }
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" [ngClass]="{ open: isSidebarVisible() }">
+        <div class="sidebar-header">
+            <span class="sidebar-title">Filter Data Management Plans</span>
+            <button mat-icon-button (click)="toggleSidebar()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+
+            <!-- Name Filter -->
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Name</mat-label>
+                <mat-select [(ngModel)]="selectedName">
+                    <mat-option *ngFor="let n of names()" [value]="n">{{ n }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Owner Filter -->
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Owner</mat-label>
+                <mat-select [(ngModel)]="selectedOwner">
+                    <mat-option *ngFor="let o of owners()" [value]="o">{{ o }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Contact Filter -->
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Contact</mat-label>
+                <mat-select [(ngModel)]="selectedContact">
+                    <mat-option *ngFor="let c of contacts()" [value]="c">{{ c }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Date Filter Type -->
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Last Modified Filter</mat-label>
+                <mat-select [(ngModel)]="dateFilterType" (selectionChange)="onDateFilterChange()">
+                    <mat-option value="exact">Exact Date</mat-option>
+                    <mat-option value="before">Before Date</mat-option>
+                    <mat-option value="after">After Date</mat-option>
+                    <mat-option value="between">Between Dates</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Date Pickers -->
+            @if (dateFilterType === 'exact') {
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Pick an Exact Date</mat-label>
+                <input matInput [matDatepicker]="pickerExact" [(ngModel)]="exactDate" />
+                <mat-datepicker-toggle matSuffix [for]="pickerExact"></mat-datepicker-toggle>
+                <mat-datepicker #pickerExact></mat-datepicker>
+            </mat-form-field>
+            }
+
+            @if (dateFilterType === 'before') {
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Pick a Date Before</mat-label>
+                <input matInput [matDatepicker]="pickerBefore" [(ngModel)]="beforeDate" />
+                <mat-datepicker-toggle matSuffix [for]="pickerBefore"></mat-datepicker-toggle>
+                <mat-datepicker #pickerBefore></mat-datepicker>
+            </mat-form-field>
+            }
+
+            @if (dateFilterType === 'after') {
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Pick a Date After</mat-label>
+                <input matInput [matDatepicker]="pickerAfter" [(ngModel)]="afterDate" />
+                <mat-datepicker-toggle matSuffix [for]="pickerAfter"></mat-datepicker-toggle>
+                <mat-datepicker #pickerAfter></mat-datepicker>
+            </mat-form-field>
+            }
+
+            @if (dateFilterType === 'between') {
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Pick Start Date</mat-label>
+                <input matInput [matDatepicker]="pickerStart" [(ngModel)]="startDate" />
+                <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                <mat-datepicker #pickerStart></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Pick End Date</mat-label>
+                <input matInput [matDatepicker]="pickerEnd" [(ngModel)]="endDate" />
+                <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                <mat-datepicker #pickerEnd></mat-datepicker>
+            </mat-form-field>
+            }
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+            <button mat-flat-button color="primary" (click)="toggleSidebar()">Apply Filters</button>
+            <button mat-stroked-button color="primary" (click)="toggleSidebar()">Cancel</button>
+        </div>
+    </div>
+</div>

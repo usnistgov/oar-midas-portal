@@ -1,8 +1,21 @@
-<div>
-  <app-header appVersion="1.0" titleLn1="MIDAS" titleLn2="Data Portal"></app-header>
-</div>
+<div class="layout-container">
+  <app-header appVersion="1.0" titleLn1="MIDAS" titleLn2="Data Portal">klsjef</app-header>
 
-<router-outlet></router-outlet>
-<div>
+
+  <!-- Main Layout -->
+  <mat-sidenav-container>
+  <mat-sidenav
+    opened
+    mode="side"
+    [style.width]="customSidenav?.sideNavWidth()"
+    class="hover-sidenav"
+  >
+    <app-custom-sidenav #customSidenav></app-custom-sidenav>
+  </mat-sidenav>
+  <mat-sidenav-content class="content" [style.margin-left]="customSidenav?.sideNavWidth()">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
   <app-footer></app-footer>
 </div>

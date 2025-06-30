@@ -1,0 +1,28 @@
+<h2 mat-dialog-title style="margin-bottom: 16px;">Settings</h2>
+
+<mat-dialog-content [formGroup]="form" class="config-form">
+    <div *ngFor="let entry of KEYS" class="config-row x-small-form-input">
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ entry.label }}</mat-label>
+            <input matInput [formControlName]="entry.key" />
+        </mat-form-field>
+    </div>
+    <mat-checkbox formControlName="lockSidebar">
+        Lock sidebar open
+    </mat-checkbox>
+
+    <button mat-flat-button color="warn" (click)="clearStorage()">
+        Clear Storage
+    </button>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <!-- Autofill on the left -->
+    <button mat-stroked-button (click)="autofill()" color="primary">Autofill Defaults</button>
+
+    <!-- push Close/Save to the right -->
+    <span class="spacer"></span>
+
+    <button mat-stroked-button (click)="close()" color="primary">Close</button>
+    <button mat-flat-button color="primary" (click)="save()">Save</button>
+</mat-dialog-actions>
