@@ -62,6 +62,8 @@ import { DataService } from './services/data.service';
 import { ExportService } from './services/export.service';
 import { SearchFilterService } from './services/search-filter.service';
 import { FrameModule, OARngModule,CONFIG_URL } from 'oarng';
+import { HeaderComponent } from 'oarng';
+import { FooterComponent } from 'oarng';
 
 @NgModule({
   declarations: [
@@ -129,7 +131,9 @@ import { FrameModule, OARngModule,CONFIG_URL } from 'oarng';
     NgComponentOutlet,
     FormsModule,
     OARngModule,
-    FrameModule
+    FrameModule,
+    HeaderComponent,
+    FooterComponent
     
   ],
   providers: [
