@@ -62,6 +62,9 @@ import { DataService } from './services/data.service';
 import { ExportService } from './services/export.service';
 import { SearchFilterService } from './services/search-filter.service';
 import { FrameModule, OARngModule,CONFIG_URL } from 'oarng';
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
+
 
 @NgModule({
   declarations: [
@@ -86,6 +89,8 @@ import { FrameModule, OARngModule,CONFIG_URL } from 'oarng';
     LoadFilterDialogComponent,
     SettingsDialogComponent,
     ThemeSelectorDialogComponent,
+    HeaderComponent,
+    FooterComponent
 
 
   ],
@@ -128,7 +133,7 @@ import { FrameModule, OARngModule,CONFIG_URL } from 'oarng';
     MatRadioModule,
     NgComponentOutlet,
     FormsModule,
-    OARngModule,
+    OARngModule, // Import OARngModule for OARng components
     FrameModule
     
   ],
