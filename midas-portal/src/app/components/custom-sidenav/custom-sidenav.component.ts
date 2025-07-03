@@ -74,8 +74,8 @@ export class CustomSidenavComponent implements OnInit {
     {
       key: 'createNew', name: 'Create New…', icon: 'note_add', link: '#',
       subItems: [
-        { key: 'createDmp', name: 'Data Management Plan', icon: '', link: '' },
-        { key: 'createDap', name: 'Digital Asset Publication', icon: '', link: '' },
+        { key: 'createDmp', name: 'Data Management Plan', icon: '', link: this.dataService.dapUI },
+        { key: 'createDap', name: 'Digital Asset Publication', icon: '', link: this.dataService.dmpUI },
       ]
     },
     { key: 'openAccess', name: 'Open Access INET', icon: 'open_in_new', link: '#' },
