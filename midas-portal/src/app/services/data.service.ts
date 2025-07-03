@@ -200,14 +200,14 @@ export class DataService {
    */
   private mapToDap(raw: any): Dap {
     // find the primary NIST contact
-    const primary = (raw.data?.contributors as any[] || [])
-      .find(c => c.primary_contact === 'Yes');
+    const contactPoint = raw.data?.contactPoint;
+    const primaryContact = contactPoint?.fn ?? '';
 
     return {
       id: raw.id,
       name: raw.name,
       owner: raw.owner,
-      primaryContact: primary?.emailAddress || '',
+      primaryContact,
       modifiedDate: new Date(raw.status.modifiedDate)
     };
   }
