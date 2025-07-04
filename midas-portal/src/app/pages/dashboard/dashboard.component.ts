@@ -58,23 +58,6 @@ export class DashboardComponent {
   endDate?: Date;
 
   constructor() {
-  effect(() => {
-    const token = this.credsService.token();
-    //console.log('Token:', token);
-    if (token) {
-      //console.log('Token is available, making API call:', token);
-      this.isLoading.set(true);
-      this.dataService.getDmps()
-        .pipe(finalize(() => this.isLoading.set(false)))
-        .subscribe(dmps => this.dataService.setDmps(dmps));
-      this.dataService.getDaps()
-        .pipe(finalize(() => this.isLoading.set(false)))
-        .subscribe(daps => this.dataService.setDaps(daps));
-      this.dataService.getFiles()
-        .pipe(finalize(() => this.isLoading.set(false)))
-        .subscribe(files => this.dataService.setFiles(files));
-    }
-  }, { allowSignalWrites: true });
 }
 
 
@@ -84,34 +67,51 @@ export class DashboardComponent {
    * Lifecycle hook — animate widgets grid and load DMP data.
    */
   ngOnInit(): void {
-    const wsUrl = this.dataService.resolveApiUrl('websocket_dbio');
-    wrapGrid(this.dashboard().nativeElement, { duration: 300 });
-    this.wsService.connect(wsUrl);
-  
-    this.wsService.messages$().subscribe(msg => {
-      const displayMsg = this.wsService.toDisplay(msg);
-      this.snackBar.open(displayMsg, 'Dismiss', {
-      duration: 3000,
-      horizontalPosition: 'right',   // 'start' | 'center' | 'end' | 'left' | 'right'
-      verticalPosition: 'top'        // 'top' | 'bottom'
-    });
-      // Optionally refresh data:
-      if (this.wsService.record_type(msg) === 'dmp') {
-        this.dataService.getDmps().subscribe(dmps => {
-        this.dataService.setDmps(dmps);
-      });
-      }else if (this.wsService.record_type(msg) === 'dap') {
-        this.dataService.getDaps().subscribe(daps =>{
-          this.dataService.setDaps(daps);
-        });
-        this.dataService.getFiles().subscribe(files => {
-          this.dataService.setFiles(files);
-        }
-        );
-      }
-    });
+  this.isLoading.set(true);
+  const waitForToken = () => {
+    const token = this.dataService['credsService'].token();
+    if (token) {
+      this.dataService.loadAll().subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          const wsUrl = this.dataService.resolveApiUrl('websocket_dbio');
+          wrapGrid(this.dashboard().nativeElement, { duration: 300 });
+          this.wsService.connect(wsUrl);
 
-  }
+          this.wsService.messages$().subscribe(msg => {
+            const displayMsg = this.wsService.toDisplay(msg);
+            this.snackBar.open(displayMsg, 'Dismiss', {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            });
+            // Optionally refresh data:
+            if (this.wsService.record_type(msg) === 'dmp') {
+              this.dataService.getDmps().subscribe(dmps => {
+                this.dataService.setDmps(dmps);
+              });
+            } else if (this.wsService.record_type(msg) === 'dap') {
+              this.dataService.getDaps().subscribe(daps => {
+                this.dataService.setDaps(daps);
+              });
+              this.dataService.getFiles().subscribe(files => {
+                this.dataService.setFiles(files);
+              });
+            }
+          });
+        },
+        error: () => {
+          this.isLoading.set(false);
+          this.snackBar.open('Failed to load dashboard data.', 'Dismiss', { duration: 3000 });
+        }
+      });
+    } else {
+      setTimeout(waitForToken, 100); // Try again in 100ms
+    }
+  };
+
+  waitForToken();
+}
 
   /**
    * Handles drag-and-drop widget rearrangement.

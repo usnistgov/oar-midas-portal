@@ -15,7 +15,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { HttpClient } from '@angular/common/http';
-import { catchError, finalize, map, Observable, of, startWith,switchMap } from 'rxjs';
+import { catchError, finalize, map, Observable, of, startWith, forkJoin } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { HelpDialogComponent } from '../../components/help-dialog/help-dialog.component';
@@ -162,18 +162,7 @@ export class SearchComponent {
     };
   }
 
-  /** Signal holding the full DMP list */
-  private _dmpList = signal<Dmp[]>([]);
-  private _dapList = signal<Dap[]>([]);
-  /** Unique list of all org units, derived from `_dmpList` */
-  organizationUnits = computed(() =>
-    Array.from(new Set(this._dmpList().map(d => d.organizationUnit ?? '')))
-      .filter(u => !!u).sort()
-  );
-  /** Unique list of all owners, derived from `_dmpList` */
-  owners = computed(() =>
-    Array.from(new Set(this._dmpList().map(d => d.owner))).sort()
-  );
+
 
   
   dataSource = new MatTableDataSource<DmpOrDap>([]);
@@ -242,26 +231,6 @@ export class SearchComponent {
     return this.config['dapEDIT']?.value
   }
 
-  orgUnits = computed(() =>
-    Array.from(
-      new Set(
-        this._dmpList().map(d => d.organizationUnit ?? '')
-      )
-    )
-      .filter(u => !!u)
-      .sort()
-  );
-
-  // derive your primaryContacts list for the owner dropdown:
-  primaryContacts = computed(() =>
-    Array.from(
-      new Set(
-        this._dmpList().map(d => d.primaryContact ?? '')
-      )
-    )
-      .filter(p => !!p)
-      .sort()
-  );
 
   length = computed(() => this.dataSource.data.length);
 
@@ -278,7 +247,7 @@ export class SearchComponent {
       d.owner.toLowerCase().includes(filter) ||
       d.primaryContact.toLowerCase().includes(filter);
     effect(() => {
-      this.dataSource.data = this._dmpList();
+      this.updateDataSource();
     });
   }
 
@@ -462,7 +431,7 @@ searchOrgIndex(queryString: string): void {
     this.afterDate = undefined;
 
     // reset table to full list
-    this.dataSource.data = this._dmpList();
+    this.updateDataSource();
     this.paginator?.firstPage();
   }
 
@@ -541,8 +510,8 @@ searchOrgIndex(queryString: string): void {
   const crit = this.currentCriteria();
   console.log('Applying filters:', crit);
   const merged: DmpOrDap[] = [
-    ...this._dmpList(),
-    ...this._dapList()
+    ...this.dataService.dmps(),
+    ...this.dataService.daps()
   ];
   const filtered = this.filterService.filterDmpOrDapList(merged, crit);
   this.dataSource.data = filtered;
@@ -596,7 +565,7 @@ searchOrgIndex(queryString: string): void {
     this.hasPaperPublication = false;
 
     // Reset table data back to full list
-    this.dataSource.data = this._dmpList();
+    this.updateDataSource();
     if (this.paginator) {
       this.paginator.firstPage();
     }
@@ -738,42 +707,30 @@ searchOrgIndex(queryString: string): void {
   }
 
   ngOnInit() {
-    this.isLoading = true;
+  this.isLoading = true;
 
-    this.dataService.getDmps().pipe(
-      catchError(err => of([])),
-      finalize(() => this.isLoading = false)
-    ).subscribe(list => {
-      console.log('Loaded DMPs:', list[1]);
-      this._dmpList.set(list);
-      this.updateDataSource();
-    });
-    this.dataService.getDaps().pipe(
-      catchError(err => of([]))
-    ).subscribe(list => {
-      console.log('Loaded DAPs:', list[1]);
-      this._dapList.set(list);
-      this.updateDataSource();
-    });
+  const waitForToken = () => {
+    const token = this.dataService['credsService'].token();
+    if (token) {
+      this.dataService.loadAll().pipe(
+        finalize(() => this.isLoading = false)
+      ).subscribe({
+        next: () => {
+          this.updateDataSource();
+        },
+        error: () => {
+          this.isLoading = false;
+          this._snackBar.open('Failed to load search data.', 'Dismiss', { duration: 3000 });
+        }
+      });
 
-    // wire the OrgUnit autocomplete
-    this.orgUnitControl.valueChanges.subscribe(value => {
-      this.getOrgs(value || '');
-    });
+    } else {
+      setTimeout(waitForToken, 100); // Try again in 100ms
+    }
+  };
 
-    // wire the Owners autocomplete
-    this.filteredOwners = this.ownerControl.valueChanges.pipe(
-      startWith(''),
-      map(value => {
-        const filter = value.toLowerCase();
-        return this.primaryContacts()
-          .filter(p => p.toLowerCase().includes(filter));
-      })
-    );
-    this.ownerControl.valueChanges.subscribe(value => {
-      this.getPeople(value || '');
-    });
-  }
+  waitForToken();
+}
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -795,10 +752,13 @@ searchOrgIndex(queryString: string): void {
 
   private updateDataSource() {
     const merged: DmpOrDap[] = [
-      ...this._dmpList(),
-      ...this._dapList()
+      ...this.dataService.dmps(),
+      ...this.dataService.daps()
     ];
+    console.log('Merged data:', merged);
     this.dataSource.data = merged;
+    if (this.paginator) this.dataSource.paginator = this.paginator;
+    if (this.sort) this.dataSource.sort = this.sort;
   }
 
 
@@ -842,7 +802,7 @@ searchOrgIndex(queryString: string): void {
     ).subscribe({
       next: list => {
         // update the master list
-        this._dmpList.set(list);
+        this.updateDataSource();
 
         // if we have already applied filters at least once, re‐apply them
         if (this.hasFilters()) {

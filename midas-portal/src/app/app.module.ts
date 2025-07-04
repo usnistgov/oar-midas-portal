@@ -64,6 +64,7 @@ import { SearchFilterService } from './services/search-filter.service';
 import { FrameModule, OARngModule,CONFIG_URL } from 'oarng';
 import { DemoComponent } from './pages/widgets/demo/demo.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,

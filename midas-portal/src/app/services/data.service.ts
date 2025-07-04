@@ -1,7 +1,7 @@
 import { Injectable, inject,effect,signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of,forkJoin,tap } from 'rxjs';
 import { Dap, Dmp, File, Review } from '../models/dashboard';
 import { ConfigurationService } from 'oarng'
 import { CredentialsService } from './credentials.service';
@@ -37,22 +37,7 @@ export class DataService {
 
   constructor(private configService: ConfigurationService) {
     effect(() => {
-      const token = this.credsService.token();
-      if (token) {
-        console.log('Token is available, making API call:', token);
-        this.getDaps().subscribe(data => {
-          console.log('Fetched DAPs:', data);
-        });
-        this.getDmps().subscribe(data => {
-          console.log('Fetched DMPs:', data);
-        });
-        this.getFiles().subscribe(data => {
-          console.log('Fetched Files:', data);
-        });
-        this.getReviews().subscribe(data => {
-          console.log('Fetched Reviews:', data);
-        });
-      }
+      
     });
   }
 
@@ -267,4 +252,22 @@ export class DataService {
       }
     });
   }
+
+  loadAll(): Observable<any> {
+  return forkJoin({
+    dmps: this.getDmps(),
+    daps: this.getDaps(),
+    files: this.getFiles(),
+    // reviews: this.getReviews() // if needed
+  }).pipe(
+    tap(({ dmps, daps, files }) => {
+      this._dmps.set(dmps);
+      this._daps.set(daps);
+      this._files.set(files);
+      // this._reviews.set(reviews); // if you have reviews
+    })
+  );
+}
+
+
 }
