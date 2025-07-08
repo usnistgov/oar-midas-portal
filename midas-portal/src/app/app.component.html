@@ -1,48 +1,21 @@
 <div class="layout-container">
-  <app-header appVersion="1.0" titleLn1="MIDAS" titleLn2="Data Portal"></app-header>
+  <app-header appVersion="1.0" titleLn1="MIDAS" titleLn2="Dashboard"></app-header>
 
-  <!-- App Toolbar -->
-  <mat-toolbar class="mat-elevation-z3 toolbar">
-    <!-- LEFT: Collapse Toggle -->
-    <div class="toolbar-section left">
-      <button mat-icon-button (click)="toggleSidenav()">
-        <span class="material-symbols-outlined toolbar-menu-icon">
-          {{ collapsed() ? 'left_panel_open' : 'left_panel_close' }}
-        </span>
-      </button>
-    </div>
-
-    <!-- CENTER: Fallback Warning -->
-    <div class="toolbar-section center">
-    </div>
-
-    <!-- RIGHT: Settings & Theme -->
-    <div class="toolbar-section right">
-      <!-- Dev-only: TODO: remove or use for something else in production -->
-      <button mat-icon-button (click)="openSettings()" matTooltip="Settings">
-        <mat-icon class="material-symbols-outlined">settings</mat-icon>
-      </button>
-
-      <!-- Theme Picker -->
-      <button mat-icon-button (click)="openThemeSelector()" matTooltip="Theme">
-        <mat-icon>palette</mat-icon>
-      </button>
-    </div>
-  </mat-toolbar>
 
   <!-- Main Layout -->
   <mat-sidenav-container>
-    <!-- Sidenav -->
-    <mat-sidenav opened mode="side" [style.width]="sideNavWidth()" (mouseenter)="onMouseEnter()"
-      (mouseleave)="onMouseLeave()" class="hover-sidenav">
-      <app-custom-sidenav [collapsed]="collapsed()"></app-custom-sidenav>
-    </mat-sidenav>
-
-    <!-- Main Content: content of the sidenav bar (holds dashboard and search/export) -->
-    <mat-sidenav-content class="content" [style.margin-left]="sideNavWidth()">
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+  <mat-sidenav
+    opened
+    mode="side"
+    [style.width]="customSidenav?.sideNavWidth()"
+    class="hover-sidenav"
+  >
+    <app-custom-sidenav #customSidenav></app-custom-sidenav>
+  </mat-sidenav>
+  <mat-sidenav-content class="content" [style.margin-left]="customSidenav?.sideNavWidth()">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
   <app-footer></app-footer>
 </div>

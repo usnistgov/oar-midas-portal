@@ -31,6 +31,8 @@ export class DataService {
   readonly daps = this._daps.asReadonly();
   private _files = signal<File[]>([]);
   readonly files = this._files.asReadonly();
+  private _reviews = signal<Review[]>([]);
+  readonly reviews = this._reviews.asReadonly();
 
   private config = JSON.parse(localStorage.getItem('appConfig') || '{}') as Record<string, any>;
   private credsService = inject(CredentialsService);
@@ -47,10 +49,10 @@ export class DataService {
 
   private fetchData<T>(apiUrl: string, fallbackUrl: string, mapper: (raw: any) => T): Observable<T[]> {
     const authToken = this.credsService.token(); // Access the token from CredentialsService
-    console.log('[fetchData] Token:', authToken);
+    //console.log('[fetchData] Token:', authToken);
     const headers = { Authorization: `Bearer ${authToken}` };
 
-    console.log('[fetchData] Called with:', { apiUrl, fallbackUrl, authToken });
+    //console.log('[fetchData] Called with:', { apiUrl, fallbackUrl, authToken });
 
     return this.http.get<any[]>(apiUrl, {headers}).pipe(
       catchError(err => {
@@ -59,9 +61,9 @@ export class DataService {
         return this.http.get<any[]>(fallbackUrl);
       }),
       map(raw => {
-        console.log('[fetchData] Raw data from API/fallback:', raw);
+        //console.log('[fetchData] Raw data from API/fallback:', raw);
         const mapped = raw.map(mapper);
-        console.log('[fetchData] Mapped data:', mapped);
+        //console.log('[fetchData] Mapped data:', mapped);
         return mapped;
       })
     );
@@ -70,9 +72,9 @@ export class DataService {
   getDaps(): Observable<Dap[]> {
     const api = this.resolveApiUrl('dapAPI');
     const fallback = this.resolveApiUrl('dapJSON');
-    console.log('[getDaps] ConfigService:', this.configService);
-    console.log('[getDaps] dapAPI from config:', this.configService.getConfig()['dapAPI']);
-    console.log('[getDaps] Calling fetchData with:', { api, fallback });
+    //console.log('[getDaps] ConfigService:', this.configService);
+    //console.log('[getDaps] dapAPI from config:', this.configService.getConfig()['dapAPI']);
+    //console.log('[getDaps] Calling fetchData with:', { api, fallback });
     return this.fetchData<Dap>(api, fallback, this.mapToDap).pipe(
       map(data => {
         console.log('[getDaps] fetchData returned:', data);
@@ -84,9 +86,9 @@ export class DataService {
   getDmps(): Observable<Dmp[]> {
     const api = this.resolveApiUrl('dmpAPI');
     const fallback = this.resolveApiUrl('dmpJSON');
-    console.log('[getDmps] ConfigService:', this.configService);
-    console.log('[getDmps] dmpAPI from config:', this.configService.getConfig()['dmpAPI']);
-    console.log('[getDmps] Calling fetchData with:', { api, fallback });
+    //console.log('[getDmps] ConfigService:', this.configService);
+    //console.log('[getDmps] dmpAPI from config:', this.configService.getConfig()['dmpAPI']);
+    //console.log('[getDmps] Calling fetchData with:', { api, fallback });
     return this.fetchData<Dmp>(api, fallback, this.mapToDmp).pipe(
       map(data => {
         console.log('[getDmps] fetchData returned:', data);
@@ -104,9 +106,9 @@ export class DataService {
   getFiles(): Observable<File[]> {
     const api = this.resolveApiUrl('dapAPI');
     const fallback = this.resolveApiUrl('fileJSON');
-    console.log('[getFiles] ConfigService:', this.configService);
-    console.log('[getFiles] fileAPI from config:', this.configService.getConfig()['fileAPI']);
-    console.log('[getFiles] Calling fetchData with:', { api, fallback });
+    //console.log('[getFiles] ConfigService:', this.configService);
+    //console.log('[getFiles] fileAPI from config:', this.configService.getConfig()['fileAPI']);
+    //console.log('[getFiles] Calling fetchData with:', { api, fallback });
     return this.fetchData<File>(api, fallback, this.mapToFile).pipe(
       map(data => {
         console.log('[getFiles] fetchData returned:', data);
@@ -119,9 +121,9 @@ export class DataService {
   getReviews(): Observable<Review[]> {
     const api = this.resolveApiUrl('NPSAPI');
     const fallback = this.resolveApiUrl('reviewJSON');
-    console.log('[getReviews] ConfigService:', this.configService);
-    console.log('[getReviews] NPSAPI from config:', this.configService.getConfig()['NPSAPI']);
-    console.log('[getReviews] Calling fetchData with:', { api, fallback });
+    //console.log('[getReviews] ConfigService:', this.configService);
+    //console.log('[getReviews] NPSAPI from config:', this.configService.getConfig()['NPSAPI']);
+    //console.log('[getReviews] Calling fetchData with:', { api, fallback });
     return this.fetchData<Review>(api, fallback, this.mapToReview).pipe(
       map(data => {
         console.log('[getReviews] fetchData returned:', data);
@@ -145,29 +147,37 @@ export class DataService {
     this._files.set(files);
   }
 
+  setReviews(reviews: Review[]) {
+    //console.log('[setReviews] Setting Reviews:', reviews);
+    this._reviews.set(reviews);
+  }
+
   /**
  * Transforms a raw DMP JSON object into the Dmp model.
  * TODO: this is for dev purposes only --- SHOULD CHANGE!
  */
   private mapToDmp(raw: any): Dmp {
-    // find the primary NIST contact
-    const primary = (raw.data?.contributors as any[] || [])
-      .find(c => c.primary_contact === 'Yes');
+  // Find the primary NIST contact
+  const primary = (raw.data?.contributors as any[] || [])
+    .find(c => c.primary_contact === 'Yes');
 
-    return {
-      id: raw.id,
-      name: raw.name,
-      owner: raw.owner,
-      primaryContact: primary?.emailAddress || '',
-      organizationUnit:
-        raw.data?.organizations?.[0]?.ouName || '',
-      modifiedDate: new Date(raw.status.modifiedDate),
-      type: raw.type,
-      status: raw.status.state,
-      hasPublication: raw.data?.dmpSearchable === 'yes',
-      keywords: raw.data?.keywords || []
-    };
-  }
+  const primaryContact = primary
+    ? `${primary.firstName ?? ''} ${primary.lastName ?? ''}`.trim()
+    : '';
+
+  return {
+    id: raw.id,
+    name: raw.name,
+    owner: raw.owner,
+    primaryContact,
+    organizationUnit: raw.data?.organizations?.[0]?.ouName || '',
+    modifiedDate: new Date(raw.status.modifiedDate),
+    type: raw.type,
+    status: raw.status.state,
+    hasPublication: raw.data?.dmpSearchable === 'yes',
+    keywords: raw.data?.keywords || []
+  };
+}
 
   /**
    * Transforms a raw DAP JSON object into the Dap model.
@@ -175,16 +185,15 @@ export class DataService {
    */
   private mapToDap(raw: any): Dap {
     // find the primary NIST contact
-    const primary = (raw.data?.contributors as any[] || [])
-      .find(c => c.primary_contact === 'Yes');
+    const contactPoint = raw.data?.contactPoint;
+    const primaryContact = contactPoint?.fn ?? '';
 
     return {
       id: raw.id,
       name: raw.name,
       owner: raw.owner,
-      primaryContact: primary?.emailAddress || '',
-      modifiedDate: new Date(raw.status.modifiedDate),
-      type: raw.type
+      primaryContact,
+      modifiedDate: new Date(raw.status.modifiedDate)
     };
   }
 
@@ -236,35 +245,19 @@ export class DataService {
     return this.configService.getConfig()['nextcloudUI'] 
   }
 
-  /** Dummy user‐info endpoint 
-   * TODO: get this from service - oarng not working atm due to compatibility issues.
-  */
-
-  getUser(): Observable<UserResponse> {
-    return of({
-      userDetails: {
-        userId: 'one1',
-        userEmail: 'omarilias.elmimouni@nist.gov',
-        userName: 'Omar Ilias',
-        userLastName: 'El Mimouni',
-        winId: 'one1',
-        Group: '77ITL'
-      }
-    });
-  }
 
   loadAll(): Observable<any> {
   return forkJoin({
     dmps: this.getDmps(),
     daps: this.getDaps(),
     files: this.getFiles(),
-    // reviews: this.getReviews() // if needed
+    reviews: this.getReviews() // if needed
   }).pipe(
-    tap(({ dmps, daps, files }) => {
+    tap(({ dmps, daps, files,reviews }) => {
       this._dmps.set(dmps);
       this._daps.set(daps);
       this._files.set(files);
-      // this._reviews.set(reviews); // if you have reviews
+      this._reviews.set(reviews); // if you have reviews
     })
   );
 }

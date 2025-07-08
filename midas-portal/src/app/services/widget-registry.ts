@@ -1,12 +1,10 @@
 import { Widget } from "../models/dashboard"
 import { DapTableComponent } from "../pages/widgets/dap-table/dap-table.component"
 import { DapComponent } from "../pages/widgets/dap/dap.component"
-import { DemoComponent } from "../pages/widgets/demo/demo.component"
 import { DmpTableComponent } from "../pages/widgets/dmp-table/dmp-table.component"
 import { DmpComponent } from "../pages/widgets/dmp/dmp.component"
 import { FilesTableComponent } from "../pages/widgets/files-table/files-table.component"
 import { FilesComponent } from "../pages/widgets/files/files.component"
-import { NotificationsWidgetComponent } from "../pages/widgets/notification-widget/notification-widget.component"
 import { ReviewsTableComponent } from "../pages/widgets/reviews-table/reviews-table.component"
 import { ReviewsComponent } from "../pages/widgets/reviews/reviews.component"
 
@@ -22,5 +20,4 @@ export const WIDGET_REGISTRY: Widget[] = [
     { id: 6, label: 'DAP Table', longLabel: 'Data Asset Publications', content: DapTableComponent, rows: 4, columns: 4, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)' },
     { id: 7, label: 'Reviews Table', longLabel: 'Reviews', content: ReviewsTableComponent, rows: 4, columns: 4, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)' },
     { id: 8, label: 'Files Table', longLabel: 'Files', content: FilesTableComponent, rows: 4, columns: 4, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)' },
-    { id: 9, label: 'Demo widget', longLabel: 'DEMO', content: NotificationsWidgetComponent, rows: 1, columns: 1, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)' },
 ]

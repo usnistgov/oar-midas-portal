@@ -508,7 +508,7 @@ searchOrgIndex(queryString: string): void {
    */
   applyFilters() {
   const crit = this.currentCriteria();
-  console.log('Applying filters:', crit);
+  //console.log('Applying filters:', crit);
   const merged: DmpOrDap[] = [
     ...this.dataService.dmps(),
     ...this.dataService.daps()
@@ -755,7 +755,7 @@ searchOrgIndex(queryString: string): void {
       ...this.dataService.dmps(),
       ...this.dataService.daps()
     ];
-    console.log('Merged data:', merged);
+    //console.log('Merged data:', merged);
     this.dataSource.data = merged;
     if (this.paginator) this.dataSource.paginator = this.paginator;
     if (this.sort) this.dataSource.sort = this.sort;

@@ -24,7 +24,7 @@ export class MenuItemComponent {
 
   /** returns true for any link that should use the Angular router */
   isInternalRoute(item: MenuItem): boolean {
-    return item.link === '/dashboard' || item.link === '/search';
+    return !!item.link && item.link.startsWith('/');
   }
 
 }
