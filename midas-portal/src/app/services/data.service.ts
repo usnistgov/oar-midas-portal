@@ -251,13 +251,13 @@ export class DataService {
     dmps: this.getDmps(),
     daps: this.getDaps(),
     files: this.getFiles(),
-    reviews: this.getReviews() // if needed
+    //reviews: this.getReviews() // if needed
   }).pipe(
-    tap(({ dmps, daps, files,reviews }) => {
+    tap(({ dmps, daps, files }) => {
       this._dmps.set(dmps);
       this._daps.set(daps);
       this._files.set(files);
-      this._reviews.set(reviews); // if you have reviews
+      //this._reviews.set(reviews); // if you have reviews
     })
   );
 }
