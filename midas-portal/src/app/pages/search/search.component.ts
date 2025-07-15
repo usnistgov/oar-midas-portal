@@ -232,6 +232,7 @@ export class SearchComponent {
   }
 
 
+
   length = computed(() => this.dataSource.data.length);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -729,7 +730,18 @@ searchOrgIndex(queryString: string): void {
     }
   };
 
+
   waitForToken();
+
+  // wire the OrgUnit autocomplete
+    this.orgUnitControl.valueChanges.subscribe(value => {
+      this.getOrgs(value || '');
+    });
+
+
+    this.ownerControl.valueChanges.subscribe(value => {
+      this.getPeople(value || '');
+    });
 }
 
   ngAfterViewInit() {

@@ -119,14 +119,33 @@ export class SearchFilterService {
   }
 
   filterDmpOrDapList(list: (Dmp | Dap)[], c: FilterCriteria): (Dmp | Dap)[] {
-  const q = c.query.trim().toLowerCase();
-  const kws = c.keywords.map(kw => kw.trim().toLowerCase());
+  const normalize = (s: string) => (s || '').trim().toLowerCase();
+
+  const normalizeOrgUnit = (s: string) =>
+  normalize(s).replace(/\s*\(\d+\)$/, '');
+
+  const normalizeOwner = (s: string) => {
+  if (!s) return '';
+  s = s.trim();
+  // If format is "Last, First", switch to "First Last"
+  if (s.includes(',')) {
+    const [last, first] = s.split(',').map(part => part.trim());
+    return `${first} ${last}`.toLowerCase();
+  }
+  return s.toLowerCase();
+};
+  const q = normalize(c.query);
+  const kws = c.keywords.map(kw => normalize(kw));
+  const orgUnitCriteria = normalizeOrgUnit(c.orgUnit || '');
+  const ownerCriteria = normalizeOwner(c.owner || '');
+  console.log('Normalized criteria:', { q, kws, orgUnitCriteria, ownerCriteria });
 
   return list.filter(item => {
     // For fields that only exist on Dmp, use optional chaining or fallback
-    const name = (item as any).name?.toLowerCase() || '';
-    const primaryContact = (item as any).primaryContact?.toLowerCase() || '';
-    const organizationUnit = (item as any).organizationUnit?.toLowerCase() || '';
+    const name = normalize((item as any).name);
+    const primaryContact = normalize((item as any).primaryContact);
+    const organizationUnit = normalize((item as any).organizationUnit);
+    console.log('Checking item:', name, primaryContact, organizationUnit);
     const owner = (item as any).owner?.toLowerCase() || '';
     const type = (item as any).type || '';
     const status = (item as any).status || '';
@@ -150,10 +169,10 @@ export class SearchFilterService {
       );
 
     // 3) org unit
-    const orgMatch = !c.orgUnit || organizationUnit === c.orgUnit.toLowerCase();
+    const orgMatch = !orgUnitCriteria || organizationUnit === orgUnitCriteria;
 
     // 4) owner
-    const ownerMatch = !c.owner || primaryContact === c.owner.toLowerCase();
+    const ownerMatch = !ownerCriteria || primaryContact === ownerCriteria;
 
     // 5) type
     const typeMatch = c.types.length === 0 || c.types.includes(type);
