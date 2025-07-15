@@ -71,6 +71,7 @@ export class DashboardComponent {
   const waitForToken = () => {
     const token = this.dataService['credsService'].token();
     if (token) {
+      this.dataService.loadReviews()
       this.dataService.loadAll().subscribe({
         next: () => {
           this.isLoading.set(false);

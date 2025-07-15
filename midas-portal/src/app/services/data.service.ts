@@ -119,8 +119,10 @@ export class DataService {
   }
 
   getReviews(): Observable<Review[]> {
-    const api = this.resolveApiUrl('NPSAPI');
+    const npsapi = this.resolveApiUrl('NPSAPI');
     const fallback = this.resolveApiUrl('reviewJSON');
+    const userId = this.credsService.userId?.() || this.credsService.userId || ''; // adapt to your service
+    const api = npsapi + userId; // Append 'reviews' to the NPSAPI URL
     //console.log('[getReviews] ConfigService:', this.configService);
     //console.log('[getReviews] NPSAPI from config:', this.configService.getConfig()['NPSAPI']);
     //console.log('[getReviews] Calling fetchData with:', { api, fallback });
@@ -248,19 +250,37 @@ export class DataService {
 
   loadAll(): Observable<any> {
   return forkJoin({
-    dmps: this.getDmps(),
-    daps: this.getDaps(),
-    files: this.getFiles(),
-    //reviews: this.getReviews() // if needed
+    dmps: this.getDmps().pipe(catchError(err => {
+      console.error('Failed to load DMPs:', err);
+      return of([]);
+    })),
+    daps: this.getDaps().pipe(catchError(err => {
+      console.error('Failed to load DAPs:', err);
+      return of([]);
+    })),
+    files: this.getFiles().pipe(catchError(err => {
+      console.error('Failed to load Files:', err);
+      return of([]);
+    })),
   }).pipe(
     tap(({ dmps, daps, files }) => {
       this._dmps.set(dmps);
       this._daps.set(daps);
       this._files.set(files);
-      //this._reviews.set(reviews); // if you have reviews
     })
   );
 }
 
+loadReviews(): Observable<Review[]> {
+  return this.getReviews().pipe(
+    tap(reviews => {
+      this._reviews.set(reviews);
+    }),
+    catchError(err => {
+      console.error('Failed to load Reviews:', err);
+      return of([]);
+    })
+  );  
+}
 
 }
