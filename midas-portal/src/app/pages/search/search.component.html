@@ -358,7 +358,7 @@
                                 Type
                             </div>
                         </th>
-                        <td mat-cell *matCellDef="let d">{{ d.type || '—' }}</td>
+                        <td mat-cell *matCellDef="let d">{{ d.type || 'dap' }}</td>
                     </ng-container>
 
                     <!-- Status Column -->
@@ -373,7 +373,7 @@
                         </th>
                         <td mat-cell *matCellDef="let item">
                             <span class="status-chip" [ngClass]="getStatusClass(item.status)">
-                                {{ item.status.toUpperCase() }}
+                                {{ item.status?.toUpperCase() || '-' }}
                             </span>
                         </td>
                     </ng-container>

@@ -1,7 +1,7 @@
 {
     "authAPI": "https://mdsdev.nist.gov/sso/auth/_tokeninfo",
     "authRedirect": "https://mdsdev.nist.gov/sso/saml/login?redirectTo=https://mdsdev.nist.gov/portal",
-    "NPSAPI": "https://localhost:9092/nps/cnd7",
+    "NPSAPI": "https://localhost:9092/nps/",
     "dmpAPI": "https://localhost/midas/dmp/mdm1",
     "dapAPI": "https://localhost/midas/dap/mds3",
     "groupAPI": "https://localhost/midas/groups",
@@ -9,7 +9,7 @@
     "dapUI": "https://localhost/dapui/new",
     "dmpEDIT": "https://localhost/dmpui/edit/",
     "dapEDIT": "https://localhost/dapui/edit/od/id/",
-    "npsUI": "https://tsapps-t.nist.gov/nps/npsui",
+    "npsUI": "https://tsapps-d.nist.gov/nps/npsui",
     "nextcloudUI": "https://nextcloud-dev.nist.gov",
     "auth": {
         "serviceEndpoint": "http://localhost/sso/"

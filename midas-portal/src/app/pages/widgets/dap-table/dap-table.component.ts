@@ -22,7 +22,6 @@ import { Dap } from '../../../models/dashboard';
   styleUrls: ['./dap-table.component.scss']
 })
 export class DapTableComponent implements  AfterViewInit {
-  private _dapList = signal<Dap[]>([]);
   dataSource       = new MatTableDataSource<Dap>([]);
   length           = computed(() => this.dataService.daps().length);
 

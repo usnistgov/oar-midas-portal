@@ -111,27 +111,7 @@ export class ReviewsTableComponent implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  /**
-   * Fetch reviews from API, fallback to empty
-   */
-  /* private loadReviews(token: string, uid: string) {
-    this.isLoading = true;
 
-    let base = (this.cfgSvc.getConfig()['NPSAPI'] as string) || '';
-    base = base.endsWith('/') ? base : base + '/';
-    const url = `${base}${uid}`;
-
-    this.http.get<Review[]>(url, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).pipe(
-      tap(arr => console.log(`Loaded ${arr.length} reviews`)),
-      catchError(err => {
-        console.error('Error fetching reviews:', err);
-        return of<Review[]>([]);
-      }),
-      finalize(() => this.isLoading = false)
-    ).subscribe(rows => this.reviews.set(rows));
-  } */
 
   applyFilter(event: Event) {
     const filter = (event.target as HTMLInputElement).value.trim().toLowerCase();
@@ -139,6 +119,7 @@ export class ReviewsTableComponent implements AfterViewInit {
   }
 
   linkto(id: string): string {
-    return this.dataService.resolveApiUrl('NPSAPI').concat('Dataset/DataSetDetails?id=').concat(id);
+    const userId = this.credsService.userId?.() || this.credsService.userId ; // adapt to your service
+    return this.dataService.resolveApiUrl('NPSAPI')+userId+'Dataset/DataSetDetails?id='.concat(id);
   }
 }
