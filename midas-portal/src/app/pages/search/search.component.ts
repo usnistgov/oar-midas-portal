@@ -280,14 +280,15 @@ export class SearchComponent {
 searchOrgIndex(queryString: string): void {
   if (!this.orgIndex) return;
   const q = queryString.toLowerCase();
-  this.orgSuggestions = this.orgIndex
-    .filter(org =>
-      org.name.toLowerCase().includes(q) ||
-      org.key.toLowerCase().includes(q)
-    )
-    .map(org => org.name)
-    .filter(Boolean)
-    .sort();
+  this.orgSuggestions = Array.from(new Set(
+    this.orgIndex
+      .filter(org =>
+        org.name.toLowerCase().includes(q) ||
+        org.key.toLowerCase().includes(q)
+      )
+      .map(org => org.name)
+      .filter(Boolean)
+  )).sort();
 }
 
     getPeople(queryString: string): void {
@@ -321,14 +322,15 @@ searchOrgIndex(queryString: string): void {
   searchPeopleIndex(queryString: string): void {
   if (!this.peopleIndex) return;
   const q = queryString.toLowerCase();
-  this.peopleSuggestions = this.peopleIndex
+  this.peopleSuggestions = Array.from(new Set(
+  this.peopleIndex
     .filter(person =>
       person.lastName.toLowerCase().includes(q) ||
-      person.firstName.toLowerCase().includes(q) ||
-      person.fullName.toLowerCase().includes(q)
+      person.firstName.toLowerCase().includes(q) 
     )
     .map(person => person.fullName)
-    .sort();
+)).sort();
+
 }
 
   /** build the edit/detail URL based on record type */

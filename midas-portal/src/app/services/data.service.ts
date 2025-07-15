@@ -195,6 +195,7 @@ export class DataService {
       name: raw.name,
       owner: raw.owner,
       primaryContact,
+      type: raw.type,
       modifiedDate: new Date(raw.status.modifiedDate)
     };
   }

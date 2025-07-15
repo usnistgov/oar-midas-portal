@@ -21,102 +21,6 @@ export interface FilterCriteria {
 @Injectable({ providedIn: 'root' })
 export class SearchFilterService {
   private STORAGE_KEY_PREFIX = 'filter-';
-  /**
-   * Returns a new array containing only those DMPs matching the given criteria.
-   */
-  filterDmpList(list: Dmp[], c: FilterCriteria): Dmp[] {
-    const q = c.query.trim().toLowerCase();
-    const kws = c.keywords.map(kw => kw.trim().toLowerCase());
-
-    return list.filter(dmp => {
-      // 1) text search
-      const textMatch =
-        dmp.name.toLowerCase().includes(q) ||
-        dmp.primaryContact.toLowerCase().includes(q) ||
-        (dmp.organizationUnit ?? '').toLowerCase().includes(q);
-
-      // 2) keywords
-      const keywordMatch =
-        kws.length === 0 ||
-        kws.some(kw =>
-          (dmp.keywords || []).some(dk => dk.toLowerCase().includes(kw))
-        );
-
-      // 3) org unit
-      const orgMatch = !c.orgUnit || dmp.organizationUnit === c.orgUnit;
-
-      // 4) owner
-      const ownerMatch = !c.owner || dmp.primaryContact === c.owner;
-
-      // 5) type
-      const typeMatch = c.types.length === 0 || c.types.includes(dmp.type || '');
-
-      // 6) status
-      const statusMatch =
-        c.statuses.length === 0 || c.statuses.includes(dmp.status || '');
-
-      // 7) publication flag
-      const paperMatch = !c.hasPublication || dmp.hasPublication === true;
-
-      // 8) date
-      let dateMatch = true;
-      const modified = dmp.modifiedDate.getTime();
-
-      switch (c.dateFilterType) {
-        case 'exact':
-          if (c.exactDate) {
-            // This is to ensure that any record modified, at any time, on the chosen date
-            // will count as a match, without accidentally including the next day.
-            const start = new Date(c.exactDate);
-            // set to midnight of that day
-            start.setHours(0, 0, 0, 0);
-            // define the end as exactly 24 hours later
-            const end = new Date(start);
-            end.setDate(start.getDate() + 1);
-            // true if modifiedDate ≥ startOfDay AND < startOfNextDay
-            dateMatch = modified >= start.getTime() && modified < end.getTime();
-          }
-          break;
-
-        case 'before':
-          if (c.beforeDate) {
-            const before = new Date(c.beforeDate);
-            before.setHours(0, 0, 0, 0);
-            dateMatch = modified < before.getTime();
-          }
-          break;
-
-        case 'after':
-          if (c.afterDate) {
-            const after = new Date(c.afterDate);
-            after.setHours(23, 59, 59, 999);
-            dateMatch = modified > after.getTime();
-          }
-          break;
-
-        case 'between':
-          if (c.rangeStart && c.rangeEnd) {
-            const start = new Date(c.rangeStart);
-            start.setHours(0, 0, 0, 0);
-            const end = new Date(c.rangeEnd);
-            end.setHours(23, 59, 59, 999);
-            dateMatch = modified >= start.getTime() && modified <= end.getTime();
-          }
-          break;
-      }
-
-      return (
-        textMatch &&
-        keywordMatch &&
-        orgMatch &&
-        ownerMatch &&
-        typeMatch &&
-        statusMatch &&
-        paperMatch &&
-        dateMatch
-      );
-    });
-  }
 
   filterDmpOrDapList(list: (Dmp | Dap)[], c: FilterCriteria): (Dmp | Dap)[] {
   const normalize = (s: string) => (s || '').trim().toLowerCase();
@@ -138,16 +42,16 @@ export class SearchFilterService {
   const kws = c.keywords.map(kw => normalize(kw));
   const orgUnitCriteria = normalizeOrgUnit(c.orgUnit || '');
   const ownerCriteria = normalizeOwner(c.owner || '');
-  console.log('Normalized criteria:', { q, kws, orgUnitCriteria, ownerCriteria });
+  console.log('criteria', c);
 
   return list.filter(item => {
     // For fields that only exist on Dmp, use optional chaining or fallback
     const name = normalize((item as any).name);
     const primaryContact = normalize((item as any).primaryContact);
     const organizationUnit = normalize((item as any).organizationUnit);
-    console.log('Checking item:', name, primaryContact, organizationUnit);
     const owner = (item as any).owner?.toLowerCase() || '';
     const type = (item as any).type || '';
+    console.log('type', type);
     const status = (item as any).status || '';
     const hasPublication = (item as any).hasPublication;
     const keywords = (item as any).keywords || [];
