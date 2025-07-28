@@ -15,7 +15,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { HttpClient } from '@angular/common/http';
-import { catchError, finalize, map, Observable, of, startWith,switchMap } from 'rxjs';
+import { catchError, finalize, map, Observable, of, startWith, forkJoin } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { HelpDialogComponent } from '../../components/help-dialog/help-dialog.component';
@@ -46,6 +46,17 @@ export interface Dmp {
   keywords?: string[];
 }
 
+export interface Dap {
+  id: string;
+  name: string;
+  owner: string;
+  type?: string | undefined;
+  primaryContact: string;
+  modifiedDate: Date;
+}
+
+
+type DmpOrDap = Dmp | Dap;
 
 @Component({
   selector: 'app-search',
@@ -56,13 +67,9 @@ export class SearchComponent {
   /** Key codes for MatChipInput (ENTER, COMMA) */
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
-  // Hard-coded defaults
-  private readonly DEFAULT_DMP_EDIT = 'https://mdstest.nist.gov/midas/dmpui/edit/';
-  private readonly DEFAULT_DAP_EDIT = 'https://mdstest.nist.gov/midas/dapui/edit/od/id/';
-
   /** Whether to add chip on blur */
   readonly addOnBlur = true;
-
+  
   // inject snackabars and dialogs
   private _snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
@@ -99,6 +106,7 @@ export class SearchComponent {
   orgSuggestions: string[] = [];  
   peopleIndex: { id: string, fullName: string, lastName: string, firstName: string }[] | null = null;  // Cached people
   peopleSuggestions: string[] = [];   
+  
     
   /** Available resource types (for chip list) */
   resourceTypes = ['DMP', 'DAP'];
@@ -154,19 +162,10 @@ export class SearchComponent {
     };
   }
 
-  /** Signal holding the full DMP list */
-  private _dmpList = signal<Dmp[]>([]);
-  /** Unique list of all org units, derived from `_dmpList` */
-  organizationUnits = computed(() =>
-    Array.from(new Set(this._dmpList().map(d => d.organizationUnit ?? '')))
-      .filter(u => !!u).sort()
-  );
-  /** Unique list of all owners, derived from `_dmpList` */
-  owners = computed(() =>
-    Array.from(new Set(this._dmpList().map(d => d.owner))).sort()
-  );
 
-  dataSource = new MatTableDataSource<Dmp>([]);
+
+  
+  dataSource = new MatTableDataSource<DmpOrDap>([]);
 
   /** Master list of table columns */
   allColumns = [
@@ -225,33 +224,14 @@ export class SearchComponent {
 
   // Compute base URLs, falling back if not set
   get dmpEDIT(): string {
-    return this.config['dmpEDIT']?.value || this.DEFAULT_DMP_EDIT;
+    return this.config['dmpEDIT']?.value
   }
 
   get dapEDIT(): string {
-    return this.config['dapEDIT']?.value || this.DEFAULT_DAP_EDIT;
+    return this.config['dapEDIT']?.value
   }
 
-  orgUnits = computed(() =>
-    Array.from(
-      new Set(
-        this._dmpList().map(d => d.organizationUnit ?? '')
-      )
-    )
-      .filter(u => !!u)
-      .sort()
-  );
 
-  // derive your primaryContacts list for the owner dropdown:
-  primaryContacts = computed(() =>
-    Array.from(
-      new Set(
-        this._dmpList().map(d => d.primaryContact ?? '')
-      )
-    )
-      .filter(p => !!p)
-      .sort()
-  );
 
   length = computed(() => this.dataSource.data.length);
 
@@ -268,7 +248,7 @@ export class SearchComponent {
       d.owner.toLowerCase().includes(filter) ||
       d.primaryContact.toLowerCase().includes(filter);
     effect(() => {
-      this.dataSource.data = this._dmpList();
+      this.updateDataSource();
     });
   }
 
@@ -300,14 +280,15 @@ export class SearchComponent {
 searchOrgIndex(queryString: string): void {
   if (!this.orgIndex) return;
   const q = queryString.toLowerCase();
-  this.orgSuggestions = this.orgIndex
-    .filter(org =>
-      org.name.toLowerCase().includes(q) ||
-      org.key.toLowerCase().includes(q)
-    )
-    .map(org => org.name)
-    .filter(Boolean)
-    .sort();
+  this.orgSuggestions = Array.from(new Set(
+    this.orgIndex
+      .filter(org =>
+        org.name.toLowerCase().includes(q) ||
+        org.key.toLowerCase().includes(q)
+      )
+      .map(org => org.name)
+      .filter(Boolean)
+  )).sort();
 }
 
     getPeople(queryString: string): void {
@@ -341,14 +322,15 @@ searchOrgIndex(queryString: string): void {
   searchPeopleIndex(queryString: string): void {
   if (!this.peopleIndex) return;
   const q = queryString.toLowerCase();
-  this.peopleSuggestions = this.peopleIndex
+  this.peopleSuggestions = Array.from(new Set(
+  this.peopleIndex
     .filter(person =>
       person.lastName.toLowerCase().includes(q) ||
-      person.firstName.toLowerCase().includes(q) ||
-      person.fullName.toLowerCase().includes(q)
+      person.firstName.toLowerCase().includes(q) 
     )
     .map(person => person.fullName)
-    .sort();
+)).sort();
+
 }
 
   /** build the edit/detail URL based on record type */
@@ -452,7 +434,7 @@ searchOrgIndex(queryString: string): void {
     this.afterDate = undefined;
 
     // reset table to full list
-    this.dataSource.data = this._dmpList();
+    this.updateDataSource();
     this.paginator?.firstPage();
   }
 
@@ -528,11 +510,16 @@ searchOrgIndex(queryString: string): void {
    * or toggles the "has paper publication" filter.
    */
   applyFilters() {
-    const crit = this.currentCriteria();
-    const filtered = this.filterService.filterDmpList(this._dmpList(), crit);
-    this.dataSource.data = filtered;
-    this.paginator?.firstPage();
-  }
+  const crit = this.currentCriteria();
+  //console.log('Applying filters:', crit);
+  const merged: DmpOrDap[] = [
+    ...this.dataService.dmps(),
+    ...this.dataService.daps()
+  ];
+  const filtered = this.filterService.filterDmpOrDapList(merged, crit);
+  this.dataSource.data = filtered;
+  this.paginator?.firstPage();
+}
 
   /**
    * Clears all filters and simulates loading (used by "Clear Filters" button).
@@ -581,7 +568,7 @@ searchOrgIndex(queryString: string): void {
     this.hasPaperPublication = false;
 
     // Reset table data back to full list
-    this.dataSource.data = this._dmpList();
+    this.updateDataSource();
     if (this.paginator) {
       this.paginator.firstPage();
     }
@@ -723,36 +710,41 @@ searchOrgIndex(queryString: string): void {
   }
 
   ngOnInit() {
-    this.isLoading = true;
+  this.isLoading = true;
 
-    this.dataService.getDmps().pipe(
-      catchError(err => {
-        return of([]);
-      }),
-      finalize(() => this.isLoading = false)
-    )
-      .subscribe(list => {
-        this._dmpList.set(list);
+  const waitForToken = () => {
+    const token = this.dataService['credsService'].token();
+    if (token) {
+      this.dataService.loadAll().pipe(
+        finalize(() => this.isLoading = false)
+      ).subscribe({
+        next: () => {
+          this.updateDataSource();
+        },
+        error: () => {
+          this.isLoading = false;
+          this._snackBar.open('Failed to load search data.', 'Dismiss', { duration: 3000 });
+        }
       });
 
-    // wire the OrgUnit autocomplete
+    } else {
+      setTimeout(waitForToken, 100); // Try again in 100ms
+    }
+  };
+
+
+  waitForToken();
+
+  // wire the OrgUnit autocomplete
     this.orgUnitControl.valueChanges.subscribe(value => {
       this.getOrgs(value || '');
     });
 
-    // wire the Owners autocomplete
-    this.filteredOwners = this.ownerControl.valueChanges.pipe(
-      startWith(''),
-      map(value => {
-        const filter = value.toLowerCase();
-        return this.primaryContacts()
-          .filter(p => p.toLowerCase().includes(filter));
-      })
-    );
+
     this.ownerControl.valueChanges.subscribe(value => {
       this.getPeople(value || '');
     });
-  }
+}
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -770,6 +762,17 @@ searchOrgIndex(queryString: string): void {
       maxWidth: '80vw',
       data: {}
     });
+  }
+
+  private updateDataSource() {
+    const merged: DmpOrDap[] = [
+      ...this.dataService.dmps(),
+      ...this.dataService.daps()
+    ];
+    //console.log('Merged data:', merged);
+    this.dataSource.data = merged;
+    if (this.paginator) this.dataSource.paginator = this.paginator;
+    if (this.sort) this.dataSource.sort = this.sort;
   }
 
 
@@ -813,7 +816,7 @@ searchOrgIndex(queryString: string): void {
     ).subscribe({
       next: list => {
         // update the master list
-        this._dmpList.set(list);
+        this.updateDataSource();
 
         // if we have already applied filters at least once, re‐apply them
         if (this.hasFilters()) {

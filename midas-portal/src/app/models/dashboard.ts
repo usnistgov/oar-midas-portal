@@ -17,6 +17,7 @@ export interface Dap {
     owner: string;
     primaryContact: string;
     modifiedDate: Date;
+    type?: string | undefined;
 }
 
 export interface Dmp {

@@ -1,7 +1,14 @@
 @use '@angular/material' as mat;
 
 @include mat.core();
+// =======================================
+// Midas Header STyles
+// =======================================
 
+app-header .header-container {
+  width: auto !important;   /* or remove width restriction */
+  max-width: 100vw;         /* prevent overflow */
+}
 // ======================================
 // 1) Define shared palettes (M2 palettes)
 // ======================================

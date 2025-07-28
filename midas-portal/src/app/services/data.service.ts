@@ -1,7 +1,7 @@
 import { Injectable, inject,effect,signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of,forkJoin,tap } from 'rxjs';
 import { Dap, Dmp, File, Review } from '../models/dashboard';
 import { ConfigurationService } from 'oarng'
 import { CredentialsService } from './credentials.service';
@@ -39,22 +39,7 @@ export class DataService {
 
   constructor(private configService: ConfigurationService) {
     effect(() => {
-      const token = this.credsService.token();
-      if (token) {
-        console.log('Token is available, making API call:', token);
-        this.getDaps().subscribe(data => {
-          console.log('Fetched DAPs:', data);
-        });
-        this.getDmps().subscribe(data => {
-          console.log('Fetched DMPs:', data);
-        });
-        this.getFiles().subscribe(data => {
-          console.log('Fetched Files:', data);
-        });
-        this.getReviews().subscribe(data => {
-          console.log('Fetched Reviews:', data);
-        });
-      }
+      
     });
   }
 
@@ -64,10 +49,10 @@ export class DataService {
 
   private fetchData<T>(apiUrl: string, fallbackUrl: string, mapper: (raw: any) => T): Observable<T[]> {
     const authToken = this.credsService.token(); // Access the token from CredentialsService
-    console.log('[fetchData] Token:', authToken);
+    //console.log('[fetchData] Token:', authToken);
     const headers = { Authorization: `Bearer ${authToken}` };
 
-    console.log('[fetchData] Called with:', { apiUrl, fallbackUrl, authToken });
+    //console.log('[fetchData] Called with:', { apiUrl, fallbackUrl, authToken });
 
     return this.http.get<any[]>(apiUrl, {headers}).pipe(
       catchError(err => {
@@ -76,9 +61,9 @@ export class DataService {
         return this.http.get<any[]>(fallbackUrl);
       }),
       map(raw => {
-        console.log('[fetchData] Raw data from API/fallback:', raw);
+        //console.log('[fetchData] Raw data from API/fallback:', raw);
         const mapped = raw.map(mapper);
-        console.log('[fetchData] Mapped data:', mapped);
+        //console.log('[fetchData] Mapped data:', mapped);
         return mapped;
       })
     );
@@ -87,9 +72,9 @@ export class DataService {
   getDaps(): Observable<Dap[]> {
     const api = this.resolveApiUrl('dapAPI');
     const fallback = this.resolveApiUrl('dapJSON');
-    console.log('[getDaps] ConfigService:', this.configService);
-    console.log('[getDaps] dapAPI from config:', this.configService.getConfig()['dapAPI']);
-    console.log('[getDaps] Calling fetchData with:', { api, fallback });
+    //console.log('[getDaps] ConfigService:', this.configService);
+    //console.log('[getDaps] dapAPI from config:', this.configService.getConfig()['dapAPI']);
+    //console.log('[getDaps] Calling fetchData with:', { api, fallback });
     return this.fetchData<Dap>(api, fallback, this.mapToDap).pipe(
       map(data => {
         console.log('[getDaps] fetchData returned:', data);
@@ -101,9 +86,9 @@ export class DataService {
   getDmps(): Observable<Dmp[]> {
     const api = this.resolveApiUrl('dmpAPI');
     const fallback = this.resolveApiUrl('dmpJSON');
-    console.log('[getDmps] ConfigService:', this.configService);
-    console.log('[getDmps] dmpAPI from config:', this.configService.getConfig()['dmpAPI']);
-    console.log('[getDmps] Calling fetchData with:', { api, fallback });
+    //console.log('[getDmps] ConfigService:', this.configService);
+    //console.log('[getDmps] dmpAPI from config:', this.configService.getConfig()['dmpAPI']);
+    //console.log('[getDmps] Calling fetchData with:', { api, fallback });
     return this.fetchData<Dmp>(api, fallback, this.mapToDmp).pipe(
       map(data => {
         console.log('[getDmps] fetchData returned:', data);
@@ -121,9 +106,9 @@ export class DataService {
   getFiles(): Observable<File[]> {
     const api = this.resolveApiUrl('dapAPI');
     const fallback = this.resolveApiUrl('fileJSON');
-    console.log('[getFiles] ConfigService:', this.configService);
-    console.log('[getFiles] fileAPI from config:', this.configService.getConfig()['fileAPI']);
-    console.log('[getFiles] Calling fetchData with:', { api, fallback });
+    //console.log('[getFiles] ConfigService:', this.configService);
+    //console.log('[getFiles] fileAPI from config:', this.configService.getConfig()['fileAPI']);
+    //console.log('[getFiles] Calling fetchData with:', { api, fallback });
     return this.fetchData<File>(api, fallback, this.mapToFile).pipe(
       map(data => {
         console.log('[getFiles] fetchData returned:', data);
@@ -134,11 +119,13 @@ export class DataService {
   }
 
   getReviews(): Observable<Review[]> {
-    const api = this.resolveApiUrl('NPSAPI');
+    const npsapi = this.resolveApiUrl('NPSAPI');
     const fallback = this.resolveApiUrl('reviewJSON');
-    console.log('[getReviews] ConfigService:', this.configService);
-    console.log('[getReviews] NPSAPI from config:', this.configService.getConfig()['NPSAPI']);
-    console.log('[getReviews] Calling fetchData with:', { api, fallback });
+    const userId = this.credsService.userId?.() || this.credsService.userId || ''; // adapt to your service
+    const api = npsapi + userId; // Append 'reviews' to the NPSAPI URL
+    //console.log('[getReviews] ConfigService:', this.configService);
+    //console.log('[getReviews] NPSAPI from config:', this.configService.getConfig()['NPSAPI']);
+    //console.log('[getReviews] Calling fetchData with:', { api, fallback });
     return this.fetchData<Review>(api, fallback, this.mapToReview).pipe(
       map(data => {
         console.log('[getReviews] fetchData returned:', data);
@@ -200,14 +187,15 @@ export class DataService {
    */
   private mapToDap(raw: any): Dap {
     // find the primary NIST contact
-    const primary = (raw.data?.contributors as any[] || [])
-      .find(c => c.primary_contact === 'Yes');
+    const contactPoint = raw.data?.contactPoint;
+    const primaryContact = contactPoint?.fn ?? '';
 
     return {
       id: raw.id,
       name: raw.name,
       owner: raw.owner,
-      primaryContact: primary?.emailAddress || '',
+      primaryContact,
+      type: raw.type,
       modifiedDate: new Date(raw.status.modifiedDate)
     };
   }
@@ -259,5 +247,41 @@ export class DataService {
   get nextcloudUI(): string {
     return this.configService.getConfig()['nextcloudUI'] 
   }
+
+
+  loadAll(): Observable<any> {
+  return forkJoin({
+    dmps: this.getDmps().pipe(catchError(err => {
+      console.error('Failed to load DMPs:', err);
+      return of([]);
+    })),
+    daps: this.getDaps().pipe(catchError(err => {
+      console.error('Failed to load DAPs:', err);
+      return of([]);
+    })),
+    files: this.getFiles().pipe(catchError(err => {
+      console.error('Failed to load Files:', err);
+      return of([]);
+    })),
+  }).pipe(
+    tap(({ dmps, daps, files }) => {
+      this._dmps.set(dmps);
+      this._daps.set(daps);
+      this._files.set(files);
+    })
+  );
+}
+
+loadReviews(): Observable<Review[]> {
+  return this.getReviews().pipe(
+    tap(reviews => {
+      this._reviews.set(reviews);
+    }),
+    catchError(err => {
+      console.error('Failed to load Reviews:', err);
+      return of([]);
+    })
+  );  
+}
 
 }
