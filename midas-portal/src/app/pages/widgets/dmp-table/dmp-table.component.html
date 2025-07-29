@@ -9,18 +9,10 @@
         Create
     </button>
 </div>
-<div class="column-toggles">
-    <ng-container *ngFor="let col of allColumns">
-        <mat-checkbox [checked]="displayedColumns.includes(col.key)"
-            (change)="toggleColumn(col.key, $event.checked)">
-            {{ col.label }}
-        </mat-checkbox>
-    </ng-container>
-</div>
 
 <div class="table-wrapper">
 
-    <table mat-table [dataSource]="dataSource" matSort class="dmp-table">
+    <table mat-table [dataSource]="dataSource" matSort class="table">
         <!-- Name Column -->
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
@@ -58,7 +50,7 @@
     </table>
 </div>
 
-<mat-paginator [length]="length()" [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons [pageSize]="5">
+<mat-paginator [length]="length()" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [pageSize]="pageSize">
 </mat-paginator>
 
 <!-- overlay with spinner -->

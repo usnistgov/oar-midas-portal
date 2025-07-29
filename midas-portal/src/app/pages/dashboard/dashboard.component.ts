@@ -114,12 +114,52 @@ export class DashboardComponent {
   waitForToken();
 }
 
+ngAfterViewInit(): void {
+    this.updateWidgetSizes();
+
+  window.addEventListener('resize', () => {
+    this.updateWidgetSizes();
+  });
+}
+
   /**
    * Handles drag-and-drop widget rearrangement.
    */
   drop(event: CdkDragDrop<number, any>): void {
     const { previousContainer, container } = event;
     this.dashboardService.updateWidgetPosition(previousContainer.data, container.data);
+  }
+
+  getGridColumnCount(): number {
+  const container = this.dashboard().nativeElement as HTMLElement;
+  const minColWidth = 200;
+  const gap = 16;
+  const containerWidth = container.offsetWidth;
+
+  // Try to fit as many columns as possible
+  let columns = Math.floor((containerWidth + gap) / (minColWidth + gap));
+
+  // Check if the last column actually fits
+  while (
+    columns > 1 &&
+    (columns * minColWidth + (columns - 1) * gap) > containerWidth
+  ) {
+    columns--;
+  }
+
+  return Math.max(1, columns);
+}
+
+  updateWidgetSizes(): void {
+    const colCount = this.getGridColumnCount();
+    const colValue = colCount < 4 ? colCount : Math.floor(colCount / 2);
+    // Example: set every widget to span 1 column and 1 row, or use colCount for full width
+    const updated = this.dashboardService.addedWidgets().map(w => ({
+      ...w,
+      columns: Math.max(w.columns ?? 1, colValue),
+      rows: w.rows ?? 1 // you can adjust this logic as needed
+    }));
+    this.dashboardService.addedWidgets.set(updated);
   }
 
   /**

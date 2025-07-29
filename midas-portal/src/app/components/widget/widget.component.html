@@ -7,7 +7,10 @@
   </button>
 
   <div class="widget-content">
-    <ng-container [ngComponentOutlet]="data().content"></ng-container>
+    <ng-container 
+    [ngComponentOutlet]="data().content"
+    [ngComponentOutletInputs]="{ widget: data() }">
+  </ng-container>
   </div>
 
   <app-widget-options *ngIf="showOptions()" [(showOptions)]="showOptions" [data]="data()">

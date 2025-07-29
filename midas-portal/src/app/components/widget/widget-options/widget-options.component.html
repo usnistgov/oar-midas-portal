@@ -7,10 +7,11 @@
     </span>
     <mat-button-toggle-group hideSingleSelectionIndicator [value]="data().columns ?? 1"
         (change)="store.updateWidget(data().id, {columns: +$event.value})">
-        <mat-button-toggle [value]="1">1</mat-button-toggle>
         <mat-button-toggle [value]="2">2</mat-button-toggle>
         <mat-button-toggle [value]="3">3</mat-button-toggle>
         <mat-button-toggle [value]="4">4</mat-button-toggle>
+        <mat-button-toggle [value]="5">5</mat-button-toggle>
+        <mat-button-toggle [value]="5">6</mat-button-toggle>
     </mat-button-toggle-group>
 
 </div>
@@ -21,10 +22,10 @@
     </span>
     <mat-button-toggle-group hideSingleSelectionIndicator [value]="data().rows ?? 1"
         (change)="store.updateWidget(data().id, {rows: +$event.value})">
-        <mat-button-toggle [value]="1">1</mat-button-toggle>
-        <mat-button-toggle [value]="2">2</mat-button-toggle>
         <mat-button-toggle [value]="3">3</mat-button-toggle>
         <mat-button-toggle [value]="4">4</mat-button-toggle>
+        <mat-button-toggle [value]="5">5</mat-button-toggle>
+        <mat-button-toggle [value]="6">6</mat-button-toggle>
     </mat-button-toggle-group>
 
 </div>
