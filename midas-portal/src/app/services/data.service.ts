@@ -196,6 +196,7 @@ export class DataService {
       owner: raw.owner,
       primaryContact,
       type: raw.type,
+      location: raw.file_space.location,
       modifiedDate: new Date(raw.status.modifiedDate)
     };
   }
