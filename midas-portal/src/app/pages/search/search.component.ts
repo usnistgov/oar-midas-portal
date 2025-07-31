@@ -334,11 +334,11 @@ searchOrgIndex(queryString: string): void {
 }
 
   /** build the edit/detail URL based on record type */
-  linkto(item: string, rectype: string): string {
+  linkto(id: string, rectype: string): string {
     if (rectype === 'dap') {
-      return this.dapEDIT + item;
+      return this.dataService.resolveApiUrl('dapEDIT').concat(id).concat("?editEnabled=true")
     } else if (rectype === 'dmp') {
-      return this.dmpEDIT + item;
+      return this.dataService.resolveApiUrl('dmpEDIT').concat(id)
     }
     return '';
   }
