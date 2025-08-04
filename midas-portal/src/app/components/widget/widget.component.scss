@@ -19,7 +19,7 @@
   /* Absolute position the scrolling region */
   .widget-content {
     position: absolute;
-    top: calc(3rem + 4px);        /* header height + top padding */
+    top: calc(3rem);        /* header height + top padding */
     right: 8px;                   
     bottom: 8px;                  
     left: 16px;                  

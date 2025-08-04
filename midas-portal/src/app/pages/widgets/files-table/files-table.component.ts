@@ -10,12 +10,11 @@ import {
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
-import { HttpClient } from '@angular/common/http';
-import { catchError, finalize, tap } from 'rxjs/operators';
-import { of, delay } from 'rxjs';
-import { ConfigurationService } from 'oarng';
 import { DataService } from '../../../services/data.service';
 import { File } from '../../../models/dashboard';
+import { Widget } from '../../../models/dashboard';
+import { getMaxVisibleRows } from '../table-utils';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'app-files-table',
@@ -26,6 +25,7 @@ export class FilesTableComponent implements AfterViewInit {
   private _fileList = signal<File[]>([]);
   /** Credentials as a signal */
   private authToken = signal<string | null>(null);
+  widget = input.required<Widget>();
 
   /** Fallback static data */
   private fallback: File[] = [
@@ -78,6 +78,12 @@ export class FilesTableComponent implements AfterViewInit {
     effect(() => {
       const files = this.dataService.files();
       this.dataSource.data = files;
+      this.dataSource._updateChangeSubscription();
+    });
+    effect(() => {
+      // Update table when widget rows (and thus pageSize) changes
+      const rows = this.widget().rows;
+      this.dataSource._updateChangeSubscription();
     });
   }
 
@@ -91,6 +97,16 @@ export class FilesTableComponent implements AfterViewInit {
   applyFilter(event: Event) {
     const filter = (event.target as HTMLInputElement).value.trim().toLowerCase();
     this.dataSource.filter = filter;
+  }
+
+  get pageSize(): number {
+      return getMaxVisibleRows(this.widget().rows ?? 1);
+    }
+  
+    get pageSizeOptions(): number[] {
+    const baseOptions = [5, 10, 15];
+    const ps = this.pageSize;
+    return baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
   }
 
   /** Link builder */

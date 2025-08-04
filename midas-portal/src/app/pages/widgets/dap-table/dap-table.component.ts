@@ -10,11 +10,10 @@ import {
 import { MatPaginator }       from '@angular/material/paginator';
 import { MatSort }            from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { of, delay, finalize } from 'rxjs';
-import { catchError }          from 'rxjs/operators';
-import { DashboardService }   from '../../../services/dashboard.service';
+import { input } from '@angular/core';
 import { DataService } from '../../../services/data.service';
 import { Dap } from '../../../models/dashboard';
+
 import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
 
 @Component({
@@ -25,6 +24,7 @@ import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
 export class DapTableComponent implements  AfterViewInit {
   dataSource       = new MatTableDataSource<Dap>([]);
   length           = computed(() => this.dataService.daps().length);
+  widget = input.required<Widget>();
 
   /** Loading state for overlay */
   isLoading = signal(false);
@@ -63,6 +63,13 @@ export class DapTableComponent implements  AfterViewInit {
     effect(() => {
       const daps = this.dataService.daps();
       this.dataSource.data = daps;
+      this.dataSource._updateChangeSubscription();
+    });
+
+    effect(() => {
+      // Update table when widget rows (and thus pageSize) changes
+      const rows = this.widget().rows;
+      this.dataSource._updateChangeSubscription();
     });
   }
 
@@ -82,6 +89,16 @@ export class DapTableComponent implements  AfterViewInit {
     this.dataSource.sort      = this.sort;
   }
 
+  get pageSize(): number {
+    return getMaxVisibleRows(this.widget().rows ?? 1);
+  }
+
+  get pageSizeOptions(): number[] {
+  const baseOptions = [5, 10, 15];
+  const ps = this.pageSize;
+  return baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
+}
+
   applyFilter(event: Event) {
     const filter = (event.target as HTMLInputElement)
                      .value.trim().toLowerCase();
@@ -92,9 +109,9 @@ export class DapTableComponent implements  AfterViewInit {
     return this.dataService.resolveApiUrl('dapEDIT').concat(id).concat("?editEnabled=true");
   }
 
-    getStatusClass(status: string): string {
+  getStatusClass(status: string): string {
       return statusClassUtil(status);
-    }
+  }
 
   createDap() {
     window.open(this.dataService.dapUI, '_blank');

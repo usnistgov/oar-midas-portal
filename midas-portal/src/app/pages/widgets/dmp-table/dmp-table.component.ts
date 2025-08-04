@@ -10,8 +10,9 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { catchError, delay, finalize, of } from 'rxjs';
+import { input } from '@angular/core';
 import { DataService } from '../../../services/data.service';
+
 import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
 
 interface Dmp {
@@ -30,6 +31,7 @@ interface Dmp {
 export class DmpTableComponent implements AfterViewInit {
 
   dataSource = new MatTableDataSource<Dmp>([]);
+  widget = input.required<Widget>();
 
   length = computed(() => this.dataService.dmps().length);
 
@@ -65,6 +67,12 @@ export class DmpTableComponent implements AfterViewInit {
     effect(() => {
       const dmps = this.dataService.dmps();
       this.dataSource.data = dmps;
+      this.dataSource._updateChangeSubscription();
+    });
+    effect(() => {
+      // Update table when widget rows (and thus pageSize) changes
+      const rows = this.widget().rows;
+      this.dataSource._updateChangeSubscription();
     });
   }
 
@@ -73,6 +81,16 @@ export class DmpTableComponent implements AfterViewInit {
     // wire up sorting & pagination
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+    get pageSize(): number {
+      return getMaxVisibleRows(this.widget().rows ?? 1);
+    }
+  
+    get pageSizeOptions(): number[] {
+    const baseOptions = [5, 10, 15];
+    const ps = this.pageSize;
+    return baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
   }
 
   /** simple client‐side filter */
