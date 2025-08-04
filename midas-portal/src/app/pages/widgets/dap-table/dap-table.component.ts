@@ -15,6 +15,7 @@ import { catchError }          from 'rxjs/operators';
 import { DashboardService }   from '../../../services/dashboard.service';
 import { DataService } from '../../../services/data.service';
 import { Dap } from '../../../models/dashboard';
+import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
 
 @Component({
   selector: 'app-dap-table',
@@ -32,6 +33,7 @@ export class DapTableComponent implements  AfterViewInit {
   allColumns = [
     { key: 'name',           label: 'Name' },
     { key: 'owner',          label: 'Owner' },
+    { key: 'status',         label: 'Status' },
     { key: 'primaryContact', label: 'Primary Contact' },
     { key: 'modifiedDate',   label: 'Last Modified' },
     // add more if you need an "actions" column, etc.
@@ -89,6 +91,10 @@ export class DapTableComponent implements  AfterViewInit {
   linkto(id: string): string {
     return this.dataService.resolveApiUrl('dapEDIT').concat(id).concat("?editEnabled=true");
   }
+
+    getStatusClass(status: string): string {
+      return statusClassUtil(status);
+    }
 
   createDap() {
     window.open(this.dataService.dapUI, '_blank');

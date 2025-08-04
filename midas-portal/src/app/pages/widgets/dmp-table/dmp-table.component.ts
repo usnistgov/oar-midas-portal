@@ -12,6 +12,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { catchError, delay, finalize, of } from 'rxjs';
 import { DataService } from '../../../services/data.service';
+import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
 
 interface Dmp {
   id: string;
@@ -37,6 +38,7 @@ export class DmpTableComponent implements AfterViewInit {
   allColumns = [
     { key: 'name',           label: 'Name' },
     { key: 'owner',          label: 'Owner' },
+    { key: 'status',         label: 'Status' }, // added status column
     { key: 'primaryContact', label: 'Primary Contact' },
     { key: 'modifiedDate',   label: 'Last Modified' }
   ];
@@ -85,9 +87,15 @@ export class DmpTableComponent implements AfterViewInit {
     return this.dataService.resolveApiUrl('dmpEDIT').concat(id)
   }
 
+  getStatusClass(status: string): string {
+      return statusClassUtil(status);
+    }
+
   /** open the create‐new page */
   createDmp() {
     // opens URL from localStorage (via service getter)
     window.open(this.dataService.dmpUI, '_blank');
   }
+
+
 }

@@ -38,9 +38,21 @@
     <!-- Primary Contact Column -->
     <ng-container matColumnDef="primaryContact">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>
-        Primary NIST Contact
+        Primary Contact
       </th>
       <td mat-cell *matCellDef="let d">{{ d.primaryContact }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Status
+      </th>
+      <td mat-cell *matCellDef="let d">
+          <span class="status-chip" [ngClass]="getStatusClass(d.status)">
+              {{ d.status?.toUpperCase() || '-' }}
+          </span>
+      </td>
+      
     </ng-container>
 
     <!-- Modified Date Column -->
