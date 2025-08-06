@@ -268,31 +268,6 @@ mat-panel-title {
     }
 }
 
-.status-chip,
-mat-chip.status-chip {
-    display: inline-block;
-    padding: 0 0.6em;
-    font-size: 0.75rem;
-    font-weight: 500;
-    line-height: 24px;
-    border-radius: 8px;
-    color: white;
-    min-width: 36px;
-    text-align: center;
-}
-
-.status-success {
-    background-color: #4caf50;
-}
-
-.status-warning {
-    background-color: #ffb300;
-}
-
-.status-info {
-    background-color: #2196f3;
-}
-
 .table-controls {
     display: flex;
     flex-direction: row;

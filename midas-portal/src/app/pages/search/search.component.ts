@@ -30,6 +30,7 @@ import { ExportService } from '../../services/export.service';
 import { DataService } from '../../services/data.service';
 import { PeopleService } from '../../services/people.service';
 import { FilterCriteria, SearchFilterService } from '../../services/search-filter.service';
+import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
 
 
 
@@ -334,11 +335,11 @@ searchOrgIndex(queryString: string): void {
 }
 
   /** build the edit/detail URL based on record type */
-  linkto(item: string, rectype: string): string {
+  linkto(id: string, rectype: string): string {
     if (rectype === 'dap') {
-      return this.dapEDIT + item;
+      return this.dataService.resolveApiUrl('dapEDIT').concat(id).concat("?editEnabled=true")
     } else if (rectype === 'dmp') {
-      return this.dmpEDIT + item;
+      return this.dataService.resolveApiUrl('dmpEDIT').concat(id)
     }
     return '';
   }
@@ -789,23 +790,10 @@ searchOrgIndex(queryString: string): void {
     this.applyFilters(); // reuse existing logic
   }
 
-  /**
-   * Maps a status string (e.g. 'published', 'edit', 'reviewed')
-   * to a class name for a status chip (e.g. 'status-success', 'status-warning', 'status-info')
-   * @returns a class name, or an empty string if the status is not recognized
-   */
   getStatusClass(status: string): string {
-    switch (status) {
-      case 'published':
-        return 'status-success';
-      case 'edit':
-        return 'status-warning';
-      case 'reviewed':
-        return 'status-info';
-      default:
-        return '';
-    }
+    return statusClassUtil(status);
   }
+
 
   /** Re‐fetch from the server and re‐apply current filters */
   refreshResults() {
