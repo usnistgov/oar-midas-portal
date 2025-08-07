@@ -13,6 +13,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { input } from '@angular/core';
 import { DataService } from '../../../services/data.service';
 import { Dap } from '../../../models/dashboard';
+import { Widget } from '../../../models/dashboard';
+import { getMaxVisibleRows } from '../table-utils';
 
 import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
 
