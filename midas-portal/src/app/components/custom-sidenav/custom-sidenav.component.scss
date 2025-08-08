@@ -78,7 +78,7 @@ mat-nav-list {
 }
 
 .info-bubble {
-  background: #fff;
+  background: var(--info-bubble-bg,#fff);
   border-radius: 50%;
   border: 1px solid #ccc;
   width: 48px;
