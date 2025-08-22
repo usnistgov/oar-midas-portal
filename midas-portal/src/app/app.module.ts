@@ -133,7 +133,9 @@ import { FooterComponent } from 'oarng';
     NgComponentOutlet,
     FormsModule,
     OARngModule,
-    FrameModule
+    FrameModule,
+    HeaderComponent,
+    FooterComponent
   ],
   providers: [
     { provide: CONFIG_URL, useValue: "assets/environment.json" },

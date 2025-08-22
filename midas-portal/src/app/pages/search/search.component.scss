@@ -119,6 +119,13 @@ mat-chip-option {
     height: 22px;
 }
 
+.export-button {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 8px;
+}
+
 .export-button button {
     min-width: 188px;
     display: flex;
@@ -367,4 +374,34 @@ mat-panel-title {
     align-items: center;
     --mat-protected-button-icon-spacing: 4px;
     --mat-protected-button-icon-offset: 0px;
+}
+
+.results-count {
+    font-size: 0.9rem;
+    color: var(--mat-primary-color);
+    font-weight: 500;
+    margin-left: 8px;
+    
+    &::before {
+        content: "•";
+        margin-right: 8px;
+        color: #ccc;
+    }
+}
+
+.results-summary {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    
+    .results-count {
+        margin-left: 0;
+        
+        &::before {
+            display: none;
+        }
+    }
 }

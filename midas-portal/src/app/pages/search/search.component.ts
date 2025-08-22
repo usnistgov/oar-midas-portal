@@ -22,15 +22,14 @@ import { HelpDialogComponent } from '../../components/help-dialog/help-dialog.co
 import { SaveFilterDialogComponent } from '../../components/save-filter-dialog/save-filter-dialog.component';
 import { LoadFilterDialogComponent } from '../../components/load-filter-dialog/load-filter-dialog.component';
 import { FormControl } from '@angular/forms';
-import { DashboardService } from '../../services/dashboard.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import autoTable from 'jspdf-autotable';
-import jsPDF from 'jspdf';
 import { ExportService } from '../../services/export.service';
+import { DownloadService } from '../../services/download.service';
 import { DataService } from '../../services/data.service';
 import { PeopleService } from '../../services/people.service';
 import { FilterCriteria, SearchFilterService } from '../../services/search-filter.service';
 import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
+import { SelectionModel } from '@angular/cdk/collections'
 
 
 
@@ -80,7 +79,9 @@ export class SearchComponent {
   /** flag indicating if user hit search. TODO: make this a signal? */
   searchPerformed = false;
   /** Controls visibility of the export menu */
-  menuOpened = signal(false);
+  ExportMenuOpened = signal(false);
+  /** Controls visibility of the download menu */
+  DownloadMenuOpened = signal(false);
   /** Whether any filters are active */
   hasFilters = signal(false);
   /** Raw search term typed by the user */
@@ -167,9 +168,11 @@ export class SearchComponent {
 
   
   dataSource = new MatTableDataSource<DmpOrDap>([]);
+  selection = new SelectionModel<DmpOrDap>(true, []); // true = multiple selection
 
   /** Master list of table columns */
   allColumns = [
+    { key: 'select', label: '' },
     { key: 'id', label: 'ID' },
     { key: 'name', label: 'Name' },
     { key: 'owner', label: 'Owner' },
@@ -177,8 +180,7 @@ export class SearchComponent {
     { key: 'organizationUnit', label: 'Org Unit' },
     { key: 'type', label: 'Type' },
     { key: 'status', label: 'Status' },
-    { key: 'modifiedDate', label: 'Last Modified' },
-    { key: 'actions', label: 'Actions' }
+    { key: 'modifiedDate', label: 'Last Modified' }
   ];
 
   readonly allColumnKeys = this.allColumns.map(c => c.key);
@@ -210,13 +212,26 @@ export class SearchComponent {
     );
   }
 
-  viewData(dmp: Dmp) {
-    console.log('DMP record:', dmp);
-    // Optionally show a SnackBar telling the user:
-    this._snackBar.open('Record JSON logged to console', 'Dismiss', {
-      duration: 2000
-    });
+  isAllSelected(): boolean {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.filteredData.length;
+    return numSelected === numRows;
   }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+    } else {
+      this.dataSource.filteredData.forEach(row => this.selection.select(row));
+    }
+  }
+
+  toggleRow(row: DmpOrDap) {
+    this.selection.toggle(row);
+    console.log(`Toggled row: ${row.id}, selected: ${this.selection.isSelected(row)}`);
+    console.log(`Current selection: ${this.selection.selected.map(r => r.id).join(', ')}`);
+  }
+
 
 
   // Load the saved config object once
@@ -232,9 +247,9 @@ export class SearchComponent {
     return this.config['dapEDIT']?.value
   }
 
-
-
-  length = computed(() => this.dataSource.data.length);
+  length = computed(() => {
+  return this.dataService.dmps().length + this.dataService.daps().length;
+});
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -243,6 +258,7 @@ export class SearchComponent {
     private dataService: DataService,
     private peopleService: PeopleService,
     private exportService: ExportService,
+    private downloadService: DownloadService,
     private filterService: SearchFilterService) {
     this.dataSource.filterPredicate = (d: Dmp, filter: string) =>
       d.name.toLowerCase().includes(filter) ||
@@ -443,8 +459,15 @@ searchOrgIndex(queryString: string): void {
   /**
    * Toggle the export menu.
    */
-  toggleMenu() {
-    this.menuOpened.set(!this.menuOpened());
+  toggleExportMenu() {
+    this.ExportMenuOpened.set(!this.ExportMenuOpened());
+  }
+
+  /**
+   * Toggle the export menu.
+   */
+  toggleDownloadMenu() {
+    this.DownloadMenuOpened.set(!this.DownloadMenuOpened());
   }
 
   /**
@@ -472,6 +495,33 @@ searchOrgIndex(queryString: string): void {
       case 'pdf':
         this.exportService.exportPDF(records);
         break;
+    }
+  }
+
+  downloadData(format: 'json' | 'csv' | 'pdf' | 'markdown'): void {
+    const records = this.dataSource.filteredData;
+
+    if (records.length === 0) {
+      // No records, show message to user
+      this._snackBar.open('No records to download.', 'Dismiss', { duration: 3000 });
+      return;
+    }
+
+    switch (format) {
+      case 'json':
+        this.downloadService.downloadJSON(this.selection.selected);
+        break;
+
+      case 'csv':
+        this.downloadService.downloadCSV(this.selection.selected);
+        break;
+
+      case 'pdf':
+        this.downloadService.downloadPDF(this.selection.selected);
+        break;
+
+      case 'markdown':
+        this.downloadService.downloadmarkdown(this.selection.selected);
     }
   }
 
@@ -759,7 +809,7 @@ searchOrgIndex(queryString: string): void {
   openHelpDialog(event: MouseEvent) {
     event.stopPropagation();
     this.dialog.open(HelpDialogComponent, {
-      width: '400px',
+      width: '800px',
       maxWidth: '80vw',
       data: {}
     });

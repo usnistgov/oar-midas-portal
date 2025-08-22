@@ -27,9 +27,26 @@
                 </div>
 
                 <div class="export-button">
-                    <button mat-raised-button color="primary" [matMenuTriggerFor]="exportMenu" (click)="toggleMenu()">
-                        Export
-                        <mat-icon iconPositionEnd>download</mat-icon>
+                    <button mat-raised-button color="primary" [matMenuTriggerFor]="downloadMenu" (click)="toggleDownloadMenu()"
+                        [disabled]="selection.selected.length === 0">
+                        Download Selection
+                        <mat-icon iconPositionEnd class="material-symbols-outlined">
+                                download
+                        </mat-icon>
+                    </button>
+
+                    <!-- Export Options Menu -->
+                    <mat-menu #downloadMenu="matMenu" class="export-menu">
+                        <button mat-menu-item (click)="downloadData('json')">Download as JSON</button>
+                        <button mat-menu-item (click)="downloadData('csv')">Download as CSV</button>
+                        <button mat-menu-item (click)="downloadData('pdf')">Download as PDF</button>
+                        <button mat-menu-item (click)="downloadData('pdf')">Download as MarkDown</button>
+                    </mat-menu>
+                    <button mat-raised-button color="primary" [matMenuTriggerFor]="exportMenu" (click)="toggleExportMenu()">
+                        Export Table
+                        <mat-icon iconPositionEnd class="material-symbols-outlined">
+                                file_export
+                        </mat-icon>
                     </button>
 
                     <!-- Export Options Menu -->
@@ -55,30 +72,6 @@
 
 
                 <div class="advanced-search-content">
-                    <div class="filter-field-wrapper ">
-                        <mat-form-field class="filter-field large filter-field-keywords x-small-form-input"
-                            appearance="outline">
-                            <mat-label>Keywords</mat-label>
-                            <mat-chip-grid color="primary" #chipGrid aria-label="Enter keywords">
-                                <mat-chip-row *ngFor="let keyword of pendingKeywords;" (removed)="remove(keyword)"
-                                    [editable]="true" (edited)="edit(keyword, $event)"
-                                    [aria-description]="'press enter to edit ' + keyword">
-                                    {{ keyword }}
-                                    <button matChipRemove [attr.aria-label]="'remove ' + keyword">
-                                        <mat-icon>cancel</mat-icon>
-                                    </button>
-                                </mat-chip-row>
-                                <input placeholder="New keyword..." [matChipInputFor]="chipGrid"
-                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                    [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)" />
-                            </mat-chip-grid>
-                        </mat-form-field>
-
-                        <span class="material-symbols-outlined help-icon" matTooltip="Enter keywords that...">
-                            help
-                        </span>
-                    </div>
-
                     <div class="filter-fields-container">
                         <mat-form-field appearance="outline" class="filter-field x-small-form-input">
                             <mat-label>Organization Unit</mat-label>
@@ -94,7 +87,7 @@
                         <span class="material-symbols-outlined help-icon"
                             matTooltip="The NIST organization that owns the record.">help</span>
                         <mat-form-field appearance="outline" class="filter-field x-small-form-input">
-                            <mat-label>Record Owner</mat-label>
+                            <mat-label>Record Owner / Primary Contact</mat-label>
                             <input type="text" matInput [formControl]="ownerControl" [matAutocomplete]="ownerAuto"
                                 placeholder="Type to filter owners" />
                             <mat-autocomplete #ownerAuto="matAutocomplete">
@@ -105,7 +98,7 @@
                         </mat-form-field>
 
                         <span class="material-symbols-outlined help-icon"
-                            matTooltip="The owner of the record.">help</span>
+                            matTooltip="The owner or primary contact of the record.">help</span>
 
                     </div>
 
@@ -261,22 +254,21 @@
                     <!-- Left side: column toggles -->
                     <div class="column-toggles">
                         <ng-container *ngFor="let col of allColumns">
-                            <mat-checkbox [checked]="displayedColumns.includes(col.key)" color="primary"
-                                (change)="toggleColumn(col.key, $event.checked)">
-                                {{ col.label }}
-                            </mat-checkbox>
+                            <ng-container *ngIf="col.key !== 'select'">
+                                <mat-checkbox [checked]="displayedColumns.includes(col.key)" color="primary"
+                                    (change)="toggleColumn(col.key, $event.checked)">
+                                    {{ col.label }}
+                                </mat-checkbox>
+                            </ng-container>
                         </ng-container>
                     </div>
                     <!-- Right side: clear filters -->
                     <div class="table-buttons">
-                        <div class="theme-2">
-                            <button mat-stroked-button color="accent" style="height: 40px"
-                                matTooltip="Re-fetch data from the server and re‐apply current filters.">
-                                <mat-icon>sync</mat-icon>
-                                Refresh
-                            </button>
+                        <div class="results-summary">
+                            <span class="results-count">
+                                {{ dataSource.filteredData.length }} of {{ length() }} records
+                            </span>
                         </div>
-
                     </div>
 
                 </div>
@@ -285,6 +277,22 @@
                 <table mat-table [dataSource]="dataSource" matSort class="advanced-search-table" cdkDropList
                     cdkDropListOrientation="horizontal" [cdkDropListData]="displayedColumns"
                     (cdkDropListDropped)="dropColumn($event)">
+                    <ng-container matColumnDef="select">
+                        <th mat-header-cell *matHeaderCellDef>
+                            <mat-checkbox
+                            (change)="toggleAllRows()"
+                            [checked]="isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                            </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                            <mat-checkbox
+                            (click)="$event.stopPropagation()"
+                            (change)="toggleRow(row)"
+                            [checked]="selection.isSelected(row)">
+                            </mat-checkbox>
+                        </td>
+                        </ng-container>
                     <!-- ID Column -->
                     <ng-container matColumnDef="id">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
@@ -327,7 +335,7 @@
                                 <span class="material-symbols-outlined drag-icon" cdkDragHandle>
                                     drag_indicator
                                 </span>
-                                Primary NIST Contact
+                                Primary Contact
                             </div>
                         </th>
                         <td mat-cell *matCellDef="let d">{{ d.primaryContact }}</td>
@@ -391,29 +399,6 @@
                             {{ d.modifiedDate | date: 'MM/dd/yyyy' }}
                         </td>
                     </ng-container>
-                    <!-- Actions Column -->
-                    <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef>Actions</th>
-                        <td mat-cell *matCellDef="let d">
-                            <button mat-icon-button [matMenuTriggerFor]="actionMenu">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <mat-menu #actionMenu="matMenu">
-                                <button mat-menu-item (click)="viewData(d)">
-                                    <mat-icon class="material-icons-outlined">visibility</mat-icon>
-                                    <span>View Data</span>
-                                </button>
-                                <button mat-menu-item (click)="visitPage(d)">
-                                    <mat-icon class="material-icons-outlined">open_in_new</mat-icon>
-                                    <span>Visit Page</span>
-                                </button>
-                                <button mat-menu-item (click)="editData(d)">
-                                    <mat-icon class="material-icons-outlined">edit</mat-icon>
-                                    <span>Edit Data</span>
-                                </button>
-                            </mat-menu>
-                        </td>
-                    </ng-container>
 
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns" cdkDropList
@@ -421,7 +406,7 @@
                         (cdkDropListDropped)="dropColumn($event)"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
-                <mat-paginator [length]="length()" [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons [pageSize]="15">
+                <mat-paginator [length]="length()" [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons [pageSize]="50">
                 </mat-paginator>
             </div>
 

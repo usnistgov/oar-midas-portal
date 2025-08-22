@@ -1,12 +1,52 @@
 <div class="help-dialog-container">
     <h1 mat-dialog-title>Advanced Search Help</h1>
     <div mat-dialog-content>
-        <p>Here’s how to use the Advanced Search:</p>
-        <ul>
-            <li>Keyword filters: …</li>
-            <li>Date range: …</li>
-            <li>Category: …</li>
-        </ul>
+        <p>Use the Advanced Search to filter DMPs and DAPs with multiple criteria:</p>
+        
+        <div class="help-section">
+            <h3>Text Search</h3>
+            <p>Search across record names, primary contacts, and organization units. Use the main search bar or expand Advanced Search for more options.</p>
+        </div>
+
+        <div class="help-section">
+            <h3>Filter Options</h3>
+            <ul>
+                <li><strong>Organization Unit:</strong> Filter by NIST organization (autocomplete available)</li>
+                <li><strong>Owner/Contact:</strong> Filter by record owner or primary contact (autocomplete available)</li>
+                <li><strong>Resource Type:</strong> Select DMP, DAP, or both</li>
+                <li><strong>Process Status:</strong> Filter by Published, Edit, or Reviewed status</li>
+                <li><strong>Has Publication:</strong> Show only records with associated paper publications</li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <h3>Date Filters</h3>
+            <ul>
+                <li><strong>Exact Date:</strong> Records modified on a specific date</li>
+                <li><strong>Before Date:</strong> Records modified before a date</li>
+                <li><strong>After Date:</strong> Records modified after a date</li>
+                <li><strong>Between Dates:</strong> Records modified within a date range</li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <h3>Managing Filters</h3>
+            <ul>
+                <li><strong>Save Filter:</strong> Save current filter settings for reuse</li>
+                <li><strong>Load Filter:</strong> Apply previously saved filter settings</li>
+                <li><strong>Clear Filters:</strong> Remove all filters and show all records</li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <h3>Table Features</h3>
+            <ul>
+                <li><strong>Column Visibility:</strong> Toggle columns on/off using checkboxes</li>
+                <li><strong>Column Reordering:</strong> Drag column headers to reorder</li>
+                <li><strong>Selection:</strong> Check boxes to select records for download</li>
+                <li><strong>Export:</strong> Download selected records or export entire table</li>
+            </ul>
+        </div>
     </div>
     <div mat-dialog-actions align="end">
         <button mat-flat-button mat-dialog-close color="primary">Close</button>

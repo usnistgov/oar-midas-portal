@@ -1,10 +1,30 @@
 
+/*
+//OPTION 1
 .layout-container {
   display: flex;
   flex-direction: column;
   height: 117vh;
-  /* ensure content + footer always push past viewport */
 }
+  */
+
+
+/*
+//OPTION 2 show footer
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}*/
+  
+
+
+.layout-container{
+  display:flex;
+  flex-direction: column;
+  height: 130vh;
+}
+
 
 mat-sidenav-content {
   flex: 1;
