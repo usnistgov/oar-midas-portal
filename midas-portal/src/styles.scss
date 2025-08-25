@@ -88,16 +88,20 @@ $da-dark  : mat.m2-define-dark-theme((
 // ======================================
 .theme-light.light {
   @include mat.all-component-colors($pb-light);
+  --info-bubble-bg:  #fff;
 }
 .theme-light.dark {
   @include mat.all-component-colors($pb-dark);
+  --info-bubble-bg: #333;
 }
 
 .theme-1.light {
   @include mat.all-component-colors($ip-light);
+  --info-bubble-bg:#fff
 }
 .theme-1.dark {
   @include mat.all-component-colors($ip-dark);
+  --info-bubble-bg: #333;
 }
 
 .theme-2.light {

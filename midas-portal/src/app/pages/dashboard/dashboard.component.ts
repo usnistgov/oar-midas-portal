@@ -75,31 +75,7 @@ export class DashboardComponent {
       this.dataService.loadAll().subscribe({
         next: () => {
           this.isLoading.set(false);
-          const wsUrl = this.dataService.resolveApiUrl('websocket_dbio');
           wrapGrid(this.dashboard().nativeElement, { duration: 300 });
-          this.wsService.connect(wsUrl);
-
-          this.wsService.messages$().subscribe(msg => {
-            const displayMsg = this.wsService.toDisplay(msg);
-            this.snackBar.open(displayMsg, 'Dismiss', {
-              duration: 3000,
-              horizontalPosition: 'right',
-              verticalPosition: 'top'
-            });
-            // Optionally refresh data:
-            if (this.wsService.record_type(msg) === 'dmp') {
-              this.dataService.getDmps().subscribe(dmps => {
-                this.dataService.setDmps(dmps);
-              });
-            } else if (this.wsService.record_type(msg) === 'dap') {
-              this.dataService.getDaps().subscribe(daps => {
-                this.dataService.setDaps(daps);
-              });
-              this.dataService.getFiles().subscribe(files => {
-                this.dataService.setFiles(files);
-              });
-            }
-          });
         },
         error: () => {
           this.isLoading.set(false);

@@ -1,12 +1,15 @@
-import { Component, ViewChild, computed, effect, signal } from '@angular/core';
+import { Component, ViewChild, computed, effect, signal, inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
 import { ThemeSelectorData, ThemeSelectorDialogComponent } from './components/theme-selector-dialog/theme-selector-dialog.component';
 import { DashboardService } from './services/dashboard.service';
 import { DataService } from './services/data.service';
+import { WebSocketService } from './services/websocket.service';
 import { AuthenticationService } from 'oarng';
 import { CredentialsService } from './services/credentials.service';
+
 /**
  * Represents available theme families for the app.
  */
@@ -22,9 +25,10 @@ export type Variant = 'light' | 'dark';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
   /** Application title (not currently in use) */
-  readonly title = 'new-midas-portal';
+  readonly title = 'Midas Portal';
 
   /** URL fallback to a local JSON file in case external API calls fail */
   private readonly fallbackUrl = '/assets/dmp.json';
@@ -68,6 +72,10 @@ export class AppComponent {
   used to delay the automatic expansion of the sidenav when a user hovers over it. */
   private hoverTimeout: ReturnType<typeof setTimeout> | null = null;
 
+  // Injected services
+  private wsService = inject(WebSocketService);
+  private snackBar = inject(MatSnackBar);
+
   constructor(
     public dashboardService: DashboardService,
     public dataService: DataService,
@@ -89,10 +97,20 @@ export class AppComponent {
       docEl.classList.remove('theme-light', 'theme-1', 'theme-2', 'theme-3', 'theme-4', 'light', 'dark');
       docEl.classList.add(this.family(), this.variant());
     });
-
   }
 
   ngOnInit(): void {
+    // Initialize authentication and credentials
+    this.initializeAuthentication();
+    
+    // Initialize WebSocket connection
+    this.initializeWebSocket();
+  }
+
+  /**
+   * Initialize authentication and set up credentials
+   */
+  private initializeAuthentication(): void {
     this.authsvc.getCredentials().subscribe({
       next: creds => {
         if (creds?.token) {
@@ -101,7 +119,6 @@ export class AppComponent {
             userAttributes: creds?.userAttributes,
             token: creds?.token
           });
-          
         } else {
           alert("Unable to determine your identity, cannot retrieve data.");
         }
@@ -112,6 +129,47 @@ export class AppComponent {
     });
   }
 
+  /**
+   * Initialize WebSocket connection and handle incoming messages
+   */
+  private initializeWebSocket(): void {
+    const waitForToken = () => {
+      const token = this.credsService.token();
+      if (token) {
+        // Initialize WebSocket connection
+        const wsUrl = this.dataService.resolveApiUrl('websocket_dbio');
+        this.wsService.connect(wsUrl);
+
+        // Subscribe to WebSocket messages
+        this.wsService.messages$().subscribe(msg => {
+          const displayMsg = this.wsService.toDisplay(msg);
+          this.snackBar.open(displayMsg, 'Dismiss', {
+            duration: 3000,
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
+          });
+
+          // Refresh data when records are updated
+          if (this.wsService.record_type(msg) === 'dmp') {
+            this.dataService.getDmps().subscribe(dmps => {
+              this.dataService.setDmps(dmps);
+            });
+          } else if (this.wsService.record_type(msg) === 'dap') {
+            this.dataService.getDaps().subscribe(daps => {
+              this.dataService.setDaps(daps);
+            });
+            this.dataService.getFiles().subscribe(files => {
+              this.dataService.setFiles(files);
+            });
+          }
+        });
+      } else {
+        setTimeout(waitForToken, 100); // Try again in 100ms
+      }
+    };
+
+    waitForToken();
+  }
 
   /** Sets a new theme family */
   setFamily(f: FamilyName) {
@@ -152,9 +210,9 @@ export class AppComponent {
   }
 
   /**
- * Toggles the collapsed state of the sidenav.
- * Automatically updates the signal and persists the new state in localStorage.
- */
+   * Toggles the collapsed state of the sidenav.
+   * Automatically updates the signal and persists the new state in localStorage.
+   */
   toggleSidenav() {
     this.collapsed.update(value => {
       const newValue = !value;
@@ -162,7 +220,6 @@ export class AppComponent {
       return newValue;
     });
   }
-
 
   /** Closes the sidenav with a provided reason */
   close(reason: string) {

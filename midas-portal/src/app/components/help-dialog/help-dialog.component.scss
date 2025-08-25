@@ -1,3 +1,38 @@
 .help-dialog-container {
-    padding: 8px;
+  // Remove max-height and overflow-y from here
+  width: 100%;
+}
+
+.help-content {
+  // Let mat-dialog-content handle scrolling
+  overflow: visible;
+}
+
+.help-section {
+  margin-bottom: 1.5rem;
+  
+  h3 {
+    color: var(--mat-primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+  
+  ul {
+    margin: 0.5rem 0;
+    padding-left: 1.2rem;
+    
+    li {
+      margin-bottom: 0.25rem;
+      line-height: 1.4;
+      
+      strong {
+        color: var(--mat-primary-color);
+      }
+    }
+  }
+  
+  p {
+    margin: 0.5rem 0;
+    line-height: 1.4;
+  }
 }

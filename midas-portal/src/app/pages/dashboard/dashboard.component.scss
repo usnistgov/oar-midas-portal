@@ -1,11 +1,32 @@
+/*
 .dashboard-container {
   padding: 8px;
   overflow-x: hidden;
+  overflow-y: hidden;
+  box-sizing: border-box;
+  height: 96vh;
+} */
+  
+
+  /*
+ //Option2 footer
+.dashboard-container {
+  padding: 8px;
+  overflow-x: hidden;
+  height: 100vh;
+} */
+
+
+.dashboard-container {
+  padding: 8px;
+  overflow-x: hidden;
+  overflow-y: clip;
+  height: 114vh;
+  box-sizing: border-box;
 }
 
 :host {
   display: block;
-  height: 100vh;
 }
 
 .dashboard-header {

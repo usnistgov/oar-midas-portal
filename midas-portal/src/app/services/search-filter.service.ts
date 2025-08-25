@@ -76,7 +76,9 @@ export class SearchFilterService {
     const orgMatch = !orgUnitCriteria || organizationUnit === orgUnitCriteria;
 
     // 4) owner
-    const ownerMatch = !ownerCriteria || primaryContact === ownerCriteria;
+    const ownerMatch = !ownerCriteria || 
+      normalize(primaryContact).includes(ownerCriteria) || 
+      normalize(owner).includes(ownerCriteria);
 
     // 5) type
     const typeMatch = c.types.length === 0 || c.types.includes(type);
@@ -159,7 +161,7 @@ export class SearchFilterService {
     }
     // 4) owner
     if (c.owner) {
-      parts.push(`Owner: ${c.owner}`);
+      parts.push(`Owner/Contact: ${c.owner}`);
     }
     // 5) types
     if (c.types.length) {
