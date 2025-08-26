@@ -286,4 +286,17 @@ loadReviews(): Observable<Review[]> {
   );  
 }
 
+getUser(): Observable<UserResponse> {
+    return of({
+      userDetails: {
+        userId: 'one1',
+        userEmail: 'omarilias.elmimouni@nist.gov',
+        userName: 'Omar Ilias',
+        userLastName: 'El Mimouni',
+        winId: 'one1',
+        Group: '77ITL'
+      }
+    });
+  }
+
 }
