@@ -19,17 +19,18 @@
   
 
 
-.layout-container{
-  display:flex;
+.layout-container {
+  display: flex;
   flex-direction: column;
-  height: 130vh;
+  min-height: 100vh; // Minimum full viewport
+  height: auto; // Allow growth
 }
-
 
 mat-sidenav-content {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: visible; // Allow content to expand
   padding: 8px 8px 0;
+  min-height: calc(100vh - 120px); // Minimum space for content
 }
 
 .toolbar {

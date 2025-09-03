@@ -56,6 +56,26 @@ export class DashboardComponent {
   afterDate?: Date;
   startDate?: Date;
   endDate?: Date;
+  readonly contentHeight = computed(() => {
+  const widgets = this.dashboardService.addedWidgets();
+  const colCount = this.getGridColumnCount();
+  
+  if (widgets.length === 0) return 'auto';
+  
+  // Calculate grid rows needed
+  const totalCells = widgets.reduce((sum, w) => sum + (w.columns ?? 1) * (w.rows ?? 1), 0);
+  const rowsNeeded = Math.ceil(totalCells / colCount);
+  
+  // Calculate total height (rows * height + gaps + padding)
+  const rowHeight = 120;
+  const gap = 16;
+  const padding = 48; // top + bottom padding
+  const headerHeight = 60; // dashboard header
+  
+  const totalHeight = (rowsNeeded * rowHeight) + ((rowsNeeded - 1) * gap) + padding + headerHeight;
+  
+  return `${totalHeight}px`;
+});
 
   constructor() {
 }
@@ -96,6 +116,22 @@ ngAfterViewInit(): void {
   window.addEventListener('resize', () => {
     this.updateWidgetSizes();
   });
+
+  // Use ResizeObserver for better performance than window resize
+  const resizeObserver = new ResizeObserver(() => {
+    this.updateWidgetSizes();
+  });
+  
+  resizeObserver.observe(this.dashboard().nativeElement);
+  
+  // Cleanup on destroy
+  this.onDestroy = () => resizeObserver.disconnect();
+}
+
+private onDestroy?: () => void;
+
+ngOnDestroy(): void {
+  this.onDestroy?.();
 }
 
   /**
@@ -127,16 +163,50 @@ ngAfterViewInit(): void {
 }
 
   updateWidgetSizes(): void {
-    const colCount = this.getGridColumnCount();
-    const colValue = colCount < 4 ? colCount : Math.floor(colCount / 2);
-    // Example: set every widget to span 1 column and 1 row, or use colCount for full width
-    const updated = this.dashboardService.addedWidgets().map(w => ({
+  const container = this.dashboard().nativeElement as HTMLElement;
+  const colCount = this.getGridColumnCount();
+  
+  // Calculate optimal widget dimensions
+  const containerWidth = container.offsetWidth;
+  const gap = 16;
+  const availableWidth = containerWidth - (gap * (colCount - 1));
+  const optimalColWidth = Math.floor(availableWidth / colCount);
+  
+  const updated = this.dashboardService.addedWidgets().map(w => {
+    const cols = Math.min(w.columns ?? 1, colCount);
+    const rows = this.calculateOptimalRows(w, optimalColWidth);
+    
+    return {
       ...w,
-      columns: Math.max(w.columns ?? 1, colValue),
-      rows: w.rows ?? 1 // you can adjust this logic as needed
-    }));
-    this.dashboardService.addedWidgets.set(updated);
-  }
+      columns: cols,
+      rows: rows
+    };
+  });
+  
+  this.dashboardService.addedWidgets.set(updated);
+  
+  // Update grid template after widget update
+  this.updateGridTemplate();
+}
+
+private calculateOptimalRows(widget: any, colWidth: number): number {
+  // Base row height is 120px
+  const baseRowHeight = 120;
+  const minRows = widget.rows ?? 1;
+  
+  // You can add logic here to calculate optimal height based on widget content
+  // For now, use the widget's preferred rows or minimum
+  return Math.max(minRows, 1);
+}
+
+private updateGridTemplate(): void {
+  const container = this.dashboard().nativeElement as HTMLElement;
+  const colCount = this.getGridColumnCount();
+  
+  // Update CSS grid template
+  container.style.gridTemplateColumns = `repeat(${colCount}, 1fr)`;
+  container.style.gridAutoRows = 'minmax(120px, auto)';
+}
 
   /**
    * Toggles the filter sidebar and prevents background scroll when open.
