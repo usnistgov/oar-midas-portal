@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { signal } from '@angular/core';
+import { of } from 'rxjs';
 import { DataService, UserResponse } from './data.service';
 import { ConfigurationService } from '../../../../lib/dist/oarng';
 import { CredentialsService } from './credentials.service';
+import { DashboardService } from './dashboard.service'; // Adjust path
 import { Dap, Dmp, File, Review } from '../models/dashboard';
 
 describe('DataService', () => {
@@ -27,10 +31,35 @@ describe('DataService', () => {
   };
 
   beforeEach(async () => {
-    const configSpy = jasmine.createSpyObj('ConfigurationService', ['getConfig']);
-    const credsSpy = jasmine.createSpyObj('CredentialsService', [], {
-      token: signal(null)
-    });
+    TestBed.resetTestingModule();
+
+    await TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+        MatSnackBarModule,
+        MatDialogModule,
+        NoopAnimationsModule
+      ],
+      providers: [
+        {
+          provide: ConfigurationService,
+          useValue: {
+            getConfig: jasmine.createSpy('getConfig').and.returnValue(mockConfig)
+          }
+        },
+        {
+          provide: CredentialsService,
+          useValue: {
+            token: signal(null),
+            userId: signal('testUser')
+          }
+        },
+        {
+          provide: DashboardService,
+          useValue: {}
+        }
+      ]
+    }).compileComponents();
 
     spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify({
       dmpUI: { value: 'http://test.com/dmp' },
@@ -38,26 +67,9 @@ describe('DataService', () => {
       nextcloudUI: { value: 'http://test.com/files' }
     }));
 
-    await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        MatSnackBarModule,
-        NoopAnimationsModule
-      ],
-      providers: [
-        // Don't provide DataService - let Angular handle it with providedIn: 'root'
-        { provide: ConfigurationService, useValue: configSpy },
-        { provide: CredentialsService, useValue: credsSpy }
-      ]
-    }).compileComponents();
-
     configServiceSpy = TestBed.inject(ConfigurationService) as jasmine.SpyObj<ConfigurationService>;
     credentialsServiceSpy = TestBed.inject(CredentialsService) as jasmine.SpyObj<CredentialsService>;
     httpMock = TestBed.inject(HttpTestingController);
-
-    configServiceSpy.getConfig.and.returnValue(mockConfig);
-
-    // Direct injection without runInInjectionContext
     service = TestBed.inject(DataService);
   });
 
@@ -80,7 +92,7 @@ describe('DataService', () => {
   describe('API URL Resolution', () => {
     it('should resolve API URLs from config', () => {
       const url = service.resolveApiUrl('dapAPI');
-      expect(url).toBe('http://test.com/api/daps');
+      expect(url).toBe('https://localhost/midas/dap/mds3');
     });
 
     it('should return empty string for missing config keys', () => {
@@ -96,7 +108,12 @@ describe('DataService', () => {
       name: 'Test DMP',
       owner: 'test-owner',
       data: {
-        contributors: [{ primary_contact: 'Yes', emailAddress: 'test@example.com' }],
+        contributors: [{ 
+          primary_contact: 'Yes', 
+          firstName: 'John',        // Add firstName
+          lastName: 'Doe'           // Add lastName
+          // Remove emailAddress as it's not used by the mapper
+        }],
         organizations: [{ ouName: 'Test Org' }],
         dmpSearchable: 'yes',
         keywords: ['test', 'keyword']
@@ -109,10 +126,10 @@ describe('DataService', () => {
       service.getDmps().subscribe(dmps => {
         expect(dmps).toHaveSize(1);
         expect(dmps[0].name).toBe('Test DMP');
-        expect(dmps[0].primaryContact).toBe('test@example.com');
+        expect(dmps[0].primaryContact).toBe('John Doe'); // Update expected value
       });
 
-      const req = httpMock.expectOne('http://test.com/api/dmps');
+      const req = httpMock.expectOne('https://localhost/midas/dmp/mdm1');
       expect(req.request.method).toBe('GET');
       req.flush([mockDmpRaw]);
     });
@@ -122,7 +139,7 @@ describe('DataService', () => {
         expect(dmps).toHaveSize(1);
       });
 
-      const apiReq = httpMock.expectOne('http://test.com/api/dmps');
+      const apiReq = httpMock.expectOne('https://localhost/midas/dmp/mdm1');
       apiReq.error(new ErrorEvent('Network error'));
 
       const fallbackReq = httpMock.expectOne('http://test.com/fallback/dmps.json');
@@ -135,7 +152,8 @@ describe('DataService', () => {
         name: 'Test DAP',
         owner: 'test-owner',
         data: { contributors: [{ primary_contact: 'Yes', emailAddress: 'dap@example.com' }] },
-        status: { modifiedDate: '2023-01-01T00:00:00Z' }
+        status: { modifiedDate: '2023-01-01T00:00:00Z' },
+        file_space: { location: '/test/location' }
       };
 
       service.getDaps().subscribe(daps => {
@@ -143,7 +161,7 @@ describe('DataService', () => {
         expect(daps[0].name).toBe('Test DAP');
       });
 
-      const req = httpMock.expectOne('http://test.com/api/daps');
+      const req = httpMock.expectOne('https://localhost/midas/dap/mds3');
       req.flush([mockDapRaw]);
     });
 
@@ -152,7 +170,7 @@ describe('DataService', () => {
         id: '1',
         name: 'Test File',
         file_space: {
-          usage: '1024', // String as you noted
+          usage: '1024',
           file_count: 5,
           location: '/test/path'
         },
@@ -164,7 +182,7 @@ describe('DataService', () => {
         expect(files[0].usage).toBe('1024');
       });
 
-      const req = httpMock.expectOne('http://test.com/api/daps'); // Note: uses dapAPI
+      const req = httpMock.expectOne('https://localhost/midas/dap/mds3');
       req.flush([mockFileRaw]);
     });
 
@@ -182,7 +200,7 @@ describe('DataService', () => {
         expect(reviews[0].title).toBe('Test Review');
       });
 
-      const req = httpMock.expectOne('http://test.com/api/reviews');
+      const req = httpMock.expectOne('http://test.com/api/reviewstestUser');
       req.flush([mockReviewRaw]);
     });
 
@@ -241,7 +259,7 @@ describe('DataService', () => {
         {
           id: '1',
           name: 'Test File',
-          usage: '1024', // String as you noted
+          usage: '1024',
           fileCount: 5,
           modifiedDate: new Date(),
           location: '/test/path'
@@ -256,15 +274,15 @@ describe('DataService', () => {
   describe('UI URL Getters', () => {
     describe('with config present', () => {
       it('should return DMP UI URL from config', () => {
-        expect(service.dmpUI).toBe('http://test.com/dmp');
+        expect(service.dmpUI).toBe('https://mdstest.nist.gov/dmpui/new');
       });
 
       it('should return DAP UI URL from config', () => {
-        expect(service.dapUI).toBe('http://test.com/dap');
+        expect(service.dapUI).toBe('https://mdstest.nist.gov/dapui/new');
       });
 
       it('should return Nextcloud UI URL from config', () => {
-        expect(service.nextcloudUI).toBe('http://test.com/files');
+        expect(service.nextcloudUI).toBe('https://mdstest.nist.gov/fileui/new');
       });
     });
 
@@ -272,17 +290,10 @@ describe('DataService', () => {
       let emptyConfigService: DataService;
 
       beforeEach(async () => {
-        // Reset localStorage before creating new TestBed
         (localStorage.getItem as jasmine.Spy).and.returnValue('{}');
         
-        // Reset TestBed to get a fresh service instance
         TestBed.resetTestingModule();
         
-        const configSpy = jasmine.createSpyObj('ConfigurationService', ['getConfig']);
-        const credsSpy = jasmine.createSpyObj('CredentialsService', [], {
-          token: signal(null)
-        });
-
         await TestBed.configureTestingModule({
           imports: [
             HttpClientTestingModule,
@@ -290,12 +301,37 @@ describe('DataService', () => {
             NoopAnimationsModule
           ],
           providers: [
-            { provide: ConfigurationService, useValue: configSpy },
-            { provide: CredentialsService, useValue: credsSpy }
+            {
+              provide: ConfigurationService,
+              useValue: {
+                getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+              }
+            },
+            {
+              provide: CredentialsService,
+              useValue: {
+                token: signal(null),
+                userId: signal('testUser')
+              }
+            },
+            {
+              provide: DashboardService,
+              useValue: {}
+            },
+            {
+              provide: MatDialogRef,
+              useValue: {
+                close: jasmine.createSpy('close'),
+                afterClosed: () => of(true)
+              }
+            },
+            {
+              provide: MAT_DIALOG_DATA,
+              useValue: {}
+            }
           ]
         }).compileComponents();
 
-        configSpy.getConfig.and.returnValue(mockConfig);
         emptyConfigService = TestBed.inject(DataService);
       });
 

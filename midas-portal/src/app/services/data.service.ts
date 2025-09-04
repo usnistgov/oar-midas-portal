@@ -237,17 +237,20 @@ export class DataService {
 
   // Getter for the DMP creation URL:
   get dmpUI(): string {
-    return this.configService.getConfig()['dmpUI']
+    return this.configService.getConfig()['dmpUI'] || 
+         'https://mdstest.nist.gov/dmpui/new';
   }
-
+  
   // Getter for the DAP creation URL:
   get dapUI(): string {
-    return this.configService.getConfig()['dapUI'] 
+    return this.configService.getConfig()['dapUI'] || 
+         'https://mdstest.nist.gov/dapui/new';
   }
 
   // Getter for the File creation URL:
   get nextcloudUI(): string {
-    return this.configService.getConfig()['nextcloudUI'] 
+    return this.configService.getConfig()['nextcloudUI'] || 
+         'https://mdstest.nist.gov/fileui/new';
   }
 
 

@@ -13,17 +13,16 @@ export class FilesComponent {
   }
 
   get fileCount() {
-    return this.dataService.files().length;
+    return this.dataService.files.length;
   }
 
   get recentFileCount() {
-    return this.dataService.files().filter(file => {
-      const modifiedDate = new Date(file.modifiedDate);
-      const today = new Date();
-      const diffDays = Math.ceil((today.getTime() - modifiedDate.getTime()) / (1000 * 3600 * 24));
-      return diffDays <= 30; // Adjust the number of days as needed
-    }).length;
-  }
-
+  return this.dataService.files().filter(file => {
+    const modifiedDate = new Date(file.modifiedDate);
+    const today = new Date();
+    const diffDays = Math.ceil((today.getTime() - modifiedDate.getTime()) / (1000 * 3600 * 24));
+    return diffDays <= 30; // Adjust the number of days as needed
+  }).length;
+}
 
 }
