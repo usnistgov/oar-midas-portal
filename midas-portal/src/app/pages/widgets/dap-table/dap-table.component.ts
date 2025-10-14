@@ -16,7 +16,7 @@ import { Dap } from '../../../models/dashboard';
 import { Widget } from '../../../models/dashboard';
 import { getMaxVisibleRows } from '../table-utils';
 
-import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
+import { getStatusClass as statusClassUtil } from '../../../shared/table-utils';
 
 @Component({
   selector: 'app-dap-table',
