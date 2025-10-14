@@ -3,6 +3,11 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox'; // Add this for lockSidebar
+import { MatButtonModule } from '@angular/material/button';
 import { signal } from '@angular/core';
 import { SettingsDialogComponent } from './settings-dialog.component';
 import { ConfigurationService } from 'oarng';
@@ -24,7 +29,12 @@ describe('SettingsDialogComponent', () => {
         HttpClientTestingModule,
         MatSnackBarModule,
         MatDialogModule,
-        NoopAnimationsModule
+        NoopAnimationsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatCheckboxModule,    // Add this for lockSidebar
+        MatButtonModule
       ],
       providers: [
         {
@@ -49,7 +59,7 @@ describe('SettingsDialogComponent', () => {
           useValue: {}
         },
         {
-          provide: MatDialogRef, // Add this
+          provide: MatDialogRef,
           useValue: {
             close: jasmine.createSpy('close'),
             afterClosed: jasmine.createSpy('afterClosed')

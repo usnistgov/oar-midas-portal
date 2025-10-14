@@ -14,6 +14,7 @@ import { CredentialsService } from '../../../services/credentials.service';
 import { DashboardService } from '../../../services/dashboard.service';
 import { DataService } from '../../../services/data.service';
 import { Widget } from '../../../models/dashboard';
+import { MatIconModule } from '@angular/material/icon'; // Add this
 
 // Mock component for testing
 @Component({
@@ -38,7 +39,8 @@ describe('DmpTableComponent', () => {
         MatTableModule,
         MatPaginatorModule,
         MatSortModule,
-        NoopAnimationsModule
+        NoopAnimationsModule,
+        MatIconModule
       ],
       providers: [
         {

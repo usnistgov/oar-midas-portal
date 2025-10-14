@@ -10,6 +10,8 @@ import { ConfigurationService } from '../../../../../lib/dist/oarng'; // Adjust 
 import { CredentialsService } from '../../services/credentials.service'; // Adjust path
 import { DashboardService } from '../../services/dashboard.service'; // Adjust path
 import { DataService } from '../../services/data.service'; // Adjust path
+import { MatRadioModule } from '@angular/material/radio'; 
+import { FormsModule } from '@angular/forms';
 
 describe('ThemeSelectorDialogComponent', () => {
   let component: ThemeSelectorDialogComponent;
@@ -25,7 +27,9 @@ describe('ThemeSelectorDialogComponent', () => {
         HttpClientTestingModule,
         MatSnackBarModule,
         MatDialogModule,
-        NoopAnimationsModule
+        NoopAnimationsModule,
+        MatRadioModule,
+        FormsModule
       ],
       providers: [
         {

@@ -3,6 +3,8 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatRadioModule } from '@angular/material/radio'; // Add this
+import { FormsModule } from '@angular/forms'; // Add this for ngModel
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
 import { LoadFilterDialogComponent } from './load-filter-dialog.component';
@@ -25,7 +27,9 @@ describe('LoadFilterDialogComponent', () => {
         HttpClientTestingModule,
         MatSnackBarModule,
         MatDialogModule,
-        NoopAnimationsModule
+        NoopAnimationsModule,
+        MatRadioModule,
+        FormsModule
       ],
       providers: [
         {
