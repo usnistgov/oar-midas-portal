@@ -1,25 +1,60 @@
 /* maintenance-notice.component.scss */
 
-/* give yourself a CSS variable for easy icon size changes */
 :host {
-  --warning-icon-size: 1.75rem;
-  /* tweak this however you like */
-  --warning-icon-color: #FFB300;
-  /* amber 600 */
+  /* Define color variables for different statuses */
+  --success-color: #4CAF50;      /* Green - All OK */
+  --warning-color: #FF9800;      /* Orange - Maintenance Scheduled */
+  --error-color: #F44336;        /* Red - Under Maintenance */
+  --primary-color: #1976D2;      /* Blue - Default/Info */
+  --status-icon-size: 1.75rem;
 }
 
 .container {
   padding: 16px;
 }
 
-
 .notice-header {
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   flex-direction: row;
-  padding: 0 16px;
+  padding: 16px;
   min-height: 48px;
+  border-radius: 8px 8px 0 0;
+  
+  /* Dynamic background colors based on status */
+  &[data-status="ok"] {
+    background-color: var(--success-color);
+    color: white;
+    
+    .status-icon {
+      color: white !important;
+    }
+  }
+  
+  &[data-status="maintenance_scheduled"] {
+    background-color: var(--warning-color);
+    color: white;
+    
+    .status-icon {
+      color: white !important;
+    }
+  }
+  
+  &[data-status="under_maintenance"] {
+    background-color: var(--error-color);
+    color: white;
+    
+    .status-icon {
+      color: white !important;
+    }
+  }
+  
+  /* Default styling for other statuses */
+  &:not([data-status]) {
+    background-color: var(--mat-toolbar-container-background-color);
+    color: var(--mat-toolbar-container-text-color);
+  }
 
   .title-content {
     display: flex;
@@ -27,19 +62,77 @@
     gap: 0.5rem;
     font-size: 1.25rem;
     font-weight: 500;
-    color: var(--mat-app-text-color);
+    width: 100%;
+    
+    /* Ensure no text baseline issues */
+    align-items: center !important;
+    /* Ensure proper height for the container */
+    min-height: var(--status-icon-size);
   }
 
+  .status-icon {
+    /* Make the icon a proper flex item - FIX FOR CROPPING */
+    flex-shrink: 0;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    font-size: var(--status-icon-size) !important;
+    width: var(--status-icon-size) !important;
+    height: var(--status-icon-size) !important;
+    
+    /* Remove problematic properties */
+    line-height: 1 !important;
+    padding: 0 !important;
+    margin-right: 0.25rem !important;
+    
+    /* Ensure icon renders fully */
+    overflow: visible !important;
+    box-sizing: border-box !important;
+    
+    /* Individual icon colors when not using header backgrounds */
+    &.icon-success {
+      color: var(--success-color) !important;
+    }
+    
+    &.icon-warning {
+      color: var(--warning-color) !important;
+    }
+    
+    &.icon-error {
+      color: var(--error-color) !important;
+    }
+    
+    &.icon-primary {
+      color: var(--primary-color) !important;
+    }
+  }
+
+  /* Legacy support for existing warning-icon class */
   .warning-icon {
-    font-size: 1.75rem !important;
-    padding-right: 0.25rem;
-    color: var(--warning-icon-color) !important;
-    line-height: 1;
+    /* Apply same fix to legacy class */
+    flex-shrink: 0;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    font-size: var(--status-icon-size) !important;
+    width: var(--status-icon-size) !important;
+    height: var(--status-icon-size) !important;
+    
+    margin-right: 0.25rem !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    
+    color: var(--warning-color) !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
   }
 }
 
 .maintenance-content {
-
+  padding: 16px;
+  
   p,
   ul {
     margin: 0 0 1rem 0;
@@ -60,5 +153,40 @@
 }
 
 mat-dialog-actions {
-  padding: 1rem 0 0;
+  padding: 1rem 16px 0;
+  
+  /* Color the action button based on status */
+  .container[data-status="ok"] & button[color="success"] {
+    --mdc-filled-button-container-color: var(--success-color);
+  }
+  
+  .container[data-status="maintenance_scheduled"] & button[color="warning"] {
+    --mdc-filled-button-container-color: var(--warning-color);
+  }
+  
+  .container[data-status="under_maintenance"] & button[color="error"] {
+    --mdc-filled-button-container-color: var(--error-color);
+  }
+}
+
+/* Alternative approach: Icon-only coloring (if you don't want colored headers) */
+.icon-only-approach {
+  .notice-header {
+    background: transparent;
+    color: var(--mat-app-text-color);
+    
+    .status-icon {
+      &.icon-success {
+        color: var(--success-color) !important;
+      }
+      
+      &.icon-warning {
+        color: var(--warning-color) !important;
+      }
+      
+      &.icon-error {
+        color: var(--error-color) !important;
+      }
+    }
+  }
 }

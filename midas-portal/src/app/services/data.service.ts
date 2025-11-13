@@ -20,6 +20,12 @@ export interface UserResponse {
   userDetails: UserDetails;
 }
 
+export interface MaintenanceInfo {
+  status: 'success' | 'info' | 'warning';
+  title: string;
+  content: string;
+}
+
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
@@ -96,6 +102,21 @@ export class DataService {
       })
     );
 }
+
+  getMaintenanceInfo(): Observable<MaintenanceInfo> {
+    const url = this.resolveApiUrl('infoURL');
+    return this.http.get<MaintenanceInfo>(url).pipe(
+      catchError(err => {
+        console.error('Failed to load maintenance info:', err);
+        // Fallback to default "ok" status
+        return of<MaintenanceInfo>({
+          status: 'success',
+          title: 'System Status',
+          content: '<p>All systems are operational.</p>'
+        });
+      })
+    );
+  }
 
   getInfoText(): Observable<string> {
     const url = this.resolveApiUrl('infoURL');

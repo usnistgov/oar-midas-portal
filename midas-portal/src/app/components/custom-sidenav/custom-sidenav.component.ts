@@ -1,7 +1,7 @@
 import { Component, computed, Input, OnInit, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MaintenanceNoticeComponent } from '../maintenance-notice/maintenance-notice.component';
-import { DataService, UserResponse } from '../../services/data.service';
+import { DataService, UserResponse, MaintenanceInfo } from '../../services/data.service';
 import { AuthenticationService } from 'oarng';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { ThemeSelectorData, ThemeSelectorDialogComponent } from '../theme-selector-dialog/theme-selector-dialog.component';
@@ -28,7 +28,40 @@ export class CustomSidenavComponent implements OnInit {
     JSON.parse(localStorage.getItem('sidenavCollapsed') ?? 'false')
   );
 
+  readonly maintenanceInfo = signal<MaintenanceInfo>({
+    status: 'success',
+    title: 'System Status',
+    content: ''
+  });
+
   readonly sideNavWidth = computed(() => this.sideNavCollapsed() ? '64px' : '320px');
+
+  readonly maintenanceIcon = computed(() => {
+    const status = this.maintenanceInfo().status;
+    
+    switch (status) {
+      case 'success':
+        return {
+          icon: 'check_circle',
+          color: 'success-icon' // CSS class for green
+        };
+      case 'info':
+        return {
+          icon: 'schedule',
+          color: 'warning-icon' // CSS class for orange
+        };
+      case 'warning':
+        return {
+          icon: 'warning',
+          color: 'error-icon' // CSS class for red
+        };
+      default:
+        return {
+          icon: 'info',
+          color: 'info-icon' // CSS class for blue
+        };
+    }
+  });
 
   toggleSidenav() {
     this.sideNavCollapsed.update(value => {
@@ -108,6 +141,8 @@ export class CustomSidenavComponent implements OnInit {
 
   /** Fetch user data and apply config-based menu link overrides */
   ngOnInit(): void {
+
+    this.loadMaintenanceInfo();
     // Ensure showHeaderText is correct on init
     if (!this.sideNavCollapsed()) {
       setTimeout(() => this.showHeaderText.set(true), 100);
@@ -133,6 +168,12 @@ export class CustomSidenavComponent implements OnInit {
     });
 
     this.loadMenuLinksFromConfig();
+  }
+
+  private loadMaintenanceInfo(): void {
+    this.dataService.getMaintenanceInfo().subscribe(info => {
+      this.maintenanceInfo.set(info);
+    });
   }
 
   /** Updates "Create DMP/DAP" links dynamically based on `appConfig` in localStorage */
