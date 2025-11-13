@@ -11,8 +11,17 @@ export type MenuItem = {
   name: string;
   icon: string;
   link: string;
+  enabled?: boolean;
+  order?: number;
+  requiresConfig?: boolean;
   subItems?: MenuItem[];
 };
+
+export interface MenuConfig {
+  menuItems: MenuItem[];
+  version: string;
+  lastUpdated: string;
+}
 
 export type FamilyName = 'theme-light' | 'theme-1' | 'theme-2' | 'theme-3' | 'theme-4';
 export type Variant = 'light' | 'dark';
@@ -90,40 +99,7 @@ export class CustomSidenavComponent implements OnInit {
   group?: string;
 
   /** Menu items for the sidenav, some populated dynamically from local config */
-  readonly menuItems = signal<MenuItem[]>([
-    { key: 'dashboard', name: 'Dashboard', icon: 'dashboard', link: '/dashboard' },
-    { key: 'searchExport', name: 'Search and Export', icon: 'search', link: '/search' },
-    {
-      key: 'toolsGuide', name: 'MIDAS Tools Guide', icon: 'person', link: '#',
-      subItems: [
-        { key: 'userGuides', name: 'User Guides', icon: '', link: 'https://inet.nist.gov/mr/library/midas-user-guides' },
-        { key: 'dmpDocs', name: 'Data Management Plans', icon: '', link: 'https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-management-plans' },
-        { key: 'dapDocs', name: 'Digital Asset Publishing', icon: '', link: 'https://inet.nist.gov/mr/library/midas-user-guides/midas-components/digital-asset-publisher-dap' },
-        { key: 'fileMgmt', name: 'File Management', icon: '', link: 'https://inet.nist.gov/mr/library/midas-user-guides/midas-components/file-manager' },
-        { key: 'dataReview', name: 'Data Review', icon: '', link: 'https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-review-system' },
-        { key: 'reports', name: 'Reports', icon: '', link: 'https://inet.nist.gov/mr/library/midas-tools/reports' },
-      ]
-    },
-    {
-      key: 'createNew', name: 'Create New…', icon: 'note_add', link: '#',
-      subItems: [
-        { key: 'createDmp', name: 'Data Management Plan', icon: '', link: this.dataService.dmpUI },
-        { key: 'createDap', name: 'Digital Asset Publication', icon: '', link: this.dataService.dapUI },
-      ]
-    },
-    { key: 'openAccess', name: 'Open Access INET', icon: 'open_in_new', link: '#' },
-    { key: 'publicData', name: 'Public Data Portal', icon: 'public', link: 'https://data.nist.gov' },
-    { key: 'userSupport', name: 'User Support', icon: 'support_agent', link: 'https://inet.nist.gov/mr/library/publishing-support-nist-publications' },
-    { key: 'dataPolicy', name: 'Data Policy', icon: 'policy', link: 'https://inet.nist.gov/mr/library/midas-user-guides' },
-    { key: 'devTools', name: 'Developer Tools', icon: 'build', link: 'https://inet.nist.gov/mr/library/midas-user-guides' },
-    {
-      key: 'chipsMetrology', name: 'CHIPS Metrology', icon: 'memory', link: '#',
-      subItems: [
-        { key: 'chipsGuidance', name: 'Guidance', icon: '', link: 'https://inet.nist.gov/mr/library/midas-user-guides' },
-        { key: 'metisPublic', name: 'METIS Public', icon: '', link: '#' },
-      ]
-    }
-  ]);
+  readonly menuItems = signal<MenuItem[]>([]);
 
   // Theme and settings logic
   readonly family = signal<FamilyName>(
@@ -143,6 +119,7 @@ export class CustomSidenavComponent implements OnInit {
   ngOnInit(): void {
 
     this.loadMaintenanceInfo();
+    this.loadMenuConfig();
     // Ensure showHeaderText is correct on init
     if (!this.sideNavCollapsed()) {
       setTimeout(() => this.showHeaderText.set(true), 100);
@@ -173,6 +150,13 @@ export class CustomSidenavComponent implements OnInit {
   private loadMaintenanceInfo(): void {
     this.dataService.getMaintenanceInfo().subscribe(info => {
       this.maintenanceInfo.set(info);
+    });
+  }
+
+  private loadMenuConfig(): void {
+    this.dataService.getMenuConfig().subscribe(config => {
+      console.log('Loaded menu config:', config);
+      this.menuItems.set(config.menuItems);
     });
   }
 

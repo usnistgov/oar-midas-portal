@@ -27,6 +27,25 @@ export interface MaintenanceInfo {
 }
 
 
+export interface MenuConfig {
+  menuItems: MenuItem[];
+  version: string;
+  lastUpdated: string;
+}
+
+
+export interface MenuItem {
+  key: string;
+  name: string;
+  icon: string;
+  link: string;
+  enabled?: boolean;
+  order?: number;
+  requiresConfig?: boolean;
+  subItems?: MenuItem[];
+}
+
+
 @Injectable({ providedIn: 'root' })
 export class DataService {
   private snackBar = inject(MatSnackBar);
@@ -308,6 +327,52 @@ loadReviews(): Observable<Review[]> {
       return of([]);
     })
   );  
+}
+
+getMenuConfig(): Observable<MenuConfig> {
+  const url = this.resolveApiUrl('menuConfigURL');
+  return this.http.get<MenuConfig>(url).pipe(
+    catchError(err => {
+      console.error('Failed to load menu config:', err);
+      // Fallback to default menu config
+      return of<MenuConfig>({
+        menuItems: [
+          { key: 'dashboard', name: 'Dashboard', icon: 'dashboard', link: '/dashboard', enabled: true, order: 1 },
+          { key: 'searchExport', name: 'Search and Export', icon: 'search', link: '/search', enabled: true, order: 2 }
+        ],
+        version: '1.0-fallback',
+        lastUpdated: new Date().toISOString()
+      });
+    }),
+    map(config => this.processMenuConfig(config))
+  );
+}
+
+private processMenuConfig(config: MenuConfig): MenuConfig {
+  // Process menu items and replace template variables
+  const processedItems = config.menuItems.map(item => ({
+    ...item,
+    link: this.replaceTemplateVariables(item.link),
+    subItems: item.subItems?.map(subItem => ({
+      ...subItem,
+      link: this.replaceTemplateVariables(subItem.link)
+    }))
+  }));
+
+  return {
+    ...config,
+    menuItems: processedItems.filter(item => item.enabled !== false)
+      .sort((a, b) => (a.order || 999) - (b.order || 999))
+  };
+}
+
+private replaceTemplateVariables(link: string): string {
+  if (!link) return link;
+  
+  return link
+    .replace('{{dmpUI}}', this.dmpUI)
+    .replace('{{dapUI}}', this.dapUI)
+    .replace('{{nextcloudUI}}', this.nextcloudUI);
 }
 
 getUser(): Observable<UserResponse> {
