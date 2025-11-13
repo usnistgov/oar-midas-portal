@@ -14,7 +14,7 @@
     "auth": {
         "serviceEndpoint": "http://localhost/sso/"
     },
-    "infoURL": "http://localhost:4200/assets/infotest/info_success.json",
+    "infoURL": "http://localhost:4200/assets/infotest/info.json",
     "menuConfigURL": "http://localhost:4200/assets/sidebar/menu-config.json",
     "websocket_dbio" : "wss://localhost/midas-ws",
     "peopleURL": "http://localhost/midas/nsd/oar1/people/index",
