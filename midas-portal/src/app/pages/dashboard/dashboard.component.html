@@ -39,7 +39,7 @@
     <!-- Widget Grid Container -->
     <div #widgetsContainer class="widgets-container" cdkDropListGroup>
         @for (w of dashboardService.addedWidgets(); track w.id) {
-        <app-widget *ngIf="credsService.token() && credsService.userId()" [data]="w"></app-widget>
+        <app-widget *ngIf="credsService.token() && credsService.userId()" cdkDropList [data]="w" [cdkDropListData]="w.id" (cdkDropListDropped)="drop($event)"></app-widget>
         }
     </div>
 
