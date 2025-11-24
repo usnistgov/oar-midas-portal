@@ -118,5 +118,11 @@ export class DmpTableComponent implements AfterViewInit {
     window.open(this.dataService.dmpUI, '_blank');
   }
 
+    clearFilter(input: HTMLInputElement) {
+  input.value = '';
+  this.applyFilter({ target: input } as unknown as Event);
+  input.focus(); // Optional: keep focus on the input after clearing
+}
+
 
 }

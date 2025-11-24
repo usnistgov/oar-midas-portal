@@ -117,4 +117,10 @@ export class FilesTableComponent implements AfterViewInit {
   createFile() {
     window.open(this.dataService.nextcloudUI, '_blank');
   }
+
+  clearFilter(input: HTMLInputElement) {
+  input.value = '';
+  this.applyFilter({ target: input } as unknown as Event);
+  input.focus(); // Optional: keep focus on the input after clearing
+}
 }

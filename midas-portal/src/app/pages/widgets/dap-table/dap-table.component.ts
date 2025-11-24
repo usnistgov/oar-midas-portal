@@ -118,4 +118,10 @@ export class DapTableComponent implements  AfterViewInit {
   createDap() {
     window.open(this.dataService.dapUI, '_blank');
   }
+
+    clearFilter(input: HTMLInputElement) {
+  input.value = '';
+  this.applyFilter({ target: input } as unknown as Event);
+  input.focus(); // Optional: keep focus on the input after clearing
+}
 }

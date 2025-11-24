@@ -142,4 +142,10 @@ export class ReviewsTableComponent implements AfterViewInit {
     const userId = this.credsService.userId?.() || this.credsService.userId ; // adapt to your service
     return this.dataService.resolveApiUrl('NPSAPI')+userId+'Dataset/DataSetDetails?id='.concat(id);
   }
+
+    clearFilter(input: HTMLInputElement) {
+  input.value = '';
+  this.applyFilter({ target: input } as unknown as Event);
+  input.focus(); // Optional: keep focus on the input after clearing
+}
 }
