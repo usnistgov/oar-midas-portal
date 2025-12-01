@@ -56,6 +56,7 @@ m2repo
 node_modules
 *.pack
 midas-portal/.angular/cache/
+midas-portal/coverage/
 
 package-lock.json
 .vscode/launch.json
