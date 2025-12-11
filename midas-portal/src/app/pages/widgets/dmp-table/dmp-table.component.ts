@@ -37,6 +37,8 @@ export class DmpTableComponent implements AfterViewInit {
   widget = input.required<Widget>();
 
   length = computed(() => this.dataService.dmps().length);
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 20, 50];
 
   isLoading = signal(false);
 
@@ -73,10 +75,24 @@ export class DmpTableComponent implements AfterViewInit {
       this.dataSource._updateChangeSubscription();
     });
     effect(() => {
-      // Update table when widget rows (and thus pageSize) changes
-      const rows = this.widget().rows;
-      this.dataSource._updateChangeSubscription();
+      const widget = this.widget();
+      if (widget?.rows !== undefined) {
+        const rows = widget.rows;
+        this.dataSource._updateChangeSubscription();
+      }
     });
+    effect(() => {
+          const widget = this.widget();
+          console.log('📡 Widget signal changed:', widget); // Fixed
+          
+          if (widget?.rows !== undefined) {
+            this.pageSize = getMaxVisibleRows(widget.rows);
+            console.log('📊 Updated pageSize to:', this.pageSize);
+            const baseOptions = [5, 10, 15];
+            const ps = this.pageSize;
+            this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
+          }
+        });
   }
 
 
@@ -86,15 +102,6 @@ export class DmpTableComponent implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-    get pageSize(): number {
-      return getMaxVisibleRows(this.widget().rows ?? 1);
-    }
-  
-    get pageSizeOptions(): number[] {
-    const baseOptions = [5, 10, 15];
-    const ps = this.pageSize;
-    return baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
-  }
 
   /** simple client‐side filter */
   applyFilter(event: Event) {
