@@ -90,17 +90,26 @@ export class FilesTableComponent implements AfterViewInit {
           }
         });
     effect(() => {
-          const widget = this.widget();
-          console.log('📡 Widget signal changed:', widget); // Fixed
-          
-          if (widget?.rows !== undefined) {
-            this.pageSize = getMaxVisibleRows(widget.rows);
-            console.log('📊 Updated pageSize to:', this.pageSize);
-            const baseOptions = [5, 10, 15];
-            const ps = this.pageSize;
-            this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
-          }
-        });
+    try {
+      const widget = this.widget();
+      console.log('📡 Widget signal changed:', widget);
+      
+      if (widget?.rows !== undefined) {
+        this.pageSize = getMaxVisibleRows(widget.rows);
+        console.log('📊 Updated pageSize to:', this.pageSize);
+        const baseOptions = [5, 10, 15];
+        const ps = this.pageSize;
+        this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
+      }
+    } catch (error: unknown) {
+      // Type guard for Angular errors
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'NG0950') {
+        console.log('🔄 Hydration error caught - retrying after stabilization...');
+        return;
+      }
+      console.error('❌ Unexpected error in widget effect:', error);
+    }
+  });
   }
 
 
