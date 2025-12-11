@@ -134,11 +134,18 @@ effect(() => {
       console.log('📡 Widget signal changed:', widget);
       
       if (widget?.rows !== undefined) {
-        this.pageSize = getMaxVisibleRows(widget.rows);
-        console.log('📊 Updated pageSize to:', this.pageSize);
-        const baseOptions = [5, 10, 15];
-        const ps = this.pageSize;
-        this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
+        // Calculate page size based on current widget data
+        const newPageSize = getMaxVisibleRows(widget.rows);
+        
+        // Only update if it actually changed
+        if (this.pageSize !== newPageSize) {
+          console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
+          this.pageSize = newPageSize;
+          
+          const baseOptions = [5, 10, 15];
+          const ps = this.pageSize;
+          this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
+        }
       }
     } catch (error: unknown) {
       if (String(error).includes('NG0950')) {

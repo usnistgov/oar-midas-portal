@@ -90,38 +90,45 @@ export class DmpTableComponent implements AfterViewInit {
       }
     });
     effect(() => {
+    try {
+      let widget;
+      
+      // Try to get the widget signal
       try {
-        let widget;
-        
-        // Try to get the widget signal
-        try {
-          widget = this.widget();
-        } catch (widgetError: unknown) {
-          if (String(widgetError).includes('NG0950')) {
-            console.log('🔄 Widget signal NG0950 error - will retry...');
-            return;
-          }
-          throw widgetError;
+        widget = this.widget();
+      } catch (widgetError: unknown) {
+        if (String(widgetError).includes('NG0950')) {
+          console.log('🔄 Widget signal NG0950 error - will retry...');
+          return;
         }
+        throw widgetError;
+      }
+      
+      console.log('📡 Widget signal changed:', widget);
+      
+      if (widget?.rows !== undefined) {
+        // Calculate page size based on current widget data
+        const newPageSize = getMaxVisibleRows(widget.rows);
         
-        console.log('📡 Widget signal changed:', widget);
-        
-        if (widget?.rows !== undefined) {
-          this.pageSize = getMaxVisibleRows(widget.rows);
-          console.log('📊 Updated pageSize to:', this.pageSize);
+        // Only update if it actually changed
+        if (this.pageSize !== newPageSize) {
+          console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
+          this.pageSize = newPageSize;
+          
           const baseOptions = [5, 10, 15];
           const ps = this.pageSize;
           this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
         }
-      } catch (error: unknown) {
-        if (String(error).includes('NG0950')) {
-          console.log('🔄 Effect NG0950 error caught - retrying after stabilization...');
-          return;
-        }
-        console.error('❌ Unexpected error in widget effect:', error);
       }
-    });
-  }
+    } catch (error: unknown) {
+      if (String(error).includes('NG0950')) {
+        console.log('🔄 Effect NG0950 error caught - retrying after stabilization...');
+        return;
+      }
+      console.error('❌ Unexpected error in widget effect:', error);
+    }
+  });
+}
 
 
   ngAfterViewInit() {
