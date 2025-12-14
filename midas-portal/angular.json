@@ -61,13 +61,13 @@
                 }
               ],
               "outputHashing": "all",
-              "optimization": true,
-              "buildOptimizer": true,
+              "optimization": false,
+              "buildOptimizer": false,
               "aot": true,
               "extractLicenses": true,
               "sourceMap": false,
               "namedChunks": false,
-              "vendorChunk": false
+              "vendorChunk": true
             },
             "development": {
               "buildOptimizer": false,
