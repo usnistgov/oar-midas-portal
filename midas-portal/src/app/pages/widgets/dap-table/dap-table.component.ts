@@ -5,7 +5,9 @@ import {
   ViewChild,
   signal,
   computed,
-  effect
+  effect,
+  ChangeDetectorRef,
+  ApplicationRef
 } from '@angular/core';
 import { MatPaginator }       from '@angular/material/paginator';
 import { MatSort }            from '@angular/material/sort';
@@ -30,8 +32,33 @@ export class DapTableComponent implements  AfterViewInit {
 
   /** Loading state for overlay */
   isLoading = signal(false);
-  pageSize = 10;
-  pageSizeOptions = [5, 10, 20, 50];
+  pageSize = computed(() => {
+    try {
+      const widget = this.widget();
+      if (widget?.rows !== undefined) {
+        const size = getMaxVisibleRows(widget.rows);
+        console.log('📊 Computed pageSize:', size);
+        return size;
+      }
+      return 10;
+    } catch (error) {
+      console.log('🔄 Widget not ready for pageSize computation');
+      return 10;
+    }
+  });
+
+  pageSizeOptions = computed(() => {
+    try {
+      const ps = this.pageSize();
+      const baseOptions = [5, 10, 15];
+      const options = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
+      console.log('📊 Computed pageSizeOptions:', options);
+      return options;
+    } catch (error) {
+      console.log('🔄 Using default pageSizeOptions');
+      return [5, 10, 15];
+    }
+  });
 
   // Master list of columns
   allColumns = [
@@ -63,7 +90,7 @@ export class DapTableComponent implements  AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort)      sort!: MatSort;
 
-  constructor(private dataService: DataService ) {
+  constructor(private dataService: DataService, private cdr: ChangeDetectorRef, private appRef: ApplicationRef) {
     effect(() => {
       const daps = this.dataService.daps();
       this.dataSource.data = daps;
@@ -86,45 +113,16 @@ export class DapTableComponent implements  AfterViewInit {
       }
     });
     effect(() => {
-    try {
-      let widget;
-      
-      // Try to get the widget signal
       try {
-        widget = this.widget();
-      } catch (widgetError: unknown) {
-        if (String(widgetError).includes('NG0950')) {
-          console.log('🔄 Widget signal NG0950 error - will retry...');
-          return;
-        }
-        throw widgetError;
-      }
-      
-      console.log('📡 Widget signal changed:', widget);
-      
-      if (widget?.rows !== undefined) {
-        // Calculate page size based on current widget data
-        const newPageSize = getMaxVisibleRows(widget.rows);
-        
-        // Only update if it actually changed
-        if (this.pageSize !== newPageSize) {
-          console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
-          this.pageSize = newPageSize;
-          
-          const baseOptions = [5, 10, 15];
-          const ps = this.pageSize;
-          this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
+        const widget = this.widget();
+        // Only logging, no signal writes
+      } catch (error: unknown) {
+        if (String(error).includes('NG0950')) {
+          console.log('🔄 Widget NG0950 error caught');
         }
       }
-    } catch (error: unknown) {
-      if (String(error).includes('NG0950')) {
-        console.log('🔄 Effect NG0950 error caught - retrying after stabilization...');
-        return;
-      }
-      console.error('❌ Unexpected error in widget effect:', error);
-    }
-  });
-}
+    });
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
