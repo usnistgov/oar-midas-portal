@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   AfterViewInit,
   ViewChild,
   signal,
@@ -104,15 +103,13 @@ export class DmpTableComponent implements AfterViewInit {
         throw widgetError;
       }
       
-      console.log('📡 Widget signal changed:', widget);
-      
       if (widget?.rows !== undefined) {
         // Calculate page size based on current widget data
         const newPageSize = getMaxVisibleRows(widget.rows);
         
         // Only update if it actually changed
         if (this.pageSize !== newPageSize) {
-          console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
+          //console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
           this.pageSize = newPageSize;
           
           const baseOptions = [5, 10, 15];

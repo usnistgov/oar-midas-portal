@@ -77,7 +77,7 @@ export class DataService {
     //console.log('[getDaps] Calling fetchData with:', { api, fallback });
     return this.fetchData<Dap>(api, fallback, this.mapToDap).pipe(
       map(data => {
-        console.log('[getDaps] fetchData returned:', data);
+        //console.log('[getDaps] fetchData returned:', data);
         return data;
       })
     );
@@ -91,7 +91,7 @@ export class DataService {
     //console.log('[getDmps] Calling fetchData with:', { api, fallback });
     return this.fetchData<Dmp>(api, fallback, this.mapToDmp).pipe(
       map(data => {
-        console.log('[getDmps] fetchData returned:', data);
+        //console.log('[getDmps] fetchData returned:', data);
         return data;
       })
     );
@@ -111,7 +111,7 @@ export class DataService {
     //console.log('[getFiles] Calling fetchData with:', { api, fallback });
     return this.fetchData<File>(api, fallback, this.mapToFile).pipe(
       map(data => {
-        console.log('[getFiles] fetchData returned:', data);
+        //console.log('[getFiles] fetchData returned:', data);
         return data;
       })
     );
@@ -128,7 +128,7 @@ export class DataService {
     //console.log('[getReviews] Calling fetchData with:', { api, fallback });
     return this.fetchData<Review>(api, fallback, this.mapToReview).pipe(
       map(data => {
-        console.log('[getReviews] fetchData returned:', data);
+        //console.log('[getReviews] fetchData returned:', data);
         return data;
       })
     );

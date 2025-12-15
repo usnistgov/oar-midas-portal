@@ -10,10 +10,8 @@ import {
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { of, delay } from 'rxjs';
-import { ConfigurationService } from 'oarng';
 import { CredentialsService } from '../../../services/credentials.service';
 import { DataService } from '../../../services/data.service';
 import { Review }  from '../../../models/dashboard';
@@ -78,23 +76,7 @@ export class ReviewsTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  private http = inject(HttpClient);
-  private cfgSvc = inject(ConfigurationService);
   private credsService = inject(CredentialsService);
-
-  /* constructor() {
-    // keep table in sync
-    effect(() => this.dataSource.data = this.reviews());
-
-    // watch token and userId to trigger fetch
-    effect(() => {
-      const token = this.credsService.token();
-      const uid = this.credsService.userId();
-      if (token && uid) {
-        this.loadReviews(token, uid);
-      }
-    });
-  } */
 
     constructor(private dataService: DataService ) {
         effect(() => {
@@ -131,15 +113,13 @@ effect(() => {
         throw widgetError;
       }
       
-      console.log('📡 Widget signal changed:', widget);
-      
       if (widget?.rows !== undefined) {
         // Calculate page size based on current widget data
         const newPageSize = getMaxVisibleRows(widget.rows);
         
         // Only update if it actually changed
         if (this.pageSize !== newPageSize) {
-          console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
+          //console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
           this.pageSize = newPageSize;
           
           const baseOptions = [5, 10, 15];
