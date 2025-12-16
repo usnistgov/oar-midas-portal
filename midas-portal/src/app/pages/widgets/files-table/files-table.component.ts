@@ -33,7 +33,6 @@ export class FilesTableComponent implements AfterViewInit {
     { id: 'testId3', name: 'Results.csv', usage: 'Public', fileCount: 1, modifiedDate: new Date('2025-04-15'), location: '/files/results.csv' }
   ];
 
-
   /** Raw API data + processed files list */
   private rawData = signal<File[]>([]);
   public files = signal<File[]>([]);
@@ -41,31 +40,30 @@ export class FilesTableComponent implements AfterViewInit {
   pageSize = 10;
   pageSizeOptions = [5, 10, 20, 50];
 
-  // master list of columns
+  // Master list of columns
   allColumns = [
-    { key: 'name',        label: 'Name' },
-    { key: 'usage',       label: 'Usage' },
-    { key: 'fileCount',  label: 'File Count' },
+    { key: 'name',         label: 'Name' },
+    { key: 'usage',        label: 'Usage' },
+    { key: 'fileCount',    label: 'File Count' },
     { key: 'modifiedDate', label: 'Last Modified' }
   ];
 
-  // keys in order
+  // Keys in order
   readonly allColumnKeys = this.allColumns.map(c => c.key);
 
-  // track which columns are visible
+  // Track which columns are visible
   displayedColumnSet = new Set<string>(this.allColumnKeys);
 
-  // expose to template
+  // Expose to template
   get displayedColumns(): string[] {
     return this.allColumnKeys.filter(k => this.displayedColumnSet.has(k));
   }
 
-  // add or remove a column
+  // Add or remove a column
   toggleColumn(key: string, on: boolean) {
     if (on) this.displayedColumnSet.add(key);
     else    this.displayedColumnSet.delete(key);
   }
-
 
   /** Table wiring */
   public dataSource = new MatTableDataSource<File>([]);
@@ -74,20 +72,20 @@ export class FilesTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  
-  constructor(private dataService: DataService ) {
+  constructor(private dataService: DataService) {
     effect(() => {
       const files = this.dataService.files();
       this.dataSource.data = files;
       this.dataSource._updateChangeSubscription();
     });
+
     effect(() => {
-          try {
+      try {
         const widget = this.widget();
         if (widget?.rows !== undefined) {
-            const rows = widget.rows;
-            this.dataSource._updateChangeSubscription();
-          }
+          const rows = widget.rows;
+          this.dataSource._updateChangeSubscription();
+        }
       } catch (widgetError: unknown) {
         if (String(widgetError).includes('NG0950')) {
           console.log('🔄 Widget signal NG0950 error - will retry...');
@@ -95,46 +93,46 @@ export class FilesTableComponent implements AfterViewInit {
         }
         throw widgetError;
       }
-        });
-    effect(() => {
-    try {
-      let widget;
-      
-      // Try to get the widget signal
-      try {
-        widget = this.widget();
-      } catch (widgetError: unknown) {
-        if (String(widgetError).includes('NG0950')) {
-          console.log('🔄 Widget signal NG0950 error - will retry...');
-          return;
-        }
-        throw widgetError;
-      }
-      
-      if (widget?.rows !== undefined) {
-        // Calculate page size based on current widget data
-        const newPageSize = getMaxVisibleRows(widget.rows);
-        
-        // Only update if it actually changed
-        if (this.pageSize !== newPageSize) {
-          //console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
-          this.pageSize = newPageSize;
-          
-          const baseOptions = [5, 10, 15];
-          const ps = this.pageSize;
-          this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
-        }
-      }
-    } catch (error: unknown) {
-      if (String(error).includes('NG0950')) {
-        console.log('🔄 Effect NG0950 error caught - retrying after stabilization...');
-        return;
-      }
-      console.error('❌ Unexpected error in widget effect:', error);
-    }
-  });
-}
+    });
 
+    effect(() => {
+      try {
+        let widget;
+        
+        // Try to get the widget signal
+        try {
+          widget = this.widget();
+        } catch (widgetError: unknown) {
+          if (String(widgetError).includes('NG0950')) {
+            console.log('🔄 Widget signal NG0950 error - will retry...');
+            return;
+          }
+          throw widgetError;
+        }
+        
+        if (widget?.rows !== undefined) {
+          // Calculate page size based on current widget data
+          const newPageSize = getMaxVisibleRows(widget.rows);
+          
+          // Only update if it actually changed
+          if (this.pageSize !== newPageSize) {
+            //console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
+            this.pageSize = newPageSize;
+            
+            const baseOptions = [5, 10, 15];
+            const ps = this.pageSize;
+            this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
+          }
+        }
+      } catch (error: unknown) {
+        if (String(error).includes('NG0950')) {
+          console.log('🔄 Effect NG0950 error caught - retrying after stabilization...');
+          return;
+        }
+        console.error('❌ Unexpected error in widget effect:', error);
+      }
+    });
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -147,7 +145,6 @@ export class FilesTableComponent implements AfterViewInit {
     this.dataSource.filter = filter;
   }
 
-
   /** Link builder */
   linkto(id: string) {
     return this.dataService.resolveApiUrl('dapEDIT').concat(id).concat("?editEnabled=true");
@@ -158,8 +155,8 @@ export class FilesTableComponent implements AfterViewInit {
   }
 
   clearFilter(input: HTMLInputElement) {
-  input.value = '';
-  this.applyFilter({ target: input } as unknown as Event);
-  input.focus(); // Optional: keep focus on the input after clearing
-}
+    input.value = '';
+    this.applyFilter({ target: input } as unknown as Event);
+    input.focus(); // Optional: keep focus on the input after clearing
+  }
 }
