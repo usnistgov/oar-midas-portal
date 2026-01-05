@@ -57,6 +57,7 @@ node_modules
 *.pack
 midas-portal/.angular/cache/
 midas-portal/coverage/
+lib/
 
 package-lock.json
 .vscode/launch.json

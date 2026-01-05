@@ -14,22 +14,137 @@
     border-radius: inherit;
     background-color: #134B70;
     color: white;
+    
+    &:not([cdkDragDisabled="true"]) {
+        cursor: grab;
+        
+        &:active {
+            cursor: grabbing;
+        }
+    }
+    
+    &[cdkDragDisabled="true"] {
+        cursor: default !important;
+    }
 }
   
-  /* Absolute position the scrolling region */
-  .widget-content {
+.widget-content {
     position: absolute;
-    top: calc(3rem);        /* header height + top padding */
-    right: 8px;                   
-    bottom: 8px;                  
-    left: 16px;                  
+    top: calc(3rem);
+    right: 8px;
+    bottom: 8px;
+    left: 16px;
     overflow: auto;
     padding-top: 4px;
-  }
-
+    cursor: default;
+    
+    * {
+        user-select: text !important;
+        -webkit-user-select: text !important;
+        -moz-user-select: text !important;
+        -ms-user-select: text !important;
+    }
+    
+    .table-wrapper {
+        cursor: default !important;
+        
+        * {
+            cursor: default !important;
+        }
+        
+        a {
+            cursor: pointer !important;
+        }
+        
+        .status-chip {
+            cursor: text !important;
+        }
+        
+        td, th {
+            cursor: text !important;
+        }
+    }
+    
+    .table-controls {
+        cursor: default !important;
+        
+        input, textarea, select {
+            cursor: text !important;
+        }
+        
+        button {
+            cursor: pointer !important;
+        }
+        
+        mat-icon {
+            cursor: inherit !important;
+        }
+    }
+    
+    input, textarea, select {
+        cursor: text !important;
+        
+        &:focus {
+            cursor: text !important;
+        }
+    }
+    
+    button, a, [role="button"] {
+        cursor: pointer !important;
+    }
+    
+    mat-paginator {
+        cursor: default !important;
+        
+        * {
+            cursor: default !important;
+        }
+        
+        button {
+            cursor: pointer !important;
+        }
+    }
+}
 
 .settings-button {
     position: absolute;
     top: 0;
     right: 0;
-}   
+    cursor: pointer !important;
+}
+
+h3 {
+    user-select: none !important;
+    cursor: default;
+    
+    .container:not([cdkDragDisabled="true"]) & {
+        cursor: grab !important;
+        
+        &:active {
+            cursor: grabbing !important;
+        }
+    }
+}
+
+.container:not([cdkDragDisabled="true"]) {
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    padding-left: 16px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 8px;
+    cursor: grab;
+    
+    &:active {
+        cursor: grabbing;
+    }
+}

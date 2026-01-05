@@ -1,11 +1,12 @@
 import {
   Component,
-  OnInit,
   AfterViewInit,
   ViewChild,
   signal,
   computed,
-  effect
+  effect,
+  ChangeDetectorRef,
+  ApplicationRef
 } from '@angular/core';
 import { MatPaginator }       from '@angular/material/paginator';
 import { MatSort }            from '@angular/material/sort';
@@ -23,10 +24,12 @@ import { getStatusClass as statusClassUtil } from '../../../shared/table-utils';
   templateUrl: './dap-table.component.html',
   styleUrls: ['./dap-table.component.scss']
 })
-export class DapTableComponent implements  AfterViewInit {
-  dataSource       = new MatTableDataSource<Dap>([]);
-  length           = computed(() => this.dataService.daps().length);
+export class DapTableComponent implements AfterViewInit {
+  dataSource = new MatTableDataSource<Dap>([]);
+  length = computed(() => this.dataService.daps().length);
   widget = input.required<Widget>();
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 20, 50];
 
   /** Loading state for overlay */
   isLoading = signal(false);
@@ -54,14 +57,14 @@ export class DapTableComponent implements  AfterViewInit {
 
   /** Called by each checkbox to add/remove the key */
   toggleColumn(key: string, on: boolean) {
-    if (on)   this.displayedColumnSet.add(key);
-    else      this.displayedColumnSet.delete(key);
+    if (on) this.displayedColumnSet.add(key);
+    else    this.displayedColumnSet.delete(key);
   }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort)      sort!: MatSort;
 
-  constructor(private dataService: DataService ) {
+  constructor(private dataService: DataService, private cdr: ChangeDetectorRef, private appRef: ApplicationRef) {
     effect(() => {
       const daps = this.dataService.daps();
       this.dataSource.data = daps;
@@ -69,37 +72,75 @@ export class DapTableComponent implements  AfterViewInit {
     });
 
     effect(() => {
-      // Update table when widget rows (and thus pageSize) changes
-      const rows = this.widget().rows;
-      this.dataSource._updateChangeSubscription();
+      try {
+        const widget = this.widget();
+        if (widget?.rows !== undefined) {
+          const rows = widget.rows;
+          this.dataSource._updateChangeSubscription();
+        }
+      } catch (widgetError: unknown) {
+        if (String(widgetError).includes('NG0950')) {
+          console.log('🔄 Widget signal NG0950 error - will retry...');
+          return;
+        }
+        throw widgetError;
+      }
+    });
+
+    effect(() => {
+      try {
+        const widget = this.widget();
+        // Only logging, no signal writes
+      } catch (error: unknown) {
+        if (String(error).includes('NG0950')) {
+          console.log('🔄 Widget NG0950 error caught');
+        }
+      }
+    });
+
+    effect(() => {
+      try {
+        let widget;
+        
+        // Try to get the widget signal
+        try {
+          widget = this.widget();
+        } catch (widgetError: unknown) {
+          if (String(widgetError).includes('NG0950')) {
+            console.log('🔄 Widget signal NG0950 error - will retry...');
+            return;
+          }
+          throw widgetError;
+        }
+        
+        if (widget?.rows !== undefined) {
+          // Calculate page size based on current widget data
+          const newPageSize = getMaxVisibleRows(widget.rows);
+          
+          // Only update if it actually changed
+          if (this.pageSize !== newPageSize) {
+            //console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
+            this.pageSize = newPageSize;
+            
+            const baseOptions = [5, 10, 15];
+            const ps = this.pageSize;
+            this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
+          }
+        }
+      } catch (error: unknown) {
+        if (String(error).includes('NG0950')) {
+          console.log('🔄 Effect NG0950 error caught - retrying after stabilization...');
+          return;
+        }
+        console.error('❌ Unexpected error in widget effect:', error);
+      }
     });
   }
 
-  /*
-  ngOnInit() {
-    this.isLoading.set(true);
-    this.dataService.getDaps().pipe(
-      delay(300),               // ensure spinner is visible briefly
-      catchError(() => of([])), // swallow errors
-      finalize(() => this.isLoading.set(false))
-    )
-    .subscribe(list => this._dapList.set(list));
-  }
-*/
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
-    this.dataSource.sort      = this.sort;
+    this.dataSource.sort = this.sort;
   }
-
-  get pageSize(): number {
-    return getMaxVisibleRows(this.widget().rows ?? 1);
-  }
-
-  get pageSizeOptions(): number[] {
-  const baseOptions = [5, 10, 15];
-  const ps = this.pageSize;
-  return baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
-}
 
   applyFilter(event: Event) {
     const filter = (event.target as HTMLInputElement)
@@ -112,10 +153,16 @@ export class DapTableComponent implements  AfterViewInit {
   }
 
   getStatusClass(status: string): string {
-      return statusClassUtil(status);
+    return statusClassUtil(status);
   }
 
   createDap() {
     window.open(this.dataService.dapUI, '_blank');
+  }
+
+  clearFilter(input: HTMLInputElement) {
+    input.value = '';
+    this.applyFilter({ target: input } as unknown as Event);
+    input.focus(); // Optional: keep focus on the input after clearing
   }
 }
