@@ -302,4 +302,76 @@ getUser(): Observable<UserResponse> {
     });
   }
 
+  // Test method to hit the :ids endpoint
+  getRecordsByIds(ids: string[]): Observable<any[]> {
+    const authToken = this.credsService.token();
+    const headers = { Authorization: `Bearer ${authToken}` };
+    
+    // Clean IDs by removing "mdm:" prefix if present
+    
+    
+    // Build the URL correctly: baseAPI + ":ids" + query parameters
+    const baseApi = this.resolveApiUrl('dmpAPI').replace(/\/$/, ''); // Remove trailing slash if present
+    const url = `${baseApi}/:ids?ids=${ids.join(',')}`;
+    
+    console.log('🔍 Testing :ids endpoint with URL:', url);
+    console.log('🔍 Original IDs:', ids);
+    console.log('🔍 Clean IDs being requested:', ids);
+    
+    return this.http.get<any[]>(url, { headers }).pipe(
+      tap(response => {
+        console.log('✅ :ids endpoint response:', response);
+        console.log('📊 Number of records returned:', response.length);
+      }),
+      catchError(err => {
+        console.error('❌ :ids endpoint failed:', err);
+        return of([]);
+      })
+    );
+  }
+
+  // Convenience method to test with specific IDs
+  testIdsEndpoint(): Observable<any[]> {
+    const testIds = ['mdm1:0001', 'mdm1:0002']; // Just the numeric IDs as per backend expectation
+    console.log('🚀 Testing :ids endpoint with test IDs:', testIds);
+    return this.getRecordsByIds(testIds);
+  }
+  // Export records to JSON file
+  exportRecordsToJson(records: any[], filename: string = 'records-export.json'): void {
+    try {
+      const jsonData = JSON.stringify(records, null, 2);
+      const blob = new Blob([jsonData], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.style.display = 'none';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      window.URL.revokeObjectURL(url);
+      
+      console.log(`📁 Exported ${records.length} records to ${filename}`);
+      this.snackBar.open(`Exported ${records.length} records to ${filename}`, 'Dismiss', { duration: 3000 });
+    } catch (error) {
+      console.error('❌ Failed to export records:', error);
+      this.snackBar.open('Failed to export records', 'Dismiss', { duration: 3000 });
+    }
+  }
+
+  // Test and export records in one call
+  testAndExportIds(): Observable<any[]> {
+    return this.testIdsEndpoint().pipe(
+      tap(records => {
+        if (records.length > 0) {
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+          this.exportRecordsToJson(records, `dmp-records-${timestamp}.json`);
+        }
+      })
+    );
+  }
 }
+

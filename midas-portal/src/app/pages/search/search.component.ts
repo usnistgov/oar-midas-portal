@@ -499,29 +499,43 @@ searchOrgIndex(queryString: string): void {
   }
 
   downloadData(format: 'json' | 'csv' | 'pdf' | 'markdown'): void {
-    const records = this.dataSource.filteredData;
-
-    if (records.length === 0) {
-      // No records, show message to user
-      this._snackBar.open('No records to download.', 'Dismiss', { duration: 3000 });
+    const selectedRecords = this.selection.selected;
+    
+    // Validate selection
+    if (!this.downloadService.validateSelection(selectedRecords)) {
       return;
     }
 
-    switch (format) {
-      case 'json':
-        this.downloadService.downloadJSON(this.selection.selected);
-        break;
+    console.log('📥 Downloading selected records:', { 
+      format, 
+      count: selectedRecords.length,
+      types: selectedRecords.map(r => r.type || 'unknown')
+    });
 
-      case 'csv':
-        this.downloadService.downloadCSV(this.selection.selected);
-        break;
-
-      case 'pdf':
-        this.downloadService.downloadPDF(this.selection.selected);
-        break;
-
-      case 'markdown':
-        this.downloadService.downloadmarkdown(this.selection.selected);
+    // Use API endpoints for selected records download
+    if (format === 'json') {
+      // Use :ids endpoint for JSON - now handles both DMP and DAP automatically
+      this.downloadService.downloadRecordsAsJson(selectedRecords).subscribe({
+        next: (records) => {
+          console.log('✅ JSON download completed for selected records');
+        },
+        error: (err) => {
+          console.error('❌ JSON download failed:', err);
+        }
+      });
+    } else if (format === 'pdf' || format === 'markdown') {
+      // Use :export endpoint for PDF/Markdown - now handles both DMP and DAP automatically
+      this.downloadService.downloadRecordsAsExport(selectedRecords, format).subscribe({
+        next: (blob) => {
+          console.log(`✅ ${format.toUpperCase()} download completed for selected records`);
+        },
+        error: (err) => {
+          console.error(`❌ ${format.toUpperCase()} download failed:`, err);
+        }
+      });
+    } else if (format === 'csv') {
+      // Fall back to client-side processing for CSV (since no API endpoint mentioned)
+      this.downloadService.downloadCSV(selectedRecords, 'selected-records');
     }
   }
 
