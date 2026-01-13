@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, catchError, tap, of } from 'rxjs';
+import { Observable, catchError, tap, of, map } from 'rxjs';
 import { ConfigurationService } from 'oarng';
 import { CredentialsService } from './credentials.service';
 import jsPDF from 'jspdf';
@@ -200,7 +200,7 @@ export class DownloadService {
   /**
    * Download records by IDs as PDF/Markdown using the appropriate :export endpoints
    */
-  downloadRecordsAsExport(records: any[], format: 'pdf' | 'markdown', filename?: string): Observable<Blob> {
+  downloadRecordsAsExport(records: any[], format: 'pdf' | 'markdown' | 'csv', filename?: string): Observable<Blob> {
     const groupedRecords = this.groupRecordsByType(records);
     const downloadPromises: Observable<Blob>[] = [];
     
@@ -227,35 +227,19 @@ export class DownloadService {
       return of(new Blob());
     }
 
-    // If only one type, return that download directly
-    if (downloadPromises.length === 1) {
-      return downloadPromises[0];
-    }
-
-    // If both types, download separately with different filenames
+    // Execute all downloads - downloads are handled within downloadExportFromEndpoint
     return new Observable(observer => {
       let completedCount = 0;
-      const extension = format === 'markdown' ? 'md' : format;
       
-      downloadPromises.forEach((download$, index) => {
-        const recordType = index === 0 ? 
-          (groupedRecords.dmp.length > 0 ? 'dmp' : 'dap') : 
-          'dap';
-          
+      downloadPromises.forEach((download$) => {
         download$.subscribe({
           next: (blob) => {
-            if (blob && blob.size > 0) {
-              const typeFilename = filename ? 
-                filename.replace(`.${extension}`, `_${recordType}.${extension}`) :
-                `${recordType}-${this.dateString()}.${extension}`;
-              this.downloadBlob(blob, typeFilename);
-            }
             completedCount++;
             
             if (completedCount === downloadPromises.length) {
               console.log(`✅ Downloaded ${format} files for all record types`);
               this.snackBar.open(`Downloaded ${format.toUpperCase()} files`, 'Dismiss', { duration: 3000 });
-              observer.next(new Blob()); // Return empty blob since we've handled downloads
+              observer.next(new Blob()); // Return empty blob since downloads are handled internally
               observer.complete();
             }
           },
@@ -356,7 +340,7 @@ export class DownloadService {
   /**
    * Download export data from a specific API endpoint
    */
-  private downloadExportFromEndpoint(apiKey: string, ids: string[], format: 'pdf' | 'markdown', recordType: string): Observable<Blob> {
+  private downloadExportFromEndpoint(apiKey: string, ids: string[], format: 'pdf' | 'markdown' | 'csv', recordType: string): Observable<Blob> {
     const authToken = this.credsService.token();
     const headers = { Authorization: `Bearer ${authToken}` };
     
@@ -368,13 +352,77 @@ export class DownloadService {
     
     return this.http.get(url, { 
       headers, 
-      responseType: 'blob' 
+      responseType: 'blob',
+      observe: 'response' // Get full response to see headers
     }).pipe(
-      tap(blob => {
-        console.log(`✅ Downloaded ${format} file for ${recordType} (${blob.size} bytes)`);
+      tap((response: HttpResponse<Blob>) => {
+        console.log(`🔍 Response headers for ${recordType} ${format}:`, response.headers);
+        console.log(`🔍 Response status for ${recordType} ${format}:`, response.status);
+        console.log(`🔍 Response body type for ${recordType} ${format}:`, typeof response.body);
+        console.log(`🔍 Response body for ${recordType} ${format}:`, response.body);
+        
+        const blob = response.body;
+        if (blob && blob.size > 0) {
+          console.log(`📦 Blob details for ${recordType} ${format}:`, {
+            size: blob.size,
+            type: blob.type
+          });
+          
+          // Let's examine the blob content
+          blob.arrayBuffer().then(buffer => {
+            const bytes = new Uint8Array(buffer);
+            console.log(`📄 First 100 bytes of ${recordType} ${format}:`, Array.from(bytes.slice(0, 100)));
+            console.log(`📄 Last 20 bytes of ${recordType} ${format}:`, Array.from(bytes.slice(-20)));
+            
+            // Check if it looks like PDF (starts with %PDF)
+            const isPdf = bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46;
+            console.log(`🔍 Looks like PDF for ${recordType}:`, isPdf);
+            
+            // Try to create the file download
+            try {
+              // Create a new blob with explicit type
+              const finalBlob = format === 'pdf' 
+                ? new Blob([buffer], { type: 'application/pdf' })
+                : new Blob([buffer], { type: 'text/markdown' });
+              
+              console.log(`📦 Final blob for ${recordType} ${format}:`, {
+                size: finalBlob.size,
+                type: finalBlob.type
+              });
+              
+              // Force download
+              const url = window.URL.createObjectURL(finalBlob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${recordType.toLowerCase()}-${this.dateString()}.${format === 'markdown' ? 'md' : format}`;
+              link.style.display = 'none';
+              
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              
+              window.URL.revokeObjectURL(url);
+              
+              console.log(`✅ Downloaded ${format} file for ${recordType} (${finalBlob.size} bytes)`);
+            } catch (downloadError) {
+              console.error(`❌ Error creating download for ${recordType} ${format}:`, downloadError);
+            }
+          }).catch(bufferError => {
+            console.error(`❌ Error reading buffer for ${recordType} ${format}:`, bufferError);
+          });
+        } else {
+          console.warn(`⚠️ Empty or null blob for ${recordType} ${format}`);
+        }
       }),
+      map(response => response.body || new Blob()),
       catchError(err => {
         console.error(`❌ ${recordType} ${format} download failed:`, err);
+        console.error(`❌ Error details:`, {
+          status: err.status,
+          statusText: err.statusText,
+          message: err.message,
+          error: err.error
+        });
         this.snackBar.open(`${recordType} ${format.toUpperCase()} download failed`, 'Dismiss', { duration: 3000 });
         return of(new Blob());
       })

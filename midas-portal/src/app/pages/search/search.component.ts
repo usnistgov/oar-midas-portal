@@ -523,8 +523,8 @@ searchOrgIndex(queryString: string): void {
           console.error('❌ JSON download failed:', err);
         }
       });
-    } else if (format === 'pdf' || format === 'markdown') {
-      // Use :export endpoint for PDF/Markdown - now handles both DMP and DAP automatically
+    } else if (format === 'pdf' || format === 'markdown' || format === 'csv') {
+      // Use :export endpoint for PDF/Markdown/CSV - now handles both DMP and DAP automatically
       this.downloadService.downloadRecordsAsExport(selectedRecords, format).subscribe({
         next: (blob) => {
           console.log(`✅ ${format.toUpperCase()} download completed for selected records`);
@@ -533,9 +533,6 @@ searchOrgIndex(queryString: string): void {
           console.error(`❌ ${format.toUpperCase()} download failed:`, err);
         }
       });
-    } else if (format === 'csv') {
-      // Fall back to client-side processing for CSV (since no API endpoint mentioned)
-      this.downloadService.downloadCSV(selectedRecords, 'selected-records');
     }
   }
 
