@@ -2,7 +2,7 @@
   "menuItems": [
     {
       "key": "dashboard",
-      "name": "Dashboarddd",
+      "name": "Dashboard",
       "icon": "dashboard",
       "link": "/dashboard",
       "enabled": true,
