@@ -228,8 +228,6 @@ export class SearchComponent {
 
   toggleRow(row: DmpOrDap) {
     this.selection.toggle(row);
-    console.log(`Toggled row: ${row.id}, selected: ${this.selection.isSelected(row)}`);
-    console.log(`Current selection: ${this.selection.selected.map(r => r.id).join(', ')}`);
   }
 
 
@@ -500,40 +498,12 @@ searchOrgIndex(queryString: string): void {
 
   downloadData(format: 'json' | 'csv' | 'pdf' | 'markdown'): void {
     const selectedRecords = this.selection.selected;
-    
-    // Validate selection
+
     if (!this.downloadService.validateSelection(selectedRecords)) {
       return;
     }
 
-    console.log('📥 Downloading selected records:', { 
-      format, 
-      count: selectedRecords.length,
-      types: selectedRecords.map(r => r.type || 'unknown')
-    });
-
-    // Use API endpoints for selected records download
-    if (format === 'json') {
-      // Use :ids endpoint for JSON - now handles both DMP and DAP automatically
-      this.downloadService.downloadRecordsAsJson(selectedRecords).subscribe({
-        next: (records) => {
-          console.log('✅ JSON download completed for selected records');
-        },
-        error: (err) => {
-          console.error('❌ JSON download failed:', err);
-        }
-      });
-    } else if (format === 'pdf' || format === 'markdown' || format === 'csv') {
-      // Use :export endpoint for PDF/Markdown/CSV - now handles both DMP and DAP automatically
-      this.downloadService.downloadRecordsAsExport(selectedRecords, format).subscribe({
-        next: (blob) => {
-          console.log(`✅ ${format.toUpperCase()} download completed for selected records`);
-        },
-        error: (err) => {
-          console.error(`❌ ${format.toUpperCase()} download failed:`, err);
-        }
-      });
-    }
+    this.downloadService.downloadRecords(selectedRecords, format).subscribe();
   }
 
   add(event: MatChipInputEvent): void {

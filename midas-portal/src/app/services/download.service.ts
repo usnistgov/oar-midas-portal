@@ -24,9 +24,7 @@ export class DownloadService {
       const json = JSON.stringify(records, null, 2);
       const blob = new Blob([json], { type: 'application/json' });
       this.downloadBlob(blob, `${filenamePrefix}_${this.dateString()}.json`);
-    } catch (err) {
-      console.error('JSON export failed:', err);
-    }
+    } catch {}
   }
 
   /** Export records as CSV */
@@ -43,9 +41,7 @@ export class DownloadService {
       const csv = [headers.join(','), ...rows].join('\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       this.downloadBlob(blob, `${filenamePrefix}_${this.dateString()}.csv`);
-    } catch (err) {
-      console.error('CSV export failed:', err);
-    }
+    } catch {}
   }
 
   /** Export records as CSV */
@@ -62,9 +58,7 @@ export class DownloadService {
       const csv = [headers.join(','), ...rows].join('\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       this.downloadBlob(blob, `${filenamePrefix}_${this.dateString()}.csv`);
-    } catch (err) {
-      console.error('CSV export failed:', err);
-    }
+    } catch {}
   }
 
   /** Export records as PDF using jsPDF + autoTable */
@@ -89,7 +83,6 @@ export class DownloadService {
       doc.text('Record Export', 105, 15, { align: 'center' });
       doc.setFontSize(10);
       doc.text(`Total Records: ${records.length}`, 105, 22, { align: 'center' });
-      // TODO: addthe filters used to the header of the pdf document.
 
       autoTable(doc, {
         head: [headers],
@@ -101,9 +94,7 @@ export class DownloadService {
       });
 
       doc.save(`${filenamePrefix}_${this.dateString()}.pdf`);
-    } catch (err) {
-      console.error('PDF export failed:', err);
-    }
+    } catch {}
   }
 
   /** Flattens nested objects for CSV export */
@@ -137,119 +128,72 @@ export class DownloadService {
   // === API ENDPOINT METHODS ===
 
   /**
-   * Download records by IDs as JSON using the appropriate :ids endpoints
+   * Download records by IDs in the specified format.
+   * Handles both DMP and DAP records automatically.
    */
-  downloadRecordsAsJson(records: any[], filename?: string): Observable<any[]> {
+  downloadRecords(records: any[], format: 'json' | 'pdf' | 'markdown' | 'csv' = 'json', filename?: string): Observable<void> {
     const groupedRecords = this.groupRecordsByType(records);
-    const downloadPromises: Observable<any[]>[] = [];
-    
-    console.log('📥 Downloading records as JSON:', {
-      dmpCount: groupedRecords.dmp.length,
-      dapCount: groupedRecords.dap.length,
-      totalCount: records.length
-    });
+    const downloadPromises: Observable<any>[] = [];
 
-    // Download DMP records if any
     if (groupedRecords.dmp.length > 0) {
       const dmpIds = groupedRecords.dmp.map(r => r.id);
-      downloadPromises.push(this.downloadFromEndpoint('dmpAPI', dmpIds, 'DMP'));
+      downloadPromises.push(this.downloadFromEndpoint('dmpAPI', dmpIds, 'DMP', format));
     }
 
-    // Download DAP records if any
     if (groupedRecords.dap.length > 0) {
       const dapIds = groupedRecords.dap.map(r => r.id);
-      downloadPromises.push(this.downloadFromEndpoint('dapAPI', dapIds, 'DAP'));
+      downloadPromises.push(this.downloadFromEndpoint('dapAPI', dapIds, 'DAP', format));
     }
 
     if (downloadPromises.length === 0) {
       this.snackBar.open('No valid records to download', 'Dismiss', { duration: 3000 });
-      return of([]);
+      return of(void 0);
     }
 
-    // Execute all downloads and combine results
     return new Observable(observer => {
-      const allResults: any[] = [];
       let completedCount = 0;
-      
+      const allJsonResults: any[] = [];
+
       downloadPromises.forEach(download$ => {
         download$.subscribe({
-          next: (results) => {
-            allResults.push(...results);
+          next: (result) => {
+            if (format === 'json' && Array.isArray(result)) {
+              allJsonResults.push(...result);
+            }
             completedCount++;
-            
+
             if (completedCount === downloadPromises.length) {
-              // All downloads complete - create combined file
-              if (allResults.length > 0) {
-                this.createJsonDownload(allResults, filename || `records-${this.dateString()}.json`);
-                console.log(`✅ Downloaded ${allResults.length} total records`);
-                this.snackBar.open(`Downloaded ${allResults.length} records`, 'Dismiss', { duration: 3000 });
+              if (format === 'json') {
+                this.handleJsonCompletion(records, allJsonResults, filename);
+              } else {
+                this.snackBar.open(`Downloaded ${format.toUpperCase()} files`, 'Dismiss', { duration: 3000 });
               }
-              observer.next(allResults);
+              observer.next();
               observer.complete();
             }
           },
-          error: (err) => {
-            console.error('❌ Download failed:', err);
-            observer.error(err);
-          }
+          error: (err) => observer.error(err)
         });
       });
     });
   }
 
-  /**
-   * Download records by IDs as PDF/Markdown using the appropriate :export endpoints
-   */
-  downloadRecordsAsExport(records: any[], format: 'pdf' | 'markdown' | 'csv', filename?: string): Observable<Blob> {
-    const groupedRecords = this.groupRecordsByType(records);
-    const downloadPromises: Observable<Blob>[] = [];
-    
-    console.log(`📥 Downloading records as ${format.toUpperCase()}:`, {
-      dmpCount: groupedRecords.dmp.length,
-      dapCount: groupedRecords.dap.length,
-      totalCount: records.length
-    });
+  private handleJsonCompletion(records: any[], allResults: any[], filename?: string): void {
+    const requestedIds = records.map(r => r.id);
 
-    // Download DMP records if any
-    if (groupedRecords.dmp.length > 0) {
-      const dmpIds = groupedRecords.dmp.map(r => r.id);
-      downloadPromises.push(this.downloadExportFromEndpoint('dmpAPI', dmpIds, format, 'DMP'));
+    if (allResults.length === 0) {
+      this.snackBar.open('No records found for the requested IDs', 'Dismiss', { duration: 3000 });
+      return;
     }
 
-    // Download DAP records if any
-    if (groupedRecords.dap.length > 0) {
-      const dapIds = groupedRecords.dap.map(r => r.id);
-      downloadPromises.push(this.downloadExportFromEndpoint('dapAPI', dapIds, format, 'DAP'));
+    const returnedIds = allResults.map(r => r.id);
+    const missingIds = requestedIds.filter(id => !returnedIds.includes(id));
+    if (missingIds.length > 0) {
+      this.snackBar.open(`${missingIds.length} record(s) not found: ${missingIds.join(', ')}`, 'Dismiss', { duration: 5000 });
     }
 
-    if (downloadPromises.length === 0) {
-      this.snackBar.open('No valid records to download', 'Dismiss', { duration: 3000 });
-      return of(new Blob());
-    }
-
-    // Execute all downloads - downloads are handled within downloadExportFromEndpoint
-    return new Observable(observer => {
-      let completedCount = 0;
-      
-      downloadPromises.forEach((download$) => {
-        download$.subscribe({
-          next: (blob) => {
-            completedCount++;
-            
-            if (completedCount === downloadPromises.length) {
-              console.log(`✅ Downloaded ${format} files for all record types`);
-              this.snackBar.open(`Downloaded ${format.toUpperCase()} files`, 'Dismiss', { duration: 3000 });
-              observer.next(new Blob()); // Return empty blob since downloads are handled internally
-              observer.complete();
-            }
-          },
-          error: (err) => {
-            console.error(`❌ ${format} download failed:`, err);
-            observer.error(err);
-          }
-        });
-      });
-    });
+    this.createJsonDownload(allResults, filename || `records-${this.dateString()}.json`);
+    this.snackBar.open(`Downloaded ${allResults.length} of ${requestedIds.length} records`, 'Dismiss', { duration: 3000 });
   }
 
   /**
@@ -260,8 +204,7 @@ export class DownloadService {
       const jsonData = JSON.stringify(data, null, 2);
       const blob = new Blob([jsonData], { type: 'application/json' });
       this.downloadBlob(blob, filename);
-    } catch (error) {
-      console.error('❌ Failed to create JSON download:', error);
+    } catch {
       this.snackBar.open('Failed to create JSON file', 'Dismiss', { duration: 3000 });
     }
   }
@@ -308,123 +251,61 @@ export class DownloadService {
     }
     
     // Default to DMP if can't determine
-    console.warn('⚠️ Could not determine record type, defaulting to DMP:', record);
     return 'dmp';
   }
 
   /**
-   * Download JSON data from a specific API endpoint
+   * Download records from a unified API endpoint.
+   * Without format (or format='json'), returns JSON array.
+   * With format='pdf'|'markdown'|'csv', returns a Blob and triggers file download.
    */
-  private downloadFromEndpoint(apiKey: string, ids: string[], recordType: string): Observable<any[]> {
+  private downloadFromEndpoint(apiKey: string, ids: string[], recordType: string, format?: 'json' | 'pdf' | 'markdown' | 'csv'): Observable<any> {
     const authToken = this.credsService.token();
     const headers = { Authorization: `Bearer ${authToken}` };
-    
+
     const baseApi = this.resolveApiUrl(apiKey).replace(/\/$/, '');
-    const url = `${baseApi}/:ids?ids=${ids.join(',')}`;
-    
-    console.log(`📥 Downloading ${recordType} records from:`, url);
-    console.log(`📋 ${recordType} IDs:`, ids);
-    
+    let url = `${baseApi}?id=${ids.join(',')}`;
+    if (format && format !== 'json') {
+      url += `&format=${format}`;
+    }
+
+    // Non-JSON formats: request as blob
+    if (format && format !== 'json') {
+      return this.http.get(url, {
+        headers,
+        responseType: 'blob',
+        observe: 'response'
+      }).pipe(
+        tap((response: HttpResponse<Blob>) => {
+          const blob = response.body;
+          if (blob && blob.size > 0) {
+            blob.arrayBuffer().then(buffer => {
+              const mimeTypes: Record<string, string> = {
+                pdf: 'application/pdf',
+                markdown: 'text/markdown',
+                csv: 'text/csv'
+              };
+              const finalBlob = new Blob([buffer], { type: mimeTypes[format] || 'application/octet-stream' });
+              const ext = format === 'markdown' ? 'md' : format;
+              this.downloadBlob(finalBlob, `${recordType.toLowerCase()}-${this.dateString()}.${ext}`);
+            }).catch(() => {});
+          } else {
+            this.snackBar.open(`No ${recordType} records found for export`, 'Dismiss', { duration: 3000 });
+          }
+        }),
+        map(response => response.body || new Blob()),
+        catchError(() => {
+          this.snackBar.open(`${recordType} ${format.toUpperCase()} download failed`, 'Dismiss', { duration: 3000 });
+          return of(new Blob());
+        })
+      );
+    }
+
+    // JSON (default)
     return this.http.get<any[]>(url, { headers }).pipe(
-      tap(records => {
-        console.log(`✅ Downloaded ${records.length} ${recordType} records`);
-      }),
-      catchError(err => {
-        console.error(`❌ ${recordType} download failed:`, err);
+      catchError(() => {
         this.snackBar.open(`${recordType} download failed`, 'Dismiss', { duration: 3000 });
         return of([]);
-      })
-    );
-  }
-
-  /**
-   * Download export data from a specific API endpoint
-   */
-  private downloadExportFromEndpoint(apiKey: string, ids: string[], format: 'pdf' | 'markdown' | 'csv', recordType: string): Observable<Blob> {
-    const authToken = this.credsService.token();
-    const headers = { Authorization: `Bearer ${authToken}` };
-    
-    const baseApi = this.resolveApiUrl(apiKey).replace(/\/$/, '');
-    const url = `${baseApi}/:export?ids=${ids.join(',')}&format=${format}`;
-    
-    console.log(`📥 Downloading ${recordType} records as ${format.toUpperCase()} from:`, url);
-    console.log(`📋 ${recordType} IDs:`, ids);
-    
-    return this.http.get(url, { 
-      headers, 
-      responseType: 'blob',
-      observe: 'response' // Get full response to see headers
-    }).pipe(
-      tap((response: HttpResponse<Blob>) => {
-        console.log(`🔍 Response headers for ${recordType} ${format}:`, response.headers);
-        console.log(`🔍 Response status for ${recordType} ${format}:`, response.status);
-        console.log(`🔍 Response body type for ${recordType} ${format}:`, typeof response.body);
-        console.log(`🔍 Response body for ${recordType} ${format}:`, response.body);
-        
-        const blob = response.body;
-        if (blob && blob.size > 0) {
-          console.log(`📦 Blob details for ${recordType} ${format}:`, {
-            size: blob.size,
-            type: blob.type
-          });
-          
-          // Let's examine the blob content
-          blob.arrayBuffer().then(buffer => {
-            const bytes = new Uint8Array(buffer);
-            console.log(`📄 First 100 bytes of ${recordType} ${format}:`, Array.from(bytes.slice(0, 100)));
-            console.log(`📄 Last 20 bytes of ${recordType} ${format}:`, Array.from(bytes.slice(-20)));
-            
-            // Check if it looks like PDF (starts with %PDF)
-            const isPdf = bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46;
-            console.log(`🔍 Looks like PDF for ${recordType}:`, isPdf);
-            
-            // Try to create the file download
-            try {
-              // Create a new blob with explicit type
-              const finalBlob = format === 'pdf' 
-                ? new Blob([buffer], { type: 'application/pdf' })
-                : new Blob([buffer], { type: 'text/markdown' });
-              
-              console.log(`📦 Final blob for ${recordType} ${format}:`, {
-                size: finalBlob.size,
-                type: finalBlob.type
-              });
-              
-              // Force download
-              const url = window.URL.createObjectURL(finalBlob);
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = `${recordType.toLowerCase()}-${this.dateString()}.${format === 'markdown' ? 'md' : format}`;
-              link.style.display = 'none';
-              
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              
-              window.URL.revokeObjectURL(url);
-              
-              console.log(`✅ Downloaded ${format} file for ${recordType} (${finalBlob.size} bytes)`);
-            } catch (downloadError) {
-              console.error(`❌ Error creating download for ${recordType} ${format}:`, downloadError);
-            }
-          }).catch(bufferError => {
-            console.error(`❌ Error reading buffer for ${recordType} ${format}:`, bufferError);
-          });
-        } else {
-          console.warn(`⚠️ Empty or null blob for ${recordType} ${format}`);
-        }
-      }),
-      map(response => response.body || new Blob()),
-      catchError(err => {
-        console.error(`❌ ${recordType} ${format} download failed:`, err);
-        console.error(`❌ Error details:`, {
-          status: err.status,
-          statusText: err.statusText,
-          message: err.message,
-          error: err.error
-        });
-        this.snackBar.open(`${recordType} ${format.toUpperCase()} download failed`, 'Dismiss', { duration: 3000 });
-        return of(new Blob());
       })
     );
   }
