@@ -1,7 +1,10 @@
 <div class="table-controls">
   <mat-form-field appearance="outline" class="filter small">
-    <mat-icon matPrefix>search</mat-icon>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Filter name, owner or contact…" />
+    <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+    <input matInput
+           (keyup)="applyFilter($event)"
+           placeholder="Filter name, owner or contact…"
+           aria-label="Filter reviews table by title, submitter or reviewer" />
   </mat-form-field>
 </div>
 <div class="table-wrapper">

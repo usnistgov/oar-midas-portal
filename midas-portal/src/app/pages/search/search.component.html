@@ -8,19 +8,22 @@
             <div class="search-bar">
                 <div class="search-controls">
                     <mat-form-field appearance="outline" class="search-field small large">
-                        <mat-icon matPrefix>search</mat-icon>
-                        <input matInput placeholder="Search dmp, dap..." [(ngModel)]="searchTerm"
-                            (keydown.enter)="performSearch()" />
+                        <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+                        <input matInput
+                               placeholder="Search dmp, dap..."
+                               [(ngModel)]="searchTerm"
+                               (keydown.enter)="performSearch()"
+                               aria-label="Search for DMP and DAP records" />
                     </mat-form-field>
 
 
                     <button mat-flat-button color="primary" style="height: 40px" (click)="performSearch()">
-                        <mat-icon>search</mat-icon>
+                        <mat-icon aria-hidden="true">search</mat-icon>
                         Search
                     </button>
                     <button *ngIf="searchPerformed && searchTerm" mat-stroked-button class="clear-button"
                         color="primary" style="height: 40px" (click)="clearFilters()">
-                        <mat-icon>clear</mat-icon>
+                        <mat-icon aria-hidden="true">clear</mat-icon>
                         Clear
                     </button>
 
@@ -30,7 +33,7 @@
                     <button mat-raised-button color="primary" [matMenuTriggerFor]="downloadMenu" (click)="toggleDownloadMenu()"
                         [disabled]="selection.selected.length === 0">
                         Download Selection
-                        <mat-icon iconPositionEnd class="material-symbols-outlined">
+                        <mat-icon iconPositionEnd class="material-symbols-outlined" aria-hidden="true">
                                 download
                         </mat-icon>
                     </button>
@@ -44,7 +47,7 @@
                     </mat-menu>
                     <button mat-raised-button color="primary" [matMenuTriggerFor]="exportMenu" (click)="toggleExportMenu()">
                         Export Table
-                        <mat-icon iconPositionEnd class="material-symbols-outlined">
+                        <mat-icon iconPositionEnd class="material-symbols-outlined" aria-hidden="true">
                                 file_export
                         </mat-icon>
                     </button>
@@ -64,8 +67,12 @@
                 <mat-expansion-panel-header class="panel-header">
                     <mat-panel-title class="panel-title">
                         Advanced Search
-                        <button mat-icon-button class="help-icon" matTooltip="" (click)="openHelpDialog($event)">
-                            <mat-icon>help</mat-icon>
+                        <button mat-icon-button
+                                class="help-icon"
+                                matTooltip="Open advanced search help"
+                                aria-label="Open advanced search help guide"
+                                (click)="openHelpDialog($event)">
+                            <mat-icon aria-hidden="true">help</mat-icon>
                         </button>
                     </mat-panel-title>
                 </mat-expansion-panel-header>
@@ -85,7 +92,9 @@
                         </mat-form-field>
 
                         <span class="material-symbols-outlined help-icon"
-                            matTooltip="The NIST organization that owns the record.">help</span>
+                            matTooltip="The NIST organization that owns the record."
+                            role="img"
+                            aria-label="Help: The NIST organization that owns the record">help</span>
                         <mat-form-field appearance="outline" class="filter-field x-small-form-input">
                             <mat-label>Record Owner / Primary Contact</mat-label>
                             <input type="text" matInput [formControl]="ownerControl" [matAutocomplete]="ownerAuto"
@@ -98,7 +107,9 @@
                         </mat-form-field>
 
                         <span class="material-symbols-outlined help-icon"
-                            matTooltip="The owner or primary contact of the record.">help</span>
+                            matTooltip="The owner or primary contact of the record."
+                            role="img"
+                            aria-label="Help: The owner or primary contact of the record">help</span>
 
                     </div>
 
@@ -155,8 +166,10 @@
                     <div class="field-wrapper chip-field">
                         <label class="field-label">
                             Resource Type
-                            <span class=" material-symbols-outlined help-icon"
-                                matTooltip="The resource type of the record.">help</span>
+                            <span class="material-symbols-outlined help-icon"
+                                matTooltip="The resource type of the record."
+                                role="img"
+                                aria-label="Help: The resource type of the record">help</span>
                         </label>
 
                         <mat-chip-listbox aria-orientation="horizontal" multiple class="chip-listbox"
@@ -172,7 +185,9 @@
                         <label class="field-label">
                             Process Status
                             <span class="material-symbols-outlined help-icon"
-                                matTooltip="The process status of the record.">help</span>
+                                matTooltip="The process status of the record."
+                                role="img"
+                                aria-label="Help: The process status of the record">help</span>
                         </label>
 
                         <mat-chip-listbox aria-orientation="horizontal" multiple class="chip-listbox"
@@ -188,7 +203,9 @@
                         <label class="field-label">
                             Associated Paper Publication?
                             <span class="material-symbols-outlined help-icon"
-                                matTooltip="Is this record associated with a paper publication?">help</span>
+                                matTooltip="Is this record associated with a paper publication?"
+                                role="img"
+                                aria-label="Help: Is this record associated with a paper publication">help</span>
                         </label>
                         <mat-checkbox class="checkbox" color="primary" labelPosition="before"
                             [(ngModel)]="hasPaperPublication">
@@ -199,22 +216,22 @@
                     <div class="buttons-container">
                         <div class="filters-buttons">
                             <button mat-flat-button color="primary" style="height: 40px" (click)="saveFilters()">
-                                <mat-icon>star</mat-icon>
+                                <mat-icon aria-hidden="true">star</mat-icon>
                                 Save Filter
                             </button>
                             <button mat-flat-button color="primary" style="height: 40px" (click)="loadFilters()">
-                                <mat-icon>replay</mat-icon>
+                                <mat-icon aria-hidden="true">replay</mat-icon>
                                 Load Filter
                             </button>
                         </div>
                         <div class="buttons-container-right">
                             <button mat-stroked-button color="primary" style="height: 40px"
                                 [disabled]="pendingFilterCount === 0" (click)="cancelAdvancedSearch()">
-                                <mat-icon>cancel</mat-icon>Cancel
+                                <mat-icon aria-hidden="true">cancel</mat-icon>Cancel
                             </button>
                             <button mat-raised-button color="primary" style="height: 40px"
                                 [disabled]="pendingFilterCount === 0" (click)="applyAdvancedSearch()">
-                                <mat-icon>check</mat-icon>Apply Filters
+                                <mat-icon aria-hidden="true">check</mat-icon>Apply Filters
                             </button>
                         </div>
 
@@ -225,7 +242,7 @@
             <div class="filter-status" *ngIf="hasFilters() && activeFilterCount() > 0">
                 <!-- group icon + count -->
                 <div class="filter-header">
-                    <mat-icon class="filter-icon">filter_list</mat-icon>
+                    <mat-icon class="filter-icon" aria-hidden="true">filter_list</mat-icon>
                     <span class="filter-count">
                         {{ activeFilterCount() }}
                         filter{{ activeFilterCount() === 1 ? '' : 's' }} active:
@@ -241,7 +258,7 @@
 
                 <!-- clear button -->
                 <button mat-raised-button color="warn" class="pill-button" (click)="clearFilters()">
-                    <mat-icon>delete</mat-icon>
+                    <mat-icon aria-hidden="true">delete</mat-icon>
                     Clear Filters
                 </button>
             </div>
@@ -306,7 +323,7 @@
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
                             <div class="header-cell-content">
-                                <mat-icon class="drag-icon" cdkDragHandle>drag_indicator</mat-icon>
+                                <mat-icon class="drag-icon" cdkDragHandle aria-hidden="true">drag_indicator</mat-icon>
                                 <span class="header-label">Name</span>
                             </div>
                         </th>
@@ -319,7 +336,7 @@
                     <ng-container matColumnDef="owner">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
                             <div class="header-cell-content">
-                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle aria-hidden="true">
                                     drag_indicator
                                 </span>
                                 Owner
@@ -332,7 +349,7 @@
                     <ng-container matColumnDef="primaryContact">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
                             <div class="header-cell-content">
-                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle aria-hidden="true">
                                     drag_indicator
                                 </span>
                                 Primary Contact
@@ -344,7 +361,7 @@
                     <ng-container matColumnDef="organizationUnit">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
                             <div class="header-cell-content">
-                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle aria-hidden="true">
                                     drag_indicator
                                 </span>
                                 Org Unit
@@ -360,7 +377,7 @@
                     <ng-container matColumnDef="type">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
                             <div class="header-cell-content">
-                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle aria-hidden="true">
                                     drag_indicator
                                 </span>
                                 Type
@@ -373,7 +390,7 @@
                     <ng-container matColumnDef="status">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
                             <div class="header-cell-content">
-                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle aria-hidden="true">
                                     drag_indicator
                                 </span>
                                 Status
@@ -390,7 +407,7 @@
                     <ng-container matColumnDef="modifiedDate">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag cdkDragLockAxis="x">
                             <div class="header-cell-content">
-                                <span class="material-symbols-outlined drag-icon" cdkDragHandle>
+                                <span class="material-symbols-outlined drag-icon" cdkDragHandle aria-hidden="true">
                                     drag_indicator
                                 </span>
                                 Last Modified

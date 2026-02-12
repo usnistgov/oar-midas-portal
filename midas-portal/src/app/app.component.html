@@ -13,7 +13,9 @@
     <app-custom-sidenav #customSidenav></app-custom-sidenav>
   </mat-sidenav>
   <mat-sidenav-content class="content" [style.margin-left]="customSidenav?.sideNavWidth()">
-    <router-outlet></router-outlet>
+    <main id="main-content" role="main" tabindex="-1">
+      <router-outlet></router-outlet>
+    </main>
   </mat-sidenav-content>
 </mat-sidenav-container>
 

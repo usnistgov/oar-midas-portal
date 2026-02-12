@@ -7,7 +7,11 @@
     <p>{{ group }}</p>
   </div>
 
-  <button mat-icon-button (click)="toggleSidenav()" matTooltip="Collapse/Expand">
+  <button mat-icon-button
+          (click)="toggleSidenav()"
+          matTooltip="Collapse/Expand"
+          [attr.aria-label]="sideNavCollapsed() ? 'Expand navigation sidebar' : 'Collapse navigation sidebar'"
+          [attr.aria-expanded]="!sideNavCollapsed()">
     <mat-icon>
       <span class="material-symbols-outlined toolbar-menu-icon">
           {{ sideNavCollapsed() ? 'left_panel_open' : 'left_panel_close' }}
@@ -35,7 +39,7 @@
   <button
     class="info-bubble"
     (click)="openThemeSelector()"
-    aria-label="Theme"
+    aria-label="Open theme selector"
     matTooltip="Theme"
   >
     <mat-icon>palette</mat-icon>
