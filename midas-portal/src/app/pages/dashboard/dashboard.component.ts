@@ -9,6 +9,7 @@ import { CredentialsService } from '../../services/credentials.service';
 import { ConfigurationService } from 'oarng';
 import { WebSocketService } from '../../services/websocket.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TourService } from '../../services/tour.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +24,7 @@ export class DashboardComponent {
   private wsService = inject(WebSocketService);
   readonly snackBar = inject(MatSnackBar);
   readonly credsService = inject(CredentialsService);
+  private tourService = inject(TourService);
 
   /** Reference to the widgets grid container (for animation binding) */
   readonly dashboard = viewChild.required<ElementRef>('widgetsContainer');
@@ -96,6 +98,11 @@ export class DashboardComponent {
         next: () => {
           this.isLoading.set(false);
           wrapGrid(this.dashboard().nativeElement, { duration: 300 });
+
+          // Start tour on first visit after data loads
+          if (this.tourService.shouldShowTour()) {
+            setTimeout(() => this.tourService.startTour(), 500);
+          }
         },
         error: () => {
           this.isLoading.set(false);

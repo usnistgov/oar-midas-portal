@@ -267,3 +267,58 @@ mat-chip.status-chip {
 .status-info {
     background-color: #2196f3;
 }
+
+// ======================================
+// Driver.js Tour Styles (uses indigo #3f51b5 to match Material primary)
+// ======================================
+.midas-tour-popover {
+  background-color: #3f51b5 !important;
+  color: white !important;
+
+  .driver-popover-title {
+    color: white !important;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .driver-popover-description {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .driver-popover-progress-text {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  .driver-popover-prev-btn,
+  .driver-popover-next-btn {
+    background-color: white !important;
+    color: #3f51b5 !important;
+    border: none !important;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  .driver-popover-close-btn {
+    color: white !important;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+  }
+
+  .driver-popover-arrow-side-left,
+  .driver-popover-arrow-side-right,
+  .driver-popover-arrow-side-top,
+  .driver-popover-arrow-side-bottom {
+    border-color: #3f51b5 !important;
+  }
+}

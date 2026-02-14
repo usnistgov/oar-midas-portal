@@ -7,7 +7,7 @@
     <p>{{ group }}</p>
   </div>
 
-  <button mat-icon-button (click)="toggleSidenav()" matTooltip="Collapse/Expand">
+  <button mat-icon-button (click)="toggleSidenav()" matTooltip="Collapse/Expand" data-tour="sidebar-toggle">
     <mat-icon>
       <span class="material-symbols-outlined toolbar-menu-icon">
           {{ sideNavCollapsed() ? 'left_panel_open' : 'left_panel_close' }}
