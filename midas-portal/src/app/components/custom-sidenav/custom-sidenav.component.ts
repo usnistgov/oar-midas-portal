@@ -25,7 +25,7 @@ export type Variant = 'light' | 'dark';
 export class CustomSidenavComponent implements OnInit {
   /** Reactive signal representing the collapsed state */
   readonly sideNavCollapsed = signal<boolean>(
-    JSON.parse(localStorage.getItem('sidenavCollapsed') ?? 'false')
+    JSON.parse(localStorage.getItem('sidenavCollapsed') ?? 'true')
   );
 
   readonly sideNavWidth = computed(() => this.sideNavCollapsed() ? '64px' : '320px');
