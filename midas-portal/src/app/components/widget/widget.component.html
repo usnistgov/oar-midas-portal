@@ -2,7 +2,7 @@
   [style.color]="data().textColor ?? 'inherit'" cdkDrag cdkDragPreviewContainer="parent">
   <h3 class="" style="margin: 8px 0px;">{{ data().longLabel }}</h3>
   <button mat-icon-button class="settings-button" (click)="showOptions.set(true)"
-    [style.--mdc-icon-button-icon-color]="data().textColor ?? 'inherit'">
+    [style.--mdc-icon-button-icon-color]="data().textColor ?? 'inherit'" data-tour="widget-settings">
     <mat-icon>settings</mat-icon>
   </button>
 

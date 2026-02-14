@@ -7,7 +7,7 @@
         <div class="search-content">
             <div class="search-bar">
                 <div class="search-controls">
-                    <mat-form-field appearance="outline" class="search-field small large">
+                    <mat-form-field appearance="outline" class="search-field small large" data-tour="search-input">
                         <mat-icon matPrefix>search</mat-icon>
                         <input matInput placeholder="Search dmp, dap..." [(ngModel)]="searchTerm"
                             (keydown.enter)="performSearch()" />
@@ -28,7 +28,7 @@
 
                 <div class="export-button">
                     <button mat-raised-button color="primary" [matMenuTriggerFor]="downloadMenu" (click)="toggleDownloadMenu()"
-                        [disabled]="selection.selected.length === 0">
+                        [disabled]="selection.selected.length === 0" data-tour="download-selection">
                         Download Selection
                         <mat-icon iconPositionEnd class="material-symbols-outlined">
                                 download
@@ -42,7 +42,7 @@
                         <button mat-menu-item (click)="downloadData('pdf')">Download as PDF</button>
                         <button mat-menu-item (click)="downloadData('pdf')">Download as MarkDown</button>
                     </mat-menu>
-                    <button mat-raised-button color="primary" [matMenuTriggerFor]="exportMenu" (click)="toggleExportMenu()">
+                    <button mat-raised-button color="primary" [matMenuTriggerFor]="exportMenu" (click)="toggleExportMenu()" data-tour="export-table">
                         Export Table
                         <mat-icon iconPositionEnd class="material-symbols-outlined">
                                 file_export
@@ -60,7 +60,7 @@
 
 
             <!-- Advanced Search Panel -->
-            <mat-expansion-panel [(expanded)]="advancedSearchExpanded">
+            <mat-expansion-panel [(expanded)]="advancedSearchExpanded" data-tour="advanced-search">
                 <mat-expansion-panel-header class="panel-header">
                     <mat-panel-title class="panel-title">
                         Advanced Search

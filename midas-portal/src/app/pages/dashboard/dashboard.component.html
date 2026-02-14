@@ -7,7 +7,7 @@
         <div class="dashboard-actions">
             <!-- Add Widget Button -->
             <button mat-raised-button color="primary" class="pill-button" [matMenuTriggerFor]="menu"
-                [disabled]="dashboardService.widgetsToAdd().length === 0">
+                [disabled]="dashboardService.widgetsToAdd().length === 0" data-tour="add-widget">
                 <mat-icon>add_circle</mat-icon>
                 Add Widget
             </button>

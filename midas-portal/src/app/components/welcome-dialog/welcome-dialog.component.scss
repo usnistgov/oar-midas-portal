@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+h2[mat-dialog-title] {
+  color: #2196f3;
+  margin-bottom: 1rem;
+}
+
+mat-dialog-content {
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: rgba(0, 0, 0, 0.87);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+mat-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dont-ask-checkbox {
+  font-size: 0.875rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+}

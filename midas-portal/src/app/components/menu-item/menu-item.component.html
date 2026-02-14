@@ -45,7 +45,7 @@
   <!-- Leaf node: internal or external link -->
   <ng-container *ngIf="isInternalRoute(item()); else externalLink">
     <a mat-list-item [routerLink]="item().link" routerLinkActive="selected-menu-item" #rla="routerLinkActive"
-      [activated]="rla.isActive" class="menu-item">
+      [activated]="rla.isActive" class="menu-item" [attr.data-tour]="item().key === 'searchExport' ? 'search-export-menu' : null">
       <mat-icon matListItemIcon [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'">
         {{ item().icon }}
       </mat-icon>

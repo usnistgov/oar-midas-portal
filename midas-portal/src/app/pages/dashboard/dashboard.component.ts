@@ -9,7 +9,9 @@ import { CredentialsService } from '../../services/credentials.service';
 import { ConfigurationService } from 'oarng';
 import { WebSocketService } from '../../services/websocket.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { TourService } from '../../services/tour.service';
+import { WelcomeDialogComponent, WelcomeDialogResult } from '../../components/welcome-dialog/welcome-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,6 +27,7 @@ export class DashboardComponent {
   readonly snackBar = inject(MatSnackBar);
   readonly credsService = inject(CredentialsService);
   private tourService = inject(TourService);
+  private dialog = inject(MatDialog);
 
   /** Reference to the widgets grid container (for animation binding) */
   readonly dashboard = viewChild.required<ElementRef>('widgetsContainer');
@@ -99,9 +102,9 @@ export class DashboardComponent {
           this.isLoading.set(false);
           wrapGrid(this.dashboard().nativeElement, { duration: 300 });
 
-          // Start tour on first visit after data loads
-          if (this.tourService.shouldShowTour()) {
-            setTimeout(() => this.tourService.startTour(), 500);
+          // Show welcome dialog on first visit
+          if (this.tourService.shouldShowWelcome()) {
+            setTimeout(() => this.showWelcomeDialog(), 500);
           }
         },
         error: () => {
@@ -254,6 +257,30 @@ private updateGridTemplate(): void {
     // Simulated debounce/load delay
     // TODO: clean this up
     setTimeout(() => this.isLoading.set(false), 800);
+  }
+
+  /**
+   * Shows the welcome dialog for first-time users
+   */
+  private showWelcomeDialog(): void {
+    const dialogRef = this.dialog.open(WelcomeDialogComponent, {
+      width: '450px',
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe((result: WelcomeDialogResult) => {
+      if (result) {
+        // Only dismiss welcome permanently if user checked "don't ask again"
+        if (result.dontAskAgain) {
+          this.tourService.dismissWelcome();
+        }
+
+        // If user wants the tour, start it
+        if (result.takeTour) {
+          setTimeout(() => this.tourService.startTour(), 300);
+        }
+      }
+    });
   }
 
 }
