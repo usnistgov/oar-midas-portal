@@ -28,7 +28,7 @@ import { DownloadService } from '../../services/download.service';
 import { DataService } from '../../services/data.service';
 import { PeopleService } from '../../services/people.service';
 import { FilterCriteria, SearchFilterService } from '../../services/search-filter.service';
-import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
+import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
 import { SelectionModel } from '@angular/cdk/collections'
 
 

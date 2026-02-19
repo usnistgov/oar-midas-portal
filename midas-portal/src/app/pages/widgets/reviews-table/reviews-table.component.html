@@ -1,7 +1,16 @@
 <div class="table-controls">
   <mat-form-field appearance="outline" class="filter small">
     <mat-icon matPrefix>search</mat-icon>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Filter name, owner or contact…" />
+    <input matInput #filterInput
+    (keyup)="applyFilter($event)" 
+    placeholder="Filter name, owner or contact…" />
+        <mat-icon matSuffix 
+              class="clear-icon"
+              *ngIf="filterInput.value"
+              (click)="clearFilter(filterInput)"
+              matTooltip="Clear Input">
+      close
+    </mat-icon>
   </mat-form-field>
 </div>
 <div class="table-wrapper">

@@ -1,5 +1,10 @@
-<div class="container mat-elevation-z3" [style.background-color]="data().backgroundColor ?? 'white'"
-  [style.color]="data().textColor ?? 'inherit'" cdkDrag cdkDragPreviewContainer="parent">
+<div class="container mat-elevation-z3"
+     [style.background-color]="data().backgroundColor ?? 'white'"
+     [style.color]="data().textColor ?? 'inherit'" 
+     cdkDrag 
+     [cdkDragDisabled]="dragDisabled"
+     cdkDragPreviewContainer="parent">
+     
   <h3 class="" style="margin: 8px 0px;">{{ data().longLabel }}</h3>
   <button mat-icon-button class="settings-button" (click)="showOptions.set(true)"
     [style.--mdc-icon-button-icon-color]="data().textColor ?? 'inherit'">
@@ -9,7 +14,7 @@
   <div class="widget-content">
     <ng-container 
     [ngComponentOutlet]="data().content"
-    [ngComponentOutletInputs]="{ widget: data() }">
+    [ngComponentOutletInputs]="getWidgetInputs()">
   </ng-container>
   </div>
 

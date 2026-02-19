@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   AfterViewInit,
   ViewChild,
   signal,
@@ -15,7 +14,7 @@ import { DataService } from '../../../services/data.service';
 import { Widget } from '../../../models/dashboard';
 import { getMaxVisibleRows } from '../table-utils';
 
-import { getStatusClass as statusClassUtil } from 'src/app/shared/table-utils';
+import { getStatusClass as statusClassUtil } from '../../../shared/table-utils';
 
 interface Dmp {
   id: string;
@@ -36,6 +35,8 @@ export class DmpTableComponent implements AfterViewInit {
   widget = input.required<Widget>();
 
   length = computed(() => this.dataService.dmps().length);
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 20, 50];
 
   isLoading = signal(false);
 
@@ -58,7 +59,7 @@ export class DmpTableComponent implements AfterViewInit {
   /** Called by each checkbox: add/remove the key. */
   toggleColumn(key: string, on: boolean) {
     if (on) this.displayedColumnSet.add(key);
-    else     this.displayedColumnSet.delete(key);
+    else    this.displayedColumnSet.delete(key);
   }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -71,28 +72,66 @@ export class DmpTableComponent implements AfterViewInit {
       this.dataSource.data = dmps;
       this.dataSource._updateChangeSubscription();
     });
+
     effect(() => {
-      // Update table when widget rows (and thus pageSize) changes
-      const rows = this.widget().rows;
-      this.dataSource._updateChangeSubscription();
+      try {
+        const widget = this.widget();
+        if (widget?.rows !== undefined) {
+          const rows = widget.rows;
+          this.dataSource._updateChangeSubscription();
+        }
+      } catch (widgetError: unknown) {
+        if (String(widgetError).includes('NG0950')) {
+          console.log('🔄 Widget signal NG0950 error - will retry...');
+          return;
+        }
+        throw widgetError;
+      }
+    });
+
+    effect(() => {
+      try {
+        let widget;
+        
+        // Try to get the widget signal
+        try {
+          widget = this.widget();
+        } catch (widgetError: unknown) {
+          if (String(widgetError).includes('NG0950')) {
+            console.log('🔄 Widget signal NG0950 error - will retry...');
+            return;
+          }
+          throw widgetError;
+        }
+        
+        if (widget?.rows !== undefined) {
+          // Calculate page size based on current widget data
+          const newPageSize = getMaxVisibleRows(widget.rows);
+          
+          // Only update if it actually changed
+          if (this.pageSize !== newPageSize) {
+            //console.log('📊 Widget rows changed - updating pageSize from', this.pageSize, 'to', newPageSize);
+            this.pageSize = newPageSize;
+            
+            const baseOptions = [5, 10, 15];
+            const ps = this.pageSize;
+            this.pageSizeOptions = baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
+          }
+        }
+      } catch (error: unknown) {
+        if (String(error).includes('NG0950')) {
+          console.log('🔄 Effect NG0950 error caught - retrying after stabilization...');
+          return;
+        }
+        console.error('❌ Unexpected error in widget effect:', error);
+      }
     });
   }
-
 
   ngAfterViewInit() {
     // wire up sorting & pagination
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
-
-    get pageSize(): number {
-      return getMaxVisibleRows(this.widget().rows ?? 1);
-    }
-  
-    get pageSizeOptions(): number[] {
-    const baseOptions = [5, 10, 15];
-    const ps = this.pageSize;
-    return baseOptions.includes(ps) ? baseOptions : [...baseOptions, ps];
   }
 
   /** simple client‐side filter */
@@ -108,8 +147,8 @@ export class DmpTableComponent implements AfterViewInit {
   }
 
   getStatusClass(status: string): string {
-      return statusClassUtil(status);
-    }
+    return statusClassUtil(status);
+  }
 
   /** open the create‐new page */
   createDmp() {
@@ -117,5 +156,9 @@ export class DmpTableComponent implements AfterViewInit {
     window.open(this.dataService.dmpUI, '_blank');
   }
 
-
+  clearFilter(input: HTMLInputElement) {
+    input.value = '';
+    this.applyFilter({ target: input } as unknown as Event);
+    input.focus(); // Optional: keep focus on the input after clearing
+  }
 }
