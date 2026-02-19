@@ -11,7 +11,7 @@ RUN uwsgi --build-plugin "/usr/src/uwsgi/plugins/python python" && \
                                          
 COPY cacerts/README.md cacerts/*.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
-ENV REQUESTS_CA_BUNDLE
+# ENV REQUESTS_CA_BUNDLE
 
 RUN pip install -U flask flask-restful flask-cors pyopenssl 
 
