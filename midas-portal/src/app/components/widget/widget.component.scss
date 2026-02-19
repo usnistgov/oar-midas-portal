@@ -16,14 +16,13 @@
     color: white;
 }
   
-  /* Absolute position the scrolling region */
   .widget-content {
     position: absolute;
     top: calc(3rem);        /* header height + top padding */
-    right: 8px;                   
-    bottom: 8px;                  
-    left: 16px;                  
-    overflow: auto;
+    right: 8px;
+    bottom: 8px;
+    left: 16px;
+    overflow: hidden; // Changed from auto - prevents widget from capturing scroll events
     padding-top: 4px;
   }
 

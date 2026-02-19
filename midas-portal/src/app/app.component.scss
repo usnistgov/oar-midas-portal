@@ -22,15 +22,30 @@
 .layout-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; // Minimum full viewport
-  height: auto; // Allow growth
+  height: 100vh; // Fixed viewport height
+  overflow: hidden; // Contain scrolling to children
+}
+
+// Scrollable area containing sidenav + content + footer
+.main-scroll-area {
+  flex: 1;
+  overflow-y: auto; // This is the scroll container
+}
+
+mat-sidenav-container {
+  min-height: 100%; // Take at least full height of scroll area, pushing footer below
 }
 
 mat-sidenav-content {
-  flex: 1;
-  overflow-y: visible; // Allow content to expand
   padding: 8px 8px 0;
-  min-height: calc(100vh - 120px); // Minimum space for content
+  overflow: visible !important; // Let parent handle scrolling
+}
+
+// Footer at full width, outside sidenav-container
+app-footer {
+  display: block;
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .toolbar {
@@ -83,9 +98,6 @@ mat-form-field {
   --mdc-outlined-text-field-container-shape: 28px !important;
 }
 
-mat-sidenav-container {
-  height: 100%;
-}
 
 mat-sidenav {
   transition: width 300ms ease-in-out;
