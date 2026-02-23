@@ -66,12 +66,39 @@ export class TourService {
         }
       },
       {
-        element: '[data-tour="add-widget"]',
+        element: '[data-tour="dmp-table"]',
         popover: {
-          title: 'Add Widgets',
-          description: 'Customize your dashboard by adding widgets. Choose from stats cards, tables, and more.',
-          side: 'bottom',
-          align: 'start'
+          title: 'Data Management Plans',
+          description: 'View and manage your Data Management Plans (DMPs) in this table widget.',
+          side: 'top',
+          align: 'center'
+        }
+      },
+      {
+        element: '[data-tour="dap-table"]',
+        popover: {
+          title: 'Digital Asset Publications',
+          description: 'View and manage your Digital Asset Publications (DAPs) in this table widget.',
+          side: 'top',
+          align: 'center'
+        }
+      },
+      {
+        element: '[data-tour="reviews-table"]',
+        popover: {
+          title: 'Reviews',
+          description: 'Track and manage reviews for your records in this table widget.',
+          side: 'top',
+          align: 'center'
+        }
+      },
+      {
+        element: '[data-tour="files-table"]',
+        popover: {
+          title: 'Files',
+          description: 'View and manage files associated with your records in this table widget.',
+          side: 'top',
+          align: 'center'
         }
       },
       {
@@ -113,9 +140,17 @@ export class TourService {
         element: '[data-tour="advanced-search"]',
         popover: {
           title: 'Advanced Search',
-          description: 'Expand this section to access advanced filtering options with multiple criteria.',
+          description: 'Use advanced filtering options with multiple criteria to refine your search results.',
           side: 'bottom',
           align: 'start'
+        },
+        onHighlightStarted: () => {
+          // Expand the advanced search panel before highlighting
+          const panel = document.querySelector('[data-tour="advanced-search"]') as HTMLElement;
+          if (panel && !panel.classList.contains('mat-expanded')) {
+            const header = panel.querySelector('mat-expansion-panel-header') as HTMLElement;
+            header?.click();
+          }
         }
       },
       {

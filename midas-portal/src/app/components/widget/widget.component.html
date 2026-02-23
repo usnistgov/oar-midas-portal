@@ -1,9 +1,10 @@
 <div class="container mat-elevation-z3"
      [style.background-color]="data().backgroundColor ?? 'white'"
-     [style.color]="data().textColor ?? 'inherit'" 
-     cdkDrag 
+     [style.color]="data().textColor ?? 'inherit'"
+     cdkDrag
      [cdkDragDisabled]="dragDisabled"
-     cdkDragPreviewContainer="parent">
+     cdkDragPreviewContainer="parent"
+     [attr.data-tour]="getDataTourAttribute()">
      
   <h3 class="" style="margin: 8px 0px;">{{ data().longLabel }}</h3>
   <button mat-icon-button class="settings-button" (click)="showOptions.set(true)"

@@ -137,4 +137,24 @@ export class WidgetComponent implements AfterViewInit {
   get dragDisabled(): boolean {
     return this.isDragDisabled();
   }
+
+  /**
+   * Generate data-tour attribute based on widget label for guided tour
+   */
+  getDataTourAttribute(): string | null {
+    const label = this.data().label?.toLowerCase() ?? '';
+    if (label.includes('dmp table')) {
+      return 'dmp-table';
+    }
+    if (label.includes('dap table')) {
+      return 'dap-table';
+    }
+    if (label.includes('reviews table')) {
+      return 'reviews-table';
+    }
+    if (label.includes('files table')) {
+      return 'files-table';
+    }
+    return null;
+  }
 }
