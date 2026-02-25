@@ -31,6 +31,7 @@ import { FilesComponent } from './pages/widgets/files/files.component';
 import { ReviewsTableComponent } from './pages/widgets/reviews-table/reviews-table.component';
 import { ReviewsComponent } from './pages/widgets/reviews/reviews.component';
 
+import { A11yModule } from '@angular/cdk/a11y';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -95,6 +96,7 @@ import { FooterComponent } from 'oarng';
   ],
   imports: [
     BrowserModule,
+    A11yModule,
     AppRoutingModule,
     MatToolbarModule,
     MatButtonModule,

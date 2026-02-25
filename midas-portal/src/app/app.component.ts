@@ -2,6 +2,10 @@ import { Component, ViewChild, computed, effect, signal, inject, OnInit } from '
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, NavigationEnd } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { filter } from 'rxjs/operators';
 import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
 import { ThemeSelectorData, ThemeSelectorDialogComponent } from './components/theme-selector-dialog/theme-selector-dialog.component';
 import { DashboardService } from './services/dashboard.service';
@@ -81,7 +85,10 @@ export class AppComponent implements OnInit {
     public dataService: DataService,
     private dialog: MatDialog,
     private authsvc: AuthenticationService,
-    private credsService: CredentialsService
+    private credsService: CredentialsService,
+    private router: Router,
+    private titleService: Title,
+    private liveAnnouncer: LiveAnnouncer
   ) {
     /**
      * Whenever family or variant changes:
@@ -96,6 +103,13 @@ export class AppComponent implements OnInit {
       const docEl = document.documentElement;
       docEl.classList.remove('theme-light', 'theme-1', 'theme-2', 'theme-3', 'theme-4', 'light', 'dark');
       docEl.classList.add(this.family(), this.variant());
+    });
+
+    // Route change announcements for screen readers (508 compliance - Issue #4)
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event) => {
+      this.announcePageChange(event.urlAfterRedirects);
     });
   }
 
@@ -169,6 +183,25 @@ export class AppComponent implements OnInit {
     };
 
     waitForToken();
+  }
+
+  /**
+   * Announces page navigation to screen readers (508 compliance - Issue #4)
+   */
+  private announcePageChange(url: string): void {
+    const pageNames: Record<string, string> = {
+      '/dashboard': 'Dashboard',
+      '/search': 'Search'
+    };
+
+    const pageName = pageNames[url] || 'Page';
+    const fullTitle = `MIDAS Portal - ${pageName}`;
+
+    this.titleService.setTitle(fullTitle);
+
+    setTimeout(() => {
+      this.liveAnnouncer.announce(`Navigated to ${pageName}`, 'polite');
+    }, 100);
   }
 
   /** Sets a new theme family */
