@@ -164,7 +164,7 @@
 
                     <!-- Resource Type -->
                     <div class="field-wrapper chip-field">
-                        <label class="field-label">
+                        <label class="field-label" id="resource-type-label">
                             Resource Type
                             <span class="material-symbols-outlined help-icon"
                                 matTooltip="The resource type of the record."
@@ -172,8 +172,9 @@
                                 aria-label="Help: The resource type of the record">help</span>
                         </label>
 
-                        <mat-chip-listbox aria-orientation="horizontal" multiple class="chip-listbox"
-                            [formControl]="resourceTypeControl">
+                        <mat-chip-listbox multiple class="chip-listbox"
+                            [formControl]="resourceTypeControl"
+                            aria-labelledby="resource-type-label">
                             <mat-chip-option *ngFor="let rt of resourceTypes" [value]="rt.toLowerCase()">
                                 {{ rt }}
                             </mat-chip-option>
@@ -182,7 +183,7 @@
 
                     <!-- Process Status -->
                     <div class="field-wrapper chip-field">
-                        <label class="field-label">
+                        <label class="field-label" id="process-status-label">
                             Process Status
                             <span class="material-symbols-outlined help-icon"
                                 matTooltip="The process status of the record."
@@ -190,8 +191,9 @@
                                 aria-label="Help: The process status of the record">help</span>
                         </label>
 
-                        <mat-chip-listbox aria-orientation="horizontal" multiple class="chip-listbox"
-                            [formControl]="statusControl">
+                        <mat-chip-listbox multiple class="chip-listbox"
+                            [formControl]="statusControl"
+                            aria-labelledby="process-status-label">
                             <mat-chip-option *ngFor="let s of statuses" [value]="s.value">
                                 {{ s.label }}
                             </mat-chip-option>
@@ -200,7 +202,7 @@
 
 
                     <div class="field-wrapper">
-                        <label class="field-label">
+                        <label class="field-label" id="paper-publication-label">
                             Associated Paper Publication?
                             <span class="material-symbols-outlined help-icon"
                                 matTooltip="Is this record associated with a paper publication?"
@@ -208,7 +210,8 @@
                                 aria-label="Help: Is this record associated with a paper publication">help</span>
                         </label>
                         <mat-checkbox class="checkbox" color="primary" labelPosition="before"
-                            [(ngModel)]="hasPaperPublication">
+                            [(ngModel)]="hasPaperPublication"
+                            aria-labelledby="paper-publication-label">
                         </mat-checkbox>
                     </div>
 

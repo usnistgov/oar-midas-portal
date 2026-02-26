@@ -396,12 +396,35 @@ mat-panel-title {
     background: rgba(0, 0, 0, 0.02);
     border-radius: 4px;
     margin-bottom: 8px;
-    
+
     .results-count {
         margin-left: 0;
-        
+
         &::before {
             display: none;
         }
+    }
+}
+
+// Fix for visual issues with form fields (508 compliance - Issue #6)
+// Angular Material v18 uses MDC-based components with notched outline structure
+:host ::ng-deep .filter-field {
+    // Remove the conflicting grey focus overlay to avoid double highlighting with blue border
+    .mat-mdc-form-field-focus-overlay {
+        display: none !important;
+    }
+
+    // Target the MDC text field for focus state fixes
+    .mdc-text-field--focused {
+        // Ensure floating label isn't cut off by the thick focus border
+        .mdc-floating-label--float-above {
+            padding: 0 4px;
+            background: var(--mat-app-background-color);
+        }
+    }
+
+    // Ensure proper spacing in the notch area
+    .mdc-notched-outline__notch {
+        padding-top: 1px;
     }
 }
