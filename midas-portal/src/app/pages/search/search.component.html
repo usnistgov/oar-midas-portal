@@ -1,7 +1,8 @@
 <div class="search-container">
+    <h1 class="visually-hidden">Search Page</h1>
     <div class="search-panel" [class.loading]="isLoading">
-        <div class="loading-overlay" *ngIf="isLoading">
-            <mat-progress-spinner mode="indeterminate" diameter="50" color="primary"></mat-progress-spinner>
+        <div class="loading-overlay" *ngIf="isLoading" role="status" aria-live="polite" aria-label="Loading search results">
+            <mat-progress-spinner mode="indeterminate" diameter="50" color="primary" aria-label="Loading"></mat-progress-spinner>
         </div>
 
         <div class="search-content">
@@ -296,7 +297,8 @@
 
                 <table mat-table [dataSource]="dataSource" matSort class="advanced-search-table" cdkDropList
                     cdkDropListOrientation="horizontal" [cdkDropListData]="displayedColumns"
-                    (cdkDropListDropped)="dropColumn($event)">
+                    (cdkDropListDropped)="dropColumn($event)"
+                    aria-label="Search results table with sortable and draggable columns">
                     <ng-container matColumnDef="select">
                         <th mat-header-cell *matHeaderCellDef>
                             <mat-checkbox

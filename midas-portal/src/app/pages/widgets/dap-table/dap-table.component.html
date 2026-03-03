@@ -14,7 +14,8 @@
 
 </div>
 <div class="table-wrapper">
-  <table mat-table [dataSource]="dataSource" matSort class="table">
+  <table mat-table [dataSource]="dataSource" matSort class="table"
+         aria-label="Data Asset Plans table with sortable columns">
 
     <!-- Name Column -->
     <ng-container matColumnDef="name">
@@ -70,6 +71,6 @@
 </mat-paginator>
 
 <!-- overlay with spinner -->
-<div class="overlay" *ngIf="isLoading()">
-  <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+<div class="overlay" *ngIf="isLoading()" role="status" aria-live="polite" aria-label="Loading Data Asset Plans">
+  <mat-progress-spinner mode="indeterminate" diameter="50" aria-label="Loading"></mat-progress-spinner>
 </div>
