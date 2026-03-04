@@ -32,9 +32,12 @@
   <button
     class="info-bubble"
     (click)="openMaintenanceNotice()"
-    aria-label="Show maintenance notice"
+    [attr.aria-label]="maintenanceInfo().title"
+    [matTooltip]="maintenanceInfo().title"
   >
-    <mat-icon>info</mat-icon>
+    <mat-icon [ngClass]="maintenanceIcon().color">
+      {{ maintenanceIcon().icon }}
+    </mat-icon>
   </button>
   <button
     class="info-bubble"
@@ -42,6 +45,6 @@
     aria-label="Open theme selector"
     matTooltip="Theme"
   >
-    <mat-icon>palette</mat-icon>
+    <mat-icon class="info-icon">palette</mat-icon>
   </button>
 </div>

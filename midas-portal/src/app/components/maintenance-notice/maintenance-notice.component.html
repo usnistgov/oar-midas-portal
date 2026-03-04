@@ -1,17 +1,22 @@
 <div class="container">
-  <div class="notice-header">
+  <div class="notice-header" [attr.data-status]="maintenanceInfo().status">
     <span class="title-content">
-      <mat-icon class="warning-icon" aria-hidden="true">warning</mat-icon>
-      Maintenance Notice
+      <mat-icon 
+        class="status-icon" 
+        [ngClass]="'icon-' + noticeConfig().color"
+        aria-hidden="true">
+        {{ noticeConfig().icon }}
+      </mat-icon>
+      {{ noticeConfig().title }}
     </span>
   </div>
 
   <mat-dialog-content class="maintenance-content">
-    <div [innerHTML]="infoHtml"></div>
+    <div [innerHTML]="infoHtml()"></div>
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
-    <button mat-flat-button mat-dialog-close color="primary">
+    <button mat-flat-button mat-dialog-close [color]="noticeConfig().color">
       Close
     </button>
   </mat-dialog-actions>

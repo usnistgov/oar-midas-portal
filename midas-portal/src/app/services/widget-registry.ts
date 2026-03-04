@@ -17,7 +17,7 @@ export const WIDGET_REGISTRY: Widget[] = [
     { id: 3, label: 'Reviews Stats', longLabel: 'Reviews', content: ReviewsComponent, rows: 1, columns: 1, backgroundColor: WIDGET_DEFAULT_BG_COLOR, textColor: 'whitesmoke' },
     { id: 4, label: 'Files Stats', longLabel: 'Files', content: FilesComponent, rows: 1, columns: 1, backgroundColor: WIDGET_DEFAULT_BG_COLOR, textColor: 'whitesmoke' },
     { id: 5, label: 'DMP Table', longLabel: 'Data Management Plans', content: DmpTableComponent, rows: 4, columns: 4, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)' },
-    { id: 6, label: 'DAP Table', longLabel: 'Data Asset Publications', content: DapTableComponent, rows: 4, columns: 4, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)' },
+    { id: 6, label: 'DAP Table', longLabel: 'Digital Asset Publications', content: DapTableComponent, rows: 4, columns: 4, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)' },
     { id: 7, label: 'Reviews Table', longLabel: 'Reviews', content: ReviewsTableComponent, rows: 4, columns: 4, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)' },
     { id: 8, label: 'Files Table', longLabel: 'Files', content: FilesTableComponent, rows: 4, columns: 4, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)' },
 ]

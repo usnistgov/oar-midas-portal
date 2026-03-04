@@ -1,10 +1,18 @@
 <div class="table-controls">
   <mat-form-field appearance="outline" class="filter small">
     <mat-icon matPrefix aria-hidden="true">search</mat-icon>
-    <input matInput
+    <input matInput #filterInput
            (keyup)="applyFilter($event)"
            placeholder="Filter name, owner or contact…"
            aria-label="Filter DAP table by name, owner or contact" />
+    <mat-icon matSuffix
+              class="clear-icon"
+              *ngIf="filterInput.value"
+              (click)="clearFilter(filterInput)"
+              matTooltip="Clear Input"
+              aria-hidden="true">
+      close
+    </mat-icon>
   </mat-form-field>
 
   <button mat-flat-button color="primary" (click)="createDap()">

@@ -20,6 +20,31 @@ export interface UserResponse {
   userDetails: UserDetails;
 }
 
+export interface MaintenanceInfo {
+  status: 'success' | 'info' | 'warning';
+  title: string;
+  content: string;
+}
+
+
+export interface MenuConfig {
+  menuItems: MenuItem[];
+  version: string;
+  lastUpdated: string;
+}
+
+
+export interface MenuItem {
+  key: string;
+  name: string;
+  icon: string;
+  link: string;
+  enabled?: boolean;
+  order?: number;
+  requiresConfig?: boolean;
+  subItems?: MenuItem[];
+}
+
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
@@ -77,7 +102,7 @@ export class DataService {
     //console.log('[getDaps] Calling fetchData with:', { api, fallback });
     return this.fetchData<Dap>(api, fallback, this.mapToDap).pipe(
       map(data => {
-        console.log('[getDaps] fetchData returned:', data);
+        //console.log('[getDaps] fetchData returned:', data);
         return data;
       })
     );
@@ -91,11 +116,26 @@ export class DataService {
     //console.log('[getDmps] Calling fetchData with:', { api, fallback });
     return this.fetchData<Dmp>(api, fallback, this.mapToDmp).pipe(
       map(data => {
-        console.log('[getDmps] fetchData returned:', data);
+        //console.log('[getDmps] fetchData returned:', data);
         return data;
       })
     );
 }
+
+  getMaintenanceInfo(): Observable<MaintenanceInfo> {
+    const url = this.resolveApiUrl('infoURL');
+    return this.http.get<MaintenanceInfo>(url).pipe(
+      catchError(err => {
+        console.error('Failed to load maintenance info:', err);
+        // Fallback to default "ok" status
+        return of<MaintenanceInfo>({
+          status: 'success',
+          title: 'System Status',
+          content: '<p>All systems are operational.</p>'
+        });
+      })
+    );
+  }
 
   getInfoText(): Observable<string> {
     const url = this.resolveApiUrl('infoURL');
@@ -111,7 +151,7 @@ export class DataService {
     //console.log('[getFiles] Calling fetchData with:', { api, fallback });
     return this.fetchData<File>(api, fallback, this.mapToFile).pipe(
       map(data => {
-        console.log('[getFiles] fetchData returned:', data);
+        //console.log('[getFiles] fetchData returned:', data);
         return data;
       })
     );
@@ -128,7 +168,7 @@ export class DataService {
     //console.log('[getReviews] Calling fetchData with:', { api, fallback });
     return this.fetchData<Review>(api, fallback, this.mapToReview).pipe(
       map(data => {
-        console.log('[getReviews] fetchData returned:', data);
+        //console.log('[getReviews] fetchData returned:', data);
         return data;
       })
     );
@@ -237,17 +277,20 @@ export class DataService {
 
   // Getter for the DMP creation URL:
   get dmpUI(): string {
-    return this.configService.getConfig()['dmpUI']
+    return this.configService.getConfig()['dmpUI'] || 
+         'https://mdstest.nist.gov/dmpui/new';
   }
-
+  
   // Getter for the DAP creation URL:
   get dapUI(): string {
-    return this.configService.getConfig()['dapUI'] 
+    return this.configService.getConfig()['dapUI'] || 
+         'https://mdstest.nist.gov/dapui/new';
   }
 
   // Getter for the File creation URL:
   get nextcloudUI(): string {
-    return this.configService.getConfig()['nextcloudUI'] 
+    return this.configService.getConfig()['nextcloudUI'] || 
+         'https://mdstest.nist.gov/fileui/new';
   }
 
 
@@ -285,5 +328,64 @@ loadReviews(): Observable<Review[]> {
     })
   );  
 }
+
+getMenuConfig(): Observable<MenuConfig> {
+  const url = this.resolveApiUrl('menuConfigURL');
+  return this.http.get<MenuConfig>(url).pipe(
+    catchError(err => {
+      console.error('Failed to load menu config:', err);
+      // Fallback to default menu config
+      return of<MenuConfig>({
+        menuItems: [
+          { key: 'dashboard', name: 'Dashboard', icon: 'dashboard', link: '/dashboard', enabled: true, order: 1 },
+          { key: 'searchExport', name: 'Search and Export', icon: 'search', link: '/search', enabled: true, order: 2 }
+        ],
+        version: '1.0-fallback',
+        lastUpdated: new Date().toISOString()
+      });
+    }),
+    map(config => this.processMenuConfig(config))
+  );
+}
+
+private processMenuConfig(config: MenuConfig): MenuConfig {
+  // Process menu items and replace template variables
+  const processedItems = config.menuItems.map(item => ({
+    ...item,
+    link: this.replaceTemplateVariables(item.link),
+    subItems: item.subItems?.map(subItem => ({
+      ...subItem,
+      link: this.replaceTemplateVariables(subItem.link)
+    }))
+  }));
+
+  return {
+    ...config,
+    menuItems: processedItems.filter(item => item.enabled !== false)
+      .sort((a, b) => (a.order || 999) - (b.order || 999))
+  };
+}
+
+private replaceTemplateVariables(link: string): string {
+  if (!link) return link;
+  
+  return link
+    .replace('{{dmpUI}}', this.dmpUI)
+    .replace('{{dapUI}}', this.dapUI)
+    .replace('{{nextcloudUI}}', this.nextcloudUI);
+}
+
+getUser(): Observable<UserResponse> {
+    return of({
+      userDetails: {
+        userId: 'one1',
+        userEmail: 'omarilias.elmimouni@nist.gov',
+        userName: 'Omar Ilias',
+        userLastName: 'El Mimouni',
+        winId: 'one1',
+        Group: '77ITL'
+      }
+    });
+  }
 
 }
