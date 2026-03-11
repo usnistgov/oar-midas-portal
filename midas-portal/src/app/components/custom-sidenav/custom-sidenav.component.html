@@ -1,5 +1,16 @@
 <!-- Sidenav Header -->
 <div class="sidenav-header">
+  <button
+    *ngIf="!sideNavCollapsed()"
+    mat-icon-button
+    (click)="startTour()"
+    aria-label="Start guided tour"
+    matTooltip="Start guided tour"
+    data-tour="help-icon"
+    class="help-button">
+    <mat-icon>help_outline</mat-icon>
+  </button>
+
   <img src="assets/images/profile-avatar.png" alt="profile avatar" [width]="profilePicSize()" [height]="profilePicSize()" />
 
   <div class="header-text" [class.visible]="showHeaderText()">

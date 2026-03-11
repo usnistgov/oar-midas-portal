@@ -175,12 +175,39 @@ export class TourService {
   }
 
   /**
+   * Final step - Help icon in sidebar
+   */
+  private getFinalStep(): DriveStep[] {
+    return [
+      {
+        element: '[data-tour="help-icon"]',
+        popover: {
+          title: 'Need Help? Start the Tour Again!',
+          description: 'Click this help icon anytime to restart the guided tour and explore the features again.',
+          side: 'right',
+          align: 'start'
+        }
+      }
+    ];
+  }
+
+  /**
    * Start the guided tour from Dashboard
    */
   startTour(): void {
     this.isTourActive.set(true);
     this.currentStepIndex = 0;
-    this.startDashboardTour();
+
+    // Navigate to dashboard first if not already there
+    if (!window.location.pathname.includes('dashboard')) {
+      this.router.navigate(['/dashboard']).then(() => {
+        setTimeout(() => {
+          this.startDashboardTour();
+        }, 300);
+      });
+    } else {
+      this.startDashboardTour();
+    }
   }
 
   /**
@@ -251,18 +278,99 @@ export class TourService {
       popoverClass: 'midas-tour-popover',
       steps,
       onDestroyStarted: () => {
-        this.markTourCompleted();
-        this.isTourActive.set(false);
+        // Don't mark as completed yet - we have one more step
         this.driverInstance?.destroy();
       },
       onDestroyed: () => {
-        this.isTourActive.set(false);
+        // Tour will continue with final step
+      },
+      onNextClick: () => {
+        const currentStep = this.driverInstance?.getActiveIndex() ?? 0;
+
+        // If on the last search step, navigate back to dashboard for final step
+        if (currentStep === steps.length - 1) {
+          this.driverInstance?.destroy();
+          this.navigateToDashboardAndFinish();
+          return;
+        }
+
+        this.driverInstance?.moveNext();
       }
     });
 
     // Wait for search input to be ready
     this.waitForElement('[data-tour="search-input"]').then(() => {
       this.driverInstance?.drive();
+    });
+  }
+
+  /**
+   * Navigate back to dashboard and show final step (help icon)
+   */
+  private navigateToDashboardAndFinish(): void {
+    this.router.navigate(['/dashboard']).then(() => {
+      // Wait for the page to render, then show final step
+      setTimeout(() => {
+        this.startFinalStep();
+      }, 500);
+    });
+  }
+
+  /**
+   * Show the final step - highlighting the help icon
+   */
+  private startFinalStep(): void {
+    // Ensure sidebar is expanded before showing help icon
+    this.ensureSidebarExpanded().then(() => {
+      const steps = this.getFinalStep();
+
+      this.driverInstance = driver({
+        showProgress: true,
+        animate: true,
+        allowClose: false, // Force user to click "Done" to complete tour
+        overlayColor: 'rgba(0, 0, 0, 0.7)',
+        popoverClass: 'midas-tour-popover',
+        steps,
+        onDestroyStarted: () => {
+          // Now mark tour as completed when they click "Done"
+          this.markTourCompleted();
+          this.isTourActive.set(false);
+          this.driverInstance?.destroy();
+        },
+        onDestroyed: () => {
+          this.isTourActive.set(false);
+        }
+      });
+
+      // Wait for help icon to be ready (sidebar needs to be expanded)
+      this.waitForElement('[data-tour="help-icon"]').then(() => {
+        this.driverInstance?.drive();
+      });
+    });
+  }
+
+  /**
+   * Ensure sidebar is expanded to show help icon
+   */
+  private ensureSidebarExpanded(): Promise<void> {
+    return new Promise((resolve) => {
+      const helpIcon = document.querySelector('[data-tour="help-icon"]');
+
+      // If help icon is already visible, we're done
+      if (helpIcon) {
+        resolve();
+        return;
+      }
+
+      // Otherwise, expand the sidebar
+      const sidebarToggle = document.querySelector('[data-tour="sidebar-toggle"]') as HTMLElement;
+      if (sidebarToggle) {
+        sidebarToggle.click();
+        // Wait for sidebar to expand
+        setTimeout(() => resolve(), 300);
+      } else {
+        resolve();
+      }
     });
   }
 
