@@ -1,5 +1,7 @@
 import { Component, input, signal, AfterViewInit, ElementRef, inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Widget } from '../../models/dashboard';
+import { ExpandedTableDialogComponent } from '../expanded-table-dialog/expanded-table-dialog.component';
 
 @Component({
   selector: 'app-widget',
@@ -15,7 +17,28 @@ export class WidgetComponent implements AfterViewInit {
   showOptions = signal(false);
   
   private elementRef = inject(ElementRef);
+  private dialog = inject(MatDialog);
   readonly isDragDisabled = signal(false);
+
+  private readonly tableWidgets = [
+    'DmpTableComponent',
+    'DapTableComponent',
+    'FilesTableComponent',
+    'ReviewsTableComponent'
+  ];
+
+  get isTableWidget(): boolean {
+    return this.tableWidgets.includes(this.data().content.name);
+  }
+
+  expandTable() {
+    this.dialog.open(ExpandedTableDialogComponent, {
+      data: this.data(),
+      width: '90vw',
+      maxWidth: '1400px',
+      height: '85vh',
+    });
+  }
 
   ngAfterViewInit() {
     setTimeout(() => {

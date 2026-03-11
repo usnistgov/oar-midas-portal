@@ -50,6 +50,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
+import { ExpandedTableDialogComponent } from './components/expanded-table-dialog/expanded-table-dialog.component';
 import { HelpDialogComponent } from './components/help-dialog/help-dialog.component';
 import { LoadFilterDialogComponent } from './components/load-filter-dialog/load-filter-dialog.component';
 import { MaintenanceNoticeComponent } from './components/maintenance-notice/maintenance-notice.component';
@@ -92,6 +93,7 @@ import { FooterComponent } from 'oarng';
     SettingsDialogComponent,
     ThemeSelectorDialogComponent,
     WelcomeDialogComponent,
+    ExpandedTableDialogComponent,
   ],
   imports: [
     BrowserModule,

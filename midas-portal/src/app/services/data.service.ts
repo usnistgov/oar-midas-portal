@@ -199,7 +199,6 @@ export class DataService {
  * TODO: this is for dev purposes only --- SHOULD CHANGE!
  */
   private mapToDmp(raw: any): Dmp {
-  // Find the primary NIST contact
   const primary = (raw.data?.contributors as any[] || [])
     .find(c => c.primary_contact === 'Yes');
 
@@ -210,14 +209,20 @@ export class DataService {
   return {
     id: raw.id,
     name: raw.name,
+    title: raw.data?.title || '',
     owner: raw.owner,
     primaryContact,
     organizationUnit: raw.data?.organizations?.[0]?.ouName || '',
     modifiedDate: new Date(raw.status.modifiedDate),
+    createdDate: raw.status.createdDate ? new Date(raw.status.createdDate) : undefined,
+    startDate: raw.data?.startDate || '',
     type: raw.type,
     status: raw.status.state,
     hasPublication: raw.data?.dmpSearchable === 'yes',
-    keywords: raw.data?.keywords || []
+    keywords: raw.data?.keywords || [],
+    fundingType: raw.data?.funding?.grant_source || '',
+    fundingNumber: raw.data?.funding?.grant_id || '',
+    dataCategories: raw.data?.dataCategories || [],
   };
 }
 
@@ -226,19 +231,29 @@ export class DataService {
  * TODO: this is for dev purposes only --- SHOULD CHANGE!
    */
   private mapToDap(raw: any): Dap {
-    // find the primary NIST contact
     const contactPoint = raw.data?.contactPoint;
     const primaryContact = contactPoint?.fn ?? '';
+
+    const authors = (raw.data?.authors as any[] || [])
+      .map((a: any) => a.fn || `${a.givenName ?? ''} ${a.familyName ?? ''}`.trim())
+      .filter(Boolean);
 
     return {
       id: raw.id,
       name: raw.name,
+      title: raw.data?.title || '',
       owner: raw.owner,
       primaryContact,
       type: raw.type,
       status: raw.status.state,
-      location: raw.file_space.location,
-      modifiedDate: new Date(raw.status.modifiedDate)
+      location: raw.file_space?.location || '',
+      organizationUnit: raw.data?.organizations?.[0]?.ouName || '',
+      keywords: raw.data?.keywords || [],
+      dataCategories: raw.data?.dataCategories || [],
+      authors,
+      theme: raw.data?.theme || [],
+      modifiedDate: new Date(raw.status.modifiedDate),
+      createdDate: raw.status.createdDate ? new Date(raw.status.createdDate) : undefined,
     };
   }
 

@@ -113,6 +113,13 @@
     cursor: pointer !important;
 }
 
+.expand-button {
+    position: absolute;
+    top: 0;
+    right: 40px;
+    cursor: pointer !important;
+}
+
 h3 {
     user-select: none !important;
     cursor: default;
