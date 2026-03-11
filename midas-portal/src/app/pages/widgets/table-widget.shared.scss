@@ -41,7 +41,8 @@ mat-form-field {
 .table a {
   color: var(--mat-badge-background-color);
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 500;
+  font-size: 0.875rem;
 }
 
 mat-paginator {
