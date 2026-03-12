@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Welcome to the New MIDAS Portal!</h2>
+
+<mat-dialog-content>
+  <p>
+    We're excited to introduce the redesigned MIDAS Portal with a fresh new look
+    and improved features to help you manage your data more efficiently.
+  </p>
+  <p>
+    Would you like a quick tour to discover the new features?
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <mat-checkbox [(ngModel)]="dontAskAgain" class="dont-ask-checkbox">
+    Don't ask me again
+  </mat-checkbox>
+
+  <div class="button-group">
+    <button mat-stroked-button color="primary" (click)="onSkip()">
+      No thanks
+    </button>
+    <button mat-flat-button color="primary" (click)="onTakeTour()">
+      Yes, show me around
+    </button>
+  </div>
+</mat-dialog-actions>

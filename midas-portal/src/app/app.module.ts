@@ -57,6 +57,7 @@ import { MaintenanceNoticeComponent } from './components/maintenance-notice/main
 import { SaveFilterDialogComponent } from './components/save-filter-dialog/save-filter-dialog.component';
 import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
 import { ThemeSelectorDialogComponent } from './components/theme-selector-dialog/theme-selector-dialog.component';
+import { WelcomeDialogComponent } from './components/welcome-dialog/welcome-dialog.component';
 import { SearchComponent } from './pages/search/search.component';
 import { DashboardService } from './services/dashboard.service';
 import { DataService } from './services/data.service';
@@ -91,8 +92,7 @@ import { FooterComponent } from 'oarng';
     LoadFilterDialogComponent,
     SettingsDialogComponent,
     ThemeSelectorDialogComponent,
-
-
+    WelcomeDialogComponent,
   ],
   imports: [
     BrowserModule,

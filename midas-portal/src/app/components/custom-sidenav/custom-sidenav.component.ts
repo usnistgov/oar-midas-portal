@@ -5,6 +5,7 @@ import { DataService, UserResponse, MaintenanceInfo } from '../../services/data.
 import { AuthenticationService } from 'oarng';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { ThemeSelectorData, ThemeSelectorDialogComponent } from '../theme-selector-dialog/theme-selector-dialog.component';
+import { TourService } from '../../services/tour.service';
 
 export type MenuItem = {
   key: string;
@@ -112,7 +113,8 @@ export class CustomSidenavComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private dataService: DataService,
-    private authsvc: AuthenticationService
+    private authsvc: AuthenticationService,
+    private tourService: TourService
   ) { }
 
   /** Fetch user data and apply config-based menu link overrides */
@@ -240,5 +242,10 @@ export class CustomSidenavComponent implements OnInit {
         docEl.classList.add(res.family, res.variant);
       }
     });
+  }
+
+  /** Starts the guided tour */
+  startTour() {
+    this.tourService.startTour();
   }
 }

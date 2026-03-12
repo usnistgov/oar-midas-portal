@@ -1,5 +1,16 @@
 <!-- Sidenav Header -->
 <div class="sidenav-header">
+  <button
+    *ngIf="!sideNavCollapsed()"
+    mat-icon-button
+    (click)="startTour()"
+    aria-label="Start guided tour"
+    matTooltip="Start guided tour"
+    data-tour="help-icon"
+    class="help-button">
+    <mat-icon>help_outline</mat-icon>
+  </button>
+
   <img src="assets/images/profile-avatar.png" alt="profile avatar" [width]="profilePicSize()" [height]="profilePicSize()" />
 
   <div class="header-text" [class.visible]="showHeaderText()">
@@ -7,11 +18,7 @@
     <p>{{ group }}</p>
   </div>
 
-  <button mat-icon-button
-          (click)="toggleSidenav()"
-          matTooltip="Collapse/Expand"
-          [attr.aria-label]="sideNavCollapsed() ? 'Expand navigation sidebar' : 'Collapse navigation sidebar'"
-          [attr.aria-expanded]="!sideNavCollapsed()">
+  <button mat-icon-button (click)="toggleSidenav()" matTooltip="Collapse/Expand" data-tour="sidebar-toggle">
     <mat-icon>
       <span class="material-symbols-outlined toolbar-menu-icon">
           {{ sideNavCollapsed() ? 'left_panel_open' : 'left_panel_close' }}
