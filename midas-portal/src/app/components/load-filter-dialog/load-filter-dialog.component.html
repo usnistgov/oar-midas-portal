@@ -11,8 +11,8 @@
 
       <!-- 3) delete button on the right -->
       <button mat-icon-button class="delete-button" (click)="delete(name); $event.stopPropagation()"
-        matTooltip="Delete Filter" color="warn">
-        <mat-icon>delete</mat-icon>
+        matTooltip="Delete Filter" color="warn" [attr.aria-label]="'Delete filter ' + name">
+        <mat-icon aria-hidden="true">delete</mat-icon>
       </button>
     </div>
   </mat-radio-group>

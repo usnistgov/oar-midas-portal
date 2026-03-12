@@ -1,14 +1,18 @@
 <ng-container *ngIf="item().subItems; else noSubItems">
   <!-- Parent with subItems: just a clickable div or button to toggle -->
-  <a mat-list-item href="#" (click)="toggleNestedMenu(); $event.preventDefault()" class="menu-item">
-    <mat-icon matListItemIcon>
+  <a mat-list-item href="#"
+     (click)="toggleNestedMenu(); $event.preventDefault()"
+     class="menu-item"
+     [attr.aria-label]="collapsed() ? item().name + ' menu, ' + (nestedMenuOpened() ? 'expanded' : 'collapsed') : null"
+     [attr.aria-expanded]="nestedMenuOpened()">
+    <mat-icon matListItemIcon aria-hidden="true">
       {{ item().icon }}
     </mat-icon>
     <span matListItemTitle *ngIf="!collapsed()">
       {{ item().name }}
     </span>
     <span matListItemMeta *ngIf="!collapsed()">
-      <mat-icon>
+      <mat-icon aria-hidden="true">
         {{ nestedMenuOpened() ? 'expand_less' : 'expand_more' }}
       </mat-icon>
     </span>
@@ -17,9 +21,17 @@
   <ng-container *ngIf="nestedMenuOpened() && !collapsed()">
     <div *ngFor="let subItem of item().subItems">
       <ng-container *ngIf="isInternalRoute(subItem); else subExternalLink">
-        <a mat-list-item [routerLink]="subItem.link" (click)="setActive(subItem)"
-          [activated]="subItem === activeItem" class="menu-item" [class.indented]="!collapsed()">
-          <mat-icon matListItemIcon [fontSet]="subItem === activeItem ? 'material-icons' : 'material-icons-outlined'">
+        <a mat-list-item
+           [routerLink]="subItem.link"
+           (click)="setActive(subItem)"
+           [activated]="subItem === activeItem"
+           class="menu-item"
+           [class.indented]="!collapsed()"
+           [attr.aria-label]="subItem.name"
+           [attr.aria-current]="subItem === activeItem ? 'page' : null">
+          <mat-icon matListItemIcon
+                    [fontSet]="subItem === activeItem ? 'material-icons' : 'material-icons-outlined'"
+                    aria-hidden="true">
             {{ subItem.icon }}
           </mat-icon>
           <span matListItemTitle *ngIf="!collapsed()">
@@ -28,9 +40,18 @@
         </a>
       </ng-container>
       <ng-template #subExternalLink>
-        <a mat-list-item [href]="subItem.link" target="_blank" rel="noopener" (click)="setActive(subItem)"
-          [activated]="subItem === activeItem" class="menu-item" [class.indented]="!collapsed()">
-          <mat-icon matListItemIcon [fontSet]="subItem === activeItem ? 'material-icons' : 'material-icons-outlined'">
+        <a mat-list-item
+           [href]="subItem.link"
+           target="_blank"
+           rel="noopener"
+           (click)="setActive(subItem)"
+           [activated]="subItem === activeItem"
+           class="menu-item"
+           [class.indented]="!collapsed()"
+           [attr.aria-label]="subItem.name + ' (opens in new tab)'">
+          <mat-icon matListItemIcon
+                    [fontSet]="subItem === activeItem ? 'material-icons' : 'material-icons-outlined'"
+                    aria-hidden="true">
             {{ subItem.icon }}
           </mat-icon>
           <span matListItemTitle *ngIf="!collapsed()">
@@ -55,8 +76,13 @@
     </a>
   </ng-container>
   <ng-template #externalLink>
-    <a mat-list-item [href]="item().link" target="_blank" rel="noopener" class="menu-item">
-      <mat-icon matListItemIcon>
+    <a mat-list-item
+       [href]="item().link"
+       target="_blank"
+       rel="noopener"
+       class="menu-item"
+       [attr.aria-label]="collapsed() ? item().name + ' (opens in new tab)' : item().name + ' (opens in new tab)'">
+      <mat-icon matListItemIcon aria-hidden="true">
         {{ item().icon }}
       </mat-icon>
       <span matListItemTitle *ngIf="!collapsed()">

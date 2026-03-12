@@ -29,7 +29,8 @@ import { DataService } from '../../services/data.service';
 import { PeopleService } from '../../services/people.service';
 import { FilterCriteria, SearchFilterService } from '../../services/search-filter.service';
 import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
-import { SelectionModel } from '@angular/cdk/collections'
+import { SelectionModel } from '@angular/cdk/collections';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 
 
@@ -228,8 +229,6 @@ export class SearchComponent {
 
   toggleRow(row: DmpOrDap) {
     this.selection.toggle(row);
-    console.log(`Toggled row: ${row.id}, selected: ${this.selection.isSelected(row)}`);
-    console.log(`Current selection: ${this.selection.selected.map(r => r.id).join(', ')}`);
   }
 
 
@@ -259,7 +258,8 @@ export class SearchComponent {
     private peopleService: PeopleService,
     private exportService: ExportService,
     private downloadService: DownloadService,
-    private filterService: SearchFilterService) {
+    private filterService: SearchFilterService,
+    private liveAnnouncer: LiveAnnouncer) {
     this.dataSource.filterPredicate = (d: Dmp, filter: string) =>
       d.name.toLowerCase().includes(filter) ||
       d.owner.toLowerCase().includes(filter) ||
@@ -453,6 +453,11 @@ searchOrgIndex(queryString: string): void {
     // reset table to full list
     this.updateDataSource();
     this.paginator?.firstPage();
+
+    // Announce to screen readers (508 compliance - Issue #3)
+    setTimeout(() => {
+      this.liveAnnouncer.announce('Advanced search cancelled, showing all results', 'polite');
+    }, 100);
   }
 
 
@@ -499,30 +504,13 @@ searchOrgIndex(queryString: string): void {
   }
 
   downloadData(format: 'json' | 'csv' | 'pdf' | 'markdown'): void {
-    const records = this.dataSource.filteredData;
+    const selectedRecords = this.selection.selected;
 
-    if (records.length === 0) {
-      // No records, show message to user
-      this._snackBar.open('No records to download.', 'Dismiss', { duration: 3000 });
+    if (!this.downloadService.validateSelection(selectedRecords)) {
       return;
     }
 
-    switch (format) {
-      case 'json':
-        this.downloadService.downloadJSON(this.selection.selected);
-        break;
-
-      case 'csv':
-        this.downloadService.downloadCSV(this.selection.selected);
-        break;
-
-      case 'pdf':
-        this.downloadService.downloadPDF(this.selection.selected);
-        break;
-
-      case 'markdown':
-        this.downloadService.downloadmarkdown(this.selection.selected);
-    }
+    this.downloadService.downloadRecords(selectedRecords, format).subscribe();
   }
 
   add(event: MatChipInputEvent): void {
@@ -570,6 +558,12 @@ searchOrgIndex(queryString: string): void {
   const filtered = this.filterService.filterDmpOrDapList(merged, crit);
   this.dataSource.data = filtered;
   this.paginator?.firstPage();
+
+  // Announce results to screen readers (508 compliance - Issue #3)
+  this.liveAnnouncer.announce(
+    `Found ${filtered.length} of ${merged.length} records`,
+    'polite'
+  );
 }
 
   /**
@@ -629,6 +623,12 @@ searchOrgIndex(queryString: string): void {
       verticalPosition: 'bottom',
       duration: 3000
     });
+
+    // Announce to screen readers (508 compliance - Issue #3)
+    // Delay announcement slightly to ensure it happens after UI updates
+    setTimeout(() => {
+      this.liveAnnouncer.announce('All filters cleared, showing all results', 'polite');
+    }, 100);
   }
 
   /**
