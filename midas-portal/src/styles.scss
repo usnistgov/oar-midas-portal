@@ -1,6 +1,42 @@
 @use '@angular/material' as mat;
 
 @include mat.core();
+
+// =======================================
+// Skip link for 508 compliance
+// =======================================
+.skip-link {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  clip-path: inset(50%) !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+.skip-link:focus {
+  position: fixed !important;
+  top: 10px !important;
+  left: 10px !important;
+  clip: auto !important;
+  clip-path: none !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 8px 16px !important;
+  background: #1976d2 !important;
+  color: white !important;
+  text-decoration: none !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  z-index: 10000 !important;
+  white-space: normal !important;
+}
+
 // =======================================
 // Midas Header STyles
 // =======================================
