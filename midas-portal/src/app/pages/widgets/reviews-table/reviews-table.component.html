@@ -1,20 +1,23 @@
 <div class="table-controls">
   <mat-form-field appearance="outline" class="filter small">
-    <mat-icon matPrefix>search</mat-icon>
+    <mat-icon matPrefix aria-hidden="true">search</mat-icon>
     <input matInput #filterInput
-    (keyup)="applyFilter($event)" 
-    placeholder="Filter name, owner or contact…" />
-        <mat-icon matSuffix 
+           (keyup)="applyFilter($event)"
+           placeholder="Filter name, owner or contact…"
+           aria-label="Filter reviews table by title, submitter or reviewer" />
+    <mat-icon matSuffix
               class="clear-icon"
               *ngIf="filterInput.value"
               (click)="clearFilter(filterInput)"
-              matTooltip="Clear Input">
+              matTooltip="Clear Input"
+              aria-hidden="true">
       close
     </mat-icon>
   </mat-form-field>
 </div>
 <div class="table-wrapper">
-  <table mat-table [dataSource]="dataSource" matSort class="table">
+  <table mat-table [dataSource]="dataSource" matSort class="table"
+         aria-label="Reviews table with sortable columns">
 
     <!-- Name Column -->
     <ng-container matColumnDef="title">
@@ -56,6 +59,6 @@
 </mat-paginator>
 
 <!-- overlay with spinner -->
-<div class="overlay" *ngIf="isLoading()">
-  <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+<div class="overlay" *ngIf="isLoading()" role="status" aria-live="polite" aria-label="Loading reviews">
+  <mat-progress-spinner mode="indeterminate" diameter="50" aria-label="Loading"></mat-progress-spinner>
 </div>

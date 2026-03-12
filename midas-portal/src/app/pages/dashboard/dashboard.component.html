@@ -2,13 +2,13 @@
 
     <!-- Dashboard Header -->
     <div class="dashboard-header">
-        <div class="title">Midas Dashboard</div>
+        <h1 class="title">Midas Dashboard</h1>
 
         <div class="dashboard-actions">
             <!-- Add Widget Button -->
             <button mat-raised-button color="primary" class="pill-button" [matMenuTriggerFor]="menu"
                 [disabled]="dashboardService.widgetsToAdd().length === 0">
-                <mat-icon>add_circle</mat-icon>
+                <mat-icon aria-hidden="true">add_circle</mat-icon>
                 Add Widget
             </button>
 
@@ -25,7 +25,7 @@
             @if (dashboardService.widgetsToAdd().length > 0) {
             @for (w of dashboardService.widgetsToAdd(); track w.id) {
             <button mat-menu-item (click)="dashboardService.addWidget(w)">
-                <mat-icon>dashboard_customize</mat-icon>
+                <mat-icon aria-hidden="true">dashboard_customize</mat-icon>
                 {{ w.label }}
             </button>
             }
@@ -47,8 +47,8 @@
     <div class="sidebar" [ngClass]="{ open: isSidebarVisible() }">
         <div class="sidebar-header">
             <span class="sidebar-title">Filter Data Management Plans</span>
-            <button mat-icon-button (click)="toggleSidebar()">
-                <mat-icon>close</mat-icon>
+            <button mat-icon-button (click)="toggleSidebar()" aria-label="Close filters sidebar">
+                <mat-icon aria-hidden="true">close</mat-icon>
             </button>
         </div>
 

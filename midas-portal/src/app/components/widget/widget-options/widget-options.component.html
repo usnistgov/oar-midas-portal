@@ -1,10 +1,10 @@
-<button mat-icon-button class="close-button" (click)="showOptions.set(false)">
-    <mat-icon>close</mat-icon>
+<button mat-icon-button class="close-button" (click)="showOptions.set(false)" aria-label="Close widget options">
+    <mat-icon aria-hidden="true">close</mat-icon>
 </button>
 
 <!-- Dynamic Width Options -->
 <div>
-    <span class="material-symbols-outlined">
+    <span class="material-symbols-outlined" aria-hidden="true">
         arrow_range
     </span>
     <mat-button-toggle-group hideSingleSelectionIndicator [value]="data().columns ?? 1"
@@ -17,7 +17,7 @@
 
 <!-- Dynamic Height Options -->
 <div>
-    <span class="material-symbols-outlined">
+    <span class="material-symbols-outlined" aria-hidden="true">
         height
     </span>
     <mat-button-toggle-group hideSingleSelectionIndicator [value]="data().rows ?? 1"
@@ -28,16 +28,16 @@
     </mat-button-toggle-group>
 </div>
 
-<button mat-icon-button class="move-forward-button" (click)="store.moveWidgetRight(data().id)">
-    <mat-icon>chevron_right</mat-icon>
+<button mat-icon-button class="move-forward-button" (click)="store.moveWidgetRight(data().id)" aria-label="Move widget right">
+    <mat-icon aria-hidden="true">chevron_right</mat-icon>
 </button>
 
-<button mat-icon-button class="move-backward-button" (click)="store.moveWidgetLeft(data().id)">
-    <mat-icon>chevron_left</mat-icon>
+<button mat-icon-button class="move-backward-button" (click)="store.moveWidgetLeft(data().id)" aria-label="Move widget left">
+    <mat-icon aria-hidden="true">chevron_left</mat-icon>
 </button>
 
-<button mat-icon-button class="remove-widget-button" (click)="store.removeWidget(data().id)">
-    <span class="material-symbols-outlined">
+<button mat-icon-button class="remove-widget-button" (click)="store.removeWidget(data().id)" aria-label="Remove widget">
+    <span class="material-symbols-outlined" aria-hidden="true">
         delete
     </span>
 </button>

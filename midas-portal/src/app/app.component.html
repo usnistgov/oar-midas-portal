@@ -18,6 +18,22 @@
       </mat-sidenav-content>
     </mat-sidenav-container>
 
-    <app-footer></app-footer>
-  </div>
+  <!-- Main Layout -->
+  <mat-sidenav-container>
+  <mat-sidenav
+    opened
+    mode="side"
+    [style.width]="customSidenav?.sideNavWidth()"
+    class="hover-sidenav"
+  >
+    <app-custom-sidenav #customSidenav></app-custom-sidenav>
+  </mat-sidenav>
+  <mat-sidenav-content class="content" [style.margin-left]="customSidenav?.sideNavWidth()">
+    <main id="main-content" role="main" tabindex="-1">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+  <app-footer></app-footer>
 </div>
