@@ -1,6 +1,22 @@
 <div class="layout-container">
   <app-header appVersion="1.0" titleLn1="MIDAS" titleLn2="Dashboard"></app-header>
 
+  <!-- Scrollable wrapper for sidenav + content + footer -->
+  <div class="main-scroll-area">
+    <!-- Main Layout -->
+    <mat-sidenav-container>
+      <mat-sidenav
+        opened
+        mode="side"
+        [style.width]="customSidenav?.sideNavWidth()"
+        class="hover-sidenav"
+      >
+        <app-custom-sidenav #customSidenav></app-custom-sidenav>
+      </mat-sidenav>
+      <mat-sidenav-content class="content" [style.margin-left]="customSidenav?.sideNavWidth()">
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
 
   <!-- Main Layout -->
   <mat-sidenav-container>

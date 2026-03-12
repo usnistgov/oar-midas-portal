@@ -229,8 +229,6 @@ export class SearchComponent {
 
   toggleRow(row: DmpOrDap) {
     this.selection.toggle(row);
-    console.log(`Toggled row: ${row.id}, selected: ${this.selection.isSelected(row)}`);
-    console.log(`Current selection: ${this.selection.selected.map(r => r.id).join(', ')}`);
   }
 
 
@@ -506,30 +504,13 @@ searchOrgIndex(queryString: string): void {
   }
 
   downloadData(format: 'json' | 'csv' | 'pdf' | 'markdown'): void {
-    const records = this.dataSource.filteredData;
+    const selectedRecords = this.selection.selected;
 
-    if (records.length === 0) {
-      // No records, show message to user
-      this._snackBar.open('No records to download.', 'Dismiss', { duration: 3000 });
+    if (!this.downloadService.validateSelection(selectedRecords)) {
       return;
     }
 
-    switch (format) {
-      case 'json':
-        this.downloadService.downloadJSON(this.selection.selected);
-        break;
-
-      case 'csv':
-        this.downloadService.downloadCSV(this.selection.selected);
-        break;
-
-      case 'pdf':
-        this.downloadService.downloadPDF(this.selection.selected);
-        break;
-
-      case 'markdown':
-        this.downloadService.downloadmarkdown(this.selection.selected);
-    }
+    this.downloadService.downloadRecords(selectedRecords, format).subscribe();
   }
 
   add(event: MatChipInputEvent): void {

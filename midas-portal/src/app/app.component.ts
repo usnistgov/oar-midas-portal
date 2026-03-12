@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
    * Initial value is retrieved from localStorage for persistence.
    */
   readonly collapsed = signal<boolean>(
-    JSON.parse(localStorage.getItem('sidenavCollapsed') ?? 'false')
+    JSON.parse(localStorage.getItem('sidenavCollapsed') ?? 'true')
   );
 
   /**

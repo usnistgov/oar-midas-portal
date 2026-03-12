@@ -30,11 +30,11 @@
   
 .widget-content {
     position: absolute;
-    top: calc(3rem);
+    top: calc(3rem);        /* header height + top padding */
     right: 8px;
     bottom: 8px;
     left: 16px;
-    overflow: auto;
+    overflow: hidden; // Changed from auto - prevents widget from capturing scroll events
     padding-top: 4px;
     cursor: default;
     
