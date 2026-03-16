@@ -119,18 +119,16 @@ export class ExpandedTableDialogComponent implements AfterViewInit {
 
   get createUrl(): string | null {
     switch (this.componentName) {
-      case 'DmpTableComponent':     return this.dataService.dmpUI;
-      case 'DapTableComponent':     return this.dataService.dapUI;
-      case 'FilesTableComponent':   return this.dataService.nextcloudUI;
+      case 'DmpTableComponent': return this.dataService.dmpUI;
+      case 'DapTableComponent': return this.dataService.dapUI;
       default: return null;
     }
   }
 
   get createLabel(): string {
     switch (this.componentName) {
-      case 'DmpTableComponent':   return 'Create DMP';
-      case 'DapTableComponent':   return 'Create DAP';
-      case 'FilesTableComponent': return 'Upload Files';
+      case 'DmpTableComponent': return 'Create DMP';
+      case 'DapTableComponent': return 'Create DAP';
       default: return 'Create';
     }
   }
