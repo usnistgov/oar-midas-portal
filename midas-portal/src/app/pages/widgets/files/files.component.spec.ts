@@ -30,7 +30,7 @@ describe('FilesComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -47,8 +47,8 @@ describe('FilesComponent', () => {
         {
           provide: DataService,
           useValue: {
-            getFiles: jasmine.createSpy('getFiles'),
-            loadFiles: jasmine.createSpy('loadFiles'),
+            getFiles: jest.fn(),
+            loadFiles: jest.fn(),
             files: signal([])
           }
         }

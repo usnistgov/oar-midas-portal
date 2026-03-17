@@ -44,7 +44,7 @@ describe('ReviewsTableComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -61,8 +61,8 @@ describe('ReviewsTableComponent', () => {
         {
           provide: DataService,
           useValue: {
-            getReviews: jasmine.createSpy('getReviews').and.returnValue(of([])),
-            resolveApiUrl: jasmine.createSpy('resolveApiUrl').and.returnValue('http://mock-api/')
+            getReviews: jest.fn().mockReturnValue(of([])),
+            resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/')
           }
         }
       ]

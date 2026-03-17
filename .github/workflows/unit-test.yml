@@ -2,46 +2,41 @@ name: Angular Tests
 
 on:
   push:
-    branches: [ '*' ]  # Run on ALL branches
+    branches: [ '*' ]
   pull_request:
-    branches: [ '*' ]  # Run on PRs to ALL branches
+    branches: [ '*' ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        node-version: [20.x]
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
-    - name: Setup Node.js ${{ matrix.node-version }}
+      with:
+        submodules: recursive
+
+    - name: Setup Node.js 20.x
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: '20.x'
         cache: 'npm'
-        cache-dependency-path: 'midas-portal/package-lock.json'
-    
+        cache-dependency-path: 'package-lock.json'
+
     - name: Install dependencies
-      working-directory: ./midas-portal
       run: npm ci
-    
+
     - name: Run tests with coverage
-      working-directory: ./midas-portal
-      run: npm run test -- --code-coverage --watch=false --browsers=ChromeHeadless
-      
+      run: npm run test:ci --workspace=midas-portal
+
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       with:
         file: ./midas-portal/coverage/lcov.info
-        directory: ./midas-portal/coverage/
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: false
-        
+
     - name: Coverage Summary
       run: |
         echo "## Test Coverage Report" >> $GITHUB_STEP_SUMMARY
@@ -58,7 +53,7 @@ jobs:
             console.log('| Lines | ' + total.lines.pct + '% |');
           " >> $GITHUB_STEP_SUMMARY
         fi
-        
+
     - name: Comment PR with coverage
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v7
@@ -68,18 +63,18 @@ jobs:
           if (fs.existsSync('./midas-portal/coverage/coverage-summary.json')) {
             const coverage = JSON.parse(fs.readFileSync('./midas-portal/coverage/coverage-summary.json', 'utf8'));
             const total = coverage.total;
-            
-            const comment = `## 📊 Test Coverage Report
-            
+
+            const comment = `## Test Coverage Report
+
             | Metric | Current | Target |
             |--------|---------|--------|
             | Statements | ${total.statements.pct}% | 80% |
             | Branches | ${total.branches.pct}% | 80% |
             | Functions | ${total.functions.pct}% | 80% |
             | Lines | ${total.lines.pct}% | 80% |
-            
+
             ${total.statements.pct < 80 ? '⚠️ Statement coverage below 80%' : '✅ Statement coverage looks good!'}`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

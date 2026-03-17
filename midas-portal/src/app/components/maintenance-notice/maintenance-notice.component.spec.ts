@@ -27,7 +27,7 @@ describe('MaintenanceNoticeComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {

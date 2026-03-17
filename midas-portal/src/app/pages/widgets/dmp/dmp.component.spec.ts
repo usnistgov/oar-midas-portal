@@ -31,7 +31,7 @@ describe('DmpComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -59,8 +59,8 @@ describe('DmpComponent', () => {
                 status: 'published'
               }
             ]),
-            getDmps: jasmine.createSpy('getDmps').and.returnValue(of([])),
-            resolveApiUrl: jasmine.createSpy('resolveApiUrl').and.returnValue('http://mock-api/'),
+            getDmps: jest.fn().mockReturnValue(of([])),
+            resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/'),
             dmpUI: 'http://mock-dmp-ui/'
           }
         }

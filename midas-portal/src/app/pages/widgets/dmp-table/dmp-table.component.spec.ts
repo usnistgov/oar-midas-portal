@@ -46,7 +46,7 @@ describe('DmpTableComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -64,9 +64,9 @@ describe('DmpTableComponent', () => {
           provide: DataService,
           useValue: {
             dmps: signal([]), // This is the key signal function the component uses
-            getDmps: jasmine.createSpy('getDmps').and.returnValue(of([])),
-            setDmps: jasmine.createSpy('setDmps'),
-            resolveApiUrl: jasmine.createSpy('resolveApiUrl').and.returnValue('http://mock-api/'),
+            getDmps: jest.fn().mockReturnValue(of([])),
+            setDmps: jest.fn(),
+            resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/'),
             dmpUI: 'http://mock-dmp-ui/' // Property used in createDmp() method
           }
         }
