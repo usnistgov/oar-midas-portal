@@ -31,12 +31,15 @@ describe('CustomSidenavComponent', () => {
       dmpUI: 'https://test-dmp.com',
       dapUI: 'https://test-dap.com',
       getMaintenanceInfo: jest.fn().mockReturnValue(of({ title: '', message: '' })),
-      getMenuConfig: jest.fn().mockReturnValue(of([])),
+      getMenuConfig: jest.fn().mockReturnValue(of({ menuItems: [] })),
       resolveApiUrl: jest.fn().mockReturnValue('')
     } as any;
 
-    // Clear localStorage before each test
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+    // Clear localStorage and set expanded state (default is collapsed=true when empty)
     localStorage.clear();
+    localStorage.setItem('sidenavCollapsed', 'false');
 
     TestBed.resetTestingModule();
 
@@ -228,6 +231,18 @@ describe('CustomSidenavComponent', () => {
     });
 
     it('should load menu links from config', () => {
+      mockDataService.getMenuConfig.mockReturnValue(of({
+        version: '1', lastUpdated: '',
+        menuItems: [
+          {
+            key: 'createNew', label: 'Create New...',
+            subItems: [
+              { key: 'createDmp', label: 'Create DMP', link: '' },
+              { key: 'createDap', label: 'Create DAP', link: '' }
+            ]
+          }
+        ]
+      } as any));
       const mockConfig = {
         dmpUI: { value: 'https://custom-dmp.com' },
         dapUI: { value: 'https://custom-dap.com' }
