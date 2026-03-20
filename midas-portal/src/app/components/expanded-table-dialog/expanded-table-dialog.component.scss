@@ -1,0 +1,87 @@
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 4px 0 16px;
+
+  h2[mat-dialog-title] {
+    margin: 0;
+    padding: 0;
+    flex: 1 1 auto;
+  }
+
+  .close-btn {
+    flex: 0 0 auto;
+  }
+}
+
+mat-dialog-content {
+  padding: 0 16px 8px;
+  margin: 0;
+}
+
+.dialog-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 8px 0 4px;
+
+  mat-form-field.filter {
+    width: 260px;
+  }
+
+  mat-form-field.small {
+    --mat-form-field-container-height: 16px;
+    --mat-form-field-container-vertical-padding: 6px;
+  }
+
+  .record-count {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    white-space: nowrap;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+}
+
+.table-scroll {
+  overflow: auto;
+  max-height: 58vh;
+}
+
+.table {
+  width: 100%;
+
+  a {
+    color: var(--mat-badge-background-color);
+    text-decoration: none;
+    font-weight: bold;
+  }
+}
+
+.no-data-cell {
+  padding: 1.5rem;
+  text-align: center;
+  opacity: 0.6;
+}
+
+mat-dialog-actions {
+  padding: 0 8px 4px;
+  min-height: unset;
+
+  mat-paginator {
+    width: 100%;
+  }
+}
+
+.clear-icon {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
