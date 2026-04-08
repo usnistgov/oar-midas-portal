@@ -46,8 +46,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "8mb",
-                  "maximumError": "12mb"
+                  "maximumWarning": "3.5mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -62,8 +62,8 @@
                 }
               ],
               "outputHashing": "all",
-              "optimization": false,
-              "buildOptimizer": false,
+              "optimization": true,
+              "buildOptimizer": true,
               "aot": true,
               "extractLicenses": true,
               "sourceMap": false,
@@ -108,6 +108,12 @@
               "src/styles.scss"
             ],
             "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         },
         "extract-i18n": {

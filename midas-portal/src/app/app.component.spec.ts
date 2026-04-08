@@ -19,7 +19,7 @@ import { WebSocketService } from './services/websocket.service';
   template: '<div></div>'
 })
 class MockCustomSidenavComponent {
-  sideNavWidth = jasmine.createSpy('sideNavWidth').and.returnValue('320px');
+  sideNavWidth = jest.fn().mockReturnValue('320px');
 }
 
 @Component({
@@ -67,7 +67,7 @@ describe('AppComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -75,7 +75,7 @@ describe('AppComponent', () => {
           useValue: {
             token: signal(null),
             userId: signal('testUser'),
-            setCreds: jasmine.createSpy('setCreds')
+            setCreds: jest.fn()
           }
         },
         {
@@ -85,21 +85,21 @@ describe('AppComponent', () => {
         {
           provide: DataService,
           useValue: {
-            loadAll: jasmine.createSpy('loadAll'),
-            getUser: jasmine.createSpy('getUser'),
-            resolveApiUrl: jasmine.createSpy('resolveApiUrl').and.returnValue('ws://test'),
-            getDmps: jasmine.createSpy('getDmps').and.returnValue(of([])),
-            setDmps: jasmine.createSpy('setDmps'),
-            getDaps: jasmine.createSpy('getDaps').and.returnValue(of([])),
-            setDaps: jasmine.createSpy('setDaps'),
-            getFiles: jasmine.createSpy('getFiles').and.returnValue(of([])),
-            setFiles: jasmine.createSpy('setFiles')
+            loadAll: jest.fn(),
+            getUser: jest.fn(),
+            resolveApiUrl: jest.fn().mockReturnValue('ws://test'),
+            getDmps: jest.fn().mockReturnValue(of([])),
+            setDmps: jest.fn(),
+            getDaps: jest.fn().mockReturnValue(of([])),
+            setDaps: jest.fn(),
+            getFiles: jest.fn().mockReturnValue(of([])),
+            setFiles: jest.fn()
           }
         },
         {
           provide: AuthenticationService,
           useValue: {
-            getCredentials: jasmine.createSpy('getCredentials').and.returnValue(of({
+            getCredentials: jest.fn().mockReturnValue(of({
               token: 'mock-token',
               userId: 'test-user',
               userAttributes: {}
@@ -109,10 +109,10 @@ describe('AppComponent', () => {
         {
           provide: WebSocketService,
           useValue: {
-            connect: jasmine.createSpy('connect'),
-            messages$: jasmine.createSpy('messages$').and.returnValue(of({})),
-            toDisplay: jasmine.createSpy('toDisplay').and.returnValue('Test message'),
-            record_type: jasmine.createSpy('record_type').and.returnValue('dmp')
+            connect: jest.fn(),
+            messages$: jest.fn().mockReturnValue(of({})),
+            toDisplay: jest.fn().mockReturnValue('Test message'),
+            record_type: jest.fn().mockReturnValue('dmp')
           }
         }
       ]

@@ -19,21 +19,27 @@ describe('CustomSidenavComponent', () => {
   let component: CustomSidenavComponent;
   let fixture: ComponentFixture<CustomSidenavComponent>;
   let httpMock: HttpTestingController;
-  let mockDialog: jasmine.SpyObj<MatDialog>;
-  let mockAuthService: jasmine.SpyObj<AuthenticationService>;
-  let mockDataService: jasmine.SpyObj<DataService>;
+  let mockDialog: jest.Mocked<MatDialog>;
+  let mockAuthService: jest.Mocked<AuthenticationService>;
+  let mockDataService: jest.Mocked<DataService>;
 
   beforeEach(async () => {
     // Create spies
-    mockDialog = jasmine.createSpyObj('MatDialog', ['open']);
-    mockAuthService = jasmine.createSpyObj('AuthenticationService', ['getCredentials']);
-    mockDataService = jasmine.createSpyObj('DataService', [], {
+    mockDialog = { open: jest.fn() } as any;
+    mockAuthService = { getCredentials: jest.fn() } as any;
+    mockDataService = {
       dmpUI: 'https://test-dmp.com',
-      dapUI: 'https://test-dap.com'
-    });
+      dapUI: 'https://test-dap.com',
+      getMaintenanceInfo: jest.fn().mockReturnValue(of({ title: '', message: '' })),
+      getMenuConfig: jest.fn().mockReturnValue(of({ menuItems: [] })),
+      resolveApiUrl: jest.fn().mockReturnValue('')
+    } as any;
 
-    // Clear localStorage before each test
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+    // Clear localStorage and set expanded state (default is collapsed=true when empty)
     localStorage.clear();
+    localStorage.setItem('sidenavCollapsed', 'false');
 
     TestBed.resetTestingModule();
 
@@ -53,7 +59,7 @@ describe('CustomSidenavComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -83,7 +89,7 @@ describe('CustomSidenavComponent', () => {
   describe('Component Creation', () => {
     it('should create', () => {
       // Setup successful auth response - FIXED: Added userId
-      mockAuthService.getCredentials.and.returnValue(of({
+      mockAuthService.getCredentials.mockReturnValue(of({
         userId: 'test-user',
         token: 'test-token',
         userAttributes: {
@@ -99,7 +105,7 @@ describe('CustomSidenavComponent', () => {
     });
 
     it('should initialize with correct default values', () => {
-      mockAuthService.getCredentials.and.returnValue(of({
+      mockAuthService.getCredentials.mockReturnValue(of({
         userId: 'test-user', // FIXED: Added userId
         token: 'test-token',
         userAttributes: {}
@@ -116,7 +122,7 @@ describe('CustomSidenavComponent', () => {
 
   describe('Sidenav Toggle', () => {
     beforeEach(() => {
-      mockAuthService.getCredentials.and.returnValue(of({
+      mockAuthService.getCredentials.mockReturnValue(of({
         userId: 'test-user', // FIXED: Added userId
         token: 'test-token',
         userAttributes: {}
@@ -175,7 +181,7 @@ describe('CustomSidenavComponent', () => {
         }
       };
 
-      mockAuthService.getCredentials.and.returnValue(of(mockUserData));
+      mockAuthService.getCredentials.mockReturnValue(of(mockUserData));
       
       fixture.detectChanges();
 
@@ -186,8 +192,8 @@ describe('CustomSidenavComponent', () => {
     });
 
     it('should handle authentication error', () => {
-      spyOn(window, 'alert');
-      mockAuthService.getCredentials.and.returnValue(throwError('Auth failed'));
+      jest.spyOn(window, 'alert');
+      mockAuthService.getCredentials.mockReturnValue(throwError('Auth failed'));
 
       fixture.detectChanges();
 
@@ -195,7 +201,7 @@ describe('CustomSidenavComponent', () => {
     });
 
     it('should handle missing userId in credentials', () => {
-      spyOn(window, 'alert');
+      jest.spyOn(window, 'alert');
       // Create credentials without userId
       const invalidCredentials = {
         token: 'test-token',
@@ -203,7 +209,7 @@ describe('CustomSidenavComponent', () => {
         // Note: no userId property
       };
       
-      mockAuthService.getCredentials.and.returnValue(of(invalidCredentials as any));
+      mockAuthService.getCredentials.mockReturnValue(of(invalidCredentials as any));
 
       fixture.detectChanges();
 
@@ -217,7 +223,7 @@ describe('CustomSidenavComponent', () => {
 
   describe('Menu Configuration', () => {
     beforeEach(() => {
-      mockAuthService.getCredentials.and.returnValue(of({
+      mockAuthService.getCredentials.mockReturnValue(of({
         userId: 'test-user',
         token: 'test-token',
         userAttributes: {}
@@ -225,6 +231,18 @@ describe('CustomSidenavComponent', () => {
     });
 
     it('should load menu links from config', () => {
+      mockDataService.getMenuConfig.mockReturnValue(of({
+        version: '1', lastUpdated: '',
+        menuItems: [
+          {
+            key: 'createNew', label: 'Create New...',
+            subItems: [
+              { key: 'createDmp', label: 'Create DMP', link: '' },
+              { key: 'createDap', label: 'Create DAP', link: '' }
+            ]
+          }
+        ]
+      } as any));
       const mockConfig = {
         dmpUI: { value: 'https://custom-dmp.com' },
         dapUI: { value: 'https://custom-dap.com' }
@@ -260,7 +278,7 @@ describe('CustomSidenavComponent', () => {
 
   describe('Dialog Functions', () => {
     beforeEach(() => {
-      mockAuthService.getCredentials.and.returnValue(of({
+      mockAuthService.getCredentials.mockReturnValue(of({
         userId: 'test-user',
         token: 'test-token',
         userAttributes: {}
@@ -282,9 +300,9 @@ describe('CustomSidenavComponent', () => {
 
     it('should open settings dialog', () => {
       const mockDialogRef = {
-        afterClosed: jasmine.createSpy('afterClosed').and.returnValue(of(null))
+        afterClosed: jest.fn().mockReturnValue(of(null))
       };
-      mockDialog.open.and.returnValue(mockDialogRef as any);
+      mockDialog.open.mockReturnValue(mockDialogRef as any);
 
       component.openSettings();
 
@@ -293,9 +311,9 @@ describe('CustomSidenavComponent', () => {
 
     it('should open settings dialog and subscribe to result', () => {
       const mockDialogRef = {
-        afterClosed: jasmine.createSpy('afterClosed').and.returnValue(of(null))
+        afterClosed: jest.fn().mockReturnValue(of(null))
       };
-      mockDialog.open.and.returnValue(mockDialogRef as any);
+      mockDialog.open.mockReturnValue(mockDialogRef as any);
 
       component.openSettings();
 
@@ -305,9 +323,9 @@ describe('CustomSidenavComponent', () => {
 
     it('should open theme selector dialog', () => {
       const mockDialogRef = {
-        afterClosed: jasmine.createSpy('afterClosed').and.returnValue(of(null))
+        afterClosed: jest.fn().mockReturnValue(of(null))
       };
-      mockDialog.open.and.returnValue(mockDialogRef as any);
+      mockDialog.open.mockReturnValue(mockDialogRef as any);
 
       component.openThemeSelector();
 
@@ -319,9 +337,9 @@ describe('CustomSidenavComponent', () => {
     it('should update theme when theme selector returns data', () => {
       const mockThemeData = { family: 'theme-1', variant: 'dark' };
       const mockDialogRef = {
-        afterClosed: jasmine.createSpy('afterClosed').and.returnValue(of(mockThemeData))
+        afterClosed: jest.fn().mockReturnValue(of(mockThemeData))
       };
-      mockDialog.open.and.returnValue(mockDialogRef as any);
+      mockDialog.open.mockReturnValue(mockDialogRef as any);
 
       component.openThemeSelector();
 
@@ -346,13 +364,13 @@ describe('CustomSidenavComponent', () => {
           { provide: MatDialog, useValue: mockDialog },
           { provide: AuthenticationService, useValue: mockAuthService },
           { provide: DataService, useValue: mockDataService },
-          { provide: ConfigurationService, useValue: { getConfig: jasmine.createSpy().and.returnValue({}) } },
+          { provide: ConfigurationService, useValue: { getConfig: jest.fn().mockReturnValue({}) } },
           { provide: CredentialsService, useValue: { token: signal(null), userId: signal('testUser') } },
           { provide: DashboardService, useValue: {} }
         ]
       }).compileComponents();
 
-      mockAuthService.getCredentials.and.returnValue(of({
+      mockAuthService.getCredentials.mockReturnValue(of({
         userId: 'test-user',
         token: 'test-token',
         userAttributes: {}
@@ -379,13 +397,13 @@ describe('CustomSidenavComponent', () => {
           { provide: MatDialog, useValue: mockDialog },
           { provide: AuthenticationService, useValue: mockAuthService },
           { provide: DataService, useValue: mockDataService },
-          { provide: ConfigurationService, useValue: { getConfig: jasmine.createSpy().and.returnValue({}) } },
+          { provide: ConfigurationService, useValue: { getConfig: jest.fn().mockReturnValue({}) } },
           { provide: CredentialsService, useValue: { token: signal(null), userId: signal('testUser') } },
           { provide: DashboardService, useValue: {} }
         ]
       }).compileComponents();
 
-      mockAuthService.getCredentials.and.returnValue(of({
+      mockAuthService.getCredentials.mockReturnValue(of({
         userId: 'test-user',
         token: 'test-token',
         userAttributes: {}
