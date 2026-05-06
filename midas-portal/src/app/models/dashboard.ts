@@ -23,6 +23,7 @@ export interface Dap {
     location: string;
     type?: string;
     organizationUnit?: string;
+    orgNames?: string[];
     keywords?: string[];
     dataCategories?: string[];
     authors?: string[];
@@ -42,6 +43,7 @@ export interface Dmp {
     status?: string;
     hasPublication?: boolean;
     organizationUnit?: string;
+    orgNames?: string[];
     keywords?: string[];
     fundingType?: string;
     fundingNumber?: string;
