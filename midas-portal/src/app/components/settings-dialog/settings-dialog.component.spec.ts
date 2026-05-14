@@ -40,7 +40,7 @@ describe('SettingsDialogComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -61,8 +61,8 @@ describe('SettingsDialogComponent', () => {
         {
           provide: MatDialogRef,
           useValue: {
-            close: jasmine.createSpy('close'),
-            afterClosed: jasmine.createSpy('afterClosed')
+            close: jest.fn(),
+            afterClosed: jest.fn()
           }
         }
       ]

@@ -34,7 +34,7 @@
     </div>
 
     <!-- Overlay (click to close sidebar) -->
-    <div class="overlay" *ngIf="isSidebarVisible()" (click)="toggleSidebar()"></div>
+    <div class="overlay" *ngIf="isSidebarVisible()" role="button" tabindex="0" aria-label="Close sidebar" (click)="toggleSidebar()" (keyup.escape)="toggleSidebar()"></div>
 
     <!-- Widget Grid Container -->
     <div #widgetsContainer class="widgets-container" cdkDropListGroup>

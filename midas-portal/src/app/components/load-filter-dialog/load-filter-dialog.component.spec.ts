@@ -35,7 +35,7 @@ describe('LoadFilterDialogComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -56,7 +56,7 @@ describe('LoadFilterDialogComponent', () => {
         {
           provide: MatDialogRef,
           useValue: {
-            close: jasmine.createSpy('close'),
+            close: jest.fn(),
             afterClosed: () => of(true)
           }
         },

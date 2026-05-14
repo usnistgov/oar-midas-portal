@@ -18,12 +18,12 @@ describe('SaveFilterDialogComponent', () => {
   let component: SaveFilterDialogComponent;
   let fixture: ComponentFixture<SaveFilterDialogComponent>;
   let httpMock: HttpTestingController;
-  let mockDialogRef: jasmine.SpyObj<MatDialogRef<SaveFilterDialogComponent>>;
+  let mockDialogRef: jest.Mocked<MatDialogRef<SaveFilterDialogComponent>>;
 
   beforeEach(async () => {
     TestBed.resetTestingModule();
 
-    mockDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+    mockDialogRef = { close: jest.fn() } as any;
 
     await TestBed.configureTestingModule({
       declarations: [SaveFilterDialogComponent],
@@ -42,7 +42,7 @@ describe('SaveFilterDialogComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {

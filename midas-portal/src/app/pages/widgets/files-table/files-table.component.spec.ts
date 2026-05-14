@@ -48,7 +48,7 @@ describe('FilesTableComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -75,8 +75,8 @@ describe('FilesTableComponent', () => {
                 location: '/test/file.pdf'
               }
             ]),
-            getFiles: jasmine.createSpy('getFiles').and.returnValue(of([])),
-            resolveApiUrl: jasmine.createSpy('resolveApiUrl').and.returnValue('http://mock-api/'),
+            getFiles: jest.fn().mockReturnValue(of([])),
+            resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/'),
             nextcloudUI: 'http://mock-nextcloud/'
           }
         }

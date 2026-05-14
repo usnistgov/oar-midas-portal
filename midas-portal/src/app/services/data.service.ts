@@ -213,6 +213,9 @@ export class DataService {
     owner: raw.owner,
     primaryContact,
     organizationUnit: raw.data?.organizations?.[0]?.ouName || '',
+    orgNames: (raw.data?.organizations as any[] || []).flatMap((o: any) =>
+      [o.ouName, o.divisionName, o.groupName].filter(Boolean)
+    ),
     modifiedDate: new Date(raw.status.modifiedDate),
     createdDate: raw.status.createdDate ? new Date(raw.status.createdDate) : undefined,
     startDate: raw.data?.startDate || '',
@@ -248,6 +251,9 @@ export class DataService {
       status: raw.status.state,
       location: raw.file_space?.location || '',
       organizationUnit: raw.data?.organizations?.[0]?.ouName || '',
+      orgNames: (raw.data?.organizations as any[] || []).flatMap((o: any) =>
+        [o.ouName, o.divisionName, o.groupName].filter(Boolean)
+      ),
       keywords: raw.data?.keywords || [],
       dataCategories: raw.data?.dataCategories || [],
       authors,

@@ -44,6 +44,7 @@ export interface Dmp {
   status?: string | undefined;
   hasPublication?: boolean;
   organizationUnit?: string;
+  orgNames?: string[];
   keywords?: string[];
 }
 

@@ -2,7 +2,7 @@
      Sticky application heade
 ────────────────────────────────────────────────────── -->
 <div class="header-container">
-    <div class="logo-container" (click)="goHome()">
+    <div class="logo-container" role="button" tabindex="0" aria-label="Go to home" (click)="goHome()" (keyup.enter)="goHome()" (keyup.space)="goHome()">
       <img
         class="logo-img"
         src="assets/images/nist_logo_reverse.png"

@@ -15,8 +15,8 @@ import { Dap, Dmp, File, Review } from '../models/dashboard';
 describe('DataService', () => {
   let service: DataService;
   let httpMock: HttpTestingController;
-  let configServiceSpy: jasmine.SpyObj<ConfigurationService>;
-  let credentialsServiceSpy: jasmine.SpyObj<CredentialsService>;
+  let configServiceSpy: jest.Mocked<ConfigurationService>;
+  let credentialsServiceSpy: jest.Mocked<CredentialsService>;
 
   const mockConfig = {
     dapAPI: 'https://localhost/midas/dap/mds3',
@@ -44,7 +44,7 @@ describe('DataService', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue(mockConfig)
+            getConfig: jest.fn().mockReturnValue(mockConfig)
           }
         },
         {
@@ -61,14 +61,14 @@ describe('DataService', () => {
       ]
     }).compileComponents();
 
-    spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify({
+    jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(JSON.stringify({
       dmpUI: { value: 'http://test.com/dmp' },
       dapUI: { value: 'http://test.com/dap' },
       nextcloudUI: { value: 'http://test.com/files' }
     }));
 
-    configServiceSpy = TestBed.inject(ConfigurationService) as jasmine.SpyObj<ConfigurationService>;
-    credentialsServiceSpy = TestBed.inject(CredentialsService) as jasmine.SpyObj<CredentialsService>;
+    configServiceSpy = TestBed.inject(ConfigurationService) as jest.Mocked<ConfigurationService>;
+    credentialsServiceSpy = TestBed.inject(CredentialsService) as jest.Mocked<CredentialsService>;
     httpMock = TestBed.inject(HttpTestingController);
     service = TestBed.inject(DataService);
   });
@@ -96,7 +96,7 @@ describe('DataService', () => {
     });
 
     it('should return empty string for missing config keys', () => {
-      configServiceSpy.getConfig.and.returnValue({});
+      configServiceSpy.getConfig.mockReturnValue({});
       const url = service.resolveApiUrl('nonexistent');
       expect(url).toBe('');
     });
@@ -124,7 +124,7 @@ describe('DataService', () => {
 
     it('should fetch DMPs successfully', () => {
       service.getDmps().subscribe(dmps => {
-        expect(dmps).toHaveSize(1);
+        expect(dmps).toHaveLength(1);
         expect(dmps[0].name).toBe('Test DMP');
         expect(dmps[0].primaryContact).toBe('John Doe'); // Update expected value
       });
@@ -136,7 +136,7 @@ describe('DataService', () => {
 
     it('should fallback to JSON when API fails', () => {
       service.getDmps().subscribe(dmps => {
-        expect(dmps).toHaveSize(1);
+        expect(dmps).toHaveLength(1);
       });
 
       const apiReq = httpMock.expectOne('https://localhost/midas/dmp/mdm1');
@@ -157,7 +157,7 @@ describe('DataService', () => {
       };
 
       service.getDaps().subscribe(daps => {
-        expect(daps).toHaveSize(1);
+        expect(daps).toHaveLength(1);
         expect(daps[0].name).toBe('Test DAP');
       });
 
@@ -178,7 +178,7 @@ describe('DataService', () => {
       };
 
       service.getFiles().subscribe(files => {
-        expect(files).toHaveSize(1);
+        expect(files).toHaveLength(1);
         expect(files[0].usage).toBe('1024');
       });
 
@@ -196,7 +196,7 @@ describe('DataService', () => {
       };
 
       service.getReviews().subscribe(reviews => {
-        expect(reviews).toHaveSize(1);
+        expect(reviews).toHaveLength(1);
         expect(reviews[0].title).toBe('Test Review');
       });
 
@@ -290,7 +290,7 @@ describe('DataService', () => {
       let emptyConfigService: DataService;
 
       beforeEach(async () => {
-        (localStorage.getItem as jasmine.Spy).and.returnValue('{}');
+        (Storage.prototype.getItem as jest.Mock).mockReturnValue('{}');
         
         TestBed.resetTestingModule();
         
@@ -304,7 +304,7 @@ describe('DataService', () => {
             {
               provide: ConfigurationService,
               useValue: {
-                getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+                getConfig: jest.fn().mockReturnValue({})
               }
             },
             {
@@ -321,7 +321,7 @@ describe('DataService', () => {
             {
               provide: MatDialogRef,
               useValue: {
-                close: jasmine.createSpy('close'),
+                close: jest.fn(),
                 afterClosed: () => of(true)
               }
             },

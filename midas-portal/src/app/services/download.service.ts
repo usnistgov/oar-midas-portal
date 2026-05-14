@@ -255,23 +255,22 @@ export class DownloadService {
   }
 
   /**
-   * Download records from a unified API endpoint.
-   * Without format (or format='json'), returns JSON array.
-   * With format='pdf'|'markdown'|'csv', returns a Blob and triggers file download.
+   * Download records from the export endpoint.
+   * POST /:export — body: { ids: string[], format: string }
+   * Non-JSON formats return a Blob and trigger a file download.
    */
-  private downloadFromEndpoint(apiKey: string, ids: string[], recordType: string, format?: 'json' | 'pdf' | 'markdown' | 'csv'): Observable<any> {
+  private downloadFromEndpoint(apiKey: string, ids: string[], recordType: string, format: 'json' | 'pdf' | 'markdown' | 'csv' = 'json'): Observable<any> {
     const authToken = this.credsService.token();
-    const headers = { Authorization: `Bearer ${authToken}` };
-
     const baseApi = this.resolveApiUrl(apiKey).replace(/\/$/, '');
-    let url = `${baseApi}?id=${ids.join(',')}`;
-    if (format && format !== 'json') {
-      url += `&format=${format}`;
-    }
+    const url = `${baseApi}/:export`;
+    const body = { ids, format };
+    const headers = {
+      Authorization: `Bearer ${authToken}`,
+      'Content-Type': 'application/json'
+    };
 
-    // Non-JSON formats: request as blob
-    if (format && format !== 'json') {
-      return this.http.get(url, {
+    if (format !== 'json') {
+      return this.http.post(url, body, {
         headers,
         responseType: 'blob',
         observe: 'response'
@@ -301,8 +300,7 @@ export class DownloadService {
       );
     }
 
-    // JSON (default)
-    return this.http.get<any[]>(url, { headers }).pipe(
+    return this.http.post<any[]>(url, body, { headers }).pipe(
       catchError(() => {
         this.snackBar.open(`${recordType} download failed`, 'Dismiss', { duration: 3000 });
         return of([]);
