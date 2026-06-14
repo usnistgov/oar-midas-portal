@@ -60,11 +60,12 @@ import { SettingsDialogComponent } from './components/settings-dialog/settings-d
 import { ThemeSelectorDialogComponent } from './components/theme-selector-dialog/theme-selector-dialog.component';
 import { WelcomeDialogComponent } from './components/welcome-dialog/welcome-dialog.component';
 import { SearchComponent } from './pages/search/search.component';
+import { MyRecordsComponent } from './pages/my-records/my-records.component';
 import { DashboardService } from './services/dashboard.service';
 import { DataService } from './services/data.service';
 import { ExportService } from './services/export.service';
 import { SearchFilterService } from './services/search-filter.service';
-import { FrameModule, OARngModule,CONFIG_URL } from 'oarng';
+import { FrameModule, OARngModule, CONFIG_URL, GroupsModule } from 'oarng';
 import { HeaderComponent } from 'oarng';
 import { FooterComponent } from 'oarng';
 
@@ -88,6 +89,7 @@ import { FooterComponent } from 'oarng';
     FilesTableComponent,
     MaintenanceNoticeComponent,
     SearchComponent,
+    MyRecordsComponent,
     HelpDialogComponent,
     SaveFilterDialogComponent,
     LoadFilterDialogComponent,
@@ -138,6 +140,7 @@ import { FooterComponent } from 'oarng';
     FormsModule,
     OARngModule,
     FrameModule,
+    GroupsModule,
     HeaderComponent,
     FooterComponent
   ],
