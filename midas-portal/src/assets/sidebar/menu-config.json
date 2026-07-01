@@ -10,9 +10,9 @@
     },
     {
       "key": "myRecords",
-      "name": "Manage My Records",
+      "name": "Share My Records",
       "icon": "folder_shared",
-      "link": "/my-records",
+      "link": "/share-my-records",
       "enabled": true,
       "order": 2
     },

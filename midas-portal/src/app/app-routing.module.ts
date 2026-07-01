@@ -19,7 +19,7 @@ const routes: Routes = [
     component: SearchComponent
   },
   {
-    path: 'my-records',
+    path: 'share-my-records',
     component: MyRecordsComponent
   }
 ];
