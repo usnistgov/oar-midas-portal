@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigurationService } from 'oarng';
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 export interface NISTPerson {
   peopleID: number;
@@ -79,6 +79,26 @@ export class PeopleService {
         console.error('Error fetching NIST person:', err);
         return of({} as NISTPerson);
       })
+    );
+  }
+
+  // Resolve an EID/username to a display name by searching the people API.
+  // The people API returns {LASTNAME: {eid: "Full Name"}} — look for an exact key match.
+  // Returns null if the EID cannot be resolved.
+  resolveEidLabel(eid: string): Observable<string | null> {
+    if (!this.peopleAPI) return of(null);
+    return this.http.get<any>(`${this.peopleAPI}?${encodeURIComponent(eid.toUpperCase())}`).pipe(
+      map((raw: any) => {
+        if (!raw || typeof raw !== 'object') return null;
+        for (const key of Object.keys(raw)) {
+          const group = raw[key];
+          if (group && typeof group === 'object' && Object.prototype.hasOwnProperty.call(group, eid)) {
+            return group[eid] as string;
+          }
+        }
+        return null;
+      }),
+      catchError(() => of(null))
     );
   }
 

@@ -49,6 +49,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { ExpandedTableDialogComponent } from './components/expanded-table-dialog/expanded-table-dialog.component';
@@ -65,9 +66,10 @@ import { DashboardService } from './services/dashboard.service';
 import { DataService } from './services/data.service';
 import { ExportService } from './services/export.service';
 import { SearchFilterService } from './services/search-filter.service';
-import { FrameModule, OARngModule, CONFIG_URL, GroupsModule } from 'oarng';
+import { FrameModule, OARngModule, CONFIG_URL, GroupsModule, GROUPS_AUTH_TOKEN } from 'oarng';
 import { HeaderComponent } from 'oarng';
 import { FooterComponent } from 'oarng';
+import { CredentialsService } from './services/credentials.service';
 
 
 
@@ -127,6 +129,7 @@ import { FooterComponent } from 'oarng';
     MatSliderModule,
     MatNativeDateModule,
     MatChipsModule,
+    MatTabsModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
     HttpClientModule,
@@ -146,10 +149,15 @@ import { FooterComponent } from 'oarng';
   ],
   providers: [
     { provide: CONFIG_URL, useValue: "assets/environment.json" },
+    {
+      provide: GROUPS_AUTH_TOKEN,
+      useFactory: (creds: CredentialsService) => () => creds.token(),
+      deps: [CredentialsService]
+    },
     provideAnimationsAsync(),
-    DashboardService, 
-    SearchFilterService, 
-    ExportService, 
+    DashboardService,
+    SearchFilterService,
+    ExportService,
     DataService
   ],
   bootstrap: [AppComponent],
