@@ -1,30 +1,47 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { signal } from '@angular/core';
-import { DapComponent } from '../dap/dap.component';
+import { signal, Component, Type } from '@angular/core';
+import { DapTableComponent } from './dap-table.component';
 import { ConfigurationService } from 'oarng';
 import { CredentialsService } from '../../../services/credentials.service';
 import { DashboardService } from '../../../services/dashboard.service';
 import { DataService } from '../../../services/data.service';
+import { Widget } from '../../../models/dashboard';
+import { MatIconModule } from '@angular/material/icon';
 
-describe('DapComponent', () => {
-  let component: DapComponent;
-  let fixture: ComponentFixture<DapComponent>;
+@Component({
+  template: '<div>Mock Content</div>'
+})
+class MockContentComponent {}
+
+describe('DapTableComponent', () => {
+  let component: DapTableComponent;
+  let fixture: ComponentFixture<DapTableComponent>;
   let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     TestBed.resetTestingModule();
 
     await TestBed.configureTestingModule({
-      declarations: [DapComponent],
+      declarations: [DapTableComponent, MockContentComponent],
       imports: [
         HttpClientTestingModule,
+        RouterTestingModule,
         MatSnackBarModule,
         MatDialogModule,
-        NoopAnimationsModule
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        NoopAnimationsModule,
+        MatIconModule
       ],
       providers: [
         {
@@ -57,8 +74,17 @@ describe('DapComponent', () => {
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
-    fixture = TestBed.createComponent(DapComponent);
+    fixture = TestBed.createComponent(DapTableComponent);
     component = fixture.componentInstance;
+
+    const mockWidget: Widget = {
+      id: 2,
+      label: 'Test DAP Widget',
+      content: MockContentComponent as Type<unknown>,
+      rows: 2
+    };
+
+    fixture.componentRef.setInput('widget', mockWidget);
     fixture.detectChanges();
   });
 
@@ -68,5 +94,12 @@ describe('DapComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('shareRecords navigates to /share-my-records with type=DAP', () => {
+    const router = TestBed.inject(Router);
+    const spy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    component.shareRecords();
+    expect(spy).toHaveBeenCalledWith(['/share-my-records'], { queryParams: { type: 'DAP' } });
   });
 });
