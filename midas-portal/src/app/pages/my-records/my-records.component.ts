@@ -15,12 +15,14 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { FormControl } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { ActivatedRoute } from '@angular/router';
+import { take } from 'rxjs/operators';
 import { DataService } from '../../services/data.service';
 import { CredentialsService } from '../../services/credentials.service';
 import { PeopleService } from '../../services/people.service';
 import { SearchFilterService, FilterCriteria } from '../../services/search-filter.service';
 import { Dmp, Dap } from '../../models/dashboard';
-import { RecordRef } from 'oarng';
+import { RecordRef, PermissionsService, GroupsService, Acls } from 'oarng';
 import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
 
 type OwnedRecord = (Dmp | Dap) & { type: string };
@@ -35,26 +37,51 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private credsSvc = inject(CredentialsService);
   private peopleService = inject(PeopleService);
   private filterService = inject(SearchFilterService);
+  private permsSvc = inject(PermissionsService);
+  private groupsSvc = inject(GroupsService);
+  private route = inject(ActivatedRoute);
 
   isLoading = false;
 
-  private ownedData: OwnedRecord[] = [];
+  private adminData: OwnedRecord[] = [];
 
   dataSource = new MatTableDataSource<OwnedRecord>([]);
   selection = new SelectionModel<OwnedRecord>(true, []);
 
-  displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate'];
+  displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate', 'perm_read', 'perm_write', 'perm_admin', 'perm_delete'];
+
+  readonly aclsMap = signal<{ [id: string]: Acls }>({});
+  readonly aclsPendingCount = signal(0);
+  readonly subjectLabels = signal<{ [subject: string]: string }>({});
+
+  private groupNamesCache: { [id: string]: string } = {};
+  private resolvedSubjects = new Set<string>();
 
   readonly drawerOpen = signal(false);
-
-  readonly selectedRecords = computed<RecordRef[]>(() =>
-    this.selection.selected.map(r => ({
-      id: r.id,
-      apiBase: r.type?.toLowerCase() === 'dap'
-        ? this.dataService.resolveApiUrl('dapAPI')
-        : this.dataService.resolveApiUrl('dmpAPI')
-    }))
+  readonly activeDrawerTab = signal(0);
+  readonly drawerSection = computed<'permissions' | 'groups'>(() =>
+    this.activeDrawerTab() === 0 ? 'permissions' : 'groups'
   );
+
+  readonly selectedRecords = signal<RecordRef[]>([]);
+  readonly userOu = computed(() => this.credsSvc.userAttributes()?.['userOU'] as string ?? '');
+
+  constructor() {
+    this.selection.changed.subscribe(() => {
+      this.selectedRecords.set(
+        this.selection.selected.map(r => ({
+          id: r.id,
+          apiBase: r.type?.toLowerCase() === 'dap'
+            ? this.dataService.resolveApiUrl('dapAPI')
+            : this.dataService.resolveApiUrl('dmpAPI')
+        }))
+      );
+      if (this.selection.selected.length > 0) {
+        this.drawerOpen.set(true);
+        this.permDrawer?.open();
+      }
+    });
+  }
 
   // Filter state
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
@@ -90,7 +117,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   }
 
   get totalCount(): number {
-    return this.ownedData.length;
+    return this.adminData.length;
   }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -104,9 +131,8 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       if (this.credsSvc.token()) {
         this.dataService.loadAll().subscribe({
           next: () => {
-            this.buildOwnedData();
-            this.applyFilters();
-            this.isLoading = false;
+            this.loadGroupsForLabels();
+            this.loadAllAcls();
           },
           error: () => { this.isLoading = false; }
         });
@@ -115,6 +141,13 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       }
     };
     waitForToken();
+
+    this.route.queryParams.pipe(take(1)).subscribe(params => {
+      const type = params['type'];
+      if (type) {
+        this.resourceTypeControl.setValue([type.toLowerCase()]);
+      }
+    });
 
     this.orgUnitControl.valueChanges.subscribe(v => {
       this.getOrgs(v);
@@ -129,25 +162,31 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  private buildOwnedData(): void {
-    const userId = this.credsSvc.userId();
-    const winId = this.credsSvc.userAttributes()?.['winId'];
+  private buildAdminRecords(): void {
+    const userId = this.credsSvc.userId() ?? '';
+    const winId = this.credsSvc.userAttributes()?.['winId'] as string | undefined;
 
-    const dmps: OwnedRecord[] = this.dataService.dmps()
-      .filter(d => d.owner === userId || d.owner === winId)
-      .map(d => ({ ...d, type: d.type ?? 'DMP' }));
+    const allRecords: OwnedRecord[] = [
+      ...this.dataService.dmps().map(d => ({ ...d, type: d.type ?? 'DMP' })),
+      ...this.dataService.daps().map(d => ({ ...d, type: d.type ?? 'DAP' }))
+    ];
 
-    const daps: OwnedRecord[] = this.dataService.daps()
-      .filter(d => d.owner === userId || d.owner === winId)
-      .map(d => ({ ...d, type: d.type ?? 'DAP' }));
+    this.adminData = allRecords.filter(r => {
+      const acls = this.aclsMap()[r.id];
+      if (!acls) return false;
+      const adminList = acls.admin ?? [];
+      const isAdmin = adminList.includes(userId) || (winId ? adminList.includes(winId) : false);
+      const isOwner = r.owner === userId || (winId ? r.owner === winId : false);
+      return isAdmin && !isOwner;
+    });
 
-    this.ownedData = [...dmps, ...daps];
+    this.applyFilters();
   }
 
   applyFilters(): void {
     const criteria = this.currentCriteria();
     const filtered = this.filterService.filterDmpOrDapList(
-      this.ownedData as any[],
+      this.adminData as any[],
       criteria
     ) as OwnedRecord[];
     this.dataSource.data = filtered;
@@ -168,7 +207,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     this.exactDate = undefined;
     this.beforeDate = undefined;
     this.afterDate = undefined;
-    this.dataSource.data = [...this.ownedData];
+    this.dataSource.data = [...this.adminData];
     this.filterPills = [];
     this.paginator?.firstPage();
   }
@@ -233,7 +272,21 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openPermissions(): void {
+  deselectRecord(id: string): void {
+    const record = this.selection.selected.find(r => r.id === id);
+    if (record) this.selection.deselect(record);
+  }
+
+  onRowClick(row: OwnedRecord): void {
+    this.selection.clear();
+    this.selection.select(row);
+    this.activeDrawerTab.set(0);
+    this.drawerOpen.set(true);
+    this.permDrawer.open();
+  }
+
+  openGroupsManagement(): void {
+    this.activeDrawerTab.set(1);
     this.drawerOpen.set(true);
     this.permDrawer.open();
   }
@@ -245,6 +298,115 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
 
   getStatusClass(status: string): string {
     return statusClassUtil(status);
+  }
+
+  private loadGroupsForLabels(): void {
+    this.groupsSvc.getGroups().subscribe({
+      next: groups => {
+        groups.forEach(g => { this.groupNamesCache[g.id] = g.name; });
+        // Re-resolve any subjects already loaded that may be group IDs
+        const current = this.subjectLabels();
+        const updates: { [s: string]: string } = {};
+        for (const [subject, label] of Object.entries(current)) {
+          if (label === subject && this.groupNamesCache[subject]) {
+            updates[subject] = this.groupNamesCache[subject];
+          }
+        }
+        if (Object.keys(updates).length) {
+          this.subjectLabels.update(m => ({ ...m, ...updates }));
+        }
+      },
+      error: () => {}
+    });
+  }
+
+  onPermissionsChanged(): void {
+    this.resolvedSubjects.clear();
+    this.loadAllAcls();
+  }
+
+  private resolveSubjectLabels(subjects: string[]): void {
+    subjects.forEach(subject => {
+      if (this.resolvedSubjects.has(subject)) return;
+      this.resolvedSubjects.add(subject);
+
+      if (this.groupNamesCache[subject]) {
+        this.subjectLabels.update(m => ({ ...m, [subject]: this.groupNamesCache[subject] }));
+        return;
+      }
+
+      if (/^\d+$/.test(subject)) {
+        this.subjectLabels.update(m => ({ ...m, [subject]: `Org (${subject})` }));
+        return;
+      }
+
+      // Search the people API with the EID as query; look for an exact key match in the response
+      this.peopleService.resolveEidLabel(subject).subscribe(name => {
+        this.subjectLabels.update(m => ({ ...m, [subject]: name ?? subject }));
+      });
+    });
+  }
+
+  private loadAllAcls(): void {
+    const allRecords = [
+      ...this.dataService.dmps().map(r => ({
+        id: r.id,
+        apiBase: this.dataService.resolveApiUrl('dmpAPI')
+      })),
+      ...this.dataService.daps().map(r => ({
+        id: r.id,
+        apiBase: this.dataService.resolveApiUrl('dapAPI')
+      }))
+    ];
+
+    const pending = allRecords.length;
+    if (!pending) {
+      this.buildAdminRecords();
+      this.isLoading = false;
+      return;
+    }
+
+    this.aclsMap.set({});
+    this.aclsPendingCount.set(pending);
+
+    allRecords.forEach(record => {
+      this.permsSvc.getAcls(record).subscribe({
+        next: acls => {
+          this.aclsMap.update(m => ({ ...m, [record.id]: acls }));
+          this.aclsPendingCount.update(n => {
+            const remaining = n - 1;
+            if (remaining === 0) {
+              this.buildAdminRecords();
+              this.isLoading = false;
+            }
+            return remaining;
+          });
+          const allSubjects = [
+            ...(acls.read ?? []), ...(acls.write ?? []),
+            ...(acls.admin ?? []), ...(acls.delete ?? [])
+          ];
+          this.resolveSubjectLabels(allSubjects);
+        },
+        error: () => {
+          this.aclsPendingCount.update(n => {
+            const remaining = n - 1;
+            if (remaining === 0) {
+              this.buildAdminRecords();
+              this.isLoading = false;
+            }
+            return remaining;
+          });
+        }
+      });
+    });
+  }
+
+  isPermLoading(id: string): boolean {
+    return this.aclsPendingCount() > 0 && !this.aclsMap()[id];
+  }
+
+  permSubjects(id: string, perm: 'read' | 'write' | 'admin' | 'delete'): string[] {
+    return this.aclsMap()[id]?.[perm] ?? [];
   }
 
   linkto(id: string, rectype: string): string {
