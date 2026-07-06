@@ -153,6 +153,44 @@ describe('MyRecordsComponent', () => {
 
 });
 
+describe('waitForToken cancellation', () => {
+  it('does not call loadAll after component is destroyed', fakeAsync(() => {
+    TestBed.resetTestingModule();
+    const tokenSignal = signal<string | null>(null);
+    const providers = makeProviders();
+    const loadAllMock = jest.fn().mockReturnValue(of(null));
+    const dataProviderIdx = providers.findIndex(p => (p as any).provide === DataService);
+    (providers[dataProviderIdx] as any).useValue = {
+      ...(providers[dataProviderIdx] as any).useValue,
+      loadAll: loadAllMock,
+    };
+    const credsProviderIdx = providers.findIndex(p => (p as any).provide === CredentialsService);
+    (providers[credsProviderIdx] as any).useValue = {
+      ...(providers[credsProviderIdx] as any).useValue,
+      token: tokenSignal,
+    };
+
+    TestBed.configureTestingModule({
+      declarations: [MyRecordsComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule, NoopAnimationsModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule],
+      providers: [...providers],
+      schemas: [NO_ERRORS_SCHEMA]
+    });
+
+    const fixture = TestBed.createComponent(MyRecordsComponent);
+    fixture.componentInstance.ngOnInit();
+
+    // Destroy before token arrives
+    fixture.destroy();
+
+    // Now provide the token — waitForToken would normally fire
+    tokenSignal.set('late-token');
+    tick(200);
+
+    expect(loadAllMock).not.toHaveBeenCalled();
+  }));
+});
+
 describe('MyRecordsComponent — query param pre-filter', () => {
   let component: MyRecordsComponent;
 

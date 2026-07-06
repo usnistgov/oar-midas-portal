@@ -5,8 +5,10 @@ import {
   ViewChild,
   computed,
   inject,
-  signal
+  signal,
+  DestroyRef
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -40,6 +42,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private permsSvc = inject(PermissionsService);
   private groupsSvc = inject(GroupsService);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
   isLoading = false;
 
@@ -48,7 +51,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<OwnedRecord>([]);
   selection = new SelectionModel<OwnedRecord>(true, []);
 
-  displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate', 'perm_read', 'perm_write', 'perm_admin', 'perm_delete'];
+  displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate', 'permissions'];
 
   readonly aclsMap = signal<{ [id: string]: Acls }>({});
   readonly aclsPendingCount = signal(0);
@@ -67,18 +70,33 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   readonly userOu = computed(() => this.credsSvc.userAttributes()?.['userOU'] as string ?? '');
 
   constructor() {
-    this.selection.changed.subscribe(() => {
-      this.selectedRecords.set(
-        this.selection.selected.map(r => ({
-          id: r.id,
-          apiBase: r.type?.toLowerCase() === 'dap'
-            ? this.dataService.resolveApiUrl('dapAPI')
-            : this.dataService.resolveApiUrl('dmpAPI')
-        }))
-      );
+    this.selection.changed.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      // Deduplicate by ID — data refreshes create new object instances for the same record,
+      // and both the old and new references can briefly coexist in SelectionModel.
+      const seen = new Set<string>();
+      const unique: RecordRef[] = [];
+      for (const r of this.selection.selected) {
+        if (!seen.has(r.id)) {
+          seen.add(r.id);
+          unique.push({
+            id: r.id,
+            apiBase: r.type?.toLowerCase() === 'dap'
+              ? this.dataService.resolveApiUrl('dapAPI')
+              : this.dataService.resolveApiUrl('dmpAPI')
+          });
+        }
+      }
+      this.selectedRecords.set(unique);
+
       if (this.selection.selected.length > 0) {
         this.drawerOpen.set(true);
         this.permDrawer?.open();
+      } else if (this.activeDrawerTab() !== 1) {
+        // Close the drawer when all records are deselected (unless user is managing groups)
+        this.drawerOpen.set(false);
+        this.permDrawer?.close();
       }
     });
   }
@@ -127,14 +145,19 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.isLoading = true;
 
+    let cancelled = false;
+    this.destroyRef.onDestroy(() => { cancelled = true; });
+
     const waitForToken = () => {
+      if (cancelled) return;
       if (this.credsSvc.token()) {
         this.dataService.loadAll().subscribe({
           next: () => {
+            if (cancelled) return;
             this.loadGroupsForLabels();
             this.loadAllAcls();
           },
-          error: () => { this.isLoading = false; }
+          error: () => { if (!cancelled) this.isLoading = false; }
         });
       } else {
         setTimeout(waitForToken, 100);
@@ -149,12 +172,18 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.orgUnitControl.valueChanges.subscribe(v => {
+    this.orgUnitControl.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(v => {
       this.getOrgs(v);
       this.applyFilters();
     });
-    this.resourceTypeControl.valueChanges.subscribe(() => this.applyFilters());
-    this.statusControl.valueChanges.subscribe(() => this.applyFilters());
+    this.resourceTypeControl.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => this.applyFilters());
+    this.statusControl.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => this.applyFilters());
   }
 
   ngAfterViewInit(): void {
@@ -278,6 +307,13 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   }
 
   onRowClick(row: OwnedRecord): void {
+    // If this row is already the only selection, keep it — don't re-add it
+    if (this.selection.isSelected(row) && this.selection.selected.length === 1) {
+      this.activeDrawerTab.set(0);
+      this.drawerOpen.set(true);
+      this.permDrawer.open();
+      return;
+    }
     this.selection.clear();
     this.selection.select(row);
     this.activeDrawerTab.set(0);
@@ -403,6 +439,35 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
 
   isPermLoading(id: string): boolean {
     return this.aclsPendingCount() > 0 && !this.aclsMap()[id];
+  }
+
+  recordSubjects(id: string): string[] {
+    const acls = this.aclsMap()[id];
+    if (!acls) return [];
+    const all = [...(acls.read ?? []), ...(acls.write ?? []), ...(acls.admin ?? []), ...(acls.delete ?? [])];
+    return [...new Set(all)];
+  }
+
+  subjectPermLevel(id: string, subject: string): 'admin' | 'update' | 'view' {
+    const acls = this.aclsMap()[id];
+    if (!acls) return 'view';
+    const r = (acls.read   ?? []).includes(subject);
+    const w = (acls.write  ?? []).includes(subject);
+    const a = (acls.admin  ?? []).includes(subject);
+    const d = (acls.delete ?? []).includes(subject);
+    if (r && w && a && d) return 'admin';
+    if (r && w)           return 'update';
+    return 'view';
+  }
+
+  recordSubjectsByLevel(id: string): { level: 'admin' | 'update' | 'view'; subjects: string[] }[] {
+    const groups: Record<'admin' | 'update' | 'view', string[]> = { admin: [], update: [], view: [] };
+    for (const s of this.recordSubjects(id)) {
+      groups[this.subjectPermLevel(id, s)].push(s);
+    }
+    return (['admin', 'update', 'view'] as const)
+      .filter(l => groups[l].length > 0)
+      .map(l => ({ level: l, subjects: groups[l] }));
   }
 
   permSubjects(id: string, perm: 'read' | 'write' | 'admin' | 'delete'): string[] {
