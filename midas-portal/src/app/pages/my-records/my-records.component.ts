@@ -473,10 +473,6 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       .map(l => ({ level: l, subjects: groups[l] }));
   }
 
-  permSubjects(id: string, perm: 'read' | 'write' | 'admin' | 'delete'): string[] {
-    return this.aclsMap()[id]?.[perm] ?? [];
-  }
-
   linkto(id: string, rectype: string): string {
     if (rectype === 'dap') {
       return this.dataService.resolveApiUrl('dapEDIT').concat(id).concat('?editEnabled=true');
