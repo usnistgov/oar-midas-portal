@@ -267,6 +267,113 @@ describe('subjectPermLevel()', () => {
   }));
 });
 
+describe('recordSubjects()', () => {
+  let component: MyRecordsComponent;
+  let fixture: ComponentFixture<MyRecordsComponent>;
+
+  beforeEach(async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      declarations: [MyRecordsComponent],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        NoopAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule
+      ],
+      providers: makeProviders(),
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MyRecordsComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('returns all unique subjects across all ACL arrays for a record', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+    component.aclsMap.set({
+      'dmp-1': { read: ['alice', 'bob'], write: ['alice'], admin: ['carol'], delete: [] }
+    });
+    const subjects = component.recordSubjects('dmp-1');
+    expect(subjects).toContain('alice');
+    expect(subjects).toContain('bob');
+    expect(subjects).toContain('carol');
+    expect(subjects.length).toBe(3); // no duplicates
+  }));
+
+  it('returns empty array when record has no ACL entry', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+    component.aclsMap.set({});
+    expect(component.recordSubjects('missing-record')).toEqual([]);
+  }));
+});
+
+describe('recordSubjectsByLevel()', () => {
+  let component: MyRecordsComponent;
+  let fixture: ComponentFixture<MyRecordsComponent>;
+
+  beforeEach(async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      declarations: [MyRecordsComponent],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        NoopAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule
+      ],
+      providers: makeProviders(),
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MyRecordsComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('groups subjects by their permission level', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+    // alice=admin (r+w+a+d), bob=update (r+w), carol=view (r only)
+    component.aclsMap.set({
+      'dmp-1': {
+        read: ['alice', 'bob', 'carol'],
+        write: ['alice', 'bob'],
+        admin: ['alice'],
+        delete: ['alice']
+      }
+    });
+    const grouped = component.recordSubjectsByLevel('dmp-1');
+    const adminEntry = grouped.find(g => g.level === 'admin');
+    const updateEntry = grouped.find(g => g.level === 'update');
+    const viewEntry = grouped.find(g => g.level === 'view');
+    expect(adminEntry?.subjects).toContain('alice');
+    expect(updateEntry?.subjects).toContain('bob');
+    expect(viewEntry?.subjects).toContain('carol');
+  }));
+
+  it('excludes subjects with partial ACL state (null level)', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+    // dave has write but not read — should be excluded
+    component.aclsMap.set({
+      'dmp-1': { read: [], write: ['dave'], admin: [], delete: [] }
+    });
+    const grouped = component.recordSubjectsByLevel('dmp-1');
+    const allSubjects = grouped.flatMap(g => g.subjects);
+    expect(allSubjects).not.toContain('dave');
+  }));
+});
+
 describe('onPermissionsChanged()', () => {
   let component: MyRecordsComponent;
   let fixture: ComponentFixture<MyRecordsComponent>;
