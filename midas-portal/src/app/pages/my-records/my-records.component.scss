@@ -351,34 +351,55 @@ mat-chip-option {
     gap: 3px;
 }
 
-.perm-chip {
-    display: inline-block;
-    padding: 2px 7px;
-    border-radius: 10px;
-    font-size: 0.72rem;
-    font-weight: 500;
-    white-space: nowrap;
-    line-height: 1.5;
+.perm-level-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
 
-    &--read {
-        background: rgba(25, 118, 210, 0.1);
+.perm-level-group {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.perm-level-label {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    &--view {
+        background: rgba(25, 118, 210, 0.12);
         color: #1565c0;
     }
 
-    &--write {
-        background: rgba(46, 125, 50, 0.1);
+    &--update {
+        background: rgba(46, 125, 50, 0.12);
         color: #2e7d32;
     }
 
     &--admin {
-        background: rgba(230, 81, 0, 0.1);
+        background: rgba(230, 81, 0, 0.12);
         color: #e65100;
     }
+}
 
-    &--delete {
-        background: rgba(198, 40, 40, 0.1);
-        color: #c62828;
-    }
+.perm-subject-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 6px;
+}
+
+.perm-subject-name {
+    font-size: 0.75rem;
+    color: rgba(0, 0, 0, 0.75);
+    white-space: nowrap;
 }
 
 // ─── Permissions drawer ───────────────────────────────────────────────────
