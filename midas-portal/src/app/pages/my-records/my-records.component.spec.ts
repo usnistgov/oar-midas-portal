@@ -6,7 +6,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { of } from 'rxjs';
+import { of, delay } from 'rxjs';
 
 import { MyRecordsComponent } from './my-records.component';
 import { DataService } from '../../services/data.service';
@@ -223,6 +223,93 @@ describe('MyRecordsComponent — query param pre-filter', () => {
     tick();
 
     expect(component.resourceTypeControl.value).toEqual(['dmp']);
+  }));
+});
+
+describe('subjectPermLevel()', () => {
+  let component: MyRecordsComponent;
+  let fixture: ComponentFixture<MyRecordsComponent>;
+
+  beforeEach(async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      declarations: [MyRecordsComponent],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        NoopAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule
+      ],
+      providers: makeProviders(),
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MyRecordsComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('returns null when acls is missing for the record', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+    component.aclsMap.set({});
+    expect(component.subjectPermLevel('dmp-1', 'alice')).toBeNull();
+  }));
+
+  it('returns null when subject has write but not read (partial ACL)', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+    component.aclsMap.set({ 'dmp-1': { read: [], write: ['alice'], admin: [], delete: [] } });
+    expect(component.subjectPermLevel('dmp-1', 'alice')).toBeNull();
+  }));
+});
+
+describe('onPermissionsChanged()', () => {
+  let component: MyRecordsComponent;
+  let fixture: ComponentFixture<MyRecordsComponent>;
+
+  beforeEach(async () => {
+    TestBed.resetTestingModule();
+    const aclsForAsync = defaultAcls;
+    const providers = makeProviders();
+    const permsProviderIdx = providers.findIndex(p => (p as any).provide === PermissionsService);
+    (providers[permsProviderIdx] as any).useValue = {
+      getAcls: jest.fn().mockImplementation((record: { id: string }) =>
+        of(aclsForAsync[record.id] ?? { read: [], write: [], admin: [], delete: [] }).pipe(delay(1))
+      )
+    };
+
+    await TestBed.configureTestingModule({
+      declarations: [MyRecordsComponent],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        NoopAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule
+      ],
+      providers,
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MyRecordsComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('sets isLoading to true before calling loadAllAcls', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    component.isLoading = false;
+    component.onPermissionsChanged();
+    // isLoading should be true immediately (before loadAllAcls resolves)
+    expect(component.isLoading).toBe(true);
+    tick(10); // let getAcls observables resolve
   }));
 });
 

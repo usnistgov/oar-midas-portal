@@ -358,6 +358,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
 
   onPermissionsChanged(): void {
     this.resolvedSubjects.clear();
+    this.isLoading = true;
     this.loadAllAcls();
   }
 
@@ -448,22 +449,24 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     return [...new Set(all)];
   }
 
-  subjectPermLevel(id: string, subject: string): 'admin' | 'update' | 'view' {
+  subjectPermLevel(id: string, subject: string): 'admin' | 'update' | 'view' | null {
     const acls = this.aclsMap()[id];
-    if (!acls) return 'view';
+    if (!acls) return null;
     const r = (acls.read   ?? []).includes(subject);
     const w = (acls.write  ?? []).includes(subject);
     const a = (acls.admin  ?? []).includes(subject);
     const d = (acls.delete ?? []).includes(subject);
     if (r && w && a && d) return 'admin';
     if (r && w)           return 'update';
-    return 'view';
+    if (r)                return 'view';
+    return null;
   }
 
   recordSubjectsByLevel(id: string): { level: 'admin' | 'update' | 'view'; subjects: string[] }[] {
     const groups: Record<'admin' | 'update' | 'view', string[]> = { admin: [], update: [], view: [] };
     for (const s of this.recordSubjects(id)) {
-      groups[this.subjectPermLevel(id, s)].push(s);
+      const level = this.subjectPermLevel(id, s);
+      if (level) groups[level].push(s);
     }
     return (['admin', 'update', 'view'] as const)
       .filter(l => groups[l].length > 0)
