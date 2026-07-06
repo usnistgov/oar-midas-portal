@@ -51,7 +51,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<OwnedRecord>([]);
   selection = new SelectionModel<OwnedRecord>(true, []);
 
-  displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate', 'permissions'];
+  displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate', 'permView', 'permUpdate', 'permAdmin'];
 
   readonly aclsMap = signal<{ [id: string]: Acls }>({});
   readonly aclsPendingCount = signal(0);
@@ -473,15 +473,11 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       .map(l => ({ level: l, subjects: groups[l] }));
   }
 
-  sharedWithGroups(id: string): { level: 'admin' | 'update' | 'view'; visible: string[]; overflow: string[] }[] {
-    return this.recordSubjectsByLevel(id).map(g => {
-      const labels = g.subjects.map(s => this.subjectLabels()[s] || s);
-      return {
-        level: g.level,
-        visible: labels.slice(0, 2),
-        overflow: labels.slice(2)
-      };
-    });
+  getSubjectsForLevel(id: string, level: 'view' | 'update' | 'admin'): string[] {
+    const group = this.recordSubjectsByLevel(id).find(g => g.level === level);
+    if (!group) return [];
+    const labels = this.subjectLabels();
+    return group.subjects.map(s => labels[s] || s);
   }
 
   linkto(id: string, rectype: string): string {

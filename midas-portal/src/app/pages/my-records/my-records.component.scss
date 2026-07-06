@@ -332,13 +332,15 @@ mat-chip-option {
     letter-spacing: 0.05em !important;
     text-transform: uppercase !important;
     padding: 0 8px !important;
-    min-width: 120px;
+    min-width: 90px;
+    max-width: 160px;
 }
 
 .perm-td {
     padding: 6px 8px !important;
     vertical-align: top;
-    max-width: 260px;
+    min-width: 90px;
+    max-width: 160px;
 }
 
 .perm-empty {
@@ -346,70 +348,14 @@ mat-chip-option {
     font-size: 0.9rem;
 }
 
-.perm-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 3px;
-}
-
-.perm-level-groups {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.perm-level-group {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-}
-
-.perm-level-label {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    white-space: nowrap;
-    flex-shrink: 0;
-    color: rgba(0, 0, 0, 0.45);
+.perm-names {
+    font-size: 0.82rem;
+    color: rgba(0, 0, 0, 0.78);
+    word-break: break-word;
 
     &--view   { color: #1565c0; }
     &--update { color: #2e7d32; }
     &--admin  { color: #e65100; }
-}
-
-.perm-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 3px;
-}
-
-.perm-subject-pill {
-    display: inline-block;
-    padding: 1px 7px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    background: rgba(0, 0, 0, 0.05);
-    color: rgba(0, 0, 0, 0.78);
-    white-space: nowrap;
-    border-left: 3px solid transparent;
-
-    &--view   { border-left-color: #1565c0; }
-    &--update { border-left-color: #2e7d32; }
-    &--admin  { border-left-color: #e65100; }
-}
-
-.perm-overflow-chip {
-    display: inline-block;
-    padding: 1px 7px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    background: rgba(0, 0, 0, 0.08);
-    color: rgba(0, 0, 0, 0.55);
-    white-space: nowrap;
-    cursor: default;
-    font-style: italic;
 }
 
 // ─── Permissions drawer ───────────────────────────────────────────────────
