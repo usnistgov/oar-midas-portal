@@ -204,7 +204,7 @@
                   <mat-checkbox (click)="$event.stopPropagation()"
                     (change)="selection.toggle(row)"
                     [checked]="selection.isSelected(row)"
-                    [attr.aria-label]="'Select record ' + row.id">
+                    [attr.aria-label]="'Select ' + (row.name || row.id)">
                   </mat-checkbox>
                 </td>
               </ng-container>
@@ -266,75 +266,28 @@
               </ng-container>
 
               <!-- Permissions: Read -->
-              <ng-container matColumnDef="perm_read">
-                <th mat-header-cell *matHeaderCellDef class="perm-th">Perm: Read</th>
+              <ng-container matColumnDef="permissions">
+                <th mat-header-cell *matHeaderCellDef class="perm-th">Shared with</th>
                 <td mat-cell *matCellDef="let d" class="perm-td">
-                  @let subsRead = permSubjects(d.id, 'read');
                   @if (isPermLoading(d.id)) {
-                    <mat-progress-spinner diameter="12" mode="indeterminate"></mat-progress-spinner>
-                  } @else if (subsRead.length === 0) {
+                    <mat-progress-spinner diameter="12" mode="indeterminate"
+                      [attr.aria-label]="'Loading permissions for ' + d.id">
+                    </mat-progress-spinner>
+                  } @else if (recordSubjects(d.id).length === 0) {
                     <span class="perm-empty" aria-hidden="true">—</span>
                   } @else {
-                    <div class="perm-chips" role="list" [attr.aria-label]="'Read access: ' + subsRead.length + ' subject(s)'">
-                      @for (s of subsRead; track s) {
-                        <span class="perm-chip perm-chip--read" role="listitem">{{ subjectLabels()[s] || s }}</span>
-                      }
-                    </div>
-                  }
-                </td>
-              </ng-container>
-
-              <!-- Permissions: Write -->
-              <ng-container matColumnDef="perm_write">
-                <th mat-header-cell *matHeaderCellDef class="perm-th">Perm: Write</th>
-                <td mat-cell *matCellDef="let d" class="perm-td">
-                  @let subsWrite = permSubjects(d.id, 'write');
-                  @if (isPermLoading(d.id)) {
-                    <mat-progress-spinner diameter="12" mode="indeterminate"></mat-progress-spinner>
-                  } @else if (subsWrite.length === 0) {
-                    <span class="perm-empty" aria-hidden="true">—</span>
-                  } @else {
-                    <div class="perm-chips" role="list" [attr.aria-label]="'Write access: ' + subsWrite.length + ' subject(s)'">
-                      @for (s of subsWrite; track s) {
-                        <span class="perm-chip perm-chip--write" role="listitem">{{ subjectLabels()[s] || s }}</span>
-                      }
-                    </div>
-                  }
-                </td>
-              </ng-container>
-
-              <!-- Permissions: Admin -->
-              <ng-container matColumnDef="perm_admin">
-                <th mat-header-cell *matHeaderCellDef class="perm-th">Perm: Admin</th>
-                <td mat-cell *matCellDef="let d" class="perm-td">
-                  @let subsAdmin = permSubjects(d.id, 'admin');
-                  @if (isPermLoading(d.id)) {
-                    <mat-progress-spinner diameter="12" mode="indeterminate"></mat-progress-spinner>
-                  } @else if (subsAdmin.length === 0) {
-                    <span class="perm-empty" aria-hidden="true">—</span>
-                  } @else {
-                    <div class="perm-chips" role="list" [attr.aria-label]="'Admin access: ' + subsAdmin.length + ' subject(s)'">
-                      @for (s of subsAdmin; track s) {
-                        <span class="perm-chip perm-chip--admin" role="listitem">{{ subjectLabels()[s] || s }}</span>
-                      }
-                    </div>
-                  }
-                </td>
-              </ng-container>
-
-              <!-- Permissions: Delete -->
-              <ng-container matColumnDef="perm_delete">
-                <th mat-header-cell *matHeaderCellDef class="perm-th">Perm: Delete</th>
-                <td mat-cell *matCellDef="let d" class="perm-td">
-                  @let subsDelete = permSubjects(d.id, 'delete');
-                  @if (isPermLoading(d.id)) {
-                    <mat-progress-spinner diameter="12" mode="indeterminate"></mat-progress-spinner>
-                  } @else if (subsDelete.length === 0) {
-                    <span class="perm-empty" aria-hidden="true">—</span>
-                  } @else {
-                    <div class="perm-chips" role="list" [attr.aria-label]="'Delete access: ' + subsDelete.length + ' subject(s)'">
-                      @for (s of subsDelete; track s) {
-                        <span class="perm-chip perm-chip--delete" role="listitem">{{ subjectLabels()[s] || s }}</span>
+                    <div class="perm-level-groups" [attr.aria-label]="'Permissions for record ' + d.id">
+                      @for (group of recordSubjectsByLevel(d.id); track group.level) {
+                        <div class="perm-level-group">
+                          <span class="perm-level-label perm-level-label--{{ group.level }}">{{ group.level }}</span>
+                          <div class="perm-subject-list">
+                            @for (s of group.subjects; track s) {
+                              <span class="perm-subject-name" [attr.aria-label]="(subjectLabels()[s] || s) + ' has ' + group.level + ' access'">
+                                {{ subjectLabels()[s] || s }}
+                              </span>
+                            }
+                          </div>
+                        </div>
                       }
                     </div>
                   }
@@ -345,6 +298,10 @@
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"
                   [class.selected-row]="selection.isSelected(row)"
                   (click)="onRowClick(row)"
+                  (keydown.enter)="onRowClick(row)"
+                  (keydown.space)="$event.preventDefault(); onRowClick(row)"
+                  tabindex="0"
+                  role="row"
                   style="cursor: pointer"
                   [attr.aria-selected]="selection.isSelected(row)">
               </tr>
