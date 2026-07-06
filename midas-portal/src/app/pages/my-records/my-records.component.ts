@@ -473,6 +473,17 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       .map(l => ({ level: l, subjects: groups[l] }));
   }
 
+  sharedWithGroups(id: string): { level: 'admin' | 'update' | 'view'; visible: string[]; overflow: string[] }[] {
+    return this.recordSubjectsByLevel(id).map(g => {
+      const labels = g.subjects.map(s => this.subjectLabels()[s] || s);
+      return {
+        level: g.level,
+        visible: labels.slice(0, 2),
+        overflow: labels.slice(2)
+      };
+    });
+  }
+
   linkto(id: string, rectype: string): string {
     if (rectype === 'dap') {
       return this.dataService.resolveApiUrl('dapEDIT').concat(id).concat('?editEnabled=true');

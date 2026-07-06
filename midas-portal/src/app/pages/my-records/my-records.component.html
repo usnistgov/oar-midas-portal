@@ -265,7 +265,7 @@
                 <td mat-cell *matCellDef="let d">{{ d.modifiedDate | date:'MM/dd/yyyy' }}</td>
               </ng-container>
 
-              <!-- Permissions: Read -->
+              <!-- Shared With -->
               <ng-container matColumnDef="permissions">
                 <th mat-header-cell *matHeaderCellDef class="perm-th">Shared with</th>
                 <td mat-cell *matCellDef="let d" class="perm-td">
@@ -276,14 +276,23 @@
                   } @else if (recordSubjects(d.id).length === 0) {
                     <span class="perm-empty" aria-hidden="true">—</span>
                   } @else {
-                    <div class="perm-level-groups" [attr.aria-label]="'Permissions for record ' + d.id">
-                      @for (group of recordSubjectsByLevel(d.id); track group.level) {
+                    <div class="perm-level-groups" [attr.aria-label]="'Shared with for record ' + d.id">
+                      @for (group of sharedWithGroups(d.id); track group.level) {
                         <div class="perm-level-group">
                           <span class="perm-level-label perm-level-label--{{ group.level }}">{{ group.level }}</span>
-                          <div class="perm-subject-list">
-                            @for (s of group.subjects; track s) {
-                              <span class="perm-subject-name" [attr.aria-label]="(subjectLabels()[s] || s) + ' has ' + group.level + ' access'">
-                                {{ subjectLabels()[s] || s }}
+                          <div class="perm-pills">
+                            @for (name of group.visible; track name) {
+                              <span class="perm-subject-pill perm-subject-pill--{{ group.level }}"
+                                    [attr.aria-label]="name + ' has ' + group.level + ' access'">
+                                {{ name }}
+                              </span>
+                            }
+                            @if (group.overflow.length > 0) {
+                              <span class="perm-overflow-chip"
+                                    [matTooltip]="group.overflow.join(', ')"
+                                    matTooltipPosition="above"
+                                    [attr.aria-label]="group.overflow.length + ' more ' + group.level + ' users: ' + group.overflow.join(', ')">
+                                +{{ group.overflow.length }} more
                               </span>
                             }
                           </div>
