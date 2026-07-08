@@ -19,13 +19,23 @@ describe('DashboardService', () => {
   it('should have initial default widgets', () => {
     expect(service.addedWidgets().length).toBe(4);
     expect(service.widgetsToAdd().length).toBe(4); // Changed from 0 to 4
-    
+
     // Test that the default widgets have expected properties
     const addedWidgets = service.addedWidgets();
     expect(addedWidgets[0].label).toBe('DMP Table');
     expect(addedWidgets[1].label).toBe('DAP Table');
     expect(addedWidgets[2].label).toBe('Reviews Table');
     expect(addedWidgets[3].label).toBe('Files Table');
+  });
+
+  it('DMP Table widget longLabel is "My Data Management Plans"', () => {
+    const dmp = service.addedWidgets().find(w => w.label === 'DMP Table');
+    expect(dmp?.longLabel).toBe('My Data Management Plans');
+  });
+
+  it('DAP Table widget longLabel is "My Digital Asset Publications"', () => {
+    const dap = service.addedWidgets().find(w => w.label === 'DAP Table');
+    expect(dap?.longLabel).toBe('My Digital Asset Publications');
   });
 
   it('should update widget position', () => {
