@@ -6,14 +6,14 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { signal, Component, Type } from '@angular/core';
+import { signal, WritableSignal, Component, Type } from '@angular/core';
 import { of } from 'rxjs';
 import { DmpTableComponent } from './dmp-table.component';
 import { ConfigurationService } from 'oarng';
 import { CredentialsService } from '../../../services/credentials.service';
 import { DashboardService } from '../../../services/dashboard.service';
 import { DataService } from '../../../services/data.service';
-import { Widget } from '../../../models/dashboard';
+import { Widget, Dmp } from '../../../models/dashboard';
 import { MatIconModule } from '@angular/material/icon'; // Add this
 
 // Mock component for testing
@@ -63,11 +63,12 @@ describe('DmpTableComponent', () => {
         {
           provide: DataService,
           useValue: {
-            dmps: signal([]), // This is the key signal function the component uses
+            dmps: signal([]),
+            myDmps: signal([]),
             getDmps: jasmine.createSpy('getDmps').and.returnValue(of([])),
             setDmps: jasmine.createSpy('setDmps'),
             resolveApiUrl: jasmine.createSpy('resolveApiUrl').and.returnValue('http://mock-api/'),
-            dmpUI: 'http://mock-dmp-ui/' // Property used in createDmp() method
+            dmpUI: 'http://mock-dmp-ui/'
           }
         }
       ]
@@ -95,5 +96,50 @@ describe('DmpTableComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  const mockDmp = (id: string, modifiedDate: Date): Dmp => ({
+    id,
+    name: `DMP ${id}`,
+    owner: 'testUser',
+    primaryContact: 'John Doe',
+    modifiedDate,
+    organizationUnit: 'Test Org',
+    type: 'research',
+    status: 'active',
+    hasPublication: false,
+    keywords: []
+  });
+
+  it('length reflects myDmps() count, not dmps() count', () => {
+    const dataService = TestBed.inject(DataService) as any;
+    (dataService.myDmps as WritableSignal<Dmp[]>).set([mockDmp('1', new Date())]);
+    fixture.detectChanges();
+    expect(component.length()).toBe(1);
+  });
+
+  it('length is 0 when myDmps() is empty', () => {
+    expect(component.length()).toBe(0);
+  });
+
+  it('dataSource.data is populated from myDmps()', () => {
+    const dataService = TestBed.inject(DataService) as any;
+    const records = [
+      mockDmp('dmp-1', new Date('2025-06-01')),
+      mockDmp('dmp-2', new Date('2024-01-01'))
+    ];
+    (dataService.myDmps as WritableSignal<Dmp[]>).set(records);
+    fixture.detectChanges();
+    expect(component.dataSource.data).toEqual(records);
+  });
+
+  it('dataSource.data preserves the order from myDmps() (newest-first)', () => {
+    const dataService = TestBed.inject(DataService) as any;
+    const newer = mockDmp('dmp-new', new Date('2025-01-01'));
+    const older = mockDmp('dmp-old', new Date('2023-01-01'));
+    (dataService.myDmps as WritableSignal<Dmp[]>).set([newer, older]);
+    fixture.detectChanges();
+    expect(component.dataSource.data[0].id).toBe('dmp-new');
+    expect(component.dataSource.data[1].id).toBe('dmp-old');
   });
 });
