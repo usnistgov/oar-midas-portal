@@ -66,13 +66,21 @@
       "enabled": true,
       "order": 6
     },
+        {
+      "key": "dataPolicy",
+      "name": "Data Directives",
+      "icon": "policy",
+      "link": "https://inet.nist.gov/lp/adlp/rdco/data-software-related-directives",
+      "enabled": true,
+      "order": 7
+    },
     {
       "key": "publicData",
       "name": "Public Data Portal",
       "icon": "public",
       "link": "https://data.nist.gov",
       "enabled": true,
-      "order": 7
+      "order": 8
     },
     {
       "key": "userSupport",
@@ -80,16 +88,9 @@
       "icon": "support_agent",
       "link": "https://inet.nist.gov/mr/library/publishing-support-nist-publications",
       "enabled": true,
-      "order": 8
-    },
-    {
-      "key": "dataPolicy",
-      "name": "Data Directives",
-      "icon": "policy",
-      "link": "https://inet.nist.gov/lp/adlp/rdco/data-software-related-directives",
-      "enabled": true,
       "order": 9
-    }
+    },
+
   ],
   "version": "1.0",
   "lastUpdated": "2025-11-12T21:00:00Z"
