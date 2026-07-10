@@ -120,9 +120,9 @@
     },
     {
       "key": "dataPolicy",
-      "name": "Data Policy",
+      "name": "Data Directives",
       "icon": "policy",
-      "link": "https://inet.nist.gov/mr/library/midas-user-guides",
+      "link": "https://inet.nist.gov/lp/adlp/rdco/data-software-related-directives",
       "enabled": true,
       "order": 8
     },
@@ -133,30 +133,6 @@
       "link": "https://inet.nist.gov/mr/library/midas-user-guides",
       "enabled": true,
       "order": 9
-    },
-    {
-      "key": "chipsMetrology",
-      "name": "CHIPS Metrology",
-      "icon": "memory",
-      "link": "#",
-      "enabled": true,
-      "order": 10,
-      "subItems": [
-        {
-          "key": "chipsGuidance",
-          "name": "Guidance",
-          "icon": "",
-          "link": "https://inet.nist.gov/mr/library/midas-user-guides",
-          "enabled": true
-        },
-        {
-          "key": "metisPublic",
-          "name": "METIS Public",
-          "icon": "",
-          "link": "#",
-          "enabled": true
-        }
-      ]
     }
   ],
   "version": "1.0",
