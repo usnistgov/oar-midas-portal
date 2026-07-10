@@ -59,10 +59,10 @@
       ]
     },
     {
-      "key": "openAccess",
+      "key": "midasinternal",
       "name": "MIDAS INET",
       "icon": "open_in_new",
-      "link": "#",
+      "link": "",
       "enabled": true,
       "order": 6
     },
@@ -89,14 +89,6 @@
       "link": "https://inet.nist.gov/lp/adlp/rdco/data-software-related-directives",
       "enabled": true,
       "order": 9
-    },
-    {
-      "key": "devTools",
-      "name": "Developer Tools",
-      "icon": "build",
-      "link": "https://inet.nist.gov/mr/library/midas-user-guides",
-      "enabled": true,
-      "order": 10
     }
   ],
   "version": "1.0",
