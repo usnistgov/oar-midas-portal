@@ -70,7 +70,7 @@ describe('SearchComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -108,9 +108,9 @@ describe('SearchComponent', () => {
                 type: 'dap'
               }
             ]),
-            loadAll: jasmine.createSpy('loadAll').and.returnValue(of({})),
-            getDmps: jasmine.createSpy('getDmps').and.returnValue(of([])),
-            resolveApiUrl: jasmine.createSpy('resolveApiUrl').and.returnValue('http://mock-api/'),
+            loadAll: jest.fn().mockReturnValue(of({})),
+            getDmps: jest.fn().mockReturnValue(of([])),
+            resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/'),
             credsService: {
               token: () => 'mock-token'
             }
@@ -119,33 +119,33 @@ describe('SearchComponent', () => {
         {
           provide: PeopleService,
           useValue: {
-            getNISTOrganizations: jasmine.createSpy('getNISTOrganizations').and.returnValue(of({})),
-            getNISTPersonnel: jasmine.createSpy('getNISTPersonnel').and.returnValue(of({}))
+            getNISTOrganizations: jest.fn().mockReturnValue(of({})),
+            getNISTPersonnel: jest.fn().mockReturnValue(of({}))
           }
         },
         {
           provide: ExportService,
           useValue: {
-            exportJSON: jasmine.createSpy('exportJSON'),
-            exportCSV: jasmine.createSpy('exportCSV'),
-            exportPDF: jasmine.createSpy('exportPDF')
+            exportJSON: jest.fn(),
+            exportCSV: jest.fn(),
+            exportPDF: jest.fn()
           }
         },
         {
           provide: DownloadService,
           useValue: {
-            downloadJSON: jasmine.createSpy('downloadJSON'),
-            downloadCSV: jasmine.createSpy('downloadCSV'),
-            downloadPDF: jasmine.createSpy('downloadPDF'),
-            downloadmarkdown: jasmine.createSpy('downloadmarkdown')
+            downloadJSON: jest.fn(),
+            downloadCSV: jest.fn(),
+            downloadPDF: jest.fn(),
+            downloadmarkdown: jest.fn()
           }
         },
         {
           provide: SearchFilterService,
           useValue: {
-            buildParts: jasmine.createSpy('buildParts').and.returnValue([]),
-            buildText: jasmine.createSpy('buildText').and.returnValue(''),
-            filterDmpOrDapList: jasmine.createSpy('filterDmpOrDapList').and.returnValue([])
+            buildParts: jest.fn().mockReturnValue([]),
+            buildText: jest.fn().mockReturnValue(''),
+            filterDmpOrDapList: jest.fn().mockReturnValue([])
           }
         }
       ]
@@ -156,7 +156,7 @@ describe('SearchComponent', () => {
     component = fixture.componentInstance;
 
     // Prevent ngOnInit from running during setup
-    spyOn(component, 'ngOnInit');
+    jest.spyOn(component, 'ngOnInit');
     
     fixture.detectChanges();
   });

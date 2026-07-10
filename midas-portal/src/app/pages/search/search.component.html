@@ -162,13 +162,13 @@
 
                     <!-- Resource Type -->
                     <div class="field-wrapper chip-field">
-                        <label class="field-label" id="resource-type-label">
+                        <span class="field-label" id="resource-type-label">
                             Resource Type
                             <span class="material-symbols-outlined help-icon"
                                 matTooltip="The resource type of the record."
                                 role="img"
                                 aria-label="Help: The resource type of the record">help</span>
-                        </label>
+                        </span>
 
                         <mat-chip-listbox multiple class="chip-listbox"
                             [formControl]="resourceTypeControl"
@@ -181,13 +181,13 @@
 
                     <!-- Process Status -->
                     <div class="field-wrapper chip-field">
-                        <label class="field-label" id="process-status-label">
+                        <span class="field-label" id="process-status-label">
                             Process Status
                             <span class="material-symbols-outlined help-icon"
                                 matTooltip="The process status of the record."
                                 role="img"
                                 aria-label="Help: The process status of the record">help</span>
-                        </label>
+                        </span>
 
                         <mat-chip-listbox multiple class="chip-listbox"
                             [formControl]="statusControl"
@@ -200,13 +200,13 @@
 
 
                     <div class="field-wrapper">
-                        <label class="field-label" id="paper-publication-label">
+                        <span class="field-label" id="paper-publication-label">
                             Associated Paper Publication?
                             <span class="material-symbols-outlined help-icon"
                                 matTooltip="Is this record associated with a paper publication?"
                                 role="img"
                                 aria-label="Help: Is this record associated with a paper publication">help</span>
-                        </label>
+                        </span>
                         <mat-checkbox class="checkbox" color="primary" labelPosition="before"
                             [(ngModel)]="hasPaperPublication"
                             aria-labelledby="paper-publication-label">

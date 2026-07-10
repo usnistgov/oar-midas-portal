@@ -42,16 +42,13 @@ export class SearchFilterService {
   const kws = c.keywords.map(kw => normalize(kw));
   const orgUnitCriteria = normalizeOrgUnit(c.orgUnit || '');
   const ownerCriteria = normalizeOwner(c.owner || '');
-  console.log('criteria', c);
 
   return list.filter(item => {
-    // For fields that only exist on Dmp, use optional chaining or fallback
     const name = normalize((item as any).name);
     const primaryContact = normalize((item as any).primaryContact);
     const organizationUnit = normalize((item as any).organizationUnit);
     const owner = (item as any).owner?.toLowerCase() || '';
     const type = (item as any).type || '';
-    console.log('type', type);
     const status = (item as any).status || '';
     const hasPublication = (item as any).hasPublication;
     const keywords = (item as any).keywords || [];
@@ -60,10 +57,13 @@ export class SearchFilterService {
       : new Date((item as any).modifiedDate);
 
     // 1) text search
+    const orgNames: string[] = (item as any).orgNames || [];
     const textMatch =
+      !q ||
       name.includes(q) ||
       primaryContact.includes(q) ||
-      organizationUnit.includes(q);
+      organizationUnit.includes(q) ||
+      orgNames.some(n => n.toLowerCase().includes(q));
 
     // 2) keywords
     const keywordMatch =
@@ -72,8 +72,11 @@ export class SearchFilterService {
         (keywords || []).some((dk: string) => dk.toLowerCase().includes(kw))
       );
 
-    // 3) org unit
-    const orgMatch = !orgUnitCriteria || organizationUnit === orgUnitCriteria;
+    // 3) org unit — check ouName and all sub-levels (division, group)
+    const orgNamesNormalized = orgNames.map(n => normalizeOrgUnit(n));
+    const orgMatch = !orgUnitCriteria ||
+      organizationUnit === orgUnitCriteria ||
+      orgNamesNormalized.some(n => n === orgUnitCriteria);
 
     // 4) owner
     const ownerMatch = !ownerCriteria || 

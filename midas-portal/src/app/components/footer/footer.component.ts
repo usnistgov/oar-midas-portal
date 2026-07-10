@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import * as footerlinks from '../../../assets/footer-links.json';
 
 @Component({
@@ -6,7 +6,7 @@ import * as footerlinks from '../../../assets/footer-links.json';
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent {
   appVersion: string = "1.0";
 
   footerLinks: any;
@@ -32,9 +32,6 @@ export class FooterComponent implements OnInit {
       this.socialMediaList = this.footerLinks.socialMediaList;
       this.footerLinks01 = this.footerLinks.footerLinks01;
       this.footerLinks02 = this.footerLinks.footerLinks02;
-  }
-
-  ngOnInit() {
   }
 
   /**

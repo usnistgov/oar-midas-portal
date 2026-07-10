@@ -30,7 +30,7 @@ describe('DapComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -48,8 +48,8 @@ describe('DapComponent', () => {
           provide: DataService,
           useValue: {
             daps: signal([]),
-            getDaps: jasmine.createSpy('getDaps').and.returnValue([]),
-            resolveApiUrl: jasmine.createSpy('resolveApiUrl').and.returnValue('http://mock-api/'),
+            getDaps: jest.fn().mockReturnValue([]),
+            resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/'),
             dapUI: 'http://mock-dap-ui/'
           }
         }

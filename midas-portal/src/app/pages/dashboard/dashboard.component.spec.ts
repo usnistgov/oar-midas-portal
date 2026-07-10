@@ -11,7 +11,7 @@ describe('DashboardComponent Methods', () => {
       selectedName: undefined,
       selectedOwner: undefined,
       selectedContact: undefined,
-      onDateFilterChange: jasmine.createSpy('onDateFilterChange'),
+      onDateFilterChange: jest.fn(),
       toggleSidebar: DashboardComponent.prototype.toggleSidebar,
       clearFilters: DashboardComponent.prototype.clearFilters
     };

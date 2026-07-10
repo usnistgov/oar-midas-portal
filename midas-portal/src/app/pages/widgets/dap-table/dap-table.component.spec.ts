@@ -46,7 +46,7 @@ describe('DapTableComponent', () => {
         {
           provide: ConfigurationService,
           useValue: {
-            getConfig: jasmine.createSpy('getConfig').and.returnValue({})
+            getConfig: jest.fn().mockReturnValue({})
           }
         },
         {
@@ -65,8 +65,8 @@ describe('DapTableComponent', () => {
           useValue: {
             daps: signal([]),
             myDaps: signal([]),
-            getDaps: jasmine.createSpy('getDaps').and.returnValue(of([])),
-            resolveApiUrl: jasmine.createSpy('resolveApiUrl').and.returnValue('http://mock-api/'),
+            getDaps: jest.fn().mockReturnValue([]),
+            resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/'),
             dapUI: 'http://mock-dap-ui/'
           }
         }
