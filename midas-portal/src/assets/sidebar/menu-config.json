@@ -22,7 +22,7 @@
       "icon": "person",
       "link": "https://inet.nist.gov/mr/library/midas-user-guides",
       "enabled": true,
-      "order": 3,
+      "order": 3
     },
     {
       "key": "faqs",
@@ -30,7 +30,7 @@
       "icon": "person",
       "link": "https://inet.nist.gov/mr/library/midas-user-guides#FAQs",
       "enabled": true,
-      "order": 4,
+      "order": 4
     },
     {
       "key": "createNew",
