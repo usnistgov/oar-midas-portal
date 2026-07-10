@@ -62,7 +62,7 @@
       "key": "midasinternal",
       "name": "MIDAS INET",
       "icon": "open_in_new",
-      "link": "",
+      "link": "https://inet.nist.gov/lp/adlp/rdco/midas",
       "enabled": true,
       "order": 6
     },
