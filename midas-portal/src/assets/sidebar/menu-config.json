@@ -89,8 +89,7 @@
       "link": "https://inet.nist.gov/mr/library/publishing-support-nist-publications",
       "enabled": true,
       "order": 9
-    },
-
+    }
   ],
   "version": "1.0",
   "lastUpdated": "2025-11-12T21:00:00Z"
