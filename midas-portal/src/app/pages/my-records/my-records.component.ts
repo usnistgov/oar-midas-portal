@@ -456,9 +456,9 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     const w = (acls.write  ?? []).includes(subject);
     const a = (acls.admin  ?? []).includes(subject);
     const d = (acls.delete ?? []).includes(subject);
-    if (r && w && a && d) return 'admin';
-    if (r && w)           return 'update';
-    if (r)                return 'view';
+    if (a) return 'admin';
+    if (w) return 'update';
+    if (r) return 'view';
     return null;
   }
 
