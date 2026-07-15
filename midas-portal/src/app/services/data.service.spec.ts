@@ -385,7 +385,7 @@ describe('DataService', () => {
 
     it('getMyDmps() fetches fallback JSON when token is null', () => {
       service.getMyDmps().subscribe(dmps => {
-        expect(dmps).toHaveSize(1);
+        expect(dmps).toHaveLength(1);
         expect(dmps[0].name).toBe('DMP 1');
       });
 
@@ -396,7 +396,7 @@ describe('DataService', () => {
 
     it('getMyDaps() fetches fallback JSON when token is null', () => {
       service.getMyDaps().subscribe(daps => {
-        expect(daps).toHaveSize(1);
+        expect(daps).toHaveLength(1);
       });
       httpMock.expectNone((r) => r.url.includes('?perm=write'));
       httpMock.expectNone((r) => r.url.includes('?owner='));
@@ -438,7 +438,7 @@ describe('DataService', () => {
         providers: [
           {
             provide: ConfigurationService,
-            useValue: { getConfig: jasmine.createSpy('getConfig').and.returnValue(mockConfig) }
+            useValue: { getConfig: jest.fn().mockReturnValue(mockConfig) }
           },
           {
             provide: CredentialsService,
