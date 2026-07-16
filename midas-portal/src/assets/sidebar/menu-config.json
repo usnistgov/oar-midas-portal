@@ -89,6 +89,14 @@
       "link": "https://inet.nist.gov/mr/library/publishing-support-nist-publications",
       "enabled": true,
       "order": 9
+    },
+    {
+      "key": "reportProb",
+      "name": "Report a Problem",
+      "icon": "support_agent",
+      "link": "https://gitlab.nist.gov/gitlab/oar/user-testing/-/wikis/MIDAS-4.0-Early-Access-Period:-User-Feedback",
+      "enabled": true,
+      "order": 10
     }
   ],
   "version": "1.0",
