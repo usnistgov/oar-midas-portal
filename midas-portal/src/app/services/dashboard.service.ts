@@ -59,6 +59,7 @@ export class DashboardService {
           w.content = reg.content;
           w.label = reg.label;
           w.longLabel = reg.longLabel;
+          w.isTable = reg.isTable;
         }
       }
       this.addedWidgets.set(saved);
@@ -82,6 +83,7 @@ export class DashboardService {
             w.content = reg.content;
             w.label = reg.label;
             w.longLabel = reg.longLabel;
+            w.isTable = reg.isTable;
           }
         }
         this.addedWidgets.set(saved);
