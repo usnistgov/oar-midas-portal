@@ -34,7 +34,7 @@ export class DmpTableComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<Dmp>([]);
   widget = input.required<Widget>();
 
-  length = computed(() => this.dataService.dmps().length);
+  length = computed(() => this.dataService.myDmps().length);
   pageSize = 10;
   pageSizeOptions = [5, 10, 20, 50];
 
@@ -68,7 +68,7 @@ export class DmpTableComponent implements AfterViewInit {
   constructor(private dataService: DataService) {
     // keep table data in sync with the signal
     effect(() => {
-      const dmps = this.dataService.dmps();
+      const dmps = this.dataService.myDmps();
       this.dataSource.data = dmps;
       this.dataSource._updateChangeSubscription();
     });

@@ -87,6 +87,11 @@ describe('DataService', () => {
       expect(service.daps()).toEqual([]);
       expect(service.files()).toEqual([]);
     });
+
+    it('should initialize myDmps and myDaps signals with empty arrays', () => {
+      expect(service.myDmps()).toEqual([]);
+      expect(service.myDaps()).toEqual([]);
+    });
   });
 
   describe('API URL Resolution', () => {
@@ -350,6 +355,236 @@ describe('DataService', () => {
         expect(response.userDetails.userEmail).toBe('omarilias.elmimouni@nist.gov');
         expect(response.userDetails.userName).toBe('Omar Ilias');
       });
+    });
+  });
+
+  // No-token fallback tests — run under the outer beforeEach (token: signal(null))
+  describe('getMyDmps() / getMyDaps() — no-token fallback path', () => {
+    const rawDmp = (id: string, modifiedDate = '2024-01-01T00:00:00Z') => ({
+      id,
+      name: `DMP ${id}`,
+      owner: 'testUser',
+      data: {
+        contributors: [{ primary_contact: 'Yes', firstName: 'John', lastName: 'Doe' }],
+        organizations: [{ ouName: 'Test Org' }],
+        dmpSearchable: 'yes',
+        keywords: []
+      },
+      status: { modifiedDate, state: 'active' },
+      type: 'research'
+    });
+
+    const rawDap = (id: string, modifiedDate = '2024-01-01T00:00:00Z') => ({
+      id,
+      name: `DAP ${id}`,
+      owner: 'testUser',
+      data: { contributors: [{ primary_contact: 'Yes', emailAddress: 'test@example.com' }] },
+      status: { modifiedDate },
+      file_space: { location: '/test' }
+    });
+
+    it('getMyDmps() fetches fallback JSON when token is null', () => {
+      service.getMyDmps().subscribe(dmps => {
+        expect(dmps).toHaveLength(1);
+        expect(dmps[0].name).toBe('DMP 1');
+      });
+
+      httpMock.expectNone((r) => r.url.includes('?perm=write'));
+      httpMock.expectNone((r) => r.url.includes('?owner='));
+      httpMock.expectOne('http://test.com/fallback/dmps.json').flush([rawDmp('1')]);
+    });
+
+    it('getMyDaps() fetches fallback JSON when token is null', () => {
+      service.getMyDaps().subscribe(daps => {
+        expect(daps).toHaveLength(1);
+      });
+      httpMock.expectNone((r) => r.url.includes('?perm=write'));
+      httpMock.expectNone((r) => r.url.includes('?owner='));
+      httpMock.expectOne('http://test.com/fallback/daps.json').flush([rawDap('1')]);
+    });
+  });
+
+  describe('getMyDmps() / getMyDaps() — authenticated two-call path', () => {
+    let authService: DataService;
+    let authHttpMock: HttpTestingController;
+
+    const rawDmp = (id: string, modifiedDate = '2024-01-01T00:00:00Z') => ({
+      id,
+      name: `DMP ${id}`,
+      owner: 'testUser',
+      data: {
+        contributors: [{ primary_contact: 'Yes', firstName: 'John', lastName: 'Doe' }],
+        organizations: [{ ouName: 'Test Org' }],
+        dmpSearchable: 'yes',
+        keywords: []
+      },
+      status: { modifiedDate, state: 'active' },
+      type: 'research'
+    });
+
+    const rawDap = (id: string, modifiedDate = '2024-01-01T00:00:00Z') => ({
+      id,
+      name: `DAP ${id}`,
+      owner: 'testUser',
+      data: { contributors: [{ primary_contact: 'Yes', emailAddress: 'test@example.com' }] },
+      status: { modifiedDate },
+      file_space: { location: '/test' }
+    });
+
+    beforeEach(async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule, MatSnackBarModule, MatDialogModule, NoopAnimationsModule],
+        providers: [
+          {
+            provide: ConfigurationService,
+            useValue: { getConfig: jest.fn().mockReturnValue(mockConfig) }
+          },
+          {
+            provide: CredentialsService,
+            useValue: {
+              token: signal('mock-jwt-token'),
+              userId: signal('testUser'),
+              userAttributes: signal({ winId: 'DOMAIN\\testUser' })
+            }
+          },
+          { provide: DashboardService, useValue: {} }
+        ]
+      }).compileComponents();
+      authHttpMock = TestBed.inject(HttpTestingController);
+      authService = TestBed.inject(DataService);
+    });
+
+    afterEach(() => authHttpMock.verify());
+
+    it('getMyDmps() sends ?perm=write and ?owner=userId,winId requests', () => {
+      authService.getMyDmps().subscribe();
+
+      const writeReq = authHttpMock.expectOne(r => r.url.includes('?perm=write'));
+      const ownerReq = authHttpMock.expectOne(r => r.url.includes('?owner='));
+
+      expect(writeReq.request.url).toContain('https://localhost/midas/dmp/mdm1?perm=write');
+      expect(ownerReq.request.url).toContain('?owner=testUser,DOMAIN\\testUser');
+      expect(writeReq.request.headers.get('Authorization')).toBe('Bearer mock-jwt-token');
+
+      writeReq.flush([]);
+      ownerReq.flush([]);
+    });
+
+    it('getMyDmps() deduplicates records that appear in both responses', () => {
+      authService.getMyDmps().subscribe(dmps => {
+        expect(dmps.map(d => d.id)).toEqual(['dmp1', 'dmp2', 'dmp3']);
+      });
+
+      authHttpMock.expectOne(r => r.url.includes('?perm=write')).flush([rawDmp('dmp1'), rawDmp('dmp2')]);
+      authHttpMock.expectOne(r => r.url.includes('?owner=')).flush([rawDmp('dmp2'), rawDmp('dmp3')]);
+    });
+
+    it('getMyDmps() returns records sorted by modifiedDate descending', () => {
+      authService.getMyDmps().subscribe(dmps => {
+        expect(dmps[0].id).toBe('dmp-new');
+        expect(dmps[1].id).toBe('dmp-mid');
+        expect(dmps[2].id).toBe('dmp-old');
+      });
+
+      authHttpMock.expectOne(r => r.url.includes('?perm=write')).flush([
+        rawDmp('dmp-old', '2023-01-01T00:00:00Z'),
+        rawDmp('dmp-new', '2025-06-15T00:00:00Z')
+      ]);
+      authHttpMock.expectOne(r => r.url.includes('?owner=')).flush([
+        rawDmp('dmp-mid', '2024-06-01T00:00:00Z')
+      ]);
+    });
+
+    it('getMyDmps() includes records owned but not in write ACL (publication edge case)', () => {
+      authService.getMyDmps().subscribe(dmps => {
+        expect(dmps.some(d => d.id === 'dmp-under-review')).toBe(true);
+      });
+
+      authHttpMock.expectOne(r => r.url.includes('?perm=write')).flush([]);
+      authHttpMock.expectOne(r => r.url.includes('?owner=')).flush([rawDmp('dmp-under-review')]);
+    });
+
+    it('getMyDmps() still returns perm=write results when owner call fails', () => {
+      authService.getMyDmps().subscribe(dmps => {
+        expect(dmps.map(d => d.id)).toEqual(['dmp1']);
+      });
+
+      authHttpMock.expectOne(r => r.url.includes('?perm=write')).flush([rawDmp('dmp1')]);
+      authHttpMock.expectOne(r => r.url.includes('?owner=')).error(new ErrorEvent('network'));
+    });
+
+    it('getMyDmps() still returns owner results when perm=write call fails', () => {
+      authService.getMyDmps().subscribe(dmps => {
+        expect(dmps.map(d => d.id)).toEqual(['dmp-owned']);
+      });
+
+      authHttpMock.expectOne(r => r.url.includes('?perm=write')).error(new ErrorEvent('network'));
+      authHttpMock.expectOne(r => r.url.includes('?owner=')).flush([rawDmp('dmp-owned')]);
+    });
+
+    it('getMyDmps() returns empty array when both calls fail', () => {
+      authService.getMyDmps().subscribe(dmps => {
+        expect(dmps).toEqual([]);
+      });
+
+      authHttpMock.expectOne(r => r.url.includes('?perm=write')).error(new ErrorEvent('network'));
+      authHttpMock.expectOne(r => r.url.includes('?owner=')).error(new ErrorEvent('network'));
+    });
+
+    it('getMyDaps() sends ?perm=write and ?owner= requests for DAPs', () => {
+      authService.getMyDaps().subscribe(daps => {
+        expect(daps.map(d => d.id)).toEqual(['dap1', 'dap2']);
+      });
+
+      authHttpMock.expectOne(r => r.url.includes('https://localhost/midas/dap/mds3?perm=write')).flush([rawDap('dap1')]);
+      authHttpMock.expectOne(r => r.url.includes('?owner=')).flush([rawDap('dap2')]);
+    });
+
+    it('getMyDaps() deduplicates and sorts by modifiedDate descending', () => {
+      authService.getMyDaps().subscribe(daps => {
+        expect(daps[0].id).toBe('dap-new');
+        expect(daps[1].id).toBe('dap-old');
+      });
+
+      authHttpMock.expectOne(r => r.url.includes('?perm=write')).flush([rawDap('dap-old', '2023-01-01T00:00:00Z')]);
+      authHttpMock.expectOne(r => r.url.includes('?owner=')).flush([rawDap('dap-new', '2025-01-01T00:00:00Z')]);
+    });
+
+    it('populates myDmps() and myDaps() after loadAll() completes', () => {
+      authService.loadAll().subscribe(() => {
+        expect(authService.myDmps().length).toBe(1);
+        expect(authService.myDaps().length).toBe(1);
+      });
+
+      // getDmps() → dmpAPI
+      authHttpMock.expectOne(r => r.url === 'https://localhost/midas/dmp/mdm1').flush([rawDmp('dmp-full')]);
+      // getDaps() and getFiles() both use dapAPI — match both with .match()
+      const dapBaseReqs = authHttpMock.match(r => r.url === 'https://localhost/midas/dap/mds3');
+      dapBaseReqs[0].flush([rawDap('dap-full')]);
+      dapBaseReqs[1].flush([]);
+      // getMyDmps() → two calls
+      authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?perm=write')).flush([rawDmp('dmp-mine')]);
+      authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?owner=')).flush([]);
+      // getMyDaps() → two calls
+      authHttpMock.expectOne(r => r.url.includes('dap') && r.url.includes('?perm=write')).flush([rawDap('dap-mine')]);
+      authHttpMock.expectOne(r => r.url.includes('dap') && r.url.includes('?owner=')).flush([]);
+    });
+
+    it('loadAll() updates dmps() and daps() signals', () => {
+      authService.loadAll().subscribe(() => {
+        expect(authService.dmps().length).toBe(1);
+        expect(authService.daps().length).toBe(1);
+      });
+
+      authHttpMock.expectOne(r => r.url === 'https://localhost/midas/dmp/mdm1').flush([rawDmp('1')]);
+      const dapBaseReqs = authHttpMock.match(r => r.url === 'https://localhost/midas/dap/mds3');
+      dapBaseReqs[0].flush([rawDap('1')]);
+      dapBaseReqs[1].flush([]);
+      authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?perm=write')).flush([]);
+      authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?owner=')).flush([]);
+      authHttpMock.expectOne(r => r.url.includes('dap') && r.url.includes('?perm=write')).flush([]);
+      authHttpMock.expectOne(r => r.url.includes('dap') && r.url.includes('?owner=')).flush([]);
     });
   });
 });
