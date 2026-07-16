@@ -20,15 +20,8 @@ export class WidgetComponent implements AfterViewInit {
   private dialog = inject(MatDialog);
   readonly isDragDisabled = signal(false);
 
-  private readonly tableWidgets = [
-    'DmpTableComponent',
-    'DapTableComponent',
-    'FilesTableComponent',
-    'ReviewsTableComponent'
-  ];
-
   get isTableWidget(): boolean {
-    return this.tableWidgets.includes(this.data().content.name);
+    return !!this.data().isTable;
   }
 
   expandTable() {
@@ -48,20 +41,7 @@ export class WidgetComponent implements AfterViewInit {
 
   getWidgetInputs() {
     const widget = this.data();
-    const componentName = widget.content.name;
-    
-    const tableComponents = [
-      'DmpTableComponent', 
-      'DapTableComponent', 
-      'FilesTableComponent', 
-      'ReviewsTableComponent'
-    ];
-    
-    if (tableComponents.includes(componentName)) {
-      return { widget: widget };
-    }
-    
-    return {};
+    return widget.isTable ? { widget } : {};
   }
 
   private setupTextSelectionHandling() {

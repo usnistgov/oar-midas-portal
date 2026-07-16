@@ -63,7 +63,7 @@
           "key": "reports",
           "name": "Reports",
           "icon": "",
-          "link": "https://inet.nist.gov/mr/library/midas-tools/reports",
+          "link": "https://inet.nist.gov/mr/library/midas-user-guides/midas-tools/reports",
           "enabled": true
         }
       ]

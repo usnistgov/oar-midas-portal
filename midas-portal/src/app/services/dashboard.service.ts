@@ -52,10 +52,15 @@ export class DashboardService {
 
     try {
       const saved = JSON.parse(json) as Widget[];
-      // Map each stored ID back to its component class
+      // Re-attach non-serializable and registry-owned fields from the registry
       for (const w of saved) {
         const reg = this.widgets().find(x => x.id === w.id);
-        if (reg) w.content = reg.content;
+        if (reg) {
+          w.content = reg.content;
+          w.label = reg.label;
+          w.longLabel = reg.longLabel;
+          w.isTable = reg.isTable;
+        }
       }
       this.addedWidgets.set(saved);
     } catch {
@@ -74,7 +79,12 @@ export class DashboardService {
         const saved = JSON.parse(json) as Widget[];
         for (const w of saved) {
           const reg = this.widgets().find(x => x.id === w.id);
-          if (reg) w.content = reg.content;
+          if (reg) {
+            w.content = reg.content;
+            w.label = reg.label;
+            w.longLabel = reg.longLabel;
+            w.isTable = reg.isTable;
+          }
         }
         this.addedWidgets.set(saved);
         return;

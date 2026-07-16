@@ -56,6 +56,10 @@ export class DataService {
   readonly daps = this._daps.asReadonly();
   private _files = signal<File[]>([]);
   readonly files = this._files.asReadonly();
+  private _myDmps = signal<Dmp[]>([]);
+  readonly myDmps = this._myDmps.asReadonly();
+  private _myDaps = signal<Dap[]>([]);
+  readonly myDaps = this._myDaps.asReadonly();
   private _reviews = signal<Review[]>([]);
   readonly reviews = this._reviews.asReadonly();
 
@@ -121,6 +125,90 @@ export class DataService {
       })
     );
 }
+
+  getMyDmps(): Observable<Dmp[]> {
+    const token = this.credsService.token();
+    const headers = { Authorization: `Bearer ${token}` };
+    const base = this.resolveApiUrl('dmpAPI').replace(/\/$/, '');
+    const fallback = this.resolveApiUrl('dmpJSON');
+
+    if (!token) {
+      return this.http.get<any[]>(fallback).pipe(
+        map(raw => raw.map(r => this.mapToDmp(r))),
+        catchError(() => of([]))
+      );
+    }
+
+    const userId = this.credsService.userId();
+    const winId = this.credsService.userAttributes()?.['winId'] as string | undefined;
+    const ownerParam = [userId, winId].filter(Boolean).join(',');
+
+    return forkJoin([
+      this.http.get<any[]>(`${base}?perm=write`, { headers }).pipe(catchError(() => of([]))),
+      this.http.get<any[]>(`${base}?owner=${ownerParam}`, { headers }).pipe(catchError(() => of([]))),
+    ]).pipe(
+      map(([byWrite, byOwner]) => {
+        const seen = new Set<string>();
+        return [...byWrite, ...byOwner].filter(r => {
+          if (seen.has(r.id)) return false;
+          seen.add(r.id);
+          return true;
+        }).map(r => this.mapToDmp(r))
+          .sort((a, b) => b.modifiedDate.getTime() - a.modifiedDate.getTime());
+      }),
+      catchError(err => {
+        console.error('[getMyDmps] API failed, falling back to JSON:', err);
+        this.snackBar.open('Could not reach API; loading fallback.', 'Dismiss', { duration: 3000 });
+        return this.http.get<any[]>(fallback).pipe(
+          map(raw => raw.map(r => this.mapToDmp(r))
+            .sort((a, b) => b.modifiedDate.getTime() - a.modifiedDate.getTime())),
+          catchError(() => of([]))
+        );
+      })
+    );
+  }
+
+  getMyDaps(): Observable<Dap[]> {
+    const token = this.credsService.token();
+    const headers = { Authorization: `Bearer ${token}` };
+    const base = this.resolveApiUrl('dapAPI').replace(/\/$/, '');
+    const fallback = this.resolveApiUrl('dapJSON');
+
+    if (!token) {
+      return this.http.get<any[]>(fallback).pipe(
+        map(raw => raw.map(r => this.mapToDap(r))),
+        catchError(() => of([]))
+      );
+    }
+
+    const userId = this.credsService.userId();
+    const winId = this.credsService.userAttributes()?.['winId'] as string | undefined;
+    const ownerParam = [userId, winId].filter(Boolean).join(',');
+
+    return forkJoin([
+      this.http.get<any[]>(`${base}?perm=write`, { headers }).pipe(catchError(() => of([]))),
+      this.http.get<any[]>(`${base}?owner=${ownerParam}`, { headers }).pipe(catchError(() => of([]))),
+    ]).pipe(
+      map(([byWrite, byOwner]) => {
+        const seen = new Set<string>();
+        return [...byWrite, ...byOwner].filter(r => {
+          if (seen.has(r.id)) return false;
+          seen.add(r.id);
+          return true;
+        }).map(r => this.mapToDap(r))
+          .sort((a, b) => b.modifiedDate.getTime() - a.modifiedDate.getTime());
+      }),
+      catchError(err => {
+        console.error('[getMyDaps] API failed, falling back to JSON:', err);
+        this.snackBar.open('Could not reach API; loading fallback.', 'Dismiss', { duration: 3000 });
+        return this.http.get<any[]>(fallback).pipe(
+          map(raw => raw.map(r => this.mapToDap(r))
+            .sort((a, b) => b.modifiedDate.getTime() - a.modifiedDate.getTime())),
+          catchError(() => of([]))
+        );
+      })
+    );
+  }
 
   getMaintenanceInfo(): Observable<MaintenanceInfo> {
     const url = this.resolveApiUrl('infoURL');
@@ -329,11 +417,21 @@ export class DataService {
       console.error('Failed to load Files:', err);
       return of([]);
     })),
+    myDmps: this.getMyDmps().pipe(catchError(err => {
+      console.error('Failed to load my DMPs:', err);
+      return of([]);
+    })),
+    myDaps: this.getMyDaps().pipe(catchError(err => {
+      console.error('Failed to load my DAPs:', err);
+      return of([]);
+    })),
   }).pipe(
-    tap(({ dmps, daps, files }) => {
+    tap(({ dmps, daps, files, myDmps, myDaps }) => {
       this._dmps.set(dmps);
       this._daps.set(daps);
       this._files.set(files);
+      this._myDmps.set(myDmps);
+      this._myDaps.set(myDaps);
     })
   );
 }

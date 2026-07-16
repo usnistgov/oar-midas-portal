@@ -9,6 +9,7 @@ export interface Widget {
     columns?: number;
     backgroundColor?: string;
     textColor?: string;
+    isTable?: boolean;
 }
 
 export interface Dap {
