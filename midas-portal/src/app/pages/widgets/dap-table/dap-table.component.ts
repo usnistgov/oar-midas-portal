@@ -27,7 +27,7 @@ import { getStatusClass as statusClassUtil } from '../../../shared/table-utils';
 })
 export class DapTableComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<Dap>([]);
-  length = computed(() => this.dataService.daps().length);
+  length = computed(() => this.dataService.myDaps().length);
   widget = input.required<Widget>();
   pageSize = 10;
   pageSizeOptions = [5, 10, 20, 50];
@@ -72,7 +72,7 @@ export class DapTableComponent implements AfterViewInit {
     private router: Router
   ) {
     effect(() => {
-      const daps = this.dataService.daps();
+      const daps = this.dataService.myDaps();
       this.dataSource.data = daps;
       this.dataSource._updateChangeSubscription();
     });

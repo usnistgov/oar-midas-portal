@@ -84,8 +84,6 @@ describe('DashboardService', () => {
 
     it('removes the stale dashboardWidgets key on reset', () => {
       createService();
-      // The service clears localStorage.dashboardWidgets before setting new defaults
-      // so the raw JSON no longer holds the old stale columns: 6 values
       const raw = localStorage.getItem('dashboardWidgets');
       if (raw) {
         const parsed = JSON.parse(raw);
@@ -105,6 +103,16 @@ describe('DashboardService', () => {
       expect(service.addedWidgets().length).toBe(4);
       expect(service.addedWidgets()[0].label).toBe('DMP Table');
     });
+  });
+
+  it('DMP Table widget longLabel is "My Data Management Plans"', () => {
+    const dmp = service.addedWidgets().find(w => w.label === 'DMP Table');
+    expect(dmp?.longLabel).toBe('My Data Management Plans');
+  });
+
+  it('DAP Table widget longLabel is "My Digital Asset Publications"', () => {
+    const dap = service.addedWidgets().find(w => w.label === 'DAP Table');
+    expect(dap?.longLabel).toBe('My Digital Asset Publications');
   });
 
   it('should update widget position', () => {

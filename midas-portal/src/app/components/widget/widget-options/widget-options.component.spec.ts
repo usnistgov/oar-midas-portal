@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { signal, Component, Type } from '@angular/core';
 import { WidgetOptionsComponent } from './widget-options.component';
@@ -31,6 +33,8 @@ describe('WidgetOptionsComponent', () => {
         HttpClientTestingModule,
         MatSnackBarModule,
         MatDialogModule,
+        MatIconModule,
+        MatButtonToggleModule,
         NoopAnimationsModule
       ],
       providers: [

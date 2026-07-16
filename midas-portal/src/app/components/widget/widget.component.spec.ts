@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { signal, Component, Type } from '@angular/core';
 import { WidgetComponent } from './widget.component';
@@ -31,6 +33,8 @@ describe('WidgetComponent', () => {
         HttpClientTestingModule,
         MatSnackBarModule,
         MatDialogModule,
+        MatIconModule,
+        DragDropModule,
         NoopAnimationsModule
       ],
       providers: [
