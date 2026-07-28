@@ -210,7 +210,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       const adminList = acls.admin ?? [];
       const isAdmin = adminList.includes(userId) || (winId ? adminList.includes(winId) : false);
       const isOwner = r.owner === userId || (winId ? r.owner === winId : false);
-      return isAdmin && !isOwner;
+      return isOwner || isAdmin;
     });
 
     this.applyFilters();
