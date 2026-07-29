@@ -4,7 +4,7 @@
     "NPSAPI": "https://localhost:9092/nps/",
     "dmpAPI": "https://localhost/midas/dmp/mdm1",
     "dapAPI": "https://localhost/midas/dap/mds3",
-    "groupAPI": "https://localhost/midas/groups",
+    "groupAPI": "https://localhost/midas/group/grp0",
     "dmpUI": "https://localhost/dmpui/new",
     "dapUI": "https://localhost/dapui/new",
     "dmpEDIT": "https://localhost/dmpui/edit/",

@@ -9,12 +9,20 @@
       "order": 1
     },
     {
+      "key": "myRecords",
+      "name": "Share My Records",
+      "icon": "folder_shared",
+      "link": "/share-my-records",
+      "enabled": true,
+      "order": 2
+    },
+    {
       "key": "searchExport",
       "name": "Search and Export",
       "icon": "search",
       "link": "/search",
       "enabled": true,
-      "order": 2
+      "order": 3
     },
     {
       "key": "toolsGuide",

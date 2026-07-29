@@ -12,6 +12,7 @@ import { MatPaginator }       from '@angular/material/paginator';
 import { MatSort }            from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { input } from '@angular/core';
+import { Router } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { Dap } from '../../../models/dashboard';
 import { Widget } from '../../../models/dashboard';
@@ -64,7 +65,12 @@ export class DapTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort)      sort!: MatSort;
 
-  constructor(private dataService: DataService, private cdr: ChangeDetectorRef, private appRef: ApplicationRef) {
+  constructor(
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef,
+    private appRef: ApplicationRef,
+    private router: Router
+  ) {
     effect(() => {
       const daps = this.dataService.myDaps();
       this.dataSource.data = daps;
@@ -158,6 +164,10 @@ export class DapTableComponent implements AfterViewInit {
 
   createDap() {
     window.open(this.dataService.dapUI, '_blank');
+  }
+
+  shareRecords(): void {
+    this.router.navigate(['/share-my-records'], { queryParams: { type: 'DAP' } });
   }
 
   clearFilter(input: HTMLInputElement) {
