@@ -26,55 +26,19 @@
     },
     {
       "key": "toolsGuide",
-      "name": "MIDAS Tools Guide",
+      "name": "User Guide",
       "icon": "person",
-      "link": "#",
+      "link": "https://inet.nist.gov/mr/library/midas-user-guides",
       "enabled": true,
-      "order": 3,
-      "subItems": [
-        {
-          "key": "userGuides",
-          "name": "User Guides",
-          "icon": "",
-          "link": "https://inet.nist.gov/mr/library/midas-user-guides",
-          "enabled": true
-        },
-        {
-          "key": "dmpDocs",
-          "name": "Data Management Plans",
-          "icon": "",
-          "link": "https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-management-plans",
-          "enabled": true
-        },
-        {
-          "key": "dapDocs",
-          "name": "Digital Asset Publishing",
-          "icon": "",
-          "link": "https://inet.nist.gov/mr/library/midas-user-guides/midas-components/digital-asset-publisher-dap",
-          "enabled": true
-        },
-        {
-          "key": "fileMgmt",
-          "name": "File Management",
-          "icon": "",
-          "link": "https://inet.nist.gov/mr/library/midas-user-guides/midas-components/file-manager",
-          "enabled": true
-        },
-        {
-          "key": "dataReview",
-          "name": "Data Review",
-          "icon": "",
-          "link": "https://inet.nist.gov/mr/library/midas-user-guides/midas-components/data-review-system",
-          "enabled": true
-        },
-        {
-          "key": "reports",
-          "name": "Reports",
-          "icon": "",
-          "link": "https://inet.nist.gov/mr/library/midas-user-guides/midas-tools/reports",
-          "enabled": true
-        }
-      ]
+      "order": 3
+    },
+    {
+      "key": "faqs",
+      "name": "FAQs",
+      "icon": "person",
+      "link": "https://inet.nist.gov/mr/library/midas-user-guides#FAQs",
+      "enabled": true,
+      "order": 4
     },
     {
       "key": "createNew",
@@ -82,7 +46,7 @@
       "icon": "note_add",
       "link": "#",
       "enabled": true,
-      "order": 4,
+      "order": 5,
       "subItems": [
         {
           "key": "createDmp",
@@ -103,12 +67,20 @@
       ]
     },
     {
-      "key": "openAccess",
-      "name": "Open Access INET",
+      "key": "midasinternal",
+      "name": "MIDAS INET",
       "icon": "open_in_new",
-      "link": "#",
+      "link": "https://inet.nist.gov/lp/adlp/rdco/midas",
       "enabled": true,
-      "order": 5
+      "order": 6
+    },
+        {
+      "key": "dataPolicy",
+      "name": "Data Directives",
+      "icon": "policy",
+      "link": "https://inet.nist.gov/lp/adlp/rdco/data-software-related-directives",
+      "enabled": true,
+      "order": 7
     },
     {
       "key": "publicData",
@@ -116,55 +88,23 @@
       "icon": "public",
       "link": "https://data.nist.gov",
       "enabled": true,
-      "order": 6
-    },
-    {
-      "key": "userSupport",
-      "name": "User Support",
-      "icon": "support_agent",
-      "link": "https://inet.nist.gov/mr/library/publishing-support-nist-publications",
-      "enabled": true,
-      "order": 7
-    },
-    {
-      "key": "dataPolicy",
-      "name": "Data Policy",
-      "icon": "policy",
-      "link": "https://inet.nist.gov/mr/library/midas-user-guides",
-      "enabled": true,
       "order": 8
     },
     {
-      "key": "devTools",
-      "name": "Developer Tools",
-      "icon": "build",
-      "link": "https://inet.nist.gov/mr/library/midas-user-guides",
+      "key": "userSupport",
+      "name": "Help",
+      "icon": "support_agent",
+      "link": "https://inet.nist.gov/mr/library/publishing-support-nist-publications",
       "enabled": true,
       "order": 9
     },
     {
-      "key": "chipsMetrology",
-      "name": "CHIPS Metrology",
-      "icon": "memory",
-      "link": "#",
+      "key": "reportProb",
+      "name": "Report a Problem",
+      "icon": "support_agent",
+      "link": "https://gitlab.nist.gov/gitlab/oar/user-testing/-/wikis/MIDAS-4.0-Early-Access-Period:-User-Feedback",
       "enabled": true,
-      "order": 10,
-      "subItems": [
-        {
-          "key": "chipsGuidance",
-          "name": "Guidance",
-          "icon": "",
-          "link": "https://inet.nist.gov/mr/library/midas-user-guides",
-          "enabled": true
-        },
-        {
-          "key": "metisPublic",
-          "name": "METIS Public",
-          "icon": "",
-          "link": "#",
-          "enabled": true
-        }
-      ]
+      "order": 10
     }
   ],
   "version": "1.0",
