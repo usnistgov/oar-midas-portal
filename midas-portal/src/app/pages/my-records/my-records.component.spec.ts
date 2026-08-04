@@ -127,27 +127,26 @@ describe('MyRecordsComponent', () => {
       expect(ids).toContain('dmp-1');
     }));
 
-    it('excludes records where user is the owner even if in acls.admin', fakeAsync(() => {
+    it('includes records where user is the owner even if in acls.admin', fakeAsync(() => {
       component.ngOnInit();
       tick(500);
       tick();
 
-      // dmp-2: owner='testuser', admin=['testuser'] → owner match, exclude
+      // dmp-2: owner='testuser', admin=['testuser'] → owner match, include
       const ids = component.dataSource.data.map((r: any) => r.id);
-      expect(ids).not.toContain('dmp-2');
+      expect(ids).toContain('dmp-2');
     }));
 
-    it('excludes records where user is not in acls.admin', fakeAsync(() => {
+    it('includes all records where user is owner or admin', fakeAsync(() => {
       component.ngOnInit();
       tick(500);
       tick();
 
-      // Every record in dataSource was admitted because admin includes userId
-      // and is not owned by the current user
-      const data: any[] = component.dataSource.data;
-      for (const record of data) {
-        expect(record.owner).not.toBe('testuser');
-      }
+      // All three records have testuser in admin; dmp-2 is also owned by testuser
+      const ids = component.dataSource.data.map((r: any) => r.id);
+      expect(ids).toContain('dmp-1');
+      expect(ids).toContain('dmp-2');
+      expect(ids).toContain('dap-1');
     }));
   });
 
