@@ -1,0 +1,383 @@
+<mat-drawer-container class="mr-drawer-container" autosize>
+
+  <mat-drawer-content>
+    <div class="search-container">
+      <h1 class="visually-hidden">Share My Records</h1>
+
+      <div class="search-panel" [class.loading]="isLoading">
+        <div class="loading-overlay" *ngIf="isLoading"
+             role="status" aria-live="polite" aria-label="Loading records">
+          <mat-progress-spinner mode="indeterminate" diameter="50" color="primary"></mat-progress-spinner>
+        </div>
+
+        <div class="search-content">
+
+          <!-- Search bar + action button -->
+          <div class="search-bar">
+            <div class="search-controls">
+              <mat-form-field appearance="outline" class="search-field small large">
+                <mat-icon matPrefix>search</mat-icon>
+                <input matInput placeholder="Filter my records…"
+                       [(ngModel)]="searchTerm"
+                       (ngModelChange)="applyFilters()" />
+              </mat-form-field>
+            </div>
+
+            <div class="export-button">
+              <button mat-stroked-button
+                      (click)="openGroupsManagement()"
+                      aria-label="Manage my groups">
+                My Groups
+                <mat-icon iconPositionEnd aria-hidden="true">group</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Always-visible compact filter bar -->
+          <div class="filter-bar">
+
+            <!-- Org Unit -->
+            <mat-form-field appearance="outline" class="filter-field small">
+              <mat-label>Org Unit</mat-label>
+              <input matInput [formControl]="orgUnitControl"
+                     [matAutocomplete]="orgAuto"
+                     placeholder="Filter by Org Unit" />
+              <mat-autocomplete #orgAuto="matAutocomplete">
+                <mat-option *ngFor="let unit of orgSuggestions" [value]="unit">{{ unit }}</mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <!-- Resource Type chips -->
+            <div class="filter-chip-group">
+              <span class="filter-chip-label">Type</span>
+              <mat-chip-listbox multiple [formControl]="resourceTypeControl"
+                                aria-label="Filter by resource type">
+                <mat-chip-option *ngFor="let rt of resourceTypes" [value]="rt.toLowerCase()">
+                  {{ rt }}
+                </mat-chip-option>
+              </mat-chip-listbox>
+            </div>
+
+            <!-- Status chips -->
+            <div class="filter-chip-group">
+              <span class="filter-chip-label">Status</span>
+              <mat-chip-listbox multiple [formControl]="statusControl"
+                                aria-label="Filter by status">
+                <mat-chip-option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</mat-chip-option>
+              </mat-chip-listbox>
+            </div>
+
+            <!-- Date type + picker(s) -->
+            <mat-form-field appearance="outline" class="filter-field filter-field--date-mode small">
+              <mat-label>Date filter</mat-label>
+              <mat-select [(ngModel)]="dateFilterType" (selectionChange)="onDateFilterChange()">
+                <mat-option value="exact">Exact</mat-option>
+                <mat-option value="before">Before</mat-option>
+                <mat-option value="after">After</mat-option>
+                <mat-option value="between">Range</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="dateFilterType === 'exact'" appearance="outline"
+                            class="filter-field filter-field--date small">
+              <mat-label>Date</mat-label>
+              <input matInput [matDatepicker]="pickerExact"
+                     [(ngModel)]="exactDate" (ngModelChange)="applyFilters()" />
+              <mat-datepicker-toggle matSuffix [for]="pickerExact"></mat-datepicker-toggle>
+              <mat-datepicker #pickerExact></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="dateFilterType === 'before'" appearance="outline"
+                            class="filter-field filter-field--date small">
+              <mat-label>Before</mat-label>
+              <input matInput [matDatepicker]="pickerBefore"
+                     [(ngModel)]="beforeDate" (ngModelChange)="applyFilters()" />
+              <mat-datepicker-toggle matSuffix [for]="pickerBefore"></mat-datepicker-toggle>
+              <mat-datepicker #pickerBefore></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="dateFilterType === 'after'" appearance="outline"
+                            class="filter-field filter-field--date small">
+              <mat-label>After</mat-label>
+              <input matInput [matDatepicker]="pickerAfter"
+                     [(ngModel)]="afterDate" (ngModelChange)="applyFilters()" />
+              <mat-datepicker-toggle matSuffix [for]="pickerAfter"></mat-datepicker-toggle>
+              <mat-datepicker #pickerAfter></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="dateFilterType === 'between'" appearance="outline"
+                            class="filter-field filter-field--daterange small">
+              <mat-label>Date range</mat-label>
+              <mat-date-range-input [rangePicker]="pickerRange">
+                <input matStartDate placeholder="Start"
+                       [(ngModel)]="dateRange.start" (ngModelChange)="applyFilters()" />
+                <input matEndDate placeholder="End"
+                       [(ngModel)]="dateRange.end" (ngModelChange)="applyFilters()" />
+              </mat-date-range-input>
+              <mat-datepicker-toggle matSuffix [for]="pickerRange"></mat-datepicker-toggle>
+              <mat-date-range-picker #pickerRange></mat-date-range-picker>
+            </mat-form-field>
+
+            <!-- Keywords -->
+            <mat-form-field appearance="outline" class="filter-field filter-field--keywords small">
+              <mat-label>Keywords</mat-label>
+              <mat-chip-grid #chipGrid aria-label="Keyword filters">
+                <mat-chip-row *ngFor="let kw of pendingKeywords" (removed)="removeKeyword(kw)">
+                  {{ kw }}
+                  <button matChipRemove [attr.aria-label]="'Remove keyword ' + kw">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip-row>
+              </mat-chip-grid>
+              <input placeholder="Add…"
+                     [matChipInputFor]="chipGrid"
+                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                     [matChipInputAddOnBlur]="addOnBlur"
+                     (matChipInputTokenEnd)="addKeyword($event)" />
+            </mat-form-field>
+
+            <!-- Has Publication -->
+            <div class="filter-checkbox-group">
+              <mat-checkbox color="primary"
+                            [(ngModel)]="hasPaperPublication"
+                            (ngModelChange)="applyFilters()"
+                            aria-label="Has associated paper publication">
+                Has publication
+              </mat-checkbox>
+            </div>
+
+            <!-- Clear -->
+            <button mat-stroked-button color="primary"
+                    class="filter-clear-btn"
+                    [disabled]="!hasFilters"
+                    (click)="clearFilters()">
+              <mat-icon aria-hidden="true">cancel</mat-icon>
+              Clear
+            </button>
+
+          </div><!-- /filter-bar -->
+
+          <!-- Active filter pills -->
+          <div class="filter-status" *ngIf="hasFilters">
+            <div class="filter-header">
+              <mat-icon class="filter-icon" aria-hidden="true">filter_list</mat-icon>
+              <span class="filter-count">
+                {{ filterPills.length }} filter{{ filterPills.length === 1 ? '' : 's' }} active:
+              </span>
+            </div>
+            <div class="filter-chips">
+              <span class="filter-chip" *ngFor="let part of filterPills">{{ part }}</span>
+            </div>
+            <button mat-raised-button color="warn" class="pill-button" (click)="clearFilters()">
+              <mat-icon aria-hidden="true">delete</mat-icon>
+              Clear Filters
+            </button>
+          </div>
+
+          <!-- Table -->
+          <div class="table-wrapper mat-elevation-z3">
+            <div class="table-controls">
+              <div class="column-toggles"></div>
+              <div class="table-buttons">
+                <div class="results-summary">
+                  <span class="results-count">
+                    {{ dataSource.filteredData.length }} of {{ totalCount }} records
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <table mat-table [dataSource]="dataSource" matSort
+                   class="advanced-search-table"
+                   aria-label="My records table">
+
+              <!-- Checkbox -->
+              <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                  <mat-checkbox (change)="toggleAllRows()"
+                    [checked]="isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                    aria-label="Select all records">
+                  </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="selection.toggle(row)"
+                    [checked]="selection.isSelected(row)"
+                    [attr.aria-label]="'Select ' + (row.name || row.id)">
+                  </mat-checkbox>
+                </td>
+              </ng-container>
+
+              <!-- ID -->
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+                <td mat-cell *matCellDef="let d">
+                  <a [href]="linkto(d.id, d.type?.toLowerCase())" target="_blank">{{ d.id }}</a>
+                </td>
+              </ng-container>
+
+              <!-- Name -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  <div class="header-cell-content">
+                    <mat-icon class="drag-icon" aria-hidden="true">drag_indicator</mat-icon>
+                    <span>Name</span>
+                  </div>
+                </th>
+                <td mat-cell *matCellDef="let d">{{ d.name }}</td>
+              </ng-container>
+
+              <!-- Type -->
+              <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  <div class="header-cell-content">
+                    <mat-icon class="drag-icon" aria-hidden="true">drag_indicator</mat-icon>
+                    <span>Type</span>
+                  </div>
+                </th>
+                <td mat-cell *matCellDef="let d">{{ d.type || '—' }}</td>
+              </ng-container>
+
+              <!-- Status -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  <div class="header-cell-content">
+                    <mat-icon class="drag-icon" aria-hidden="true">drag_indicator</mat-icon>
+                    <span>Status</span>
+                  </div>
+                </th>
+                <td mat-cell *matCellDef="let d">
+                  <span class="status-chip" [ngClass]="getStatusClass(d.status)">
+                    {{ d.status?.toUpperCase() || '—' }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <!-- Modified Date -->
+              <ng-container matColumnDef="modifiedDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  <div class="header-cell-content">
+                    <mat-icon class="drag-icon" aria-hidden="true">drag_indicator</mat-icon>
+                    <span>Last Modified</span>
+                  </div>
+                </th>
+                <td mat-cell *matCellDef="let d">{{ d.modifiedDate | date:'MM/dd/yyyy' }}</td>
+              </ng-container>
+
+              <!-- View -->
+              <ng-container matColumnDef="permView">
+                <th mat-header-cell *matHeaderCellDef class="perm-th">View</th>
+                <td mat-cell *matCellDef="let d" class="perm-td">
+                  @if (isPermLoading(d.id)) {
+                    <mat-progress-spinner diameter="12" mode="indeterminate"
+                      [attr.aria-label]="'Loading permissions for ' + d.id">
+                    </mat-progress-spinner>
+                  } @else if (getSubjectsForLevel(d.id, 'view').length) {
+                    <span class="perm-names perm-names--view">{{ getSubjectsForLevel(d.id, 'view').join(', ') }}</span>
+                  } @else {
+                    <span class="perm-empty" aria-hidden="true">—</span>
+                  }
+                </td>
+              </ng-container>
+
+              <!-- Update -->
+              <ng-container matColumnDef="permUpdate">
+                <th mat-header-cell *matHeaderCellDef class="perm-th">Update</th>
+                <td mat-cell *matCellDef="let d" class="perm-td">
+                  @if (isPermLoading(d.id)) {
+                    <mat-progress-spinner diameter="12" mode="indeterminate"
+                      [attr.aria-label]="'Loading permissions for ' + d.id">
+                    </mat-progress-spinner>
+                  } @else if (getSubjectsForLevel(d.id, 'update').length) {
+                    <span class="perm-names perm-names--update">{{ getSubjectsForLevel(d.id, 'update').join(', ') }}</span>
+                  } @else {
+                    <span class="perm-empty" aria-hidden="true">—</span>
+                  }
+                </td>
+              </ng-container>
+
+              <!-- Admin -->
+              <ng-container matColumnDef="permAdmin">
+                <th mat-header-cell *matHeaderCellDef class="perm-th">Admin</th>
+                <td mat-cell *matCellDef="let d" class="perm-td">
+                  @if (isPermLoading(d.id)) {
+                    <mat-progress-spinner diameter="12" mode="indeterminate"
+                      [attr.aria-label]="'Loading permissions for ' + d.id">
+                    </mat-progress-spinner>
+                  } @else if (getSubjectsForLevel(d.id, 'admin').length) {
+                    <span class="perm-names perm-names--admin">{{ getSubjectsForLevel(d.id, 'admin').join(', ') }}</span>
+                  } @else {
+                    <span class="perm-empty" aria-hidden="true">—</span>
+                  }
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                  [class.selected-row]="selection.isSelected(row)"
+                  (click)="onRowClick(row)"
+                  (keydown.enter)="onRowClick(row)"
+                  (keydown.space)="$event.preventDefault(); onRowClick(row)"
+                  tabindex="0"
+                  role="row"
+                  style="cursor: pointer"
+                  [attr.aria-selected]="selection.isSelected(row)">
+              </tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+                  No records found.
+                </td>
+              </tr>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons
+                           aria-label="Select page of records">
+            </mat-paginator>
+          </div>
+
+        </div><!-- /search-content -->
+      </div><!-- /search-panel -->
+    </div><!-- /search-container -->
+  </mat-drawer-content>
+
+  <!-- Permission Manager drawer (panel layout) -->
+  <mat-drawer #permDrawer position="end" class="perm-drawer" mode="side"
+              aria-label="Record management panel">
+    <div class="perm-drawer-header">
+      <button mat-icon-button (click)="closePermissions()" aria-label="Close panel">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    @if (selectedRecords().length > 0) {
+      <div class="perm-selection-chips">
+        <mat-chip-set aria-label="Selected records">
+          @for (rec of selectedRecords(); track rec.id) {
+            <mat-chip (removed)="deselectRecord(rec.id)"
+                      [attr.aria-label]="'Deselect record ' + rec.id">
+              {{ rec.id }}
+              <button matChipRemove aria-label="Deselect this record">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+          }
+        </mat-chip-set>
+      </div>
+    }
+    <mat-tab-group [selectedIndex]="activeDrawerTab()"
+                   (selectedTabChange)="activeDrawerTab.set($event.index)"
+                   class="perm-tabs">
+      <mat-tab label="Manage Permissions"></mat-tab>
+      <mat-tab label="My Groups"></mat-tab>
+    </mat-tab-group>
+    <oarng-permission-manager
+      [records]="selectedRecords()"
+      [userOu]="userOu()"
+      [section]="drawerSection()"
+      layout="panel"
+      (permissionsChanged)="onPermissionsChanged()">
+    </oarng-permission-manager>
+  </mat-drawer>
+
+</mat-drawer-container>
