@@ -371,7 +371,8 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   };
 
   private resolveSubjectLabels(subjects: string[]): void {
-    const orgBaseUrl = ((this.configSvc.getConfig<any>()['orgURL'] ?? '') as string).replace(/\/index$/, '');
+    const nsdBase = ((this.configSvc.getConfig<any>()?.staffdir?.serviceEndpoint ?? '') as string).replace(/\/?$/, '/');
+    const orgBaseUrl = nsdBase ? `${nsdBase}orgs` : '';
 
     subjects.forEach(subject => {
       if (this.resolvedSubjects.has(subject)) return;
