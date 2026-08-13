@@ -26,7 +26,7 @@ import { CredentialsService } from '../../services/credentials.service';
 import { PeopleService } from '../../services/people.service';
 import { SearchFilterService, FilterCriteria } from '../../services/search-filter.service';
 import { Dmp, Dap } from '../../models/dashboard';
-import { RecordRef, PermissionsService, GroupsService, Acls, ConfigurationService } from 'oarng';
+import { RecordRef, PermissionsService, GroupsService, Acls, ConfigurationService, NsdService } from 'oarng';
 import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
 
 type OwnedRecord = (Dmp | Dap) & { type: string };
@@ -40,6 +40,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private dataService = inject(DataService);
   private credsSvc = inject(CredentialsService);
   private peopleService = inject(PeopleService);
+  private nsd = inject(NsdService);
   private filterService = inject(SearchFilterService);
   private permsSvc = inject(PermissionsService);
   private groupsSvc = inject(GroupsService);
@@ -458,9 +459,15 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      // Search the people API with the EID as query; look for an exact key match in the response
-      this.peopleService.resolveEidLabel(subject).subscribe(name => {
-        this.subjectLabels.update(m => ({ ...m, [subject]: name ?? subject }));
+      this.nsd.searchPeople(subject).pipe(catchError(() => of({}))).subscribe((raw: any) => {
+        if (!raw || typeof raw !== 'object') return;
+        for (const key of Object.keys(raw)) {
+          const group = raw[key];
+          if (group && typeof group === 'object' && Object.prototype.hasOwnProperty.call(group, subject)) {
+            this.subjectLabels.update(m => ({ ...m, [subject]: group[subject] }));
+            return;
+          }
+        }
       });
     });
   }
