@@ -459,15 +459,13 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      this.nsd.searchPeople(subject).pipe(catchError(() => of({}))).subscribe((raw: any) => {
-        if (!raw || typeof raw !== 'object') return;
-        for (const key of Object.keys(raw)) {
-          const group = raw[key];
-          if (group && typeof group === 'object' && Object.prototype.hasOwnProperty.call(group, subject)) {
-            this.subjectLabels.update(m => ({ ...m, [subject]: group[subject] }));
-            return;
-          }
-        }
+      // EID: query by nistUsername and keep only the exact match
+      this.nsd.getPeopleByUsername(subject).pipe(catchError(() => of([]))).subscribe((people: any[]) => {
+        if (!Array.isArray(people)) return;
+        const person = people.find(p => p?.nistUsername?.toLowerCase() === subject.toLowerCase());
+        if (!person?.lastName) return;
+        const name = person.firstName ? `${person.lastName}, ${person.firstName}` : person.lastName;
+        this.subjectLabels.update(m => ({ ...m, [subject]: name }));
       });
     });
   }
