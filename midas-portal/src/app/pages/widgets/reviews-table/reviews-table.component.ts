@@ -31,9 +31,6 @@ export class ReviewsTableComponent implements AfterViewInit {
   pageSize = 10;
   pageSizeOptions = [5, 10, 20, 50];
 
-  /** Loading state for overlay */
-  isLoading = signal(false);
-
   // master list of columns
   allColumns = [
     { key: 'title',             label: 'Title' },

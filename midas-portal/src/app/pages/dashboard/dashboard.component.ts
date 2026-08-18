@@ -63,12 +63,13 @@ export class DashboardComponent {
   endDate?: Date;
   readonly contentHeight = computed(() => {
   const widgets = this.dashboardService.addedWidgets();
-  const colCount = this.getGridColumnCount();
-  
+  const colCount = this.gridColCount();
+
   if (widgets.length === 0) return 'auto';
-  
-  // Calculate grid rows needed
-  const totalCells = widgets.reduce((sum, w) => sum + (w.columns ?? 1) * (w.rows ?? 1), 0);
+
+  // Calculate grid rows needed from the spans actually rendered (clamped)
+  const totalCells = widgets.reduce(
+    (sum, w) => sum + Math.min(w.columns ?? 1, colCount) * (w.rows ?? 1), 0);
   const rowsNeeded = Math.ceil(totalCells / colCount);
   
   // Calculate total height (rows * height + gaps + padding)
@@ -96,7 +97,7 @@ export class DashboardComponent {
   const waitForToken = () => {
     const token = this.dataService['credsService'].token();
     if (token) {
-      this.dataService.loadReviews()
+      this.dataService.loadReviews().subscribe();
       this.dataService.loadAll().subscribe({
         next: () => {
           this.isLoading.set(false);
