@@ -27,10 +27,10 @@ describe('DashboardComponent Methods', () => {
     expect(component.isSidebarVisible()).toBe(true);
   });
 
-  it('should clear filters', () => {
+  it('should clear filters without faking a loading state', () => {
     component.selectedName = 'test';
     component.clearFilters();
     expect(component.selectedName).toBeUndefined();
-    expect(component.isLoading()).toBe(true);
+    expect(component.isLoading()).toBe(false);
   });
 });

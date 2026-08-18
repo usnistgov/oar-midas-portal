@@ -127,27 +127,45 @@ describe('MyRecordsComponent', () => {
       expect(ids).toContain('dmp-1');
     }));
 
-    it('excludes records where user is the owner even if in acls.admin', fakeAsync(() => {
+    it('includes records where user is the owner', fakeAsync(() => {
       component.ngOnInit();
       tick(500);
       tick();
 
-      // dmp-2: owner='testuser', admin=['testuser'] → owner match, exclude
+      // dmp-2: owner='testuser' → include regardless of admin ACL
       const ids = component.dataSource.data.map((r: any) => r.id);
-      expect(ids).not.toContain('dmp-2');
+      expect(ids).toContain('dmp-2');
     }));
 
-    it('excludes records where user is not in acls.admin', fakeAsync(() => {
-      component.ngOnInit();
+    it('excludes records where user is neither owner nor in acls.admin', fakeAsync(() => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        declarations: [MyRecordsComponent],
+        imports: [
+          HttpClientTestingModule,
+          RouterTestingModule,
+          NoopAnimationsModule,
+          FormsModule,
+          ReactiveFormsModule,
+          MatAutocompleteModule
+        ],
+        providers: makeProviders({
+          'dmp-1': { read: [], write: [], admin: ['testuser'], delete: [] },
+          'dmp-2': { read: [], write: [], admin: [], delete: [] },
+          'dap-1': { read: [], write: [], admin: ['someone-else'], delete: [] }
+        }),
+        schemas: [NO_ERRORS_SCHEMA]
+      });
+      const f = TestBed.createComponent(MyRecordsComponent);
+      const c = f.componentInstance;
+      c.ngOnInit();
       tick(500);
       tick();
 
-      // Every record in dataSource was admitted because admin includes userId
-      // and is not owned by the current user
-      const data: any[] = component.dataSource.data;
-      for (const record of data) {
-        expect(record.owner).not.toBe('testuser');
-      }
+      const ids = c.dataSource.data.map((r: any) => r.id);
+      expect(ids).toContain('dmp-1');      // admin
+      expect(ids).toContain('dmp-2');      // owner
+      expect(ids).not.toContain('dap-1');  // neither
     }));
   });
 

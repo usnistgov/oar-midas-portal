@@ -125,7 +125,7 @@ export class ExpandedTableDialogComponent implements AfterViewInit {
     }
     if (this.kind === 'reviews') {
       const userId = this.credsService.userId() ?? '';
-      return this.dataService.resolveApiUrl('NPSAPI') + userId + 'Dataset/DataSetDetails?id=' + id;
+      return this.dataService.resolveApiUrl('NPSAPI') + userId + '/Dataset/DataSetDetails?id=' + id;
     }
     return this.dataService.resolveApiUrl('dapEDIT') + id + '?editEnabled=true';
   }

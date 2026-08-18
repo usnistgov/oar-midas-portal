@@ -559,10 +559,8 @@ describe('DataService', () => {
 
       // getDmps() → dmpAPI
       authHttpMock.expectOne(r => r.url === 'https://localhost/midas/dmp/mdm1').flush([rawDmp('dmp-full')]);
-      // getDaps() and getFiles() both use dapAPI — match both with .match()
-      const dapBaseReqs = authHttpMock.match(r => r.url === 'https://localhost/midas/dap/mds3');
-      dapBaseReqs[0].flush([rawDap('dap-full')]);
-      dapBaseReqs[1].flush([]);
+      // daps and files are derived from a single dapAPI download
+      authHttpMock.expectOne(r => r.url === 'https://localhost/midas/dap/mds3').flush([rawDap('dap-full')]);
       // getMyDmps() → two calls
       authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?perm=write')).flush([rawDmp('dmp-mine')]);
       authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?owner=')).flush([]);
@@ -578,9 +576,8 @@ describe('DataService', () => {
       });
 
       authHttpMock.expectOne(r => r.url === 'https://localhost/midas/dmp/mdm1').flush([rawDmp('1')]);
-      const dapBaseReqs = authHttpMock.match(r => r.url === 'https://localhost/midas/dap/mds3');
-      dapBaseReqs[0].flush([rawDap('1')]);
-      dapBaseReqs[1].flush([]);
+      // a single dapAPI request feeds both daps() and files()
+      authHttpMock.expectOne(r => r.url === 'https://localhost/midas/dap/mds3').flush([rawDap('1')]);
       authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?perm=write')).flush([]);
       authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?owner=')).flush([]);
       authHttpMock.expectOne(r => r.url.includes('dap') && r.url.includes('?perm=write')).flush([]);
