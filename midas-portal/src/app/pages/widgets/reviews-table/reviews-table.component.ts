@@ -10,8 +10,6 @@ import {
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { catchError, finalize, tap } from 'rxjs/operators';
-import { of, delay } from 'rxjs';
 import { CredentialsService } from '../../../services/credentials.service';
 import { DataService } from '../../../services/data.service';
 import { Review } from '../../../models/dashboard';
@@ -25,10 +23,10 @@ import { input } from '@angular/core';
   styleUrls: ['./reviews-table.component.scss'],
 })
 export class ReviewsTableComponent implements AfterViewInit {
-  /** Reactive table state */
-  private _reviewList = signal<Review[]>([]);
+  /** Reactive table state — rendered from the shared DataService signal,
+   *  which the dashboard populates once the auth token is available. */
   public dataSource = new MatTableDataSource<Review>([]);
-  public length = computed(() => this._reviewList().length);
+  public length = computed(() => this.dataService.reviews().length);
   widget = input.required<Widget>();
   pageSize = 10;
   pageSizeOptions = [5, 10, 20, 50];
@@ -63,7 +61,7 @@ export class ReviewsTableComponent implements AfterViewInit {
 
   constructor(private dataService: DataService) {
     effect(() => {
-      this.dataSource.data = this._reviewList();
+      this.dataSource.data = this.dataService.reviews();
       this.dataSource._updateChangeSubscription();
     });
 
@@ -122,16 +120,6 @@ export class ReviewsTableComponent implements AfterViewInit {
     });
   }
 
-  ngOnInit() {
-    this.isLoading.set(false);
-    this.dataService.getReviews().pipe(
-      delay(300),               // ensure spinner is visible briefly
-      catchError(() => of([])), // swallow errors
-      finalize(() => this.isLoading.set(false))
-    )
-    .subscribe(list => this._reviewList.set(list));
-  }
-
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -143,8 +131,8 @@ export class ReviewsTableComponent implements AfterViewInit {
   }
 
   linkto(id: string): string {
-    const userId = this.credsService.userId?.() || this.credsService.userId; // adapt to your service
-    return this.dataService.resolveApiUrl('NPSAPI') + userId + 'Dataset/DataSetDetails?id='.concat(id);
+    const userId = this.credsService.userId() ?? '';
+    return this.dataService.resolveApiUrl('NPSAPI') + userId + '/Dataset/DataSetDetails?id=' + id;
   }
 
   clearFilter(input: HTMLInputElement) {

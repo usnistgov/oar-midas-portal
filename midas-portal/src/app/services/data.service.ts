@@ -99,16 +99,21 @@ export class DataService {
 }
 
   getDaps(): Observable<Dap[]> {
+    return this.getDapsAndFiles().pipe(map(r => r.daps));
+}
+
+  /**
+   * The Files table is derived from the DAP records' file_space summaries,
+   * so both models come from one download of the DAP collection.
+   */
+  getDapsAndFiles(): Observable<{ daps: Dap[]; files: File[] }> {
     const api = this.resolveApiUrl('dapAPI');
     const fallback = this.resolveApiUrl('dapJSON');
-    //console.log('[getDaps] ConfigService:', this.configService);
-    //console.log('[getDaps] dapAPI from config:', this.configService.getConfig()['dapAPI']);
-    //console.log('[getDaps] Calling fetchData with:', { api, fallback });
-    return this.fetchData<Dap>(api, fallback, this.mapToDap).pipe(
-      map(data => {
-        //console.log('[getDaps] fetchData returned:', data);
-        return data;
-      })
+    return this.fetchData<any>(api, fallback, (r: any) => r).pipe(
+      map(raw => ({
+        daps: raw.map((r: any) => this.mapToDap(r)),
+        files: raw.filter((r: any) => r?.file_space).map((r: any) => this.mapToFile(r)),
+      }))
     );
 }
 
@@ -232,24 +237,13 @@ export class DataService {
 
   
   getFiles(): Observable<File[]> {
-    const api = this.resolveApiUrl('dapAPI');
-    const fallback = this.resolveApiUrl('fileJSON');
-    //console.log('[getFiles] ConfigService:', this.configService);
-    //console.log('[getFiles] fileAPI from config:', this.configService.getConfig()['fileAPI']);
-    //console.log('[getFiles] Calling fetchData with:', { api, fallback });
-    return this.fetchData<File>(api, fallback, this.mapToFile).pipe(
-      map(data => {
-        //console.log('[getFiles] fetchData returned:', data);
-        return data;
-      })
-    );
-
+    return this.getDapsAndFiles().pipe(map(r => r.files));
   }
 
   getReviews(): Observable<Review[]> {
     const npsapi = this.resolveApiUrl('NPSAPI');
     const fallback = this.resolveApiUrl('reviewJSON');
-    const userId = this.credsService.userId?.() || this.credsService.userId || ''; // adapt to your service
+    const userId = this.credsService.userId() ?? '';
     const api = npsapi + userId; // Append 'reviews' to the NPSAPI URL
     //console.log('[getReviews] ConfigService:', this.configService);
     //console.log('[getReviews] NPSAPI from config:', this.configService.getConfig()['NPSAPI']);
@@ -409,13 +403,9 @@ export class DataService {
       console.error('Failed to load DMPs:', err);
       return of([]);
     })),
-    daps: this.getDaps().pipe(catchError(err => {
+    dapsAndFiles: this.getDapsAndFiles().pipe(catchError(err => {
       console.error('Failed to load DAPs:', err);
-      return of([]);
-    })),
-    files: this.getFiles().pipe(catchError(err => {
-      console.error('Failed to load Files:', err);
-      return of([]);
+      return of({ daps: [], files: [] });
     })),
     myDmps: this.getMyDmps().pipe(catchError(err => {
       console.error('Failed to load my DMPs:', err);
@@ -426,10 +416,10 @@ export class DataService {
       return of([]);
     })),
   }).pipe(
-    tap(({ dmps, daps, files, myDmps, myDaps }) => {
+    tap(({ dmps, dapsAndFiles, myDmps, myDaps }) => {
       this._dmps.set(dmps);
-      this._daps.set(daps);
-      this._files.set(files);
+      this._daps.set(dapsAndFiles.daps);
+      this._files.set(dapsAndFiles.files);
       this._myDmps.set(myDmps);
       this._myDaps.set(myDaps);
     })

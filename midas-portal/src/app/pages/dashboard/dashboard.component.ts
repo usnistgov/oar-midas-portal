@@ -213,22 +213,14 @@ private updateGridTemplate(): void {
   }
 
   /**
-   * Clears all filters and simulates loading (used by "Clear Filters" button).
-   * TODO: revisit logic here
+   * Clears all filters (used by "Clear Filters" button).
    */
   clearFilters(): void {
-    this.isLoading.set(true);
-
-    // Reset UI-bound filters
     this.selectedName = undefined;
     this.selectedOwner = undefined;
     this.selectedContact = undefined;
     this.dateFilterType = 'exact';
     this.onDateFilterChange();
-
-    // Simulated debounce/load delay
-    // TODO: clean this up
-    setTimeout(() => this.isLoading.set(false), 800);
   }
 
   /**
