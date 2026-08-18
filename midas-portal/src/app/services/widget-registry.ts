@@ -17,7 +17,7 @@ export const WIDGET_REGISTRY: Widget[] = [
     { id: 3, label: 'Reviews Stats', longLabel: 'Reviews', content: ReviewsComponent, rows: 1, columns: 1, backgroundColor: WIDGET_DEFAULT_BG_COLOR, textColor: 'whitesmoke' },
     { id: 4, label: 'Files Stats', longLabel: 'Files', content: FilesComponent, rows: 1, columns: 1, backgroundColor: WIDGET_DEFAULT_BG_COLOR, textColor: 'whitesmoke' },
     // columns: 3 → two table widgets per row (the 2x2 default) on any grid of 6+
-    // columns (~1300px viewport and up); narrower windows stack them.
+    // columns (~1376px viewport with the sidenav collapsed); narrower windows stack them.
     { id: 5, label: 'DMP Table', longLabel: 'My Data Management Plans', content: DmpTableComponent, rows: 3, columns: 3, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
     { id: 6, label: 'DAP Table', longLabel: 'My Digital Asset Publications', content: DapTableComponent, rows: 3, columns: 3, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
     { id: 7, label: 'Reviews Table', longLabel: 'Reviews', content: ReviewsTableComponent, rows: 3, columns: 3, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
