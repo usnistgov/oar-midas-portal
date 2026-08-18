@@ -1,4 +1,4 @@
-import { Component, input, signal, AfterViewInit, ElementRef, inject } from '@angular/core';
+import { Component, input, signal, computed, AfterViewInit, ElementRef, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Widget } from '../../models/dashboard';
 import { ExpandedTableDialogComponent } from '../expanded-table-dialog/expanded-table-dialog.component';
@@ -8,13 +8,20 @@ import { ExpandedTableDialogComponent } from '../expanded-table-dialog/expanded-
   templateUrl: './widget.component.html',
   styleUrl: './widget.component.scss',
   host: {
-    '[style.grid-area]' : '"span " + (data().rows ?? 1) + "/ span " + (data().columns ?? 1)'
+    '[style.grid-area]' : '"span " + (data().rows ?? 1) + "/ span " + renderColumns()'
   },
 })
 export class WidgetComponent implements AfterViewInit {
 
   data = input.required<Widget>();
+  // Grid columns currently available; the widget's preferred span is clamped
+  // at render time only, so a narrow window never rewrites the saved layout.
+  colCount = input<number>(Number.MAX_SAFE_INTEGER);
   showOptions = signal(false);
+
+  readonly renderColumns = computed(() =>
+    Math.max(1, Math.min(this.data().columns ?? 1, this.colCount()))
+  );
   
   private elementRef = inject(ElementRef);
   private dialog = inject(MatDialog);

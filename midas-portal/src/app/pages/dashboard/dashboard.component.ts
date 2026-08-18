@@ -172,41 +172,13 @@ ngOnDestroy(): void {
   return Math.max(1, columns);
 }
 
-  updateWidgetSizes(): void {
-  const container = this.dashboard().nativeElement as HTMLElement;
-  const colCount = this.getGridColumnCount();
-  
-  // Calculate optimal widget dimensions
-  const containerWidth = container.offsetWidth;
-  const gap = 16;
-  const availableWidth = containerWidth - (gap * (colCount - 1));
-  const optimalColWidth = Math.floor(availableWidth / colCount);
-  
-  const updated = this.dashboardService.addedWidgets().map(w => {
-    const cols = Math.min(w.columns ?? 1, colCount);
-    const rows = this.calculateOptimalRows(w, optimalColWidth);
-    
-    return {
-      ...w,
-      columns: cols,
-      rows: rows
-    };
-  });
-  
-  this.dashboardService.addedWidgets.set(updated);
-  
-  // Update grid template after widget update
-  this.updateGridTemplate();
-}
+  // Widgets clamp their span to this at render time; saved layouts are
+  // never rewritten from transient window sizes.
+  readonly gridColCount = signal(1);
 
-private calculateOptimalRows(widget: any, colWidth: number): number {
-  // Base row height is 120px
-  const baseRowHeight = 120;
-  const minRows = widget.rows ?? 1;
-  
-  // You can add logic here to calculate optimal height based on widget content
-  // For now, use the widget's preferred rows or minimum
-  return Math.max(minRows, 1);
+  updateWidgetSizes(): void {
+  this.gridColCount.set(this.getGridColumnCount());
+  this.updateGridTemplate();
 }
 
 private updateGridTemplate(): void {
