@@ -8,7 +8,7 @@
         arrow_range
     </span>
     <mat-button-toggle-group hideSingleSelectionIndicator [value]="data().columns ?? 1"
-        (change)="store.updateWidget(data().id, {columns: +$event.value})">
+        (change)="store.updateWidget(data().id, {columns: +$event.value, autoSpan: false})">
         @for (col of columnOptions(); track col) {
             <mat-button-toggle [value]="col">{{ col }}</mat-button-toggle>
         }

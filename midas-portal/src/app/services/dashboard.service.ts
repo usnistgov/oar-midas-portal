@@ -14,7 +14,7 @@ export interface UserDetails {
 
 // Bump this when widget registry defaults change (rows, columns, colors).
 // Forces all users to get fresh defaults, discarding stale localStorage data.
-export const DASHBOARD_SCHEMA_VERSION = 3;
+export const DASHBOARD_SCHEMA_VERSION = 4;
 
 @Injectable()
 export class DashboardService {

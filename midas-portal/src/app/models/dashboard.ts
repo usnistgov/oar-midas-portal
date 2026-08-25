@@ -10,6 +10,9 @@ export interface Widget {
     backgroundColor?: string;
     textColor?: string;
     isTable?: boolean;
+    /** Span half the grid so two widgets sit per row at any width. Cleared
+     *  once the user picks a column count themselves. */
+    autoSpan?: boolean;
 }
 
 export interface Dap {

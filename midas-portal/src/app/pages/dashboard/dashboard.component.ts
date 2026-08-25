@@ -3,6 +3,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { wrapGrid } from 'animate-css-grid';
 import { finalize } from 'rxjs';
 import { DashboardService } from '../../services/dashboard.service';
+import { renderSpan } from '../../services/widget-registry';
 import { Dmp } from '../search/search.component';
 import { DataService } from '../../services/data.service';
 import { CredentialsService } from '../../services/credentials.service';
@@ -67,9 +68,9 @@ export class DashboardComponent {
 
   if (widgets.length === 0) return 'auto';
 
-  // Calculate grid rows needed from the spans actually rendered (clamped)
+  // Calculate grid rows needed from the spans actually rendered
   const totalCells = widgets.reduce(
-    (sum, w) => sum + Math.min(w.columns ?? 1, colCount) * (w.rows ?? 1), 0);
+    (sum, w) => sum + renderSpan(w, colCount) * (w.rows ?? 1), 0);
   const rowsNeeded = Math.ceil(totalCells / colCount);
   
   // Calculate total height (rows * height + gaps + padding)

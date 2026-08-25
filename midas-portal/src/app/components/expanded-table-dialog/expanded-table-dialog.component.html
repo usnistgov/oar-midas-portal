@@ -93,7 +93,7 @@
             </ng-container>
 
             <ng-container *ngSwitchDefault>
-              {{ row[col.key] || '-' }}
+              {{ row[col.key] ?? '-' }}
             </ng-container>
 
           </ng-container>

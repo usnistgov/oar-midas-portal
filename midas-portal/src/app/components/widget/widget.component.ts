@@ -1,6 +1,7 @@
 import { Component, input, signal, computed, AfterViewInit, ElementRef, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Widget } from '../../models/dashboard';
+import { renderSpan } from '../../services/widget-registry';
 import { ExpandedTableDialogComponent } from '../expanded-table-dialog/expanded-table-dialog.component';
 
 @Component({
@@ -19,9 +20,7 @@ export class WidgetComponent implements AfterViewInit {
   colCount = input<number>(Number.MAX_SAFE_INTEGER);
   showOptions = signal(false);
 
-  readonly renderColumns = computed(() =>
-    Math.max(1, Math.min(this.data().columns ?? 1, this.colCount()))
-  );
+  readonly renderColumns = computed(() => renderSpan(this.data(), this.colCount()));
   
   private elementRef = inject(ElementRef);
   private dialog = inject(MatDialog);

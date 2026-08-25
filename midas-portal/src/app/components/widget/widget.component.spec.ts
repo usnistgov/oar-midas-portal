@@ -97,6 +97,27 @@ describe('WidgetComponent', () => {
   });
 
   describe('renderColumns', () => {
+    // autoSpan widgets take half the grid so two always sit per row.
+    it.each([
+      [3, 2],
+      [4, 2],
+      [5, 2],
+      [6, 3],
+      [11, 5],
+    ])('spans half of a %i-column grid when autoSpan is set', (colCount, expected) => {
+      fixture.componentRef.setInput('data', { id: 5, label: 'T', content: MockContentComponent, rows: 3, columns: 3, autoSpan: true } as Widget);
+      fixture.componentRef.setInput('colCount', colCount);
+      fixture.detectChanges();
+      expect(component.renderColumns()).toBe(expected);
+    });
+
+    it('still renders one per row when the grid is too narrow to split', () => {
+      fixture.componentRef.setInput('data', { id: 5, label: 'T', content: MockContentComponent, rows: 3, columns: 3, autoSpan: true } as Widget);
+      fixture.componentRef.setInput('colCount', 1);
+      fixture.detectChanges();
+      expect(component.renderColumns()).toBe(1);
+    });
+
     // Spans clamp at render time only — the saved layout keeps the
     // user's preferred columns even when the window is transiently narrow.
     it('renders the preferred span when the grid has room', () => {

@@ -16,10 +16,20 @@ export const WIDGET_REGISTRY: Widget[] = [
     { id: 2, label: 'DAP Stats', longLabel: 'DAPs', content: DapComponent, rows: 1, columns: 1, backgroundColor: WIDGET_DEFAULT_BG_COLOR, textColor: 'whitesmoke' },
     { id: 3, label: 'Reviews Stats', longLabel: 'Reviews', content: ReviewsComponent, rows: 1, columns: 1, backgroundColor: WIDGET_DEFAULT_BG_COLOR, textColor: 'whitesmoke' },
     { id: 4, label: 'Files Stats', longLabel: 'Files', content: FilesComponent, rows: 1, columns: 1, backgroundColor: WIDGET_DEFAULT_BG_COLOR, textColor: 'whitesmoke' },
-    // columns: 3 → two table widgets per row (the 2x2 default) on any grid of 6+
-    // columns (~1376px viewport with the sidenav collapsed); narrower windows stack them.
-    { id: 5, label: 'DMP Table', longLabel: 'My Data Management Plans', content: DmpTableComponent, rows: 3, columns: 3, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
-    { id: 6, label: 'DAP Table', longLabel: 'My Digital Asset Publications', content: DapTableComponent, rows: 3, columns: 3, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
-    { id: 7, label: 'Reviews Table', longLabel: 'Reviews', content: ReviewsTableComponent, rows: 3, columns: 3, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
-    { id: 8, label: 'Files Table', longLabel: 'Files', content: FilesTableComponent, rows: 3, columns: 3, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
+    // autoSpan keeps the four tables two-per-row at any window width; a fixed
+    // span only produces 2x2 inside one narrow band of viewport sizes.
+    { id: 5, label: 'DMP Table', longLabel: 'My Data Management Plans', content: DmpTableComponent, rows: 3, columns: 3, autoSpan: true, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
+    { id: 6, label: 'DAP Table', longLabel: 'My Digital Asset Publications', content: DapTableComponent, rows: 3, columns: 3, autoSpan: true, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
+    { id: 7, label: 'Reviews Table', longLabel: 'Reviews', content: ReviewsTableComponent, rows: 3, columns: 3, autoSpan: true, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
+    { id: 8, label: 'Files Table', longLabel: 'Files', content: FilesTableComponent, rows: 3, columns: 3, autoSpan: true, backgroundColor: 'var(--mat-table-background-color)', textColor: 'var(--mdc-theme-primary)', isTable: true },
 ]
+
+/** Columns a widget actually spans in a grid this wide. */
+export function renderSpan(widget: Widget, colCount: number): number {
+    if (!widget.autoSpan) return Math.max(1, Math.min(widget.columns ?? 1, colCount));
+
+    const half = Math.max(1, Math.floor(colCount / 2));
+    // An odd, narrow grid would fit three of these per row; widen them so a
+    // row never holds more than two.
+    return Math.floor(colCount / half) > 2 ? Math.ceil(colCount / 2) : half;
+}
