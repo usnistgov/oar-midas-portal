@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, catchError, tap, of, map } from 'rxjs';
 import { ConfigurationService } from 'oarng';
@@ -293,18 +293,35 @@ export class DownloadService {
           }
         }),
         map(response => response.body || new Blob()),
-        catchError(() => {
-          this.snackBar.open(`${recordType} ${format.toUpperCase()} download failed`, 'Dismiss', { duration: 3000 });
+        catchError((err: HttpErrorResponse) => {
+          this.reportExportFailure(`${recordType} ${format.toUpperCase()}`, err);
           return of(new Blob());
         })
       );
     }
 
     return this.http.post<any[]>(url, body, { headers }).pipe(
-      catchError(() => {
-        this.snackBar.open(`${recordType} download failed`, 'Dismiss', { duration: 3000 });
+      catchError((err: HttpErrorResponse) => {
+        this.reportExportFailure(recordType, err);
         return of([]);
       })
+    );
+  }
+
+  /**
+   * Export errors used to surface as a bare "download failed". Show why, so
+   * the incomplete-record case is distinguishable from a service outage.
+   */
+  private reportExportFailure(label: string, err: HttpErrorResponse): void {
+    const reason = err.status === 0
+      ? 'the service could not be reached'
+      : err.status === 422 || err.status === 400
+        ? 'some records are missing required fields'
+        : `the server returned ${err.status}`;
+    this.snackBar.open(
+      `${label} export failed — ${reason}. Records already downloaded are unaffected.`,
+      'Dismiss',
+      { duration: 6000 }
     );
   }
 

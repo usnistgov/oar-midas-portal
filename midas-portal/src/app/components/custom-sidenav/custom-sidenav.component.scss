@@ -76,13 +76,15 @@ mat-nav-list {
   }
 }
 
+// Sits in the sidebar's flex column rather than floating: a fixed-position
+// bar overlapped the last menu items and swallowed their clicks, and it
+// detached from the sidebar when the page scrolled.
 .sidenav-sticky-actions {
-  position: fixed;
-  bottom: 32px;
-  left: 32px;
-  z-index: 10001;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 12px;
+  padding: 12px 8px 24px;
 }
 
 .info-bubble {
