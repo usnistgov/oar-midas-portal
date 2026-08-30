@@ -5,7 +5,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { DataService } from '../../services/data.service';
 import { Widget } from '../../models/dashboard';
-import { getStatusClass } from '../../shared/table-utils';
+import { getStatusClass, recordFilterPredicate } from '../../shared/table-utils';
 import { CredentialsService } from '../../services/credentials.service';
 
 interface ColumnDef {
@@ -95,6 +95,7 @@ export class ExpandedTableDialogComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<any>([]);
 
   constructor() {
+    this.dataSource.filterPredicate = recordFilterPredicate;
     this.kind = KIND_BY_WIDGET_ID[this.widget.id] ?? null;
     this.columns = this.kind ? COLUMNS[this.kind] : [];
     this.displayedColumns = this.columns.map(c => c.key);

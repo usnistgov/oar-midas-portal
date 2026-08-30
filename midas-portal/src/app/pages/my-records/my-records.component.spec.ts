@@ -6,7 +6,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { of, delay } from 'rxjs';
+import { of, delay, throwError } from 'rxjs';
 
 import { MyRecordsComponent } from './my-records.component';
 import { DataService } from '../../services/data.service';
@@ -499,6 +499,22 @@ describe('onPermissionsChanged()', () => {
 
     expect(getAcls).toHaveBeenCalledTimes(1);
     expect(getAcls.mock.calls[0][0].id).toBe('dmp-1');
+  }));
+
+  it('warns and keeps rendering when a refetch fails', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockReturnValue(throwError(() => new Error('403')));
+    const snack = jest.spyOn((component as any).snackBar, 'open');
+    component.selectedRecords.set([{ id: 'dmp-1', apiBase: 'http://mock-api/' }]);
+
+    expect(() => { component.onPermissionsChanged(); tick(10); }).not.toThrow();
+    expect(snack).toHaveBeenCalled();
+    // the previously loaded acls are still shown
+    expect(component.aclsMap()['dmp-1']).toEqual(defaultAcls['dmp-1']);
   }));
 
   it('applies the refetched acls to the table', fakeAsync(() => {

@@ -17,6 +17,7 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { FormControl } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { take, catchError, map } from 'rxjs/operators';
 import { of, forkJoin } from 'rxjs';
@@ -47,6 +48,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
+  private snackBar = inject(MatSnackBar);
 
   isLoading = false;
 
@@ -362,17 +364,36 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   // Only the records in the drawer changed, so refresh just those rather than
   // re-reading the listings, which still hold the pre-edit acls.
   onPermissionsChanged(): void {
-    this.resolvedSubjects.clear();
-    for (const record of this.selectedRecords()) {
-      this.permsSvc.getAcls(record).subscribe(acls => {
-        this.aclsMap.update(m => ({ ...m, [record.id]: acls }));
-        this.buildAdminRecords();
-        this.resolveSubjectLabels([
-          ...(acls.read ?? []), ...(acls.write ?? []),
-          ...(acls.admin ?? []), ...(acls.delete ?? [])
-        ]);
+    const records = this.selectedRecords();
+    if (!records.length) return;
+
+    forkJoin(
+      records.map(r => this.permsSvc.getAcls(r).pipe(
+        map(acls => ({ id: r.id, acls })),
+        catchError(() => of(null))
+      ))
+    ).subscribe(results => {
+      const resolved = results.filter(Boolean) as { id: string; acls: Acls }[];
+      if (resolved.length < records.length) {
+        this.snackBar.open('Some permissions could not be refreshed.', 'Dismiss', { duration: 5000 });
+      }
+
+      const subjects = new Set<string>();
+      this.aclsMap.update(m => {
+        const next = { ...m };
+        for (const { id, acls } of resolved) {
+          next[id] = acls;
+          for (const s of [...(acls.read ?? []), ...(acls.write ?? []),
+                           ...(acls.admin ?? []), ...(acls.delete ?? [])]) {
+            subjects.add(s);
+          }
+        }
+        return next;
       });
-    }
+
+      this.buildAdminRecords();
+      this.resolveSubjectLabels([...subjects]);
+    });
   }
 
   private readonly ORG_ENDPOINT: Record<string, string> = {
