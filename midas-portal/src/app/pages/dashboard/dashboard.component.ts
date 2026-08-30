@@ -102,7 +102,6 @@ export class DashboardComponent {
       this.dataService.loadAll().subscribe({
         next: () => {
           this.isLoading.set(false);
-          wrapGrid(this.dashboard().nativeElement, { duration: 300 });
 
           // Show welcome dialog on first visit
           if (this.tourService.shouldShowWelcome()) {
@@ -123,21 +122,28 @@ export class DashboardComponent {
 }
 
 ngAfterViewInit(): void {
-    this.updateWidgetSizes();
+  this.updateWidgetSizes();
 
-  window.addEventListener('resize', () => {
-    this.updateWidgetSizes();
-  });
+  // Belongs here, not in the loadAll callback: it needs the view, and the
+  // callback can run before the view exists once the data is already loaded.
+  const unwrapGrid = wrapGrid(this.dashboard().nativeElement, { duration: 300 }).unwrapGrid;
+
+  const onResize = () => this.updateWidgetSizes();
+  window.addEventListener('resize', onResize);
 
   // Use ResizeObserver for better performance than window resize
   const resizeObserver = new ResizeObserver(() => {
     this.updateWidgetSizes();
   });
-  
+
   resizeObserver.observe(this.dashboard().nativeElement);
-  
+
   // Cleanup on destroy
-  this.onDestroy = () => resizeObserver.disconnect();
+  this.onDestroy = () => {
+    resizeObserver.disconnect();
+    window.removeEventListener('resize', onResize);
+    unwrapGrid();
+  };
 }
 
 private onDestroy?: () => void;
