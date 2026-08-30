@@ -139,6 +139,21 @@ describe('DataService', () => {
       req.flush([mockDmpRaw]);
     });
 
+    // Share My Records reads acls off the record instead of fetching them
+    // per record, so the mapper must not drop the field.
+    it('retains acls on mapped DMPs', () => {
+      service.getDmps().subscribe(dmps => {
+        expect(dmps[0].acls).toEqual({
+          read: ['dsn1', 'grp0:public'], write: ['dsn1'], admin: ['dsn1'], delete: ['dsn1']
+        });
+      });
+
+      httpMock.expectOne('https://localhost/midas/dmp/mdm1').flush([{
+        ...mockDmpRaw,
+        acls: { read: ['dsn1', 'grp0:public'], write: ['dsn1'], admin: ['dsn1'], delete: ['dsn1'] }
+      }]);
+    });
+
     it('should fallback to JSON when API fails', () => {
       service.getDmps().subscribe(dmps => {
         expect(dmps).toHaveLength(1);

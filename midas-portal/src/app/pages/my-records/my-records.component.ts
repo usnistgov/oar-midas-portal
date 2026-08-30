@@ -58,7 +58,6 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate', 'permView', 'permUpdate', 'permAdmin'];
 
   readonly aclsMap = signal<{ [id: string]: Acls }>({});
-  readonly aclsPendingCount = signal(0);
   readonly subjectLabels = signal<{ [subject: string]: string }>({});
 
   private groupNamesCache: { [id: string]: string } = {};
@@ -360,10 +359,20 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // Only the records in the drawer changed, so refresh just those rather than
+  // re-reading the listings, which still hold the pre-edit acls.
   onPermissionsChanged(): void {
     this.resolvedSubjects.clear();
-    this.isLoading = true;
-    this.loadAllAcls();
+    for (const record of this.selectedRecords()) {
+      this.permsSvc.getAcls(record).subscribe(acls => {
+        this.aclsMap.update(m => ({ ...m, [record.id]: acls }));
+        this.buildAdminRecords();
+        this.resolveSubjectLabels([
+          ...(acls.read ?? []), ...(acls.write ?? []),
+          ...(acls.admin ?? []), ...(acls.delete ?? [])
+        ]);
+      });
+    }
   }
 
   private readonly ORG_ENDPOINT: Record<string, string> = {
@@ -493,63 +502,31 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     return null;
   }
 
+  // The record listings already carry acls, so this needs no HTTP at all.
   private loadAllAcls(): void {
-    const allRecords = [
-      ...this.dataService.dmps().map(r => ({
-        id: r.id,
-        apiBase: this.dataService.resolveApiUrl('dmpAPI')
-      })),
-      ...this.dataService.daps().map(r => ({
-        id: r.id,
-        apiBase: this.dataService.resolveApiUrl('dapAPI')
-      }))
-    ];
+    const acls: { [id: string]: Acls } = {};
+    const subjects = new Set<string>();
+    let missing = 0;
 
-    const pending = allRecords.length;
-    if (!pending) {
-      this.buildAdminRecords();
-      this.isLoading = false;
-      return;
+    for (const r of [...this.dataService.dmps(), ...this.dataService.daps()]) {
+      if (!r.acls) { missing++; continue; }
+      acls[r.id] = r.acls;
+      for (const s of [...(r.acls.read ?? []), ...(r.acls.write ?? []),
+                       ...(r.acls.admin ?? []), ...(r.acls.delete ?? [])]) {
+        subjects.add(s);
+      }
     }
 
-    this.aclsMap.set({});
-    this.aclsPendingCount.set(pending);
+    if (missing) {
+      console.warn(`${missing} record(s) returned without acls; they cannot be shown here.`);
+    }
 
-    allRecords.forEach(record => {
-      this.permsSvc.getAcls(record).subscribe({
-        next: acls => {
-          this.aclsMap.update(m => ({ ...m, [record.id]: acls }));
-          this.aclsPendingCount.update(n => {
-            const remaining = n - 1;
-            if (remaining === 0) {
-              this.buildAdminRecords();
-              this.isLoading = false;
-            }
-            return remaining;
-          });
-          const allSubjects = [
-            ...(acls.read ?? []), ...(acls.write ?? []),
-            ...(acls.admin ?? []), ...(acls.delete ?? [])
-          ];
-          this.resolveSubjectLabels(allSubjects);
-        },
-        error: () => {
-          this.aclsPendingCount.update(n => {
-            const remaining = n - 1;
-            if (remaining === 0) {
-              this.buildAdminRecords();
-              this.isLoading = false;
-            }
-            return remaining;
-          });
-        }
-      });
-    });
+    this.aclsMap.set(acls);
+    this.buildAdminRecords();
+    this.isLoading = false;
+    this.resolveSubjectLabels([...subjects]);
   }
 
-  isPermLoading(id: string): boolean {
-    return this.aclsPendingCount() > 0 && !this.aclsMap()[id];
-  }
 
   recordSubjects(id: string): string[] {
     const acls = this.aclsMap()[id];

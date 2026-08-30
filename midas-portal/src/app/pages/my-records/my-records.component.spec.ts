@@ -15,6 +15,14 @@ import { SearchFilterService } from '../../services/search-filter.service';
 import { ConfigurationService, PermissionsService, GroupsService } from 'oarng';
 import { PeopleService } from '../../services/people.service';
 
+// All three records have testuser in admin; dmp-2 is owned by testuser.
+// ACLs now arrive on the records themselves, as they do from the API.
+const defaultAcls: Record<string, any> = {
+  'dmp-1': { read: [], write: [], admin: ['testuser'], delete: [] },
+  'dmp-2': { read: [], write: [], admin: ['testuser'], delete: [] },
+  'dap-1': { read: [], write: [], admin: ['testuser'], delete: [] }
+};
+
 const mockDmps = [
   { id: 'dmp-1', name: 'DMP One', owner: 'other-user', type: 'DMP', status: 'edit', modifiedDate: '' },
   { id: 'dmp-2', name: 'DMP Two', owner: 'testuser',   type: 'DMP', status: 'edit', modifiedDate: '' }
@@ -24,12 +32,9 @@ const mockDaps = [
   { id: 'dap-1', name: 'DAP One', owner: 'another-user', type: 'DAP', status: 'edit', modifiedDate: '' }
 ];
 
-// All three records have testuser in admin; dmp-2 is owned by testuser
-const defaultAcls: Record<string, any> = {
-  'dmp-1': { read: [], write: [], admin: ['testuser'], delete: [] },
-  'dmp-2': { read: [], write: [], admin: ['testuser'], delete: [] },
-  'dap-1': { read: [], write: [], admin: ['testuser'], delete: [] }
-};
+function withAcls(records: any[], acls: Record<string, any>) {
+  return records.map(r => ({ ...r, acls: acls[r.id] }));
+}
 
 function makeProviders(aclOverride?: Record<string, any>) {
   const acls = aclOverride ?? defaultAcls;
@@ -37,8 +42,8 @@ function makeProviders(aclOverride?: Record<string, any>) {
     {
       provide: DataService,
       useValue: {
-        dmps: signal(mockDmps as any),
-        daps: signal(mockDaps as any),
+        dmps: signal(withAcls(mockDmps, acls) as any),
+        daps: signal(withAcls(mockDaps, acls) as any),
         loadAll: jest.fn().mockReturnValue(of(null)),
         resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/')
       }
@@ -392,6 +397,61 @@ describe('recordSubjectsByLevel()', () => {
   }));
 });
 
+describe('loadAllAcls()', () => {
+  let component: MyRecordsComponent;
+  let getAcls: jest.Mock;
+
+  beforeEach(async () => {
+    TestBed.resetTestingModule();
+    getAcls = jest.fn();
+    const providers = makeProviders();
+    const idx = providers.findIndex(p => (p as any).provide === PermissionsService);
+    (providers[idx] as any).useValue = { getAcls };
+
+    await TestBed.configureTestingModule({
+      declarations: [MyRecordsComponent],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        NoopAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule
+      ],
+      providers,
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+
+    component = TestBed.createComponent(MyRecordsComponent).componentInstance;
+  });
+
+  // The listings already carry acls, so the initial load must issue no
+  // per-record requests at all.
+  it('builds the acl map from the loaded records without fetching', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    expect(getAcls).not.toHaveBeenCalled();
+    expect(component.aclsMap()['dmp-1']).toEqual(defaultAcls['dmp-1']);
+    expect(component.aclsMap()['dap-1']).toEqual(defaultAcls['dap-1']);
+  }));
+
+  it('skips records the API returned without acls', fakeAsync(() => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    (component as any).dataService.dmps.set([{ id: 'dmp-9', name: 'No ACLs', owner: 'x', type: 'DMP' }]);
+    (component as any).dataService.daps.set([]);
+
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    expect(component.aclsMap()['dmp-9']).toBeUndefined();
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  }));
+});
+
 describe('onPermissionsChanged()', () => {
   let component: MyRecordsComponent;
   let fixture: ComponentFixture<MyRecordsComponent>;
@@ -425,16 +485,37 @@ describe('onPermissionsChanged()', () => {
     component = fixture.componentInstance;
   });
 
-  it('sets isLoading to true before calling loadAllAcls', fakeAsync(() => {
+  it('refetches acls only for the records shown in the drawer', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
     tick();
 
-    component.isLoading = false;
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockClear();
+    component.selectedRecords.set([{ id: 'dmp-1', apiBase: 'http://mock-api/' }]);
+
     component.onPermissionsChanged();
-    // isLoading should be true immediately (before loadAllAcls resolves)
-    expect(component.isLoading).toBe(true);
-    tick(10); // let getAcls observables resolve
+    tick(10);
+
+    expect(getAcls).toHaveBeenCalledTimes(1);
+    expect(getAcls.mock.calls[0][0].id).toBe('dmp-1');
+  }));
+
+  it('applies the refetched acls to the table', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockReturnValue(
+      of({ read: ['newuser'], write: [], admin: ['testuser'], delete: [] }).pipe(delay(1))
+    );
+    component.selectedRecords.set([{ id: 'dmp-1', apiBase: 'http://mock-api/' }]);
+
+    component.onPermissionsChanged();
+    tick(10);
+
+    expect(component.aclsMap()['dmp-1'].read).toEqual(['newuser']);
   }));
 });
 

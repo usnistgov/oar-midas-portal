@@ -308,6 +308,7 @@ export class DataService {
     fundingType: raw.data?.funding?.grant_source || '',
     fundingNumber: raw.data?.funding?.grant_id || '',
     dataCategories: raw.data?.dataCategories || [],
+    acls: raw.acls,
   };
 }
 
@@ -342,6 +343,7 @@ export class DataService {
       theme: raw.data?.theme || [],
       modifiedDate: new Date(raw.status.modifiedDate),
       createdDate: raw.status.createdDate ? new Date(raw.status.createdDate) : undefined,
+      acls: raw.acls,
     };
   }
 

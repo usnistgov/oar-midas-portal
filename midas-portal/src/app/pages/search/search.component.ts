@@ -46,6 +46,7 @@ export interface Dmp {
   organizationUnit?: string;
   orgNames?: string[];
   keywords?: string[];
+  acls?: unknown;
 }
 
 export interface Dap {
@@ -55,6 +56,7 @@ export interface Dap {
   type?: string | undefined;
   primaryContact: string;
   modifiedDate: Date;
+  acls?: unknown;
 }
 
 
@@ -476,7 +478,9 @@ searchOrgIndex(queryString: string): void {
    * Delegates to ExportService for JSON, CSV, or PDF generation.
    */
   exportData(format: 'json' | 'csv' | 'pdf'): void {
-    const records = this.dataSource.filteredData;
+    // Drop acls: JSON and CSV serialise whatever the model carries, and the
+    // subject lists are user and group IDs that don't belong in an export.
+    const records = this.dataSource.filteredData.map(({ acls, ...rest }) => rest);
 
     if (records.length === 0) {
       // No records, show message to user
