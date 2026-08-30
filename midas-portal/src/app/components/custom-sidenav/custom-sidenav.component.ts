@@ -2,7 +2,7 @@ import { Component, computed, Input, OnInit, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MaintenanceNoticeComponent } from '../maintenance-notice/maintenance-notice.component';
 import { DataService, UserResponse, MaintenanceInfo } from '../../services/data.service';
-import { AuthenticationService } from 'oarng';
+import { CredentialsService } from '../../services/credentials.service';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { ThemeSelectorData, ThemeSelectorDialogComponent } from '../theme-selector-dialog/theme-selector-dialog.component';
 import { TourService } from '../../services/tour.service';
@@ -94,10 +94,13 @@ export class CustomSidenavComponent implements OnInit {
   readonly profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '86');
 
   /** User details */
-  userName?: string;
-  userLastName?: string;
-  winId?: string;
-  group?: string;
+  // AppComponent already resolves the session; read it rather than asking
+  // the SSO endpoint a second time.
+  private readonly attrs = computed(() => this.credsService.userAttributes() ?? {});
+  readonly userName     = computed(() => this.attrs()['userName'] ?? '');
+  readonly userLastName = computed(() => this.attrs()['userLastName'] ?? '');
+  readonly winId        = computed(() => this.attrs()['winId'] ?? '');
+  readonly group        = computed(() => this.attrs()['userOU'] ?? '');
 
   /** Menu items for the sidenav, some populated dynamically from local config */
   readonly menuItems = signal<MenuItem[]>([]);
@@ -113,7 +116,7 @@ export class CustomSidenavComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private dataService: DataService,
-    private authsvc: AuthenticationService,
+    private credsService: CredentialsService,
     private tourService: TourService
   ) { }
 
@@ -128,23 +131,6 @@ export class CustomSidenavComponent implements OnInit {
     } else {
       this.showHeaderText.set(false);
     }
-
-    this.authsvc.getCredentials().subscribe({
-      next: creds => {
-        if (!creds?.userId) {
-          throw new Error("Missing identity information in credentials");
-        }
-        console.log("Logged in as ", creds);
-        const attrs = creds.userAttributes;
-        this.userName     = attrs['userName'];
-        this.userLastName = attrs['userLastName'];
-        this.winId        = attrs['winId'];
-        this.group        = attrs['userOU'];
-      },
-      error: err => {
-        alert("Unable to determine your identity, cannot retrieve data.");
-      },
-    });
 
     this.loadMenuLinksFromConfig();
   }
