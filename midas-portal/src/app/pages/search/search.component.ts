@@ -478,9 +478,7 @@ searchOrgIndex(queryString: string): void {
    * Delegates to ExportService for JSON, CSV, or PDF generation.
    */
   exportData(format: 'json' | 'csv' | 'pdf'): void {
-    // Drop acls: JSON and CSV serialise whatever the model carries, and the
-    // subject lists are user and group IDs that don't belong in an export.
-    const records = this.dataSource.filteredData.map(({ acls, ...rest }) => rest);
+    const records = this.dataSource.filteredData;
 
     if (records.length === 0) {
       // No records, show message to user

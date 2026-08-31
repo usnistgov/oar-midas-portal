@@ -4,10 +4,15 @@ import autoTable from 'jspdf-autotable';
 
 @Injectable({ providedIn: 'root' })
 export class ExportService {
+  /** acls carry user and group IDs; they don't belong in a downloaded file. */
+  private withoutAcls(records: any[]): any[] {
+    return records.map(({ acls, ...rest }) => rest);
+  }
+
   /** Export records as JSON */
   exportJSON(records: any[], filenamePrefix = 'records'): void {
     try {
-      const json = JSON.stringify(records, null, 2);
+      const json = JSON.stringify(this.withoutAcls(records), null, 2);
       const blob = new Blob([json], { type: 'application/json' });
       this.downloadBlob(blob, `${filenamePrefix}_${this.dateString()}.json`);
     } catch (err) {
@@ -22,7 +27,7 @@ export class ExportService {
 
       // Headers span every record: taking them from the first one dropped
       // any field the first record happened to be missing.
-      const flattened = records.map(rec => this.flattenObject(rec));
+      const flattened = this.withoutAcls(records).map(rec => this.flattenObject(rec));
       const headers = [...new Set(flattened.flatMap(f => Object.keys(f)))];
       const rows = flattened.map(flat =>
         headers.map(h => `"${(flat[h] ?? '').toString().replace(/"/g, '""')}"`).join(',')
