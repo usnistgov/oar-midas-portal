@@ -155,6 +155,17 @@ describe('CustomSidenavComponent', () => {
       expect(component.sideNavWidth()).toBe('64px');
     });
 
+    it('should hide the decorative avatar but keep the tour trigger when collapsed', () => {
+      expect(fixture.nativeElement.querySelector('img[alt="profile avatar"]')).toBeTruthy();
+      expect(fixture.nativeElement.querySelector('[data-tour="help-icon"]')).toBeTruthy();
+
+      component.toggleSidenav();
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('img[alt="profile avatar"]')).toBeNull();
+      expect(fixture.nativeElement.querySelector('[data-tour="help-icon"]')).toBeTruthy();
+    });
+
     it('should handle showHeaderText timing correctly', (done) => {
       component.toggleSidenav(); // Collapse
       expect(component.showHeaderText()).toBe(false);

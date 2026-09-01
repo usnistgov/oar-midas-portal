@@ -97,13 +97,13 @@ describe('WidgetComponent', () => {
   });
 
   describe('renderColumns', () => {
-    // autoSpan widgets take half the grid so two always sit per row.
+    // The dashboard emits one column or an even count; autoSpan widgets take
+    // exactly half of every reachable multi-column grid.
     it.each([
-      [3, 2],
+      [2, 1],
       [4, 2],
-      [5, 2],
       [6, 3],
-      [11, 5],
+      [10, 5],
     ])('spans half of a %i-column grid when autoSpan is set', (colCount, expected) => {
       fixture.componentRef.setInput('data', { id: 5, label: 'T', content: MockContentComponent, rows: 3, columns: 3, autoSpan: true } as Widget);
       fixture.componentRef.setInput('colCount', colCount);

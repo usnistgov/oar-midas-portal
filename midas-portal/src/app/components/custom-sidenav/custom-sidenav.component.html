@@ -10,7 +10,7 @@
     <mat-icon>help_outline</mat-icon>
   </button>
 
-  <img src="assets/images/profile-avatar.png" alt="profile avatar" [width]="profilePicSize()" [height]="profilePicSize()" />
+  <img *ngIf="!sideNavCollapsed()" src="assets/images/profile-avatar.png" alt="profile avatar" [width]="profilePicSize()" [height]="profilePicSize()" />
 
   <div class="header-text" [class.visible]="showHeaderText()">
     <h3>{{ userName }} {{ userLastName }} ({{ winId }})</h3>

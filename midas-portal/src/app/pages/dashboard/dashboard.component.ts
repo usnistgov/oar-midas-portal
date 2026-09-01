@@ -125,10 +125,6 @@ export class DashboardComponent {
 ngAfterViewInit(): void {
     this.updateWidgetSizes();
 
-  window.addEventListener('resize', () => {
-    this.updateWidgetSizes();
-  });
-
   // Use ResizeObserver for better performance than window resize
   const resizeObserver = new ResizeObserver(() => {
     this.updateWidgetSizes();
@@ -168,6 +164,12 @@ ngOnDestroy(): void {
     columns > 1 &&
     (columns * minColWidth + (columns - 1) * gap) > containerWidth
   ) {
+    columns--;
+  }
+
+  // Two auto-span tables can divide a row evenly only when the responsive
+  // grid has an even number of columns. Keep one column for very narrow views.
+  if (columns > 1 && columns % 2 !== 0) {
     columns--;
   }
 
