@@ -128,7 +128,7 @@ export class ExpandedTableDialogComponent implements AfterViewInit {
       return this.dataService.resolveApiUrl('NPSAPI') + userId + '/Dataset/DataSetDetails?id=' + id;
     }
     if (this.kind === 'files') {
-      return row.location;
+      return row.location ?? '';
     }
     return this.dataService.resolveApiUrl('dapEDIT') + id + '?editEnabled=true';
   }

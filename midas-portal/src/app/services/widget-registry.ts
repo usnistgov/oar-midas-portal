@@ -30,5 +30,7 @@ export function renderSpan(widget: Widget, colCount: number): number {
 
     // The dashboard exposes either one column or an even column count, so
     // this divides each row evenly between two auto-span table widgets.
-    return Math.max(1, Math.floor(colCount / 2));
+    // Below four columns a half-row is too narrow for a table's paginator,
+    // so those widths get one widget per row instead.
+    return colCount < 4 ? colCount : Math.floor(colCount / 2);
 }

@@ -153,7 +153,25 @@ export class DownloadService {
     return new Observable(observer => {
       let completedCount = 0;
       let successfulBinaryDownloads = 0;
+      let failed = false;
       const allJsonResults: any[] = [];
+
+      // A record type that fails must not discard the one that succeeded:
+      // both arms count towards completion, and the failure has already been
+      // reported by reportExportFailure.
+      const settle = () => {
+        if (completedCount < downloadPromises.length) return;
+
+        if (format === 'json') {
+          if (allJsonResults.length) {
+            this.handleJsonCompletion(records, allJsonResults, filename);
+          }
+        } else if (!failed && successfulBinaryDownloads === downloadPromises.length) {
+          this.snackBar.open(`Downloaded ${format.toUpperCase()} files`, 'Dismiss', { duration: 3000 });
+        }
+        observer.next();
+        observer.complete();
+      };
 
       downloadPromises.forEach(download$ => {
         download$.subscribe({
@@ -164,18 +182,13 @@ export class DownloadService {
               successfulBinaryDownloads++;
             }
             completedCount++;
-
-            if (completedCount === downloadPromises.length) {
-              if (format === 'json') {
-                this.handleJsonCompletion(records, allJsonResults, filename);
-              } else if (successfulBinaryDownloads === downloadPromises.length) {
-                this.snackBar.open(`Downloaded ${format.toUpperCase()} files`, 'Dismiss', { duration: 3000 });
-              }
-              observer.next();
-              observer.complete();
-            }
+            settle();
           },
-          error: (err) => observer.error(err)
+          error: () => {
+            failed = true;
+            completedCount++;
+            settle();
+          }
         });
       });
     });

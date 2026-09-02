@@ -97,25 +97,34 @@ describe('WidgetComponent', () => {
   });
 
   describe('renderColumns', () => {
+    const autoSpanWidget = {
+      id: 5, label: 'T', content: MockContentComponent, rows: 3, columns: 3, autoSpan: true
+    } as Widget;
+
     // The dashboard emits one column or an even count; autoSpan widgets take
-    // exactly half of every reachable multi-column grid.
+    // exactly half of every grid wide enough to hold two usable tables.
     it.each([
-      [2, 1],
       [4, 2],
       [6, 3],
       [10, 5],
     ])('spans half of a %i-column grid when autoSpan is set', (colCount, expected) => {
-      fixture.componentRef.setInput('data', { id: 5, label: 'T', content: MockContentComponent, rows: 3, columns: 3, autoSpan: true } as Widget);
+      fixture.componentRef.setInput('data', autoSpanWidget);
       fixture.componentRef.setInput('colCount', colCount);
       fixture.detectChanges();
       expect(component.renderColumns()).toBe(expected);
     });
 
-    it('still renders one per row when the grid is too narrow to split', () => {
-      fixture.componentRef.setInput('data', { id: 5, label: 'T', content: MockContentComponent, rows: 3, columns: 3, autoSpan: true } as Widget);
-      fixture.componentRef.setInput('colCount', 1);
+    // Half of a 2-column grid is ~200px — too narrow for a table's paginator,
+    // whose controls would be clipped by the widget's hidden overflow.
+    it.each([
+      [1, 1],
+      [2, 2],
+      [3, 3],
+    ])('fills the row rather than splitting a %i-column grid', (colCount, expected) => {
+      fixture.componentRef.setInput('data', autoSpanWidget);
+      fixture.componentRef.setInput('colCount', colCount);
       fixture.detectChanges();
-      expect(component.renderColumns()).toBe(1);
+      expect(component.renderColumns()).toBe(expected);
     });
 
     // Spans clamp at render time only — the saved layout keeps the
