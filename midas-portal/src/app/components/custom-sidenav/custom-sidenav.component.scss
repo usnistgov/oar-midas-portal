@@ -45,6 +45,27 @@
     left: 0;
     margin: 8px;
   }
+
+  &.collapsed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+
+    .help-button {
+      position: static;
+      margin: 0;
+    }
+
+    img {
+      margin-bottom: 0;
+    }
+
+    .header-text {
+      display: none;
+    }
+  }
 }
 
 .header-text {
@@ -76,13 +97,20 @@ mat-nav-list {
   }
 }
 
+// Sits in the sidebar's flex column rather than floating: a fixed-position
+// bar overlapped the last menu items and swallowed their clicks, and it
+// detached from the sidebar when the page scrolled.
+// Sticky rather than fixed: stays in the sidebar's flow so it can't cover the
+// last menu item, but stays reachable when the page is taller than the viewport.
 .sidenav-sticky-actions {
-  position: fixed;
-  bottom: 32px;
-  left: 32px;
-  z-index: 10001;
+  position: sticky;
+  bottom: 0;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 12px;
+  padding: 12px 8px 24px;
+  background: var(--mat-sidenav-container-background-color, #fff);
 }
 
 .info-bubble {

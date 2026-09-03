@@ -57,8 +57,3 @@
 
 <mat-paginator [length]="length()" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [pageSize]="pageSize">
 </mat-paginator>
-
-<!-- overlay with spinner -->
-<div class="overlay" *ngIf="isLoading()" role="status" aria-live="polite" aria-label="Loading reviews">
-  <mat-progress-spinner mode="indeterminate" diameter="50" aria-label="Loading"></mat-progress-spinner>
-</div>

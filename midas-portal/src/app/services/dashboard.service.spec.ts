@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { DashboardService } from './dashboard.service';
+import { DashboardService, DASHBOARD_SCHEMA_VERSION } from './dashboard.service';
 
 const VERSIONED_WIDGETS = [
   { id: 5, label: 'DMP Table', rows: 4, columns: 6, backgroundColor: 'red', textColor: 'blue' },
@@ -37,15 +37,15 @@ describe('DashboardService', () => {
     it('loads registry default columns and rows', () => {
       createService();
       const dmp = service.addedWidgets()[0];
-      expect(dmp.columns).toBe(4);
+      expect(dmp.columns).toBe(3);
       expect(dmp.rows).toBe(3);
     });
   });
 
-  describe('existing user with versioned localStorage (user customizations)', () => {
+  describe('existing user with current-version localStorage (user customizations)', () => {
     beforeEach(() => {
       localStorage.setItem('dashboardWidgets', JSON.stringify(VERSIONED_WIDGETS));
-      localStorage.setItem('dashboardSchemaVersion', '2');
+      localStorage.setItem('dashboardSchemaVersion', String(DASHBOARD_SCHEMA_VERSION));
     });
 
     it('preserves user customized columns and rows', () => {
@@ -78,7 +78,7 @@ describe('DashboardService', () => {
 
     it('applies registry default columns after reset', () => {
       createService();
-      expect(service.addedWidgets()[0].columns).toBe(4);
+      expect(service.addedWidgets()[0].columns).toBe(3);
       expect(service.addedWidgets()[0].rows).toBe(3);
     });
 
@@ -92,10 +92,23 @@ describe('DashboardService', () => {
     });
   });
 
+  describe('existing user with an older schema version', () => {
+    beforeEach(() => {
+      localStorage.setItem('dashboardWidgets', JSON.stringify(VERSIONED_WIDGETS));
+      localStorage.setItem('dashboardSchemaVersion', String(DASHBOARD_SCHEMA_VERSION - 1));
+    });
+
+    it('discards the stale layout and resets to registry defaults', () => {
+      createService();
+      expect(service.addedWidgets().length).toBe(4);
+      expect(service.addedWidgets()[0].columns).toBe(3);
+    });
+  });
+
   describe('corrupted localStorage', () => {
     beforeEach(() => {
       localStorage.setItem('dashboardWidgets', 'not valid json {{{');
-      localStorage.setItem('dashboardSchemaVersion', '2');
+      localStorage.setItem('dashboardSchemaVersion', String(DASHBOARD_SCHEMA_VERSION));
     });
 
     it('falls back to registry defaults when JSON is invalid', () => {

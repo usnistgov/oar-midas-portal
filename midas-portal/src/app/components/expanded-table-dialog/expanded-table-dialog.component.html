@@ -51,7 +51,11 @@
           <ng-container [ngSwitch]="col.key">
 
             <ng-container *ngSwitchCase="'name'">
-              <a [href]="linkto(row)" target="_blank" rel="noopener noreferrer">{{ row.name }}</a>
+              @if (linkto(row)) {
+                <a [href]="linkto(row)" target="_blank" rel="noopener noreferrer">{{ row.name }}</a>
+              } @else {
+                <span>{{ row.name }}</span>
+              }
             </ng-container>
 
             <ng-container *ngSwitchCase="'title'">
@@ -93,7 +97,7 @@
             </ng-container>
 
             <ng-container *ngSwitchDefault>
-              {{ row[col.key] || '-' }}
+              {{ row[col.key] ?? '-' }}
             </ng-container>
 
           </ng-container>

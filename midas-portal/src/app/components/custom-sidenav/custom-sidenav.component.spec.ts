@@ -155,6 +155,27 @@ describe('CustomSidenavComponent', () => {
       expect(component.sideNavWidth()).toBe('64px');
     });
 
+    it('should stack the tour trigger above the profile avatar when collapsed', () => {
+      const expandedAvatar = fixture.nativeElement.querySelector('img[alt="profile avatar"]');
+      expect(expandedAvatar).toBeTruthy();
+      expect(expandedAvatar.getAttribute('width')).toBe('86');
+      expect(expandedAvatar.getAttribute('height')).toBe('86');
+
+      component.toggleSidenav();
+      fixture.detectChanges();
+
+      const header = fixture.nativeElement.querySelector('.sidenav-header');
+      const tourTrigger = header.querySelector('[data-tour="help-icon"]');
+      const collapsedAvatar = header.querySelector('img[alt="profile avatar"]');
+
+      expect(header.classList.contains('collapsed')).toBe(true);
+      expect(tourTrigger).toBeTruthy();
+      expect(collapsedAvatar).toBeTruthy();
+      expect(collapsedAvatar.getAttribute('width')).toBe('32');
+      expect(collapsedAvatar.getAttribute('height')).toBe('32');
+      expect(tourTrigger.nextElementSibling).toBe(collapsedAvatar);
+    });
+
     it('should handle showHeaderText timing correctly', (done) => {
       component.toggleSidenav(); // Collapse
       expect(component.showHeaderText()).toBe(false);

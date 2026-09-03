@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, inject } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, inject, effect } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -13,9 +13,21 @@ interface ColumnDef {
   label: string;
 }
 
+// Widget registry ids — stable across builds, unlike class names, which
+// production minification renames (keying on content.name left this dialog
+// empty in every production build).
+type TableKind = 'dmp' | 'dap' | 'files' | 'reviews';
+
+const KIND_BY_WIDGET_ID: Record<number, TableKind> = {
+  5: 'dmp',
+  6: 'dap',
+  7: 'reviews',
+  8: 'files',
+};
+
 // All columns for expanded view — includes compact + extra
-const COLUMNS: Record<string, ColumnDef[]> = {
-  DmpTableComponent: [
+const COLUMNS: Record<TableKind, ColumnDef[]> = {
+  dmp: [
     { key: 'name',             label: 'Name' },
     { key: 'title',            label: 'Title' },
     { key: 'type',             label: 'Type' },
@@ -32,7 +44,7 @@ const COLUMNS: Record<string, ColumnDef[]> = {
     { key: 'createdDate',      label: 'Created' },
     { key: 'modifiedDate',     label: 'Last Modified' },
   ],
-  DapTableComponent: [
+  dap: [
     { key: 'name',             label: 'Name' },
     { key: 'title',            label: 'Title' },
     { key: 'type',             label: 'Type' },
@@ -48,14 +60,14 @@ const COLUMNS: Record<string, ColumnDef[]> = {
     { key: 'createdDate',      label: 'Created' },
     { key: 'modifiedDate',     label: 'Last Modified' },
   ],
-  FilesTableComponent: [
+  files: [
     { key: 'name',         label: 'Name' },
     { key: 'usage',        label: 'Usage' },
     { key: 'fileCount',    label: 'File Count' },
     { key: 'location',     label: 'Location' },
     { key: 'modifiedDate', label: 'Last Modified' },
   ],
-  ReviewsTableComponent: [
+  reviews: [
     { key: 'title',             label: 'Title' },
     { key: 'submitterName',     label: 'Submitted By' },
     { key: 'currentReviewer',   label: 'Current Reviewer' },
@@ -77,23 +89,28 @@ export class ExpandedTableDialogComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  readonly componentName: string;
+  readonly kind: TableKind | null;
   columns: ColumnDef[] = [];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<any>([]);
 
   constructor() {
-    this.componentName = this.widget.content.name;
-    this.columns = COLUMNS[this.componentName] ?? [];
+    this.kind = KIND_BY_WIDGET_ID[this.widget.id] ?? null;
+    this.columns = this.kind ? COLUMNS[this.kind] : [];
     this.displayedColumns = this.columns.map(c => c.key);
 
-    const dataFn: Record<string, () => any[]> = {
-      DmpTableComponent:     () => this.dataService.dmps(),
-      DapTableComponent:     () => this.dataService.daps(),
-      FilesTableComponent:   () => this.dataService.files(),
-      ReviewsTableComponent: () => this.dataService.reviews(),
+    // Same scoped signals the compact widgets render, kept in sync so a
+    // dialog opened before data arrives fills in once it does.
+    const dataFn: Record<TableKind, () => any[]> = {
+      dmp:     () => this.dataService.myDmps(),
+      dap:     () => this.dataService.myDaps(),
+      files:   () => this.dataService.files(),
+      reviews: () => this.dataService.reviews(),
     };
-    this.dataSource.data = (dataFn[this.componentName] ?? (() => []))();
+    const kind = this.kind;
+    if (kind) {
+      effect(() => { this.dataSource.data = dataFn[kind](); });
+    }
   }
 
   ngAfterViewInit() {
@@ -103,12 +120,15 @@ export class ExpandedTableDialogComponent implements AfterViewInit {
 
   linkto(row: any): string {
     const id = row.id;
-    if (this.componentName === 'DmpTableComponent') {
+    if (this.kind === 'dmp') {
       return this.dataService.resolveApiUrl('dmpEDIT') + id;
     }
-    if (this.componentName === 'ReviewsTableComponent') {
-      const userId = this.credsService.userId?.() || this.credsService.userId || '';
-      return this.dataService.resolveApiUrl('NPSAPI') + userId + 'Dataset/DataSetDetails?id=' + id;
+    if (this.kind === 'reviews') {
+      const userId = this.credsService.userId() ?? '';
+      return this.dataService.resolveApiUrl('NPSAPI') + userId + '/Dataset/DataSetDetails?id=' + id;
+    }
+    if (this.kind === 'files') {
+      return row.location ?? '';
     }
     return this.dataService.resolveApiUrl('dapEDIT') + id + '?editEnabled=true';
   }
@@ -118,17 +138,17 @@ export class ExpandedTableDialogComponent implements AfterViewInit {
   }
 
   get createUrl(): string | null {
-    switch (this.componentName) {
-      case 'DmpTableComponent': return this.dataService.dmpUI;
-      case 'DapTableComponent': return this.dataService.dapUI;
+    switch (this.kind) {
+      case 'dmp': return this.dataService.dmpUI;
+      case 'dap': return this.dataService.dapUI;
       default: return null;
     }
   }
 
   get createLabel(): string {
-    switch (this.componentName) {
-      case 'DmpTableComponent': return 'Create DMP';
-      case 'DapTableComponent': return 'Create DAP';
+    switch (this.kind) {
+      case 'dmp': return 'Create DMP';
+      case 'dap': return 'Create DAP';
       default: return 'Create';
     }
   }

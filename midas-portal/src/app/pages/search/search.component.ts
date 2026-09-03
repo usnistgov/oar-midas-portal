@@ -382,14 +382,9 @@ searchOrgIndex(queryString: string): void {
    */
   applyAdvancedSearch() {
     this.advancedSearchExpanded = false;
-    this.isLoading = true;
-
-    setTimeout(() => {
-      this.activeKeywords.set([...this.pendingKeywords]);
-      this.applyFilters();
-      this.hasFilters.set(this.pendingFilterCount > 0);
-      this.isLoading = false;
-    }, 1500);
+    this.activeKeywords.set([...this.pendingKeywords]);
+    this.applyFilters();
+    this.hasFilters.set(this.pendingFilterCount > 0);
   }
 
   get pendingFilterCount(): number {
@@ -511,7 +506,8 @@ searchOrgIndex(queryString: string): void {
       return;
     }
 
-    this.downloadService.downloadRecords(selectedRecords, format).subscribe();
+    // DownloadService has already surfaced any user-facing failure.
+    this.downloadService.downloadRecords(selectedRecords, format).subscribe({ error: () => undefined });
   }
 
   add(event: MatChipInputEvent): void {

@@ -14,7 +14,7 @@ export interface UserDetails {
 
 // Bump this when widget registry defaults change (rows, columns, colors).
 // Forces all users to get fresh defaults, discarding stale localStorage data.
-const DASHBOARD_SCHEMA_VERSION = 2;
+export const DASHBOARD_SCHEMA_VERSION = 4;
 
 @Injectable()
 export class DashboardService {
@@ -70,11 +70,12 @@ export class DashboardService {
 
   private _loadPersistedOrDefaultWidgets() {
     const json = localStorage.getItem('dashboardWidgets');
-    const hasVersion = localStorage.getItem('dashboardSchemaVersion') !== null;
+    const sameVersion =
+      Number(localStorage.getItem('dashboardSchemaVersion')) === DASHBOARD_SCHEMA_VERSION;
 
-    // If data exists AND was saved with the versioned system, always respect it.
+    // If data exists AND was saved under the current schema version, respect it.
     // User customizations (columns, rows, colors) are never overwritten by registry changes.
-    if (json && hasVersion) {
+    if (json && sameVersion) {
       try {
         const saved = JSON.parse(json) as Widget[];
         for (const w of saved) {
@@ -93,8 +94,8 @@ export class DashboardService {
       }
     }
 
-    // No data, or pre-versioning stale data: reset to current registry defaults.
-    // This runs once for old users, then never again once the version key is written.
+    // No data, or data saved under an older schema: reset to current registry defaults.
+    // Runs once per schema bump, then not again until the next bump.
     localStorage.removeItem('dashboardWidgets');
     const defaults = this.widgets().filter(w => this.DEFAULT_WIDGET_IDS.includes(w.id));
     this.addedWidgets.set(defaults);

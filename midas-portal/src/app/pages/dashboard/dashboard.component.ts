@@ -3,6 +3,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { wrapGrid } from 'animate-css-grid';
 import { finalize } from 'rxjs';
 import { DashboardService } from '../../services/dashboard.service';
+import { renderSpan } from '../../services/widget-registry';
 import { Dmp } from '../search/search.component';
 import { DataService } from '../../services/data.service';
 import { CredentialsService } from '../../services/credentials.service';
@@ -63,12 +64,13 @@ export class DashboardComponent {
   endDate?: Date;
   readonly contentHeight = computed(() => {
   const widgets = this.dashboardService.addedWidgets();
-  const colCount = this.getGridColumnCount();
-  
+  const colCount = this.gridColCount();
+
   if (widgets.length === 0) return 'auto';
-  
-  // Calculate grid rows needed
-  const totalCells = widgets.reduce((sum, w) => sum + (w.columns ?? 1) * (w.rows ?? 1), 0);
+
+  // Calculate grid rows needed from the spans actually rendered
+  const totalCells = widgets.reduce(
+    (sum, w) => sum + renderSpan(w, colCount) * (w.rows ?? 1), 0);
   const rowsNeeded = Math.ceil(totalCells / colCount);
   
   // Calculate total height (rows * height + gaps + padding)
@@ -96,7 +98,7 @@ export class DashboardComponent {
   const waitForToken = () => {
     const token = this.dataService['credsService'].token();
     if (token) {
-      this.dataService.loadReviews()
+      this.dataService.loadReviews().subscribe();
       this.dataService.loadAll().subscribe({
         next: () => {
           this.isLoading.set(false);
@@ -122,10 +124,6 @@ export class DashboardComponent {
 
 ngAfterViewInit(): void {
     this.updateWidgetSizes();
-
-  window.addEventListener('resize', () => {
-    this.updateWidgetSizes();
-  });
 
   // Use ResizeObserver for better performance than window resize
   const resizeObserver = new ResizeObserver(() => {
@@ -169,44 +167,22 @@ ngOnDestroy(): void {
     columns--;
   }
 
+  // Two auto-span tables can divide a row evenly only when the responsive
+  // grid has an even number of columns. Keep one column for very narrow views.
+  if (columns > 1 && columns % 2 !== 0) {
+    columns--;
+  }
+
   return Math.max(1, columns);
 }
 
-  updateWidgetSizes(): void {
-  const container = this.dashboard().nativeElement as HTMLElement;
-  const colCount = this.getGridColumnCount();
-  
-  // Calculate optimal widget dimensions
-  const containerWidth = container.offsetWidth;
-  const gap = 16;
-  const availableWidth = containerWidth - (gap * (colCount - 1));
-  const optimalColWidth = Math.floor(availableWidth / colCount);
-  
-  const updated = this.dashboardService.addedWidgets().map(w => {
-    const cols = Math.min(w.columns ?? 1, colCount);
-    const rows = this.calculateOptimalRows(w, optimalColWidth);
-    
-    return {
-      ...w,
-      columns: cols,
-      rows: rows
-    };
-  });
-  
-  this.dashboardService.addedWidgets.set(updated);
-  
-  // Update grid template after widget update
-  this.updateGridTemplate();
-}
+  // Widgets clamp their span to this at render time; saved layouts are
+  // never rewritten from transient window sizes.
+  readonly gridColCount = signal(1);
 
-private calculateOptimalRows(widget: any, colWidth: number): number {
-  // Base row height is 120px
-  const baseRowHeight = 120;
-  const minRows = widget.rows ?? 1;
-  
-  // You can add logic here to calculate optimal height based on widget content
-  // For now, use the widget's preferred rows or minimum
-  return Math.max(minRows, 1);
+  updateWidgetSizes(): void {
+  this.gridColCount.set(this.getGridColumnCount());
+  this.updateGridTemplate();
 }
 
 private updateGridTemplate(): void {
@@ -241,22 +217,14 @@ private updateGridTemplate(): void {
   }
 
   /**
-   * Clears all filters and simulates loading (used by "Clear Filters" button).
-   * TODO: revisit logic here
+   * Clears all filters (used by "Clear Filters" button).
    */
   clearFilters(): void {
-    this.isLoading.set(true);
-
-    // Reset UI-bound filters
     this.selectedName = undefined;
     this.selectedOwner = undefined;
     this.selectedContact = undefined;
     this.dateFilterType = 'exact';
     this.onDateFilterChange();
-
-    // Simulated debounce/load delay
-    // TODO: clean this up
-    setTimeout(() => this.isLoading.set(false), 800);
   }
 
   /**
