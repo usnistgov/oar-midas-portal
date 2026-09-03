@@ -128,9 +128,6 @@ ngAfterViewInit(): void {
   // callback can run before the view exists once the data is already loaded.
   const unwrapGrid = wrapGrid(this.dashboard().nativeElement, { duration: 300 }).unwrapGrid;
 
-  const onResize = () => this.updateWidgetSizes();
-  window.addEventListener('resize', onResize);
-
   // Use ResizeObserver for better performance than window resize
   const resizeObserver = new ResizeObserver(() => {
     this.updateWidgetSizes();
@@ -141,7 +138,6 @@ ngAfterViewInit(): void {
   // Cleanup on destroy
   this.onDestroy = () => {
     resizeObserver.disconnect();
-    window.removeEventListener('resize', onResize);
     unwrapGrid();
   };
 }
@@ -174,6 +170,12 @@ ngOnDestroy(): void {
     columns > 1 &&
     (columns * minColWidth + (columns - 1) * gap) > containerWidth
   ) {
+    columns--;
+  }
+
+  // Two auto-span tables can divide a row evenly only when the responsive
+  // grid has an even number of columns. Keep one column for very narrow views.
+  if (columns > 1 && columns % 2 !== 0) {
     columns--;
   }
 

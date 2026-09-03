@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, catchError, tap, of, map } from 'rxjs';
+import { Observable, catchError, tap, of, map, throwError } from 'rxjs';
 import { ConfigurationService } from 'oarng';
 import { CredentialsService } from './credentials.service';
 import jsPDF from 'jspdf';
@@ -152,27 +152,43 @@ export class DownloadService {
 
     return new Observable(observer => {
       let completedCount = 0;
+      let successfulBinaryDownloads = 0;
+      let failed = false;
       const allJsonResults: any[] = [];
+
+      // A record type that fails must not discard the one that succeeded:
+      // both arms count towards completion, and the failure has already been
+      // reported by reportExportFailure.
+      const settle = () => {
+        if (completedCount < downloadPromises.length) return;
+
+        if (format === 'json') {
+          if (allJsonResults.length) {
+            this.handleJsonCompletion(records, allJsonResults, filename);
+          }
+        } else if (!failed && successfulBinaryDownloads === downloadPromises.length) {
+          this.snackBar.open(`Downloaded ${format.toUpperCase()} files`, 'Dismiss', { duration: 3000 });
+        }
+        observer.next();
+        observer.complete();
+      };
 
       downloadPromises.forEach(download$ => {
         download$.subscribe({
           next: (result) => {
             if (format === 'json' && Array.isArray(result)) {
               allJsonResults.push(...result);
+            } else if (format !== 'json' && result?.size > 0) {
+              successfulBinaryDownloads++;
             }
             completedCount++;
-
-            if (completedCount === downloadPromises.length) {
-              if (format === 'json') {
-                this.handleJsonCompletion(records, allJsonResults, filename);
-              } else {
-                this.snackBar.open(`Downloaded ${format.toUpperCase()} files`, 'Dismiss', { duration: 3000 });
-              }
-              observer.next();
-              observer.complete();
-            }
+            settle();
           },
-          error: (err) => observer.error(err)
+          error: () => {
+            failed = true;
+            completedCount++;
+            settle();
+          }
         });
       });
     });
@@ -296,7 +312,7 @@ export class DownloadService {
         map(response => response.body || new Blob()),
         catchError((err: HttpErrorResponse) => {
           this.reportExportFailure(`${recordType} ${format.toUpperCase()}`, err);
-          return of(new Blob());
+          return throwError(() => err);
         })
       );
     }
@@ -304,23 +320,18 @@ export class DownloadService {
     return this.http.post<any[]>(url, body, { headers }).pipe(
       catchError((err: HttpErrorResponse) => {
         this.reportExportFailure(recordType, err);
-        return of([]);
+        return throwError(() => err);
       })
     );
   }
 
-  /**
-   * Export errors used to surface as a bare "download failed". Show why, so
-   * the incomplete-record case is distinguishable from a service outage.
-   */
+  /** Report whether an export failed because of connectivity or an HTTP response. */
   private reportExportFailure(label: string, err: HttpErrorResponse): void {
     const reason = err.status === 0
       ? 'the service could not be reached'
-      : err.status === 422 || err.status === 400
-        ? 'some records are missing required fields'
-        : `the server returned ${err.status}`;
+      : `the server returned HTTP ${err.status}`;
     this.snackBar.open(
-      `${label} export failed — ${reason}. Records already downloaded are unaffected.`,
+      `${label} export failed — ${reason}.`,
       'Dismiss',
       { duration: 6000 }
     );

@@ -1,5 +1,5 @@
 <!-- Sidenav Header -->
-<div class="sidenav-header">
+<div class="sidenav-header" [class.collapsed]="sideNavCollapsed()">
   <button
     mat-icon-button
     (click)="startTour()"

@@ -77,4 +77,9 @@ describe('ExpandedTableDialogComponent', () => {
     const { component } = makeComponent({ id: 7, label: 'Reviews Table' });
     expect(component.linkto({ id: 'x1' })).toBe('http://mock-api/testUser/Dataset/DataSetDetails?id=x1');
   });
+
+  it('uses the file location for Files table links', () => {
+    const { component } = makeComponent({ id: 8, label: 'Files Table' });
+    expect(component.linkto({ id: 'x1', location: '/files/example' })).toBe('/files/example');
+  });
 });

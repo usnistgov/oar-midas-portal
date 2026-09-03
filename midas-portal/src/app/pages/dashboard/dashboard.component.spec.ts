@@ -21,8 +21,10 @@ jest.mock('animate-css-grid', () => ({
 
 describe('DashboardComponent Methods', () => {
   let component: any;
+  let dashboardElement: { offsetWidth: number };
 
   beforeEach(() => {
+    dashboardElement = { offsetWidth: 0 };
     component = {
       isSidebarVisible: signal(false),
       isLoading: signal(false),
@@ -30,13 +32,16 @@ describe('DashboardComponent Methods', () => {
       selectedOwner: undefined,
       selectedContact: undefined,
       onDateFilterChange: jest.fn(),
+      dashboard: () => ({ nativeElement: dashboardElement }),
       toggleSidebar: DashboardComponent.prototype.toggleSidebar,
-      clearFilters: DashboardComponent.prototype.clearFilters
+      clearFilters: DashboardComponent.prototype.clearFilters,
+      getGridColumnCount: DashboardComponent.prototype.getGridColumnCount
     };
     
     // Bind methods to the mock component
     component.toggleSidebar = component.toggleSidebar.bind(component);
     component.clearFilters = component.clearFilters.bind(component);
+    component.getGridColumnCount = component.getGridColumnCount.bind(component);
   });
 
   it('should toggle sidebar visibility', () => {
@@ -51,7 +56,20 @@ describe('DashboardComponent Methods', () => {
     expect(component.selectedName).toBeUndefined();
     expect(component.isLoading()).toBe(false);
   });
+
+  it.each([
+    [415, 1],
+    [416, 2],
+    [632, 2],
+    [847, 2],
+    [848, 4],
+    [1064, 4],
+  ])('uses a one-column or even grid at %ipx', (width, expected) => {
+    dashboardElement.offsetWidth = width;
+    expect(component.getGridColumnCount()).toBe(expected);
+  });
 });
+
 
 describe('DashboardComponent grid lifecycle', () => {
   let fixture: ComponentFixture<DashboardComponent>;
@@ -113,8 +131,9 @@ describe('DashboardComponent grid lifecycle', () => {
       .toBe(fixture.componentInstance.dashboard().nativeElement);
   });
 
-  it('tears the grid and the resize listener down on destroy', () => {
-    const removeSpy = jest.spyOn(window, 'removeEventListener');
+  // The grid installs a MutationObserver plus its own window listeners; both
+  // it and the ResizeObserver leaked on every dashboard visit.
+  it('unwraps the grid and disconnects the observer on destroy', () => {
     fixture.detectChanges();
 
     const { unwrapGrid } = (wrapGrid as jest.Mock).mock.results[0].value;
@@ -123,7 +142,5 @@ describe('DashboardComponent grid lifecycle', () => {
 
     expect(unwrapGrid).toHaveBeenCalled();
     expect(disconnect).toHaveBeenCalled();
-    expect(removeSpy).toHaveBeenCalledWith('resize', expect.any(Function));
-    removeSpy.mockRestore();
   });
 });

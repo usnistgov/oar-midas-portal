@@ -508,7 +508,8 @@ searchOrgIndex(queryString: string): void {
       return;
     }
 
-    this.downloadService.downloadRecords(selectedRecords, format).subscribe();
+    // DownloadService has already surfaced any user-facing failure.
+    this.downloadService.downloadRecords(selectedRecords, format).subscribe({ error: () => undefined });
   }
 
   add(event: MatChipInputEvent): void {

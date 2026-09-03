@@ -103,18 +103,59 @@ export class DataService {
 }
 
   /**
-   * The Files table is derived from the DAP records' file_space summaries,
-   * so both models come from one download of the DAP collection.
+   * The live Files table is derived from the DAP records' file_space summaries,
+   * so both models come from one download of the DAP collection. Their static
+   * fallbacks remain separate because dapJSON does not contain file_space data.
    */
   getDapsAndFiles(): Observable<{ daps: Dap[]; files: File[] }> {
     const api = this.resolveApiUrl('dapAPI');
-    const fallback = this.resolveApiUrl('dapJSON');
-    return this.fetchData<any>(api, fallback, (r: any) => r).pipe(
-      map(raw => ({
-        daps: raw.map((r: any) => this.mapToDap(r)),
-        files: raw.filter((r: any) => r?.file_space).map((r: any) => this.mapToFile(r)),
-      }))
+    const headers = { Authorization: `Bearer ${this.credsService.token()}` };
+
+    // The catch covers the request only. Mapping a bad record must not be
+    // reported as an outage, nor blank the DAP table along with the Files one.
+    return this.http.get<any[]>(api, { headers }).pipe(
+      catchError(err => {
+        console.error(`[getDapsAndFiles] API call failed for ${api}:`, err);
+        return this.dapsAndFilesFallback();
+      }),
+      map(res => Array.isArray(res)
+        ? {
+            daps: res.map((r: any) => this.mapToDap(r)),
+            files: res.filter((r: any) => r?.file_space).map((r: any) => this.mapToFile(r)),
+          }
+        : res)
     );
+}
+
+  /**
+   * DAPs and Files have separate static fallbacks because dapJSON carries no
+   * file_space data. Neither key is configured in every environment, so say so
+   * rather than promising a recovery that cannot happen.
+   */
+  private dapsAndFilesFallback(): Observable<{ daps: Dap[]; files: File[] }> {
+    const dapFallback = this.resolveApiUrl('dapJSON');
+    const fileFallback = this.resolveApiUrl('fileJSON');
+
+    if (!dapFallback && !fileFallback) {
+      this.snackBar.open('Could not reach the records service.', 'Dismiss', { duration: 3000 });
+      return of({ daps: [], files: [] });
+    }
+
+    this.snackBar.open('Could not reach API; loading fallback.', 'Dismiss', { duration: 3000 });
+    return forkJoin({
+      daps: dapFallback
+        ? this.http.get<any[]>(dapFallback).pipe(
+            map(raw => raw.map((r: any) => this.mapToDap(r))),
+            catchError(() => of([] as Dap[]))
+          )
+        : of([] as Dap[]),
+      files: fileFallback
+        ? this.http.get<any[]>(fileFallback).pipe(
+            map(raw => raw.filter((r: any) => r?.file_space).map((r: any) => this.mapToFile(r))),
+            catchError(() => of([] as File[]))
+          )
+        : of([] as File[]),
+    });
 }
 
   getDmps(): Observable<Dmp[]> {
@@ -571,4 +612,3 @@ getUser(): Observable<UserResponse> {
     );
   }
 }
-

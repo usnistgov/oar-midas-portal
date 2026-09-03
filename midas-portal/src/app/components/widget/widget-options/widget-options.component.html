@@ -7,8 +7,9 @@
     <span class="material-symbols-outlined" aria-hidden="true">
         arrow_range
     </span>
-    <mat-button-toggle-group hideSingleSelectionIndicator [value]="data().columns ?? 1"
-        (change)="store.updateWidget(data().id, {columns: +$event.value, autoSpan: false})">
+    <mat-button-toggle-group hideSingleSelectionIndicator [value]="selectedWidth()"
+        (change)="setWidth($event.value)">
+        <mat-button-toggle value="auto" matTooltip="Two tables per row where the window allows">Auto</mat-button-toggle>
         @for (col of columnOptions(); track col) {
             <mat-button-toggle [value]="col">{{ col }}</mat-button-toggle>
         }

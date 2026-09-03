@@ -206,6 +206,66 @@ describe('DataService', () => {
       req.flush([mockFileRaw]);
     });
 
+    it('should load DAPs and Files from their separate fallbacks when the shared API fails', () => {
+      const fallbackDapRaw = {
+        id: 'dap-fallback',
+        name: 'Fallback DAP',
+        owner: 'test-owner',
+        data: { contactPoint: { fn: 'Test Contact' } },
+        status: { modifiedDate: '2023-01-01T00:00:00Z', state: 'edit' },
+        type: 'dap'
+      };
+      const fallbackFileRaw = {
+        id: 'file-fallback',
+        name: 'Fallback Files',
+        file_space: {
+          usage: '2048',
+          file_count: 3,
+          location: '/fallback/files'
+        },
+        status: { modifiedDate: '2023-01-02T00:00:00Z' }
+      };
+      let result: { daps: Dap[]; files: File[] } | undefined;
+
+      service.getDapsAndFiles().subscribe(value => result = value);
+
+      httpMock.expectOne('https://localhost/midas/dap/mds3')
+        .error(new ErrorEvent('Network error'));
+      httpMock.expectOne('http://test.com/fallback/daps.json')
+        .flush([fallbackDapRaw]);
+      httpMock.expectOne('http://test.com/fallback/files.json')
+        .flush([fallbackFileRaw]);
+
+      expect(result?.daps.map(dap => dap.id)).toEqual(['dap-fallback']);
+      expect(result?.files.map(file => file.id)).toEqual(['file-fallback']);
+    });
+
+    it('should keep the Files fallback when the DAP fallback request fails', () => {
+      const fallbackFileRaw = {
+        id: 'file-fallback',
+        name: 'Fallback Files',
+        file_space: {
+          usage: '2048',
+          file_count: 3,
+          location: '/fallback/files'
+        },
+        status: { modifiedDate: '2023-01-02T00:00:00Z' }
+      };
+      let result: { daps: Dap[]; files: File[] } | undefined;
+
+      service.getDapsAndFiles().subscribe(value => result = value);
+
+      httpMock.expectOne('https://localhost/midas/dap/mds3')
+        .error(new ErrorEvent('Network error'));
+      httpMock.expectOne('http://test.com/fallback/daps.json')
+        .error(new ErrorEvent('Fallback error'));
+      httpMock.expectOne('http://test.com/fallback/files.json')
+        .flush([fallbackFileRaw]);
+
+      expect(result?.daps).toEqual([]);
+      expect(result?.files.map(file => file.id)).toEqual(['file-fallback']);
+    });
+
     it('should fetch reviews successfully', () => {
       const mockReviewRaw = {
         dataSetID: '1',
