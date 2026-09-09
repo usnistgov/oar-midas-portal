@@ -485,27 +485,28 @@ describe('onPermissionsChanged()', () => {
     component = fixture.componentInstance;
   });
 
-  it('refetches all loaded records using the API for each record type', fakeAsync(() => {
+  // selecting a row is how the drawer gets opened, and how the page learns which
+  // records an in-flight save might belong to
+  const openDrawerFor = (c: MyRecordsComponent, id: string) => {
+    const row = c.dataSource.data.find((r: any) => r.id === id);
+    c.selection.select(row as any);
+  };
+
+  it('refetches only the records opened since the last refresh', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
     tick();
 
-    const dataService = TestBed.inject(DataService);
-    (dataService.resolveApiUrl as jest.Mock).mockImplementation((key: string) =>
-      key === 'dmpAPI' ? 'http://mock-dmp/' : 'http://mock-dap/'
-    );
     const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
     getAcls.mockClear();
-    component.selectedRecords.set([{ id: 'dmp-1', apiBase: 'http://mock-api/' }]);
+    openDrawerFor(component, 'dmp-1');
 
     component.onPermissionsChanged();
     tick(10);
 
-    expect(getAcls).toHaveBeenCalledTimes(3);
-    expect(getAcls).toHaveBeenCalledWith({ id: 'dmp-1', apiBase: 'http://mock-dmp/' });
-    expect(getAcls).toHaveBeenCalledWith({ id: 'dmp-2', apiBase: 'http://mock-dmp/' });
-    expect(getAcls).toHaveBeenCalledWith({ id: 'dap-1', apiBase: 'http://mock-dap/' });
-    expect(dataService.loadAll).toHaveBeenCalledTimes(1);
+    // one request for the record actually opened, not one per record in the portal
+    expect(getAcls).toHaveBeenCalledTimes(1);
+    expect(getAcls.mock.calls[0][0].id).toBe('dmp-1');
   }));
 
   it.each(['another record', 'no records'])(
@@ -520,19 +521,60 @@ describe('onPermissionsChanged()', () => {
       getAcls.mockImplementation((record: { id: string }) =>
         of(record.id === 'dmp-1' ? updatedAcls : defaultAcls[record.id]).pipe(delay(1))
       );
-      component.selectedRecords.set([{ id: 'dmp-1', apiBase: 'http://mock-api/' }]);
+      openDrawerFor(component, 'dmp-1');
 
       // The drawer emits its change event only after the pending save completes.
       of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
-      component.selectedRecords.set(nextSelection === 'another record'
-        ? [{ id: 'dmp-2', apiBase: 'http://mock-api/' }]
-        : []);
+      component.selection.clear();
+      if (nextSelection === 'another record') openDrawerFor(component, 'dmp-2');
       tick(10);
 
       expect(component.aclsMap()['dmp-1']).toEqual(updatedAcls);
       expect(component.getSubjectsForLevel('dmp-1', 'view')).toContain('newuser');
     })
   );
+
+  it('refreshes again on a second edit of the same record', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    // the drawer emits once per subject change, so granting two people fires twice
+    // with no selection change in between
+    openDrawerFor(component, 'dmp-1');
+    component.onPermissionsChanged();
+    tick(10);
+
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockClear();
+
+    component.onPermissionsChanged();
+    tick(10);
+
+    expect(getAcls).toHaveBeenCalledTimes(1);
+    expect(getAcls.mock.calls[0][0].id).toBe('dmp-1');
+  }));
+
+  it('stops refreshing a record once the drawer has moved off it', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    openDrawerFor(component, 'dmp-1');
+    component.onPermissionsChanged();
+    tick(10);
+    component.selection.clear();
+    component.onPermissionsChanged();   // flushes the record that was still open
+    tick(10);
+
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockClear();
+
+    component.onPermissionsChanged();
+    tick(10);
+
+    expect(getAcls).not.toHaveBeenCalled();
+  }));
 
   it('warns and keeps rendering when a refetch fails', fakeAsync(() => {
     component.ngOnInit();
@@ -542,7 +584,7 @@ describe('onPermissionsChanged()', () => {
     const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
     getAcls.mockReturnValue(throwError(() => new Error('403')));
     const snack = jest.spyOn((component as any).snackBar, 'open');
-    component.selectedRecords.set([{ id: 'dmp-1', apiBase: 'http://mock-api/' }]);
+    openDrawerFor(component, 'dmp-1');
 
     expect(() => { component.onPermissionsChanged(); tick(10); }).not.toThrow();
     expect(snack).toHaveBeenCalled();
@@ -559,7 +601,7 @@ describe('onPermissionsChanged()', () => {
     getAcls.mockReturnValue(
       of({ read: ['newuser'], write: [], admin: ['testuser'], delete: [] }).pipe(delay(1))
     );
-    component.selectedRecords.set([{ id: 'dmp-1', apiBase: 'http://mock-api/' }]);
+    openDrawerFor(component, 'dmp-1');
 
     component.onPermissionsChanged();
     tick(10);

@@ -64,6 +64,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
 
   private groupNamesCache: { [id: string]: string } = {};
   private resolvedSubjects = new Set<string>();
+  private pendingAclRefresh = new Map<string, RecordRef>();
 
   readonly drawerOpen = signal(false);
   readonly activeDrawerTab = signal(0);
@@ -94,6 +95,10 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
         }
       }
       this.selectedRecords.set(unique);
+      // The drawer saves asynchronously and reports no ids, so by the time it says it is
+      // done the selection may have moved on. Remember everything opened since the last
+      // refresh; that is a superset of whatever it edited.
+      for (const r of unique) this.pendingAclRefresh.set(r.id, r);
 
       if (this.selection.selected.length > 0) {
         this.drawerOpen.set(true);
@@ -361,19 +366,12 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // The drawer emits no record IDs, and selection may change during a save.
-  // Refresh the loaded records so the completed edit is always reflected.
+  // Refresh everything opened since the last time, not the current selection: the edit that
+  // just finished may have been made against a record the user has since moved away from.
   onPermissionsChanged(): void {
-    const records: RecordRef[] = [
-      ...this.dataService.dmps().map(r => ({
-        id: r.id,
-        apiBase: this.dataService.resolveApiUrl('dmpAPI')
-      })),
-      ...this.dataService.daps().map(r => ({
-        id: r.id,
-        apiBase: this.dataService.resolveApiUrl('dapAPI')
-      }))
-    ];
+    const records = [...this.pendingAclRefresh.values()];
+    this.pendingAclRefresh.clear();
+    for (const r of this.selectedRecords()) this.pendingAclRefresh.set(r.id, r);
     if (!records.length) return;
 
     forkJoin(
