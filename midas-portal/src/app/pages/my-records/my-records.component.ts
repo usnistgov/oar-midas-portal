@@ -361,10 +361,19 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Only the records in the drawer changed, so refresh just those rather than
-  // re-reading the listings, which still hold the pre-edit acls.
+  // The drawer emits no record IDs, and selection may change during a save.
+  // Refresh the loaded records so the completed edit is always reflected.
   onPermissionsChanged(): void {
-    const records = this.selectedRecords();
+    const records: RecordRef[] = [
+      ...this.dataService.dmps().map(r => ({
+        id: r.id,
+        apiBase: this.dataService.resolveApiUrl('dmpAPI')
+      })),
+      ...this.dataService.daps().map(r => ({
+        id: r.id,
+        apiBase: this.dataService.resolveApiUrl('dapAPI')
+      }))
+    ];
     if (!records.length) return;
 
     forkJoin(
