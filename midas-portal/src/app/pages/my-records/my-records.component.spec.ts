@@ -485,11 +485,15 @@ describe('onPermissionsChanged()', () => {
     component = fixture.componentInstance;
   });
 
-  it('refetches acls only for the records shown in the drawer', fakeAsync(() => {
+  it('refetches all loaded records using the API for each record type', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
     tick();
 
+    const dataService = TestBed.inject(DataService);
+    (dataService.resolveApiUrl as jest.Mock).mockImplementation((key: string) =>
+      key === 'dmpAPI' ? 'http://mock-dmp/' : 'http://mock-dap/'
+    );
     const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
     getAcls.mockClear();
     component.selectedRecords.set([{ id: 'dmp-1', apiBase: 'http://mock-api/' }]);
@@ -497,9 +501,38 @@ describe('onPermissionsChanged()', () => {
     component.onPermissionsChanged();
     tick(10);
 
-    expect(getAcls).toHaveBeenCalledTimes(1);
-    expect(getAcls.mock.calls[0][0].id).toBe('dmp-1');
+    expect(getAcls).toHaveBeenCalledTimes(3);
+    expect(getAcls).toHaveBeenCalledWith({ id: 'dmp-1', apiBase: 'http://mock-dmp/' });
+    expect(getAcls).toHaveBeenCalledWith({ id: 'dmp-2', apiBase: 'http://mock-dmp/' });
+    expect(getAcls).toHaveBeenCalledWith({ id: 'dap-1', apiBase: 'http://mock-dap/' });
+    expect(dataService.loadAll).toHaveBeenCalledTimes(1);
   }));
+
+  it.each(['another record', 'no records'])(
+    'refreshes the edited record if the user selects %s before the save completes',
+    fakeAsync((nextSelection: string) => {
+      component.ngOnInit();
+      tick(500);
+      tick();
+
+      const updatedAcls = { ...defaultAcls['dmp-1'], read: ['newuser'] };
+      const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+      getAcls.mockImplementation((record: { id: string }) =>
+        of(record.id === 'dmp-1' ? updatedAcls : defaultAcls[record.id]).pipe(delay(1))
+      );
+      component.selectedRecords.set([{ id: 'dmp-1', apiBase: 'http://mock-api/' }]);
+
+      // The drawer emits its change event only after the pending save completes.
+      of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
+      component.selectedRecords.set(nextSelection === 'another record'
+        ? [{ id: 'dmp-2', apiBase: 'http://mock-api/' }]
+        : []);
+      tick(10);
+
+      expect(component.aclsMap()['dmp-1']).toEqual(updatedAcls);
+      expect(component.getSubjectsForLevel('dmp-1', 'view')).toContain('newuser');
+    })
+  );
 
   it('warns and keeps rendering when a refetch fails', fakeAsync(() => {
     component.ngOnInit();
@@ -534,4 +567,3 @@ describe('onPermissionsChanged()', () => {
     expect(component.aclsMap()['dmp-1'].read).toEqual(['newuser']);
   }));
 });
-
