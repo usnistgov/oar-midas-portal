@@ -1,4 +1,5 @@
 import { Type } from "@angular/core";
+import type { Acls } from "oarng";
 
 export interface Widget {
     id: number;
@@ -32,6 +33,7 @@ export interface Dap {
     dataCategories?: string[];
     authors?: string[];
     theme?: string[];
+    acls?: Acls;
 }
 
 export interface Dmp {
@@ -52,6 +54,7 @@ export interface Dmp {
     fundingType?: string;
     fundingNumber?: string;
     dataCategories?: string[];
+    acls?: Acls;
 }
 
 export interface File {

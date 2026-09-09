@@ -15,7 +15,7 @@ import { DataService } from '../../../services/data.service';
 import { Widget } from '../../../models/dashboard';
 import { getMaxVisibleRows } from '../table-utils';
 
-import { getStatusClass as statusClassUtil } from '../../../shared/table-utils';
+import { getStatusClass as statusClassUtil, recordFilterPredicate } from '../../../shared/table-utils';
 
 interface Dmp {
   id: string;
@@ -67,6 +67,7 @@ export class DmpTableComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private dataService: DataService, private router: Router) {
+    this.dataSource.filterPredicate = recordFilterPredicate;
     // keep table data in sync with the signal
     effect(() => {
       const dmps = this.dataService.myDmps();

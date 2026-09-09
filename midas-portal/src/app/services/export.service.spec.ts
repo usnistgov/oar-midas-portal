@@ -40,6 +40,15 @@ describe('ExportService', () => {
       expect(second).toContain('F-1');
     });
 
+    it('never writes acl subject lists into the file', () => {
+      service.exportCSV([
+        { id: 'a', name: 'First', acls: { read: ['atl1', 'grp0:public'], write: ['atl1'] } }
+      ]);
+
+      expect(csv).not.toContain('acls');
+      expect(csv).not.toContain('grp0:public');
+    });
+
     it('leaves the cell empty for records lacking a field', () => {
       service.exportCSV([
         { id: 'a', name: 'First' },

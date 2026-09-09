@@ -46,6 +46,7 @@ export interface Dmp {
   organizationUnit?: string;
   orgNames?: string[];
   keywords?: string[];
+  acls?: unknown;
 }
 
 export interface Dap {
@@ -55,6 +56,7 @@ export interface Dap {
   type?: string | undefined;
   primaryContact: string;
   modifiedDate: Date;
+  acls?: unknown;
 }
 
 
