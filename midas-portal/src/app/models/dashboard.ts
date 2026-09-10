@@ -1,4 +1,5 @@
 import { Type } from "@angular/core";
+import type { Acls } from "oarng";
 
 export interface Widget {
     id: number;
@@ -10,6 +11,9 @@ export interface Widget {
     backgroundColor?: string;
     textColor?: string;
     isTable?: boolean;
+    /** Span half the grid so two widgets sit per row at any width. Cleared
+     *  once the user picks a column count themselves. */
+    autoSpan?: boolean;
 }
 
 export interface Dap {
@@ -29,6 +33,7 @@ export interface Dap {
     dataCategories?: string[];
     authors?: string[];
     theme?: string[];
+    acls?: Acls;
 }
 
 export interface Dmp {
@@ -49,6 +54,7 @@ export interface Dmp {
     fundingType?: string;
     fundingNumber?: string;
     dataCategories?: string[];
+    acls?: Acls;
 }
 
 export interface File {

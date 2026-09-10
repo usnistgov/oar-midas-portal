@@ -99,17 +99,63 @@ export class DataService {
 }
 
   getDaps(): Observable<Dap[]> {
+    return this.getDapsAndFiles().pipe(map(r => r.daps));
+}
+
+  /**
+   * The live Files table is derived from the DAP records' file_space summaries,
+   * so both models come from one download of the DAP collection. Their static
+   * fallbacks remain separate because dapJSON does not contain file_space data.
+   */
+  getDapsAndFiles(): Observable<{ daps: Dap[]; files: File[] }> {
     const api = this.resolveApiUrl('dapAPI');
-    const fallback = this.resolveApiUrl('dapJSON');
-    //console.log('[getDaps] ConfigService:', this.configService);
-    //console.log('[getDaps] dapAPI from config:', this.configService.getConfig()['dapAPI']);
-    //console.log('[getDaps] Calling fetchData with:', { api, fallback });
-    return this.fetchData<Dap>(api, fallback, this.mapToDap).pipe(
-      map(data => {
-        //console.log('[getDaps] fetchData returned:', data);
-        return data;
-      })
+    const headers = { Authorization: `Bearer ${this.credsService.token()}` };
+
+    // The catch covers the request only. Mapping a bad record must not be
+    // reported as an outage, nor blank the DAP table along with the Files one.
+    return this.http.get<any[]>(api, { headers }).pipe(
+      catchError(err => {
+        console.error(`[getDapsAndFiles] API call failed for ${api}:`, err);
+        return this.dapsAndFilesFallback();
+      }),
+      map(res => Array.isArray(res)
+        ? {
+            daps: res.map((r: any) => this.mapToDap(r)),
+            files: res.filter((r: any) => r?.file_space).map((r: any) => this.mapToFile(r)),
+          }
+        : res)
     );
+}
+
+  /**
+   * DAPs and Files have separate static fallbacks because dapJSON carries no
+   * file_space data. Neither key is configured in every environment, so say so
+   * rather than promising a recovery that cannot happen.
+   */
+  private dapsAndFilesFallback(): Observable<{ daps: Dap[]; files: File[] }> {
+    const dapFallback = this.resolveApiUrl('dapJSON');
+    const fileFallback = this.resolveApiUrl('fileJSON');
+
+    if (!dapFallback && !fileFallback) {
+      this.snackBar.open('Could not reach the records service.', 'Dismiss', { duration: 3000 });
+      return of({ daps: [], files: [] });
+    }
+
+    this.snackBar.open('Could not reach API; loading fallback.', 'Dismiss', { duration: 3000 });
+    return forkJoin({
+      daps: dapFallback
+        ? this.http.get<any[]>(dapFallback).pipe(
+            map(raw => raw.map((r: any) => this.mapToDap(r))),
+            catchError(() => of([] as Dap[]))
+          )
+        : of([] as Dap[]),
+      files: fileFallback
+        ? this.http.get<any[]>(fileFallback).pipe(
+            map(raw => raw.filter((r: any) => r?.file_space).map((r: any) => this.mapToFile(r))),
+            catchError(() => of([] as File[]))
+          )
+        : of([] as File[]),
+    });
 }
 
   getDmps(): Observable<Dmp[]> {
@@ -232,24 +278,13 @@ export class DataService {
 
   
   getFiles(): Observable<File[]> {
-    const api = this.resolveApiUrl('dapAPI');
-    const fallback = this.resolveApiUrl('fileJSON');
-    //console.log('[getFiles] ConfigService:', this.configService);
-    //console.log('[getFiles] fileAPI from config:', this.configService.getConfig()['fileAPI']);
-    //console.log('[getFiles] Calling fetchData with:', { api, fallback });
-    return this.fetchData<File>(api, fallback, this.mapToFile).pipe(
-      map(data => {
-        //console.log('[getFiles] fetchData returned:', data);
-        return data;
-      })
-    );
-
+    return this.getDapsAndFiles().pipe(map(r => r.files));
   }
 
   getReviews(): Observable<Review[]> {
     const npsapi = this.resolveApiUrl('NPSAPI');
     const fallback = this.resolveApiUrl('reviewJSON');
-    const userId = this.credsService.userId?.() || this.credsService.userId || ''; // adapt to your service
+    const userId = this.credsService.userId() ?? '';
     const api = npsapi + userId; // Append 'reviews' to the NPSAPI URL
     //console.log('[getReviews] ConfigService:', this.configService);
     //console.log('[getReviews] NPSAPI from config:', this.configService.getConfig()['NPSAPI']);
@@ -314,6 +349,7 @@ export class DataService {
     fundingType: raw.data?.funding?.grant_source || '',
     fundingNumber: raw.data?.funding?.grant_id || '',
     dataCategories: raw.data?.dataCategories || [],
+    acls: raw.acls,
   };
 }
 
@@ -348,6 +384,7 @@ export class DataService {
       theme: raw.data?.theme || [],
       modifiedDate: new Date(raw.status.modifiedDate),
       createdDate: raw.status.createdDate ? new Date(raw.status.createdDate) : undefined,
+      acls: raw.acls,
     };
   }
 
@@ -409,13 +446,9 @@ export class DataService {
       console.error('Failed to load DMPs:', err);
       return of([]);
     })),
-    daps: this.getDaps().pipe(catchError(err => {
+    dapsAndFiles: this.getDapsAndFiles().pipe(catchError(err => {
       console.error('Failed to load DAPs:', err);
-      return of([]);
-    })),
-    files: this.getFiles().pipe(catchError(err => {
-      console.error('Failed to load Files:', err);
-      return of([]);
+      return of({ daps: [], files: [] });
     })),
     myDmps: this.getMyDmps().pipe(catchError(err => {
       console.error('Failed to load my DMPs:', err);
@@ -426,10 +459,10 @@ export class DataService {
       return of([]);
     })),
   }).pipe(
-    tap(({ dmps, daps, files, myDmps, myDaps }) => {
+    tap(({ dmps, dapsAndFiles, myDmps, myDaps }) => {
       this._dmps.set(dmps);
-      this._daps.set(daps);
-      this._files.set(files);
+      this._daps.set(dapsAndFiles.daps);
+      this._files.set(dapsAndFiles.files);
       this._myDmps.set(myDmps);
       this._myDaps.set(myDaps);
     })
@@ -579,4 +612,3 @@ getUser(): Observable<UserResponse> {
     );
   }
 }
-

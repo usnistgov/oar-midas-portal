@@ -10,11 +10,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { input } from '@angular/core';
+import { Router } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { Widget } from '../../../models/dashboard';
 import { getMaxVisibleRows } from '../table-utils';
 
-import { getStatusClass as statusClassUtil } from '../../../shared/table-utils';
+import { getStatusClass as statusClassUtil, recordFilterPredicate } from '../../../shared/table-utils';
 
 interface Dmp {
   id: string;
@@ -65,7 +66,8 @@ export class DmpTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private dataService: DataService) {
+  constructor(private dataService: DataService, private router: Router) {
+    this.dataSource.filterPredicate = recordFilterPredicate;
     // keep table data in sync with the signal
     effect(() => {
       const dmps = this.dataService.myDmps();
@@ -154,6 +156,10 @@ export class DmpTableComponent implements AfterViewInit {
   createDmp() {
     // opens URL from localStorage (via service getter)
     window.open(this.dataService.dmpUI, '_blank');
+  }
+
+  shareRecords(): void {
+    this.router.navigate(['/share-my-records'], { queryParams: { type: 'DMP' } });
   }
 
   clearFilter(input: HTMLInputElement) {

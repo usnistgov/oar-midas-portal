@@ -49,6 +49,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { ExpandedTableDialogComponent } from './components/expanded-table-dialog/expanded-table-dialog.component';
@@ -60,13 +61,15 @@ import { SettingsDialogComponent } from './components/settings-dialog/settings-d
 import { ThemeSelectorDialogComponent } from './components/theme-selector-dialog/theme-selector-dialog.component';
 import { WelcomeDialogComponent } from './components/welcome-dialog/welcome-dialog.component';
 import { SearchComponent } from './pages/search/search.component';
+import { MyRecordsComponent } from './pages/my-records/my-records.component';
 import { DashboardService } from './services/dashboard.service';
 import { DataService } from './services/data.service';
 import { ExportService } from './services/export.service';
 import { SearchFilterService } from './services/search-filter.service';
-import { FrameModule, OARngModule,CONFIG_URL } from 'oarng';
+import { FrameModule, OARngModule, CONFIG_URL, GroupsModule, GROUPS_AUTH_TOKEN } from 'oarng';
 import { HeaderComponent } from 'oarng';
 import { FooterComponent } from 'oarng';
+import { CredentialsService } from './services/credentials.service';
 
 
 
@@ -88,6 +91,7 @@ import { FooterComponent } from 'oarng';
     FilesTableComponent,
     MaintenanceNoticeComponent,
     SearchComponent,
+    MyRecordsComponent,
     HelpDialogComponent,
     SaveFilterDialogComponent,
     LoadFilterDialogComponent,
@@ -125,6 +129,7 @@ import { FooterComponent } from 'oarng';
     MatSliderModule,
     MatNativeDateModule,
     MatChipsModule,
+    MatTabsModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
     HttpClientModule,
@@ -138,15 +143,21 @@ import { FooterComponent } from 'oarng';
     FormsModule,
     OARngModule,
     FrameModule,
+    GroupsModule,
     HeaderComponent,
     FooterComponent
   ],
   providers: [
     { provide: CONFIG_URL, useValue: "assets/environment.json" },
+    {
+      provide: GROUPS_AUTH_TOKEN,
+      useFactory: (creds: CredentialsService) => () => creds.token(),
+      deps: [CredentialsService]
+    },
     provideAnimationsAsync(),
-    DashboardService, 
-    SearchFilterService, 
-    ExportService, 
+    DashboardService,
+    SearchFilterService,
+    ExportService,
     DataService
   ],
   bootstrap: [AppComponent],

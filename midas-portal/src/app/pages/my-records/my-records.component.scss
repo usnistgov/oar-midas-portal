@@ -1,0 +1,421 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.mr-drawer-container {
+    height: 100%;
+}
+
+// ─── Container & layout — identical to search.component ───────────────────
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-height: calc(100vh - 180px);
+    padding: 8px;
+}
+
+.search-panel {
+    position: relative;
+    overflow: visible;
+
+    &.loading {
+        overflow: hidden;
+    }
+}
+
+.loading-overlay {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 7;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.32);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.search-controls {
+    display: flex;
+    flex-wrap: wrap;
+    min-width: clamp(25%, 50%, 75%);
+    gap: 0.6rem;
+    transition: width 200ms ease-out, flex 200ms ease-out;
+}
+
+.search-field {
+    min-width: clamp(250px, 40%, 300px);
+    flex: 1;
+    transition: flex 200ms ease-out, width 200ms ease-out;
+}
+
+mat-form-field.small {
+    --mat-form-field-container-height: 40px;
+    --mat-form-field-container-vertical-padding: 8px;
+}
+
+.export-button {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 8px;
+
+    button {
+        min-width: 188px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 40px;
+        font-size: 16px;
+    }
+}
+
+.selection-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 4px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+// ─── Always-visible horizontal filter bar ─────────────────────────────────
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: flex-end;
+    padding: 6px 0 2px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    margin-bottom: 4px;
+}
+
+.filter-field {
+    width: 25%;
+    min-width: 160px;
+
+    &.filter-field--date-mode {
+        width: 120px;
+        min-width: 120px;
+    }
+
+    &.filter-field--date {
+        width: 160px;
+        min-width: 140px;
+    }
+
+    &.filter-field--daterange {
+        width: 240px;
+        min-width: 200px;
+    }
+
+    &.filter-field--keywords {
+        width: 220px;
+        min-width: 180px;
+    }
+}
+
+.filter-chip-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 4px;
+    min-height: 40px;
+}
+
+.filter-chip-label {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--mat-app-text-color);
+    white-space: nowrap;
+    opacity: 0.7;
+}
+
+mat-chip-row,
+mat-chip-option {
+    height: 22px;
+}
+
+.filter-checkbox-group {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 4px;
+    --mdc-checkbox-state-layer-size: 32px;
+}
+
+.filter-clear-btn {
+    align-self: flex-end;
+    margin-bottom: 2px;
+    height: 40px;
+    white-space: nowrap;
+}
+
+// ─── Active filter pills — identical to search.component ──────────────────
+
+.filter-status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.filter-header {
+    display: flex;
+    align-items: center;
+}
+
+.filter-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    color: var(--mat-app-text-color);
+}
+
+.filter-count {
+    font-weight: 600;
+    color: var(--mat-app-text-color);
+}
+
+.filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.filter-chip {
+    background: var(--mat-badge-background-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0.8;
+}
+
+.pill-button {
+    margin-left: 8px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    min-width: auto;
+    height: auto;
+    display: inline-flex;
+    align-items: center;
+    --mat-protected-button-icon-spacing: 4px;
+    --mat-protected-button-icon-offset: 0px;
+}
+
+// ─── Table — identical to search.component ────────────────────────────────
+
+.table-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 24px 0;
+    padding: 16px 16px 8px 16px;
+    background-color: var(--mat-table-background-color);
+    overflow-x: auto;
+    --mat-table-header-container-height: 48px;
+    --mat-table-footer-container-height: 24px;
+    --mat-table-row-item-container-height: 48px;
+}
+
+.table-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: space-between;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 8px;
+}
+
+.column-toggles {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.table-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.results-summary {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+    margin-bottom: 8px;
+
+    .results-count {
+        margin-left: 0;
+
+        &::before {
+            display: none;
+        }
+    }
+}
+
+.results-count {
+    font-size: 0.9rem;
+    color: var(--mat-primary-color);
+    font-weight: 500;
+    margin-left: 8px;
+
+    &::before {
+        content: "•";
+        margin-right: 8px;
+        color: #ccc;
+    }
+}
+
+.advanced-search-table {
+    width: 100%;
+
+    a {
+        color: var(--mat-badge-background-color);
+        text-decoration: none;
+        font-weight: bold;
+    }
+}
+
+.selected-row {
+    background: var(--mat-sys-secondary-container, #e8f4fd);
+}
+
+.no-data-cell {
+    padding: 2rem;
+    text-align: center;
+    opacity: 0.55;
+}
+
+// ─── Permission columns ───────────────────────────────────────────────────
+
+.perm-th {
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    padding: 0 8px !important;
+    min-width: 90px;
+    max-width: 160px;
+}
+
+.perm-td {
+    padding: 6px 8px !important;
+    vertical-align: top;
+    min-width: 90px;
+    max-width: 160px;
+}
+
+.perm-empty {
+    color: rgba(0, 0, 0, 0.25);
+    font-size: 0.9rem;
+}
+
+.perm-names {
+    font-size: 0.82rem;
+    color: rgba(0, 0, 0, 0.78);
+    word-break: break-word;
+
+    &--view   { color: #1565c0; }
+    &--update { color: #2e7d32; }
+    &--admin  { color: #e65100; }
+}
+
+// ─── Permissions drawer ───────────────────────────────────────────────────
+
+.perm-drawer {
+    width: 440px;
+    border-left: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+
+    .perm-drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0.25rem 0.5rem;
+        border-bottom: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+    }
+
+    .perm-tabs {
+        border-bottom: none;
+    }
+
+    .perm-selection-chips {
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+        background: rgba(0, 0, 0, 0.02);
+    }
+}
+
+// ─── Angular Material overrides (same as search.component) ────────────────
+
+:host ::ng-deep .perm-tabs .mat-mdc-tab-body-wrapper {
+    display: none;
+}
+
+:host ::ng-deep .mat-mdc-form-field-bottom-align::before {
+    content: none !important;
+    height: 0 !important;
+    display: none !important;
+}
+
+:host ::ng-deep .mat-datepicker-toggle .mat-mdc-icon-button {
+    height: 40px !important;
+    --mdc-icon-button-icon-size: 20px !important;
+    border-radius: 0 !important;
+    --mat-icon-button-state-layer-color: transparent !important;
+    --mat-icon-button-ripple-color: transparent !important;
+}
+
+:host ::ng-deep .filter-field {
+    .mat-mdc-form-field-focus-overlay {
+        display: none !important;
+    }
+
+    .mdc-text-field--focused {
+        .mdc-floating-label--float-above {
+            padding: 0 4px;
+            background: var(--mat-app-background-color);
+        }
+    }
+
+    .mdc-notched-outline__notch {
+        padding-top: 1px;
+    }
+}

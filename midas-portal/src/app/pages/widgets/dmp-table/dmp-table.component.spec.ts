@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -34,6 +36,7 @@ describe('DmpTableComponent', () => {
       declarations: [DmpTableComponent, MockContentComponent],
       imports: [
         HttpClientTestingModule,
+        RouterTestingModule,
         MatSnackBarModule,
         MatDialogModule,
         MatTableModule,
@@ -96,6 +99,13 @@ describe('DmpTableComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('shareRecords navigates to /share-my-records with type=DMP', () => {
+    const router = TestBed.inject(Router);
+    const spy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    component.shareRecords();
+    expect(spy).toHaveBeenCalledWith(['/share-my-records'], { queryParams: { type: 'DMP' } });
   });
 
   const mockDmp = (id: string, modifiedDate: Date): Dmp => ({

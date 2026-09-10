@@ -62,13 +62,7 @@ describe('CustomSidenavComponent', () => {
             getConfig: jest.fn().mockReturnValue({})
           }
         },
-        {
-          provide: CredentialsService,
-          useValue: {
-            token: signal(null),
-            userId: signal('testUser')
-          }
-        },
+        CredentialsService,
         {
           provide: DashboardService,
           useValue: {}
@@ -155,6 +149,27 @@ describe('CustomSidenavComponent', () => {
       expect(component.sideNavWidth()).toBe('64px');
     });
 
+    it('should stack the tour trigger above the profile avatar when collapsed', () => {
+      const expandedAvatar = fixture.nativeElement.querySelector('img[alt="profile avatar"]');
+      expect(expandedAvatar).toBeTruthy();
+      expect(expandedAvatar.getAttribute('width')).toBe('86');
+      expect(expandedAvatar.getAttribute('height')).toBe('86');
+
+      component.toggleSidenav();
+      fixture.detectChanges();
+
+      const header = fixture.nativeElement.querySelector('.sidenav-header');
+      const tourTrigger = header.querySelector('[data-tour="help-icon"]');
+      const collapsedAvatar = header.querySelector('img[alt="profile avatar"]');
+
+      expect(header.classList.contains('collapsed')).toBe(true);
+      expect(tourTrigger).toBeTruthy();
+      expect(collapsedAvatar).toBeTruthy();
+      expect(collapsedAvatar.getAttribute('width')).toBe('32');
+      expect(collapsedAvatar.getAttribute('height')).toBe('32');
+      expect(tourTrigger.nextElementSibling).toBe(collapsedAvatar);
+    });
+
     it('should handle showHeaderText timing correctly', (done) => {
       component.toggleSidenav(); // Collapse
       expect(component.showHeaderText()).toBe(false);
@@ -168,58 +183,39 @@ describe('CustomSidenavComponent', () => {
     });
   });
 
-  describe('User Authentication', () => {
-    it('should handle successful authentication', () => {
-      const mockUserData = {
-        userId: 'test-user',
+  describe('User identity', () => {
+    // AppComponent resolves the session; the sidenav must not ask again.
+    it('does not call the auth service', () => {
+      fixture.detectChanges();
+
+      expect(mockAuthService.getCredentials).not.toHaveBeenCalled();
+    });
+
+    it('shows the identity once credentials are populated', () => {
+      fixture.detectChanges();
+
+      TestBed.inject(CredentialsService).setCreds({
+        userId: 'jdoe',
         token: 'test-token',
         userAttributes: {
-          userName: 'John',
-          userLastName: 'Doe',
-          winId: 'jdoe',
-          userOU: 'IT Department'
+          userName: 'John', userLastName: 'Doe', winId: 'jdoe', userOU: 'IT Department'
         }
-      };
-
-      mockAuthService.getCredentials.mockReturnValue(of(mockUserData));
-      
+      });
       fixture.detectChanges();
 
-      expect(component.userName).toBe('John');
-      expect(component.userLastName).toBe('Doe');
-      expect(component.winId).toBe('jdoe');
-      expect(component.group).toBe('IT Department');
+      expect(component.userName()).toBe('John');
+      expect(component.userLastName()).toBe('Doe');
+      expect(component.winId()).toBe('jdoe');
+      expect(component.group()).toBe('IT Department');
     });
 
-    it('should handle authentication error', () => {
-      jest.spyOn(window, 'alert');
-      mockAuthService.getCredentials.mockReturnValue(throwError('Auth failed'));
-
+    it('renders empty strings before credentials arrive', () => {
       fixture.detectChanges();
 
-      expect(window.alert).toHaveBeenCalledWith('Unable to determine your identity, cannot retrieve data.');
+      expect(component.userName()).toBe('');
+      expect(component.group()).toBe('');
     });
-
-    it('should handle missing userId in credentials', () => {
-      jest.spyOn(window, 'alert');
-      // Create credentials without userId
-      const invalidCredentials = {
-        token: 'test-token',
-        userAttributes: {}
-        // Note: no userId property
-      };
-      
-      mockAuthService.getCredentials.mockReturnValue(of(invalidCredentials as any));
-
-      fixture.detectChanges();
-
-      // If alert isn't called, the component might handle this differently
-      // Let's check what actually happens
-      expect(component.userName).toBeUndefined();
-      // OR expect the alert if that's the expected behavior
-      // expect(window.alert).toHaveBeenCalledWith('Unable to determine your identity, cannot retrieve data.');
-    });
-  }); // FIXED: Added missing closing brace here
+  });
 
   describe('Menu Configuration', () => {
     beforeEach(() => {
@@ -365,7 +361,7 @@ describe('CustomSidenavComponent', () => {
           { provide: AuthenticationService, useValue: mockAuthService },
           { provide: DataService, useValue: mockDataService },
           { provide: ConfigurationService, useValue: { getConfig: jest.fn().mockReturnValue({}) } },
-          { provide: CredentialsService, useValue: { token: signal(null), userId: signal('testUser') } },
+          CredentialsService,
           { provide: DashboardService, useValue: {} }
         ]
       }).compileComponents();
@@ -398,7 +394,7 @@ describe('CustomSidenavComponent', () => {
           { provide: AuthenticationService, useValue: mockAuthService },
           { provide: DataService, useValue: mockDataService },
           { provide: ConfigurationService, useValue: { getConfig: jest.fn().mockReturnValue({}) } },
-          { provide: CredentialsService, useValue: { token: signal(null), userId: signal('testUser') } },
+          CredentialsService,
           { provide: DashboardService, useValue: {} }
         ]
       }).compileComponents();
