@@ -39,11 +39,13 @@
     <!-- Widget Grid Container -->
     <div #widgetsContainer class="widgets-container" cdkDropListGroup>
         @for (w of dashboardService.addedWidgets(); track w.id) {
-        <app-widget *ngIf="credsService.token() && credsService.userId()" cdkDropList [data]="w" [cdkDropListData]="w.id" (cdkDropListDropped)="drop($event)"></app-widget>
+        <app-widget *ngIf="credsService.token() && credsService.userId()" cdkDropList [data]="w" [colCount]="gridColCount()" [cdkDropListData]="w.id" (cdkDropListDropped)="drop($event)"></app-widget>
         }
     </div>
 
     <!-- Sidebar -->
+    <!-- Rendered only when open: hidden-but-present controls stayed in the tab order. -->
+    @if (isSidebarVisible()) {
     <div class="sidebar" [ngClass]="{ open: isSidebarVisible() }">
         <div class="sidebar-header">
             <span class="sidebar-title">Filter Data Management Plans</span>
@@ -140,4 +142,5 @@
             <button mat-stroked-button color="primary" (click)="toggleSidebar()">Cancel</button>
         </div>
     </div>
+    }
 </div>

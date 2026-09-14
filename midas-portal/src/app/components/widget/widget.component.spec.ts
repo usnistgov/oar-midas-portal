@@ -95,4 +95,61 @@ describe('WidgetComponent', () => {
     component.showOptions.set(true);
     expect(component.showOptions()).toBe(true);
   });
+
+  describe('renderColumns', () => {
+    const autoSpanWidget = {
+      id: 5, label: 'T', content: MockContentComponent, rows: 3, columns: 3, autoSpan: true
+    } as Widget;
+
+    // The dashboard emits one column or an even count; autoSpan widgets take
+    // exactly half of every grid wide enough to hold two usable tables.
+    it.each([
+      [4, 2],
+      [6, 3],
+      [10, 5],
+    ])('spans half of a %i-column grid when autoSpan is set', (colCount, expected) => {
+      fixture.componentRef.setInput('data', autoSpanWidget);
+      fixture.componentRef.setInput('colCount', colCount);
+      fixture.detectChanges();
+      expect(component.renderColumns()).toBe(expected);
+    });
+
+    // Half of a 2-column grid is ~200px — too narrow for a table's paginator,
+    // whose controls would be clipped by the widget's hidden overflow.
+    it.each([
+      [1, 1],
+      [2, 2],
+      [3, 3],
+    ])('fills the row rather than splitting a %i-column grid', (colCount, expected) => {
+      fixture.componentRef.setInput('data', autoSpanWidget);
+      fixture.componentRef.setInput('colCount', colCount);
+      fixture.detectChanges();
+      expect(component.renderColumns()).toBe(expected);
+    });
+
+    // Spans clamp at render time only — the saved layout keeps the
+    // user's preferred columns even when the window is transiently narrow.
+    it('renders the preferred span when the grid has room', () => {
+      fixture.componentRef.setInput('data', { id: 5, label: 'T', content: MockContentComponent, rows: 3, columns: 3 } as Widget);
+      fixture.componentRef.setInput('colCount', 6);
+      fixture.detectChanges();
+      expect(component.renderColumns()).toBe(3);
+    });
+
+    it('clamps the span to the available columns without touching the data', () => {
+      const widget = { id: 5, label: 'T', content: MockContentComponent as Type<unknown>, rows: 3, columns: 3 };
+      fixture.componentRef.setInput('data', widget as Widget);
+      fixture.componentRef.setInput('colCount', 2);
+      fixture.detectChanges();
+      expect(component.renderColumns()).toBe(2);
+      expect(widget.columns).toBe(3);
+    });
+
+    it('never renders below one column', () => {
+      fixture.componentRef.setInput('data', { id: 5, label: 'T', content: MockContentComponent, rows: 3, columns: 0 } as Widget);
+      fixture.componentRef.setInput('colCount', 4);
+      fixture.detectChanges();
+      expect(component.renderColumns()).toBe(1);
+    });
+  });
 });

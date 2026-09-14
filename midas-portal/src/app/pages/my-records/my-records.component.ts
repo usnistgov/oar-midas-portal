@@ -17,6 +17,7 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { FormControl } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { take, catchError, map } from 'rxjs/operators';
 import { of, forkJoin } from 'rxjs';
@@ -47,6 +48,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
+  private snackBar = inject(MatSnackBar);
 
   isLoading = false;
 
@@ -58,11 +60,11 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate', 'permView', 'permUpdate', 'permAdmin'];
 
   readonly aclsMap = signal<{ [id: string]: Acls }>({});
-  readonly aclsPendingCount = signal(0);
   readonly subjectLabels = signal<{ [subject: string]: string }>({});
 
   private groupNamesCache: { [id: string]: string } = {};
   private resolvedSubjects = new Set<string>();
+  private pendingAclRefresh = new Map<string, RecordRef>();
 
   readonly drawerOpen = signal(false);
   readonly activeDrawerTab = signal(0);
@@ -93,6 +95,10 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
         }
       }
       this.selectedRecords.set(unique);
+      // The drawer saves asynchronously and reports no ids, so by the time it says it is
+      // done the selection may have moved on. Remember everything opened since the last
+      // refresh; that is a superset of whatever it edited.
+      for (const r of unique) this.pendingAclRefresh.set(r.id, r);
 
       if (this.selection.selected.length > 0) {
         this.drawerOpen.set(true);
@@ -360,10 +366,41 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // Refresh everything opened since the last time, not the current selection: the edit that
+  // just finished may have been made against a record the user has since moved away from.
   onPermissionsChanged(): void {
-    this.resolvedSubjects.clear();
-    this.isLoading = true;
-    this.loadAllAcls();
+    const records = [...this.pendingAclRefresh.values()];
+    this.pendingAclRefresh.clear();
+    for (const r of this.selectedRecords()) this.pendingAclRefresh.set(r.id, r);
+    if (!records.length) return;
+
+    forkJoin(
+      records.map(r => this.permsSvc.getAcls(r).pipe(
+        map(acls => ({ id: r.id, acls })),
+        catchError(() => of(null))
+      ))
+    ).subscribe(results => {
+      const resolved = results.filter(Boolean) as { id: string; acls: Acls }[];
+      if (resolved.length < records.length) {
+        this.snackBar.open('Some permissions could not be refreshed.', 'Dismiss', { duration: 5000 });
+      }
+
+      const subjects = new Set<string>();
+      this.aclsMap.update(m => {
+        const next = { ...m };
+        for (const { id, acls } of resolved) {
+          next[id] = acls;
+          for (const s of [...(acls.read ?? []), ...(acls.write ?? []),
+                           ...(acls.admin ?? []), ...(acls.delete ?? [])]) {
+            subjects.add(s);
+          }
+        }
+        return next;
+      });
+
+      this.buildAdminRecords();
+      this.resolveSubjectLabels([...subjects]);
+    });
   }
 
   private readonly ORG_ENDPOINT: Record<string, string> = {
@@ -493,63 +530,31 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     return null;
   }
 
+  // The record listings already carry acls, so this needs no HTTP at all.
   private loadAllAcls(): void {
-    const allRecords = [
-      ...this.dataService.dmps().map(r => ({
-        id: r.id,
-        apiBase: this.dataService.resolveApiUrl('dmpAPI')
-      })),
-      ...this.dataService.daps().map(r => ({
-        id: r.id,
-        apiBase: this.dataService.resolveApiUrl('dapAPI')
-      }))
-    ];
+    const acls: { [id: string]: Acls } = {};
+    const subjects = new Set<string>();
+    let missing = 0;
 
-    const pending = allRecords.length;
-    if (!pending) {
-      this.buildAdminRecords();
-      this.isLoading = false;
-      return;
+    for (const r of [...this.dataService.dmps(), ...this.dataService.daps()]) {
+      if (!r.acls) { missing++; continue; }
+      acls[r.id] = r.acls;
+      for (const s of [...(r.acls.read ?? []), ...(r.acls.write ?? []),
+                       ...(r.acls.admin ?? []), ...(r.acls.delete ?? [])]) {
+        subjects.add(s);
+      }
     }
 
-    this.aclsMap.set({});
-    this.aclsPendingCount.set(pending);
+    if (missing) {
+      console.warn(`${missing} record(s) returned without acls; they cannot be shown here.`);
+    }
 
-    allRecords.forEach(record => {
-      this.permsSvc.getAcls(record).subscribe({
-        next: acls => {
-          this.aclsMap.update(m => ({ ...m, [record.id]: acls }));
-          this.aclsPendingCount.update(n => {
-            const remaining = n - 1;
-            if (remaining === 0) {
-              this.buildAdminRecords();
-              this.isLoading = false;
-            }
-            return remaining;
-          });
-          const allSubjects = [
-            ...(acls.read ?? []), ...(acls.write ?? []),
-            ...(acls.admin ?? []), ...(acls.delete ?? [])
-          ];
-          this.resolveSubjectLabels(allSubjects);
-        },
-        error: () => {
-          this.aclsPendingCount.update(n => {
-            const remaining = n - 1;
-            if (remaining === 0) {
-              this.buildAdminRecords();
-              this.isLoading = false;
-            }
-            return remaining;
-          });
-        }
-      });
-    });
+    this.aclsMap.set(acls);
+    this.buildAdminRecords();
+    this.isLoading = false;
+    this.resolveSubjectLabels([...subjects]);
   }
 
-  isPermLoading(id: string): boolean {
-    return this.aclsPendingCount() > 0 && !this.aclsMap()[id];
-  }
 
   recordSubjects(id: string): string[] {
     const acls = this.aclsMap()[id];

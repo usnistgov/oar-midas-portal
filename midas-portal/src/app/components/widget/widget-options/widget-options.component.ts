@@ -29,6 +29,16 @@ export class WidgetOptionsComponent {
     }
   });
 
+  // An autoSpan widget renders half the grid, not data().columns, so show
+  // "Auto" rather than a number the widget is not using.
+  selectedWidth = computed(() => this.data().autoSpan ? 'auto' : (this.data().columns ?? 1));
+
+  setWidth(value: string | number): void {
+    this.store.updateWidget(this.data().id, value === 'auto'
+      ? { autoSpan: true }
+      : { columns: +value, autoSpan: false });
+  }
+
   // Dynamic row options based on widget type
   rowOptions = computed(() => {
     if (this.isStatsWidget()) {

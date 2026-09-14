@@ -169,10 +169,8 @@ export class AppComponent implements OnInit {
               this.dataService.setDmps(dmps);
             });
           } else if (this.wsService.record_type(msg) === 'dap') {
-            this.dataService.getDaps().subscribe(daps => {
+            this.dataService.getDapsAndFiles().subscribe(({ daps, files }) => {
               this.dataService.setDaps(daps);
-            });
-            this.dataService.getFiles().subscribe(files => {
               this.dataService.setFiles(files);
             });
           }
