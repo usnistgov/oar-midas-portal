@@ -42,10 +42,11 @@ export class PeopleService {
   private personAPI = '';
 
   constructor() {
-    const config = this.configSvc.getConfig();
-    this.peopleAPI = config['peopleURL'] || '';
-    this.orgAPI = config['orgURL'] || '';
-    this.personAPI = config['personURL'] || '';
+    const config = this.configSvc.getConfig<any>();
+    const nsdBase = (config?.staffdir?.serviceEndpoint as string ?? '').replace(/\/?$/, '/');
+    this.peopleAPI = nsdBase ? `${nsdBase}people/index` : '';
+    this.orgAPI = nsdBase ? `${nsdBase}orgs` : '';
+    this.personAPI = nsdBase ? `${nsdBase}people/` : '';
     // Optionally log for debugging
     // console.log('peopleAPI:', this.peopleAPI);
     // console.log('orgAPI:', this.orgAPI);
@@ -90,10 +91,12 @@ export class PeopleService {
     return this.http.get<any>(`${this.peopleAPI}?${encodeURIComponent(eid.toUpperCase())}`).pipe(
       map((raw: any) => {
         if (!raw || typeof raw !== 'object') return null;
+        const eidLower = eid.toLowerCase();
         for (const key of Object.keys(raw)) {
           const group = raw[key];
-          if (group && typeof group === 'object' && Object.prototype.hasOwnProperty.call(group, eid)) {
-            return group[eid] as string;
+          if (group && typeof group === 'object') {
+            const match = Object.keys(group).find(k => k.toLowerCase() === eidLower);
+            if (match) return group[match] as string;
           }
         }
         return null;

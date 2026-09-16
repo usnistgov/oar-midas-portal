@@ -27,7 +27,7 @@ import { CredentialsService } from '../../services/credentials.service';
 import { PeopleService } from '../../services/people.service';
 import { SearchFilterService, FilterCriteria } from '../../services/search-filter.service';
 import { Dmp, Dap } from '../../models/dashboard';
-import { RecordRef, PermissionsService, GroupsService, Acls, ConfigurationService } from 'oarng';
+import { RecordRef, PermissionsService, GroupsService, Acls, ConfigurationService, NsdService } from 'oarng';
 import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
 
 type OwnedRecord = (Dmp | Dap) & { type: string };
@@ -41,6 +41,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private dataService = inject(DataService);
   private credsSvc = inject(CredentialsService);
   private peopleService = inject(PeopleService);
+  private nsd = inject(NsdService);
   private filterService = inject(SearchFilterService);
   private permsSvc = inject(PermissionsService);
   private groupsSvc = inject(GroupsService);
@@ -408,7 +409,8 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   };
 
   private resolveSubjectLabels(subjects: string[]): void {
-    const orgBaseUrl = ((this.configSvc.getConfig<any>()['orgURL'] ?? '') as string).replace(/\/index$/, '');
+    const nsdBase = ((this.configSvc.getConfig<any>()?.staffdir?.serviceEndpoint ?? '') as string).replace(/\/?$/, '/');
+    const orgBaseUrl = nsdBase ? `${nsdBase}orgs` : '';
 
     subjects.forEach(subject => {
       if (this.resolvedSubjects.has(subject)) return;
@@ -494,9 +496,13 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      // Search the people API with the EID as query; look for an exact key match in the response
-      this.peopleService.resolveEidLabel(subject).subscribe(name => {
-        this.subjectLabels.update(m => ({ ...m, [subject]: name ?? subject }));
+      // EID: query by nistUsername and keep only the exact match
+      this.nsd.getPeopleByUsername(subject).pipe(catchError(() => of([]))).subscribe((people: any[]) => {
+        if (!Array.isArray(people)) return;
+        const person = people.find(p => p?.nistUsername?.toLowerCase() === subject.toLowerCase());
+        if (!person?.lastName) return;
+        const name = person.firstName ? `${person.lastName}, ${person.firstName}` : person.lastName;
+        this.subjectLabels.update(m => ({ ...m, [subject]: name }));
       });
     });
   }
