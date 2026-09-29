@@ -4,8 +4,10 @@ import {
   AfterViewInit,
   ViewChild,
   computed,
+  effect,
   inject,
   signal,
+  untracked,
   DestroyRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -76,6 +78,16 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   readonly userOu = computed(() => this.credsSvc.userAttributes()?.['userOU'] as string ?? '');
 
   constructor() {
+    // a notification refreshes the record signals app-wide; rebuild from them so the
+    // table updates without a reload.  untracked because buildAdminRecords() reads
+    // aclsMap, which the rebuild writes, and the effect would otherwise retrigger itself.
+    effect(() => {
+      const dmps = this.dataService.dmps();
+      const daps = this.dataService.daps();
+      if (!dmps.length && !daps.length) return;
+      untracked(() => this.rebuildFromRecords());
+    }, { allowSignalWrites: true });
+
     this.selection.changed.pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => {
@@ -530,8 +542,13 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     return null;
   }
 
-  // The record listings already carry acls, so this needs no HTTP at all.
   private loadAllAcls(): void {
+    this.rebuildFromRecords();
+    this.isLoading = false;
+  }
+
+  // The record listings already carry acls, so this needs no HTTP at all.
+  private rebuildFromRecords(): void {
     const acls: { [id: string]: Acls } = {};
     const subjects = new Set<string>();
     let missing = 0;
@@ -551,7 +568,6 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
 
     this.aclsMap.set(acls);
     this.buildAdminRecords();
-    this.isLoading = false;
     this.resolveSubjectLabels([...subjects]);
   }
 

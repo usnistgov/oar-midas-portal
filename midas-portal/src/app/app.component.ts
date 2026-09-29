@@ -5,7 +5,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { filter } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { auditTime, filter, switchMap } from 'rxjs/operators';
 import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
 import { ThemeSelectorData, ThemeSelectorDialogComponent } from './components/theme-selector-dialog/theme-selector-dialog.component';
 import { DashboardService } from './services/dashboard.service';
@@ -154,6 +155,16 @@ export class AppComponent implements OnInit {
         const wsUrl = this.dataService.resolveApiUrl('websocket_dbio');
         this.wsService.connect(wsUrl);
 
+        // a record created by anyone reaches every open browser, so collapse a burst
+        // of notifications into a single refresh
+        const recordChanges = new Subject<void>();
+        recordChanges.pipe(
+          auditTime(1000),
+          // loadAll() also refreshes myDmps/myDaps, which the dashboard widgets read;
+          // setDmps/setDaps never touch those
+          switchMap(() => this.dataService.loadAll())
+        ).subscribe();
+
         // Subscribe to WebSocket messages
         this.wsService.messages$().subscribe(msg => {
           const displayMsg = this.wsService.toDisplay(msg);
@@ -163,17 +174,7 @@ export class AppComponent implements OnInit {
             verticalPosition: 'top'
           });
 
-          // Refresh data when records are updated
-          if (this.wsService.record_type(msg) === 'dmp') {
-            this.dataService.getDmps().subscribe(dmps => {
-              this.dataService.setDmps(dmps);
-            });
-          } else if (this.wsService.record_type(msg) === 'dap') {
-            this.dataService.getDapsAndFiles().subscribe(({ daps, files }) => {
-              this.dataService.setDaps(daps);
-              this.dataService.setFiles(files);
-            });
-          }
+          recordChanges.next();
         });
       } else {
         setTimeout(waitForToken, 100); // Try again in 100ms
