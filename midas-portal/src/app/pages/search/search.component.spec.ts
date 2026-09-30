@@ -110,6 +110,13 @@ describe('SearchComponent', () => {
             ]),
             loadAll: jest.fn().mockReturnValue(of({})),
             getDmps: jest.fn().mockReturnValue(of([])),
+            advancedSearch: jest.fn().mockReturnValue(of({
+              rows: [
+                { id: 'found-1', name: 'Found', owner: 'o', primaryContact: 'c',
+                  modifiedDate: new Date(), type: 'dmp', status: 'edit' }
+              ],
+              failed: []
+            })),
             resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/'),
             credsService: {
               token: () => 'mock-token'
@@ -183,5 +190,74 @@ describe('SearchComponent', () => {
     component.clearFilters();
     expect(component.searchTerm).toBe('');
     expect(component.hasFilters()).toBe(false);
+  });
+
+  describe('server-side search', () => {
+    let dataService: any;
+
+    beforeEach(() => {
+      dataService = TestBed.inject(DataService);
+      dataService.advancedSearch.mockClear();
+    });
+
+    it('sends a built filter and the collections to search', () => {
+      component.searchTerm = 'carbon';
+      component.performSearch();
+
+      expect(dataService.advancedSearch).toHaveBeenCalledTimes(1);
+      const [filters] = dataService.advancedSearch.mock.calls[0];
+      // each collection gets its own filter: the contact name lives in a different field
+      expect(Object.keys(filters)).toEqual(['dmp', 'dap']);
+      expect(JSON.stringify(filters.dmp)).toContain('carbon');
+      expect(JSON.stringify(filters.dmp)).toContain('data.contributors');
+      expect(JSON.stringify(filters.dap)).toContain('data.contactPoint.fn');
+    });
+
+    it('shows the rows the server returned', () => {
+      component.searchTerm = 'carbon';
+      component.performSearch();
+
+      expect(component.dataSource.data.map((r: any) => r.id)).toEqual(['found-1']);
+      expect(component.length).toBe(1);
+    });
+
+    it('drops row selection when the results are replaced', () => {
+      component.selection.select(component.dataSource.data[0]);
+      expect(component.selection.isEmpty()).toBe(false);
+
+      component.searchTerm = 'carbon';
+      component.performSearch();
+
+      // rows are new objects, so a reference-based selection would silently detach
+      expect(component.selection.isEmpty()).toBe(true);
+    });
+
+    it('does not call the endpoint when no criteria are set', () => {
+      component.searchTerm = '';
+      component.performSearch();
+
+      expect(dataService.advancedSearch).not.toHaveBeenCalled();
+    });
+
+    it('reports a failed collection instead of showing it as no results', () => {
+      dataService.advancedSearch.mockReturnValue(of({ rows: [], failed: ['dap'] }));
+
+      component.searchTerm = 'carbon';
+      component.performSearch();
+
+      expect(component.searchError).toContain('DAP');
+      expect(component.isLoading).toBe(false);
+    });
+
+    it('keeps live record updates out of the table while results are shown', () => {
+      component.searchTerm = 'carbon';
+      component.performSearch();
+      expect(component.dataSource.data.map((r: any) => r.id)).toEqual(['found-1']);
+
+      // clearing the filters hands the table back to the listing
+      component.clearFilters();
+      expect(component.dataSource.data.map((r: any) => r.id)).toEqual(['dmp1', 'dap1']);
+    });
+
   });
 });
