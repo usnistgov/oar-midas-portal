@@ -6,8 +6,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { signal, Component, Type } from '@angular/core';
-import { of } from 'rxjs';
+import { signal, Component, Type, WritableSignal } from '@angular/core';
 import { ReviewsTableComponent } from './reviews-table.component';
 import { ConfigurationService } from 'oarng';
 import { CredentialsService } from '../../../services/credentials.service';
@@ -25,9 +24,11 @@ describe('ReviewsTableComponent', () => {
   let component: ReviewsTableComponent;
   let fixture: ComponentFixture<ReviewsTableComponent>;
   let httpMock: HttpTestingController;
+  let reviewsSignal: WritableSignal<any[]>;
 
   beforeEach(async () => {
     TestBed.resetTestingModule();
+    reviewsSignal = signal<any[]>([]);
 
     await TestBed.configureTestingModule({
       declarations: [ReviewsTableComponent, MockContentComponent],
@@ -61,7 +62,7 @@ describe('ReviewsTableComponent', () => {
         {
           provide: DataService,
           useValue: {
-            getReviews: jest.fn().mockReturnValue(of([])),
+            reviews: reviewsSignal,
             resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/')
           }
         }
@@ -90,5 +91,24 @@ describe('ReviewsTableComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders reviews from the shared DataService signal as it updates', () => {
+    expect(component.dataSource.data.length).toBe(0);
+
+    reviewsSignal.set([
+      { id: 'r1', title: 'Review One', submitterName: 'A', currentReviewer: 'B', currentReviewStep: 'Step 1' }
+    ]);
+    fixture.detectChanges();
+
+    expect(component.dataSource.data.length).toBe(1);
+    expect(component.dataSource.data[0].title).toBe('Review One');
+    expect(component.length()).toBe(1);
+  });
+
+  it('builds the NPS link from the userId value, not the signal object', () => {
+    const url = component.linkto('abc');
+    expect(url).toBe('http://mock-api/testUser/Dataset/DataSetDetails?id=abc');
+    expect(url).not.toContain('function');
   });
 });

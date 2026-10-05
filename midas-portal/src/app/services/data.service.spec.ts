@@ -139,6 +139,21 @@ describe('DataService', () => {
       req.flush([mockDmpRaw]);
     });
 
+    // Share My Records reads acls off the record instead of fetching them
+    // per record, so the mapper must not drop the field.
+    it('retains acls on mapped DMPs', () => {
+      service.getDmps().subscribe(dmps => {
+        expect(dmps[0].acls).toEqual({
+          read: ['dsn1', 'grp0:public'], write: ['dsn1'], admin: ['dsn1'], delete: ['dsn1']
+        });
+      });
+
+      httpMock.expectOne('https://localhost/midas/dmp/mdm1').flush([{
+        ...mockDmpRaw,
+        acls: { read: ['dsn1', 'grp0:public'], write: ['dsn1'], admin: ['dsn1'], delete: ['dsn1'] }
+      }]);
+    });
+
     it('should fallback to JSON when API fails', () => {
       service.getDmps().subscribe(dmps => {
         expect(dmps).toHaveLength(1);
@@ -189,6 +204,66 @@ describe('DataService', () => {
 
       const req = httpMock.expectOne('https://localhost/midas/dap/mds3');
       req.flush([mockFileRaw]);
+    });
+
+    it('should load DAPs and Files from their separate fallbacks when the shared API fails', () => {
+      const fallbackDapRaw = {
+        id: 'dap-fallback',
+        name: 'Fallback DAP',
+        owner: 'test-owner',
+        data: { contactPoint: { fn: 'Test Contact' } },
+        status: { modifiedDate: '2023-01-01T00:00:00Z', state: 'edit' },
+        type: 'dap'
+      };
+      const fallbackFileRaw = {
+        id: 'file-fallback',
+        name: 'Fallback Files',
+        file_space: {
+          usage: '2048',
+          file_count: 3,
+          location: '/fallback/files'
+        },
+        status: { modifiedDate: '2023-01-02T00:00:00Z' }
+      };
+      let result: { daps: Dap[]; files: File[] } | undefined;
+
+      service.getDapsAndFiles().subscribe(value => result = value);
+
+      httpMock.expectOne('https://localhost/midas/dap/mds3')
+        .error(new ErrorEvent('Network error'));
+      httpMock.expectOne('http://test.com/fallback/daps.json')
+        .flush([fallbackDapRaw]);
+      httpMock.expectOne('http://test.com/fallback/files.json')
+        .flush([fallbackFileRaw]);
+
+      expect(result?.daps.map(dap => dap.id)).toEqual(['dap-fallback']);
+      expect(result?.files.map(file => file.id)).toEqual(['file-fallback']);
+    });
+
+    it('should keep the Files fallback when the DAP fallback request fails', () => {
+      const fallbackFileRaw = {
+        id: 'file-fallback',
+        name: 'Fallback Files',
+        file_space: {
+          usage: '2048',
+          file_count: 3,
+          location: '/fallback/files'
+        },
+        status: { modifiedDate: '2023-01-02T00:00:00Z' }
+      };
+      let result: { daps: Dap[]; files: File[] } | undefined;
+
+      service.getDapsAndFiles().subscribe(value => result = value);
+
+      httpMock.expectOne('https://localhost/midas/dap/mds3')
+        .error(new ErrorEvent('Network error'));
+      httpMock.expectOne('http://test.com/fallback/daps.json')
+        .error(new ErrorEvent('Fallback error'));
+      httpMock.expectOne('http://test.com/fallback/files.json')
+        .flush([fallbackFileRaw]);
+
+      expect(result?.daps).toEqual([]);
+      expect(result?.files.map(file => file.id)).toEqual(['file-fallback']);
     });
 
     it('should fetch reviews successfully', () => {
@@ -559,10 +634,8 @@ describe('DataService', () => {
 
       // getDmps() → dmpAPI
       authHttpMock.expectOne(r => r.url === 'https://localhost/midas/dmp/mdm1').flush([rawDmp('dmp-full')]);
-      // getDaps() and getFiles() both use dapAPI — match both with .match()
-      const dapBaseReqs = authHttpMock.match(r => r.url === 'https://localhost/midas/dap/mds3');
-      dapBaseReqs[0].flush([rawDap('dap-full')]);
-      dapBaseReqs[1].flush([]);
+      // daps and files are derived from a single dapAPI download
+      authHttpMock.expectOne(r => r.url === 'https://localhost/midas/dap/mds3').flush([rawDap('dap-full')]);
       // getMyDmps() → two calls
       authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?perm=write')).flush([rawDmp('dmp-mine')]);
       authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?owner=')).flush([]);
@@ -578,9 +651,8 @@ describe('DataService', () => {
       });
 
       authHttpMock.expectOne(r => r.url === 'https://localhost/midas/dmp/mdm1').flush([rawDmp('1')]);
-      const dapBaseReqs = authHttpMock.match(r => r.url === 'https://localhost/midas/dap/mds3');
-      dapBaseReqs[0].flush([rawDap('1')]);
-      dapBaseReqs[1].flush([]);
+      // a single dapAPI request feeds both daps() and files()
+      authHttpMock.expectOne(r => r.url === 'https://localhost/midas/dap/mds3').flush([rawDap('1')]);
       authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?perm=write')).flush([]);
       authHttpMock.expectOne(r => r.url.includes('dmp') && r.url.includes('?owner=')).flush([]);
       authHttpMock.expectOne(r => r.url.includes('dap') && r.url.includes('?perm=write')).flush([]);

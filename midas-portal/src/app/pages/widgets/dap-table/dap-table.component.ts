@@ -18,7 +18,7 @@ import { Dap } from '../../../models/dashboard';
 import { Widget } from '../../../models/dashboard';
 import { getMaxVisibleRows } from '../table-utils';
 
-import { getStatusClass as statusClassUtil } from '../../../shared/table-utils';
+import { getStatusClass as statusClassUtil, recordFilterPredicate } from '../../../shared/table-utils';
 
 @Component({
   selector: 'app-dap-table',
@@ -71,6 +71,8 @@ export class DapTableComponent implements AfterViewInit {
     private appRef: ApplicationRef,
     private router: Router
   ) {
+    this.dataSource.filterPredicate = recordFilterPredicate;
+
     effect(() => {
       const daps = this.dataService.myDaps();
       this.dataSource.data = daps;
