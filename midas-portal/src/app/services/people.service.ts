@@ -83,28 +83,6 @@ export class PeopleService {
     );
   }
 
-  // Resolve an EID/username to a display name by searching the people API.
-  // The people API returns {LASTNAME: {eid: "Full Name"}} — look for an exact key match.
-  // Returns null if the EID cannot be resolved.
-  resolveEidLabel(eid: string): Observable<string | null> {
-    if (!this.peopleAPI) return of(null);
-    return this.http.get<any>(`${this.peopleAPI}?${encodeURIComponent(eid.toUpperCase())}`).pipe(
-      map((raw: any) => {
-        if (!raw || typeof raw !== 'object') return null;
-        const eidLower = eid.toLowerCase();
-        for (const key of Object.keys(raw)) {
-          const group = raw[key];
-          if (group && typeof group === 'object') {
-            const match = Object.keys(group).find(k => k.toLowerCase() === eidLower);
-            if (match) return group[match] as string;
-          }
-        }
-        return null;
-      }),
-      catchError(() => of(null))
-    );
-  }
-
   /**
    * Get a list of NIST organizations matching the search term.
    * @param searchTerm Query string, e.g. "divisionName=ITL"

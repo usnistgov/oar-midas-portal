@@ -71,7 +71,6 @@ function makeProviders(aclOverride?: Record<string, any>) {
     {
       provide: PeopleService,
       useValue: {
-        resolveEidLabel: jest.fn().mockReturnValue(of(null)),
         getNISTOrganizations: jest.fn().mockReturnValue(of({}))
       }
     },
@@ -335,54 +334,6 @@ describe('recordSubjects()', () => {
     component.aclsMap.set({});
     expect(component.recordSubjects('missing-record')).toEqual([]);
   }));
-});
-
-describe('resolveSubjectLabels() — EID resolution', () => {
-  let component: MyRecordsComponent;
-  let fixture: ComponentFixture<MyRecordsComponent>;
-
-  beforeEach(async () => {
-    TestBed.resetTestingModule();
-    await TestBed.configureTestingModule({
-      declarations: [MyRecordsComponent],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatAutocompleteModule
-      ],
-      providers: makeProviders(),
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(MyRecordsComponent);
-    component = fixture.componentInstance;
-  });
-
-  // The with_nistUsername query is a substring match on the backend, so only
-  // the record whose nistUsername equals the subject may be used as the label.
-  it('labels an EID with "Last, First" from the exact nistUsername match', () => {
-    jest.spyOn((component as any).nsd, 'getPeopleByUsername').mockReturnValue(of([
-      { nistUsername: 'mchiang', lastName: 'Chiang', firstName: 'Martin' },
-      { nistUsername: 'mch', lastName: 'Hawes', firstName: 'Melvin' }
-    ]));
-
-    (component as any).resolveSubjectLabels(['mch']);
-
-    expect(component.subjectLabels()['mch']).toBe('Hawes, Melvin');
-  });
-
-  it('leaves the label unset when no record matches the EID exactly', () => {
-    jest.spyOn((component as any).nsd, 'getPeopleByUsername').mockReturnValue(of([
-      { nistUsername: 'mchiang', lastName: 'Chiang', firstName: 'Martin' }
-    ]));
-
-    (component as any).resolveSubjectLabels(['mch']);
-
-    expect(component.subjectLabels()['mch']).toBeUndefined();
-  });
 });
 
 describe('recordSubjectsByLevel()', () => {
