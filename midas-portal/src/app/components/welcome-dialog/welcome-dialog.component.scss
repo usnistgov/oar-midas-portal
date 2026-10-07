@@ -2,8 +2,9 @@
   display: block;
 }
 
+// no colour here: the dialog inherits the active theme's foreground, which keeps
+// the title readable in dark mode and across the five palettes
 h2[mat-dialog-title] {
-  color: #2196f3;
   margin-bottom: 1rem;
 }
 
@@ -11,7 +12,6 @@ mat-dialog-content {
   p {
     margin-bottom: 1rem;
     line-height: 1.6;
-    color: rgba(0, 0, 0, 0.87);
 
     &:last-child {
       margin-bottom: 0;
