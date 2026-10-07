@@ -184,4 +184,79 @@ describe('SearchComponent', () => {
     expect(component.searchTerm).toBe('');
     expect(component.hasFilters()).toBe(false);
   });
+
+  describe('accessible names', () => {
+    const byId = (id: string): HTMLElement | null =>
+      fixture.nativeElement.querySelector(`[id="${id}"]`) ?? document.getElementById(id);
+
+    beforeEach(() => {
+      component.dataSource.data = [
+        { id: 'mdm1:0005', name: 'CHIPS 1.01 - 2D and WBG Reliability', type: 'dmp' },
+        { id: 'mdm1:0008', name: 'CHIPS 1.02 - Gas Flow Properties', type: 'dmp' }
+      ] as any;
+      fixture.detectChanges();
+    });
+
+    it('names the select-all checkbox', () => {
+      const input = fixture.nativeElement
+        .querySelector('th.mat-column-select input[type="checkbox"]') as HTMLInputElement;
+
+      expect(input.getAttribute('aria-label')).toBe('Select all records');
+    });
+
+    it('gives the selection column a header name', () => {
+      const th = fixture.nativeElement.querySelector('th.mat-column-select') as HTMLElement;
+
+      expect(th.textContent?.trim()).toContain('Select');
+    });
+
+    it('names every row checkbox after its own record', () => {
+      const inputs: HTMLInputElement[] = Array.from(
+        fixture.nativeElement.querySelectorAll('td.mat-column-select input[type="checkbox"]')
+      );
+
+      expect(inputs.map(i => i.getAttribute('aria-label'))).toEqual([
+        'Select CHIPS 1.01 - 2D and WBG Reliability',
+        'Select CHIPS 1.02 - Gas Flow Properties'
+      ]);
+    });
+
+    it('falls back to the record id when a record has no name', () => {
+      component.dataSource.data = [{ id: 'mdm1:0099', type: 'dmp' }] as any;
+      fixture.detectChanges();
+
+      const input = fixture.nativeElement
+        .querySelector('td.mat-column-select input[type="checkbox"]') as HTMLInputElement;
+
+      expect(input.getAttribute('aria-label')).toBe('Select mdm1:0099');
+    });
+
+    it('labels both ends of the date range, which share one floating label', () => {
+      component.dateFilterType = 'between';
+      fixture.detectChanges();
+
+      const start = fixture.nativeElement.querySelector('input[name="startDate"]') as HTMLInputElement;
+      const end = fixture.nativeElement.querySelector('input[name="endDate"]') as HTMLInputElement;
+
+      expect(start.getAttribute('aria-label')).toBe('Last modified, start date');
+      expect(end.getAttribute('aria-label')).toBe('Last modified, end date');
+    });
+
+    // WAVE reports this floating label as orphaned because mat-select renders no native
+    // control for a <label> to bind to; the association is made with aria-labelledby.
+    it('associates the Last Modified Filter label with its select', () => {
+      const selects: HTMLElement[] =
+        Array.from(fixture.nativeElement.querySelectorAll('mat-select'));
+
+      const names = selects.map(select =>
+        (select.getAttribute('aria-labelledby') ?? '')
+          .split(/\s+/)
+          .filter(Boolean)
+          .map(id => byId(id)?.textContent?.trim() ?? '')
+          .join(' ')
+      );
+
+      expect(names.some(name => name.includes('Last Modified Filter'))).toBe(true);
+    });
+  });
 });
