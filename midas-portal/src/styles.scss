@@ -307,16 +307,20 @@ mat-chip.status-chip {
     text-align: center;
 }
 
+// White text needs 4.5:1 against these at 12px.  The previous values gave 2.8,
+// 1.8 and 3.1, so the green and blue are darkened and the amber — which no
+// light text can sit on — takes dark text instead.  Ratios: 5.1, 11.7, 5.8.
 .status-success {
-    background-color: #4caf50;
+    background-color: #2e7d32;
 }
 
 .status-warning {
     background-color: #ffb300;
+    color: #000;
 }
 
 .status-info {
-    background-color: #2196f3;
+    background-color: #1565c0;
 }
 
 // ======================================
