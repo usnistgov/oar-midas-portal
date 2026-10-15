@@ -2,9 +2,11 @@
   display: block;
 }
 
-// no colour here: the dialog inherits the active theme's foreground, which keeps
-// the title readable in dark mode and across the five palettes
+// the accent is kept, but from the token that is verified against the dialog
+// surface in both modes; the hardcoded blue it replaces read far below 4.5:1 on
+// a dark surface
 h2[mat-dialog-title] {
+  color: var(--portal-accent-text);
   margin-bottom: 1rem;
 }
 

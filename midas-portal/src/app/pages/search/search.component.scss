@@ -190,7 +190,7 @@ mat-panel-title {
 .advanced-search-table a {
     // not the badge background: that token is a theme primary chosen as a surface
     // colour, and several themes fail contrast when it is used as text
-    color: var(--portal-link-color);
+    color: var(--portal-accent-text);
     text-decoration: none;
     font-weight: bold;
 }
