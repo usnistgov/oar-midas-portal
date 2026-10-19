@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { inflateSync } from 'zlib';
+import { readablePdfText } from '../../testing/pdf-content';
 
 import { ExportService } from './export.service';
 
@@ -63,20 +63,6 @@ describe('ExportService', () => {
       return Buffer.from(doc.output('arraybuffer'));
     };
 
-    // the page content lives in deflated streams
-    const readableText = (pdf: Buffer): string => {
-      const raw = pdf.toString('latin1');
-      let text = '';
-      for (const match of raw.matchAll(/stream\r?\n([\s\S]*?)endstream/g)) {
-        try {
-          text += inflateSync(Buffer.from(match[1], 'latin1')).toString('latin1');
-        } catch {
-          text += match[1];
-        }
-      }
-      return text;
-    };
-
     const ROW = [RECORD.type, RECORD.id, RECORD.name, RECORD.owner,
                  RECORD.primaryContact, RECORD.organizationUnit, RECORD.status, RECORD.modifiedDate];
 
@@ -86,7 +72,7 @@ describe('ExportService', () => {
 
       expect(withRow.toString('latin1').startsWith('%PDF')).toBe(true);
       // an empty table would still produce a valid pdf, so check the row is in it
-      expect(readableText(withRow)).toContain('CHIPS 1.01');
+      expect(readablePdfText(withRow)).toContain('CHIPS 1.01');
       expect(withRow.length).toBeGreaterThan(withoutRows.length);
     });
 

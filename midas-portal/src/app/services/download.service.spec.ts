@@ -5,6 +5,7 @@ import { signal } from '@angular/core';
 import { ConfigurationService } from 'oarng';
 import { DownloadService } from './download.service';
 import { CredentialsService } from './credentials.service';
+import { readablePdfText } from '../../testing/pdf-content';
 
 const CONFIG: Record<string, string> = {
   dmpAPI: 'https://api.test/dmp/mdm1',
@@ -86,5 +87,52 @@ describe('DownloadService', () => {
 
     const messages = snack.open.mock.calls.map(c => c[0]).join(' | ');
     expect(messages).not.toContain('Downloaded PDF files');
+  });
+
+  describe('downloadPDF', () => {
+    const RECORD = {
+      type: 'dmp', id: 'mdm1:0005', name: 'CHIPS 1.01 - 2D and WBG Reliability',
+      owner: 'jlau', primaryContact: 'Lau, Jonathan', organizationUnit: 'MML',
+      status: 'edit', modifiedDate: '2026-01-02'
+    };
+
+    const realBlob = (global as any).Blob;
+    const realCreateObjectUrl = (URL as any).createObjectURL;
+    const realRevokeObjectUrl = (URL as any).revokeObjectURL;
+    let written: Buffer[];
+
+    beforeEach(() => {
+      written = [];
+      // jsdom's Blob cannot be read back, so keep the bytes as they are handed over
+      (global as any).Blob = class {
+        constructor(parts: any[]) { written.push(Buffer.from(parts[0])); }
+      };
+      (URL as any).createObjectURL = jest.fn(() => 'blob:test');
+      (URL as any).revokeObjectURL = jest.fn();
+    });
+
+    afterEach(() => {
+      (global as any).Blob = realBlob;
+      (URL as any).createObjectURL = realCreateObjectUrl;
+      (URL as any).revokeObjectURL = realRevokeObjectUrl;
+    });
+
+    // downloadPDF discards every error, so a broken download looks exactly like a
+    // working one from outside; the document itself has to be inspected
+    it('hands the browser a pdf holding the record', () => {
+      service.downloadPDF([RECORD]);
+
+      expect(written).toHaveLength(1);
+      expect(written[0].toString('latin1').startsWith('%PDF')).toBe(true);
+      expect(readablePdfText(written[0])).toContain('CHIPS 1.01');
+      expect(URL.createObjectURL).toHaveBeenCalled();
+    });
+
+    it('writes nothing when there are no records', () => {
+      service.downloadPDF([]);
+
+      expect(written).toEqual([]);
+      expect(URL.createObjectURL).not.toHaveBeenCalled();
+    });
   });
 });
