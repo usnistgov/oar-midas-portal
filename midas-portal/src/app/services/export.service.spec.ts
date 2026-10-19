@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { inflateSync } from 'zlib';
 
 import { ExportService } from './export.service';
 
@@ -26,6 +27,11 @@ describe('ExportService', () => {
       status: 'edit', modifiedDate: '2026-01-02'
     };
 
+    const realObjectUrls = {
+      create: (URL as any).createObjectURL,
+      revoke: (URL as any).revokeObjectURL
+    };
+
     beforeEach(() => {
       (global as any).Blob = RealBlob;
       // jsdom implements no object URLs, which is the only thing stopping save()
@@ -33,25 +39,55 @@ describe('ExportService', () => {
       (URL as any).revokeObjectURL = jest.fn();
     });
 
+    afterEach(() => {
+      (URL as any).createObjectURL = realObjectUrls.create;
+      (URL as any).revokeObjectURL = realObjectUrls.revoke;
+    });
+
     // jsPDF assigns save() and output() onto each instance, so there is nothing to
     // intercept before construction; drive the same calls the service makes instead.
     // A breaking change in jsPDF or autoTable shows up here, not when somebody
     // clicks Export.
-    it('builds a pdf from the same calls the service makes', () => {
+    const buildPdf = (rows: string[][]): Buffer => {
       const doc = new jsPDF();
       doc.setFontSize(14);
       doc.text('Record Export', 105, 15, { align: 'center' });
       autoTable(doc, {
         head: [['Type', 'ID', 'Name', 'Owner', 'Primary Contact', 'Org Unit', 'Status', 'Modified']],
-        body: [[RECORD.type, RECORD.id, RECORD.name, RECORD.owner,
-                RECORD.primaryContact, RECORD.organizationUnit, RECORD.status, RECORD.modifiedDate]],
+        body: rows,
         startY: 30,
         styles: { fontSize: 8, cellPadding: 2 },
         headStyles: { fillColor: [63, 81, 181], textColor: 255 },
         alternateRowStyles: { fillColor: [245, 245, 245] }
       });
+      return Buffer.from(doc.output('arraybuffer'));
+    };
 
-      expect(doc.output('datauristring')).toMatch(/^data:application\/pdf/);
+    // the page content lives in deflated streams
+    const readableText = (pdf: Buffer): string => {
+      const raw = pdf.toString('latin1');
+      let text = '';
+      for (const match of raw.matchAll(/stream\r?\n([\s\S]*?)endstream/g)) {
+        try {
+          text += inflateSync(Buffer.from(match[1], 'latin1')).toString('latin1');
+        } catch {
+          text += match[1];
+        }
+      }
+      return text;
+    };
+
+    const ROW = [RECORD.type, RECORD.id, RECORD.name, RECORD.owner,
+                 RECORD.primaryContact, RECORD.organizationUnit, RECORD.status, RECORD.modifiedDate];
+
+    it('writes the record into the pdf, not just an empty document', () => {
+      const withRow = buildPdf([ROW]);
+      const withoutRows = buildPdf([]);
+
+      expect(withRow.toString('latin1').startsWith('%PDF')).toBe(true);
+      // an empty table would still produce a valid pdf, so check the row is in it
+      expect(readableText(withRow)).toContain('CHIPS 1.01');
+      expect(withRow.length).toBeGreaterThan(withoutRows.length);
     });
 
     it('exports a record without failing', () => {
