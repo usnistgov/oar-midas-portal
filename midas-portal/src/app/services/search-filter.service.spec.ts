@@ -210,6 +210,14 @@ describe('SearchFilterService', () => {
       );
       expect(result).toHaveLength(0);
     });
+
+    it('matches the capitalisation the type chips actually emit', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp()],
+        { ...BASE_CRITERIA, types: ['DMP'] }
+      );
+      expect(result).toHaveLength(1);
+    });
   });
 
   describe('status filter', () => {
@@ -221,12 +229,41 @@ describe('SearchFilterService', () => {
       expect(result).toHaveLength(1);
     });
 
+    it('matches a state whose name contains a space', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp({ status: 'in press' })],
+        { ...BASE_CRITERIA, statuses: ['in press'] }
+      );
+      expect(result).toHaveLength(1);
+    });
+
+    it('matches a state however the record spells it', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp({ status: 'Published' })],
+        { ...BASE_CRITERIA, statuses: ['published'] }
+      );
+      expect(result).toHaveLength(1);
+    });
+
     it('excludes record not matching status', () => {
       const result = service.filterDmpOrDapList(
         [makeDmp()],
         { ...BASE_CRITERIA, statuses: ['published'] }
       );
       expect(result).toHaveLength(0);
+    });
+  });
+
+  describe('saved filters', () => {
+    afterEach(() => localStorage.clear());
+
+    it('drops a saved status this build no longer offers', () => {
+      service.saveCriteria('mine', { ...BASE_CRITERIA, statuses: ['edit', 'reviewed'] });
+      expect(service.loadCriteria('mine')!.statuses).toEqual(['edit']);
+    });
+
+    it('returns null when there is nothing saved under that name', () => {
+      expect(service.loadCriteria('never-saved')).toBeNull();
     });
   });
 });

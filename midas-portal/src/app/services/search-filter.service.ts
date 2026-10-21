@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { knownStates } from '../shared/record-states';
 import { Dmp } from '../pages/search/search.component';
 import { Dap } from '../pages/search/search.component'
 
@@ -48,8 +49,8 @@ export class SearchFilterService {
     const primaryContact = normalize((item as any).primaryContact);
     const organizationUnit = normalize((item as any).organizationUnit);
     const owner = (item as any).owner?.toLowerCase() || '';
-    const type = (item as any).type || '';
-    const status = (item as any).status || '';
+    const type = normalize((item as any).type);
+    const status = normalize((item as any).status);
     const hasPublication = (item as any).hasPublication;
     const keywords = (item as any).keywords || [];
     const modifiedDate = (item as any).modifiedDate instanceof Date
@@ -84,11 +85,11 @@ export class SearchFilterService {
       normalize(owner).includes(ownerCriteria);
 
     // 5) type
-    const typeMatch = c.types.length === 0 || c.types.includes(type);
+    const typeMatch = c.types.length === 0 || c.types.map(normalize).includes(type);
 
     // 6) status
     const statusMatch =
-      c.statuses.length === 0 || c.statuses.includes(status);
+      c.statuses.length === 0 || c.statuses.map(normalize).includes(status);
 
     // 7) publication flag (only filter if DMP)
     const paperMatch = !c.hasPublication || hasPublication === true;
@@ -225,6 +226,9 @@ export class SearchFilterService {
   /** Load a saved criteria, or `null` if none */
   loadCriteria(name: string): FilterCriteria | null {
     const raw = localStorage.getItem(this.STORAGE_KEY_PREFIX + name);
-    return raw ? (JSON.parse(raw) as FilterCriteria) : null;
+    if (!raw) return null;
+    const crit = JSON.parse(raw) as FilterCriteria;
+    crit.statuses = knownStates(crit.statuses || []);
+    return crit;
   }
 }
