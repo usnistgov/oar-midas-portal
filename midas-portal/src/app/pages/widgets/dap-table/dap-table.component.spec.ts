@@ -144,4 +144,32 @@ describe('DapTableComponent', () => {
     expect(component.dataSource.data[0].id).toBe('dap-new');
     expect(component.dataSource.data[1].id).toBe('dap-old');
   });
+
+  describe('status badge', () => {
+    const badgeFor = (status: string): HTMLElement => {
+      const dataService = TestBed.inject(DataService) as any;
+      (dataService.myDaps as WritableSignal<Dap[]>)
+        .set([{ ...mockDap('dap-1', new Date()), status }]);
+      fixture.detectChanges();
+      return fixture.nativeElement.querySelector('td span.status-chip');
+    };
+
+    it('colours and labels a state the old mapping ignored', () => {
+      const badge = badgeFor('in press');
+      expect(badge.classList.contains('status-neutral')).toBe(true);
+      expect(badge.textContent!.trim()).toBe('IN PRESS');
+    });
+
+    // unwell needs somebody to act, so it must not look like the waiting states
+    it('separates unwell from the states that are merely waiting', () => {
+      expect(badgeFor('unwell').classList.contains('status-attention')).toBe(true);
+      expect(badgeFor('processing').classList.contains('status-attention')).toBe(false);
+    });
+
+    it('keeps published distinct from edit', () => {
+      expect(badgeFor('published').classList.contains('status-success')).toBe(true);
+      expect(badgeFor('edit').classList.contains('status-warning')).toBe(true);
+    });
+  });
+
 });

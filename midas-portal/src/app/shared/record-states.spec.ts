@@ -90,4 +90,28 @@ describe('record states', () => {
       expect(knownStates([])).toEqual([]);
     });
   });
+
+  // "reviewed" survived longest in these two: a fixture that ships and loads
+  // whenever the API is unreachable, and the text telling users what to filter on.
+  describe('the rest of the app agrees with this list', () => {
+    it('ships no fallback record in a state the portal cannot show', () => {
+      for (const file of ['dmp.json', 'dap.json']) {
+        const raw = readFileSync(join(__dirname, '../../assets', file), 'utf8');
+        const states = [...raw.matchAll(/"state":\s*"([^"]*)"/g)].map(m => m[1]);
+
+        expect(states.length).toBeGreaterThan(0);
+        expect(knownStates(states)).toEqual(states);
+      }
+    });
+
+    it('does not tell users to filter on a state that no longer exists', () => {
+      const help = readFileSync(
+        join(__dirname, '../components/help-dialog/help-dialog.component.html'), 'utf8');
+      const line = help.split('\n').find(l => l.includes('Process Status'));
+
+      expect(line).toBeDefined();
+      expect(line).not.toMatch(/Reviewed/);
+      expect(line).toMatch(/Edit/);
+    });
+  });
 });

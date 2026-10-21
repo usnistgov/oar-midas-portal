@@ -152,4 +152,53 @@ describe('DmpTableComponent', () => {
     expect(component.dataSource.data[0].id).toBe('dmp-new');
     expect(component.dataSource.data[1].id).toBe('dmp-old');
   });
+
+  // Rendered rather than called directly: the states other than edit and
+  // published used to reach the row with no colour class, and .status-chip
+  // paints white text on no background, so the badge was invisible.
+  describe('status badge', () => {
+    const badgeFor = (status: string): HTMLElement => {
+      const dataService = TestBed.inject(DataService) as any;
+      (dataService.myDmps as WritableSignal<Dmp[]>)
+        .set([{ ...mockDmp('dmp-1', new Date()), status }]);
+      fixture.detectChanges();
+      return fixture.nativeElement.querySelector('td span.status-chip');
+    };
+
+    const CASES: [string, string, string][] = [
+      ['edit', 'status-warning', 'EDIT'],
+      ['ready', 'status-warning', 'READY'],
+      ['processing', 'status-neutral', 'PROCESSING'],
+      ['submitted', 'status-neutral', 'SUBMITTED'],
+      ['accepted', 'status-neutral', 'ACCEPTED'],
+      ['in press', 'status-neutral', 'IN PRESS'],
+      ['published', 'status-success', 'PUBLISHED'],
+      ['unwell', 'status-attention', 'UNWELL'],
+    ];
+
+    for (const [status, cls, text] of CASES) {
+      it(`renders "${status}" as a ${cls} badge reading ${text}`, () => {
+        const badge = badgeFor(status);
+        expect(badge).toBeTruthy();
+        expect(badge.classList.contains(cls)).toBe(true);
+        expect(badge.textContent!.trim()).toBe(text);
+      });
+    }
+
+    it('never leaves a badge with only the colourless base class', () => {
+      for (const [status] of CASES) {
+        expect(badgeFor(status).classList.length).toBeGreaterThan(1);
+      }
+    });
+
+    it('still paints a badge for a state this build has not heard of', () => {
+      const badge = badgeFor('a-state-added-later');
+      expect(badge.classList.contains('status-neutral')).toBe(true);
+      expect(badge.textContent!.trim()).toBe('A-STATE-ADDED-LATER');
+    });
+
+    it('falls back to a dash when the record carries no state', () => {
+      expect(badgeFor('').textContent!.trim()).toBe('-');
+    });
+  });
 });
