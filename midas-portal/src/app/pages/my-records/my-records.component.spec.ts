@@ -71,7 +71,6 @@ function makeProviders(aclOverride?: Record<string, any>) {
     {
       provide: PeopleService,
       useValue: {
-        resolveEidLabel: jest.fn().mockReturnValue(of(null)),
         getNISTOrganizations: jest.fn().mockReturnValue(of({}))
       }
     },

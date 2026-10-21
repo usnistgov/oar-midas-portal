@@ -23,13 +23,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { take, catchError, map } from 'rxjs/operators';
 import { of, forkJoin } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { DataService } from '../../services/data.service';
 import { CredentialsService } from '../../services/credentials.service';
 import { PeopleService } from '../../services/people.service';
 import { SearchFilterService, FilterCriteria } from '../../services/search-filter.service';
 import { Dmp, Dap } from '../../models/dashboard';
-import { RecordRef, PermissionsService, GroupsService, Acls, ConfigurationService } from 'oarng';
+import { RecordRef, PermissionsService, GroupsService, Acls, SubjectLabelService } from 'oarng';
 import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
 
 type OwnedRecord = (Dmp | Dap) & { type: string };
@@ -46,8 +45,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private filterService = inject(SearchFilterService);
   private permsSvc = inject(PermissionsService);
   private groupsSvc = inject(GroupsService);
-  private configSvc = inject(ConfigurationService);
-  private http = inject(HttpClient);
+  private labelSvc = inject(SubjectLabelService);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
   private snackBar = inject(MatSnackBar);
@@ -62,10 +60,9 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate', 'permView', 'permUpdate', 'permAdmin'];
 
   readonly aclsMap = signal<{ [id: string]: Acls }>({});
-  readonly subjectLabels = signal<{ [subject: string]: string }>({});
+  readonly subjectLabels = this.labelSvc.labels;
 
-  private groupNamesCache: { [id: string]: string } = {};
-  private resolvedSubjects = new Set<string>();
+  private myGroups: { id: string; name: string }[] = [];
   private pendingAclRefresh = new Map<string, RecordRef>();
 
   readonly drawerOpen = signal(false);
@@ -361,18 +358,10 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private loadGroupsForLabels(): void {
     this.groupsSvc.getGroups().subscribe({
       next: groups => {
-        groups.forEach(g => { this.groupNamesCache[g.id] = g.name; });
-        // Re-resolve any subjects already loaded that may be group IDs
-        const current = this.subjectLabels();
-        const updates: { [s: string]: string } = {};
-        for (const [subject, label] of Object.entries(current)) {
-          if (label === subject && this.groupNamesCache[subject]) {
-            updates[subject] = this.groupNamesCache[subject];
-          }
-        }
-        if (Object.keys(updates).length) {
-          this.subjectLabels.update(m => ({ ...m, ...updates }));
-        }
+        this.myGroups = groups.map(g => ({ id: g.id, name: g.name }));
+        // group ids seen before the groups arrived are still unlabelled; rebuilding
+        // re-resolves them from the records already loaded, with no extra requests
+        this.rebuildFromRecords();
       },
       error: () => {}
     });
@@ -411,135 +400,8 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       });
 
       this.buildAdminRecords();
-      this.resolveSubjectLabels([...subjects]);
+      this.labelSvc.resolve([...subjects], this.myGroups);
     });
-  }
-
-  private readonly ORG_ENDPOINT: Record<string, string> = {
-    nistou: 'OU', nistdiv: 'Div', nistgrp: 'Group',
-  };
-
-  private resolveSubjectLabels(subjects: string[]): void {
-    const orgBaseUrl = ((this.configSvc.getConfig<any>()['orgURL'] ?? '') as string).replace(/\/index$/, '');
-
-    subjects.forEach(subject => {
-      if (this.resolvedSubjects.has(subject)) return;
-      this.resolvedSubjects.add(subject);
-
-      if (this.groupNamesCache[subject]) {
-        this.subjectLabels.update(m => ({ ...m, [subject]: this.groupNamesCache[subject] }));
-        return;
-      }
-
-      const colonIdx = subject.indexOf(':');
-      const prefix = colonIdx > 0 ? subject.substring(0, colonIdx) : '';
-      const afterColon = colonIdx > 0 ? subject.substring(colonIdx + 1) : '';
-
-      if (/^nist(ou|div|grp)$/.test(prefix)) {
-        // New format "nistdiv:13289" — query typed endpoint, use outer key (org code) for display
-        const endpoint = this.ORG_ENDPOINT[prefix];
-        if (endpoint && orgBaseUrl) {
-          this.http.get<any>(`${orgBaseUrl}/${endpoint}/index`).pipe(
-            catchError(() => of({}))
-          ).subscribe((raw: any) => {
-            const info = this.extractOrgInfo(raw, afterColon);
-            this.subjectLabels.update(m => ({
-              ...m,
-              [subject]: info ? `${info.name} (${info.code})` : subject
-            }));
-          });
-        }
-        return;
-      }
-
-      if (/^\d+$/.test(prefix) && /^\d+$/.test(afterColon)) {
-        // Legacy format "775:13289" (orgCode:orgId) — try all 3 types
-        const orgCode = prefix;
-        const orgId = afterColon;
-        if (orgBaseUrl) {
-          const endpoints = ['OU', 'Div', 'Group'];
-          forkJoin(
-            endpoints.map(ep =>
-              this.http.get<any>(`${orgBaseUrl}/${ep}/index`).pipe(
-                catchError(() => of({}))
-              )
-            )
-          ).subscribe((responses: any[]) => {
-            for (const raw of responses) {
-              const info = this.extractOrgInfoByCode(raw, orgCode, orgId);
-              if (info) {
-                this.subjectLabels.update(m => ({ ...m, [subject]: `${info.name} (${orgCode})` }));
-                return;
-              }
-            }
-          });
-        }
-        return;
-      }
-
-      if (/^[a-z]+$/.test(prefix) && /^\d+$/.test(afterColon)) {
-        // Org abbreviation format "mml:13213" — scan all 3 endpoints by orgId, get code from outer key
-        const orgId = afterColon;
-        if (orgBaseUrl) {
-          const endpoints = ['OU', 'Div', 'Group'];
-          forkJoin(
-            endpoints.map(ep =>
-              this.http.get<any>(`${orgBaseUrl}/${ep}/index`).pipe(
-                catchError(() => of({}))
-              )
-            )
-          ).subscribe((responses: any[]) => {
-            for (const raw of responses) {
-              const info = this.extractOrgInfo(raw, orgId);
-              if (info) {
-                this.subjectLabels.update(m => ({ ...m, [subject]: `${info.name} (${info.code})` }));
-                return;
-              }
-            }
-          });
-        }
-        return;
-      }
-
-      if (/^\d+$/.test(subject)) {
-        this.subjectLabels.update(m => ({ ...m, [subject]: `Org (${subject})` }));
-        return;
-      }
-
-      // Search the people API with the EID as query; look for an exact key match in the response
-      this.peopleService.resolveEidLabel(subject).subscribe(name => {
-        this.subjectLabels.update(m => ({ ...m, [subject]: name ?? subject }));
-      });
-    });
-  }
-
-  // Find org by its numeric ID; returns { name, code } where code is the outer key (org number)
-  private extractOrgInfo(raw: any, numericId: string): { name: string; code: string } | null {
-    if (!raw || typeof raw !== 'object') return null;
-    for (const [code, group] of Object.entries(raw)) {
-      if (group && typeof group === 'object') {
-        const raw_name = (group as any)[numericId];
-        if (raw_name) {
-          const name = (raw_name as string).replace(/\s*\(\d+\)\s*$/, '');
-          return { name, code };
-        }
-      }
-    }
-    return null;
-  }
-
-  // Find org by both outer key (orgCode) and inner key (orgId) — for legacy "code:id" subjects
-  private extractOrgInfoByCode(raw: any, orgCode: string, orgId: string): { name: string } | null {
-    if (!raw || typeof raw !== 'object') return null;
-    const group = raw[orgCode];
-    if (group && typeof group === 'object') {
-      const raw_name = group[orgId];
-      if (raw_name) {
-        const name = (raw_name as string).replace(/\s*\(\d+\)\s*$/, '');
-        return { name };
-      }
-    }
-    return null;
   }
 
   private loadAllAcls(): void {
@@ -568,7 +430,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
 
     this.aclsMap.set(acls);
     this.buildAdminRecords();
-    this.resolveSubjectLabels([...subjects]);
+    this.labelSvc.resolve([...subjects], this.myGroups);
   }
 
 
