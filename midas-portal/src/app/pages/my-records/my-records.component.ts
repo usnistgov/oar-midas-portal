@@ -31,6 +31,7 @@ import { SearchFilterService, FilterCriteria } from '../../services/search-filte
 import { Dmp, Dap } from '../../models/dashboard';
 import { RecordRef, PermissionsService, GroupsService, Acls, ConfigurationService } from 'oarng';
 import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
+import { RECORD_STATES } from '../../shared/record-states';
 
 type OwnedRecord = (Dmp | Dap) & { type: string };
 
@@ -144,11 +145,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   orgSuggestions: string[] = [];
 
   readonly resourceTypes = ['DMP', 'DAP'];
-  readonly statuses = [
-    { label: 'Published', value: 'published' },
-    { label: 'Edit', value: 'edit' },
-    { label: 'Reviewed', value: 'reviewed' }
-  ];
+  readonly statuses = RECORD_STATES;
 
   filterPills: string[] = [];
 
