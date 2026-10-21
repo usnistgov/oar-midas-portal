@@ -400,7 +400,7 @@
                         </th>
                         <td mat-cell *matCellDef="let item">
                             <span class="status-chip" [ngClass]="getStatusClass(item.status)">
-                                {{ item.status?.toUpperCase() || '-' }}
+                                {{ statusLabel(item.status).toUpperCase() || '-' }}
                             </span>
                         </td>
                     </ng-container>

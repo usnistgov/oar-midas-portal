@@ -1,4 +1,4 @@
-import { recordFilterPredicate, getStatusClass } from './table-utils';
+import { recordFilterPredicate } from './table-utils';
 
 describe('recordFilterPredicate', () => {
   const record = {
@@ -38,18 +38,5 @@ describe('recordFilterPredicate', () => {
 
   it('returns false when nothing matches', () => {
     expect(recordFilterPredicate(record, 'zzz')).toBe(false);
-  });
-});
-
-describe('getStatusClass', () => {
-  it('maps a known status', () => {
-    expect(getStatusClass('published')).toBe('status-success');
-  });
-
-  // the tables call this for every row, including states the old mapping ignored
-  it('maps the states that used to render as blank badges', () => {
-    expect(getStatusClass('ready')).toBe('status-warning');
-    expect(getStatusClass('in press')).toBe('status-neutral');
-    expect(getStatusClass('unwell')).toBe('status-attention');
   });
 });

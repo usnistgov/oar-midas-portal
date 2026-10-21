@@ -1,5 +1,3 @@
-import { statusClassFor } from './record-states';
-
 /**
  * Material's default predicate stringifies every field with `+`, so a record
  * matches on things the user never sees: "[object Object]" from acls, the
@@ -19,8 +17,4 @@ function searchableText(value: unknown): string {
   if (Array.isArray(value)) return value.join(' ');
   if (typeof value === 'object') return '';
   return String(value);
-}
-
-export function getStatusClass(status: string): string {
-  return statusClassFor(status);
 }
