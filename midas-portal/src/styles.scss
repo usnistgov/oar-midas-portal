@@ -318,6 +318,13 @@ mat-chip.status-chip {
     background-color: #c62828;
 }
 
+// `mat-chip.status-chip` outranks `.status-warning`, so on a real mat-chip the
+// white from .status-chip would win and leave 1.8:1 on the amber.
+.status-chip.status-warning,
+mat-chip.status-chip.status-warning {
+    color: #000;
+}
+
 // ======================================
 // Driver.js Tour Styles (uses indigo #3f51b5 to match Material primary)
 // ======================================

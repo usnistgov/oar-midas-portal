@@ -43,6 +43,29 @@ Section 508, which aligns with WCAG 2.0 Level AA, sets the legal standard for th
 - Contrast Ratio: 7.2:1
 
 
+### Status badges
+Each badge pairs an explicit background with an explicit foreground, so it is unaffected by the theme. The state name is always written in the badge, so colour is never the only channel (WCAG 1.4.1).
+
+#### Edit, Ready
+- Foreground Color : #000000
+- Background Color : #FFB300
+- Contrast Ratio: 11.7:1
+
+#### Published
+- Foreground Color : #FFFFFF
+- Background Color : #2E7D32
+- Contrast Ratio: 5.1:1
+
+#### Processing, Submitted, Accepted, In Press
+- Foreground Color : #FFFFFF
+- Background Color : #616161
+- Contrast Ratio: 6.2:1
+
+#### Unwell
+- Foreground Color : #FFFFFF
+- Background Color : #C62828
+- Contrast Ratio: 5.6:1
+
 ### Sidebar
 #### Header
 - Foreground Color : #EFF6FB
