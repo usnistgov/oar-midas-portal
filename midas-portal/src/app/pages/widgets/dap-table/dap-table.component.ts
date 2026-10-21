@@ -18,7 +18,8 @@ import { Dap } from '../../../models/dashboard';
 import { Widget } from '../../../models/dashboard';
 import { getMaxVisibleRows } from '../table-utils';
 
-import { getStatusClass as statusClassUtil, recordFilterPredicate } from '../../../shared/table-utils';
+import { recordFilterPredicate } from '../../../shared/table-utils';
+import { statusClassFor, labelFor } from '../../../shared/record-states';
 
 @Component({
   selector: 'app-dap-table',
@@ -160,8 +161,12 @@ export class DapTableComponent implements AfterViewInit {
     return this.dataService.resolveApiUrl('dapEDIT').concat(id).concat("?editEnabled=true");
   }
 
-  getStatusClass(status: string): string {
-    return statusClassUtil(status);
+  getStatusClass(status?: string): string {
+    return statusClassFor(status);
+  }
+
+  statusLabel(status?: string): string {
+    return labelFor(status);
   }
 
   createDap() {

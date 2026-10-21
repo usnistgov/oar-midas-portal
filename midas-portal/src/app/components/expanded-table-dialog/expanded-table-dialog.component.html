@@ -64,7 +64,7 @@
 
             <ng-container *ngSwitchCase="'status'">
               <span class="status-chip" [ngClass]="getStatusClass(row.status)">
-                {{ row.status?.toUpperCase() || '-' }}
+                {{ statusLabel(row.status).toUpperCase() || '-' }}
               </span>
             </ng-container>
 

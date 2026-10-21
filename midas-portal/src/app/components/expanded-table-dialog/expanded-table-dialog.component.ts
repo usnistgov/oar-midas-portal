@@ -5,7 +5,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { DataService } from '../../services/data.service';
 import { Widget } from '../../models/dashboard';
-import { getStatusClass, recordFilterPredicate } from '../../shared/table-utils';
+import { recordFilterPredicate } from '../../shared/table-utils';
+import { statusClassFor, labelFor } from '../../shared/record-states';
 import { CredentialsService } from '../../services/credentials.service';
 
 interface ColumnDef {
@@ -158,8 +159,12 @@ export class ExpandedTableDialogComponent implements AfterViewInit {
     if (this.createUrl) window.open(this.createUrl, '_blank');
   }
 
-  getStatusClass(status: string): string {
-    return getStatusClass(status);
+  getStatusClass(status?: string): string {
+    return statusClassFor(status);
+  }
+
+  statusLabel(status?: string): string {
+    return labelFor(status);
   }
 
   applyFilter(event: Event) {
