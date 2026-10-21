@@ -25,7 +25,10 @@ const makeDmp = (overrides: any = {}) => ({
   status: 'edit',
   hasPublication: false,
   keywords: ['testd'],
-  modifiedDate: new Date('2026-03-24'),
+  // The API sends "2025-02-27T19:21:23" with no offset, which JS parses as local
+  // time.  A bare "2026-03-24" would parse as UTC and land on the previous day
+  // west of Greenwich, putting every date assertion here a day out.
+  modifiedDate: new Date('2026-03-24T12:00:00'),
   ...overrides,
 });
 
@@ -342,13 +345,9 @@ describe('SearchFilterService', () => {
   });
 
   describe('date filter', () => {
-    // The API sends "2025-02-27T19:21:23" with no offset, which JS parses as
-    // local time, so the record is built the same way here.  A bare "2026-03-24"
-    // would parse as UTC and land on the previous day west of Greenwich.
     const d = (iso: string) => new Date(iso + 'T12:00:00');
-    const record = () => makeDmp({ modifiedDate: d('2026-03-24') });
     const matches = (c: Partial<FilterCriteria>) =>
-      service.filterDmpOrDapList([record()], { ...BASE_CRITERIA, ...c } as FilterCriteria).length;
+      service.filterDmpOrDapList([makeDmp()], { ...BASE_CRITERIA, ...c } as FilterCriteria).length;
 
     it('matches an exact day and rejects its neighbours', () => {
       expect(matches({ dateFilterType: 'exact', exactDate: d('2026-03-24') })).toBe(1);
@@ -373,6 +372,15 @@ describe('SearchFilterService', () => {
       expect(matches({
         dateFilterType: 'between', rangeStart: d('2025-01-01'), rangeEnd: d('2025-06-01'),
       })).toBe(0);
+    });
+
+    // one mapping in data.service leaves modifiedDate as the raw API string
+    it('filters a record whose date never got parsed into a Date', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp({ modifiedDate: '2026-03-24T12:00:00' })],
+        { ...BASE_CRITERIA, dateFilterType: 'exact', exactDate: d('2026-03-24') }
+      );
+      expect(result).toHaveLength(1);
     });
 
     it('ignores a date mode whose date was never picked', () => {
