@@ -292,9 +292,9 @@ mat-chip.status-chip {
     text-align: center;
 }
 
-// White text needs 4.5:1 against these at 12px, so the green and blue are dark
-// shades and the amber — which no light text can sit on — takes dark text.
-// Ratios: success 5.1, warning 11.7, neutral 6.2, attention 5.6, info 5.8.
+// White text needs 4.5:1 against these at 12px.  The previous values gave 2.8,
+// 1.8 and 3.1, so the green and blue are darkened and the amber — which no
+// light text can sit on — takes dark text instead.  Ratios: 5.1, 11.7, 5.8.
 .status-success {
     background-color: #2e7d32;
 }
@@ -304,18 +304,18 @@ mat-chip.status-chip {
     color: #000;
 }
 
-// waiting on the system: nothing for the owner to do
+.status-info {
+    background-color: #1565c0;
+}
+
+// waiting on the system: nothing for the owner to do.  6.2 against white.
 .status-neutral {
     background-color: #616161;
 }
 
-// stopped and needs somebody to look at it
+// stopped and needs somebody to look at it.  5.6 against white.
 .status-attention {
     background-color: #c62828;
-}
-
-.status-info {
-    background-color: #1565c0;
 }
 
 // ======================================
