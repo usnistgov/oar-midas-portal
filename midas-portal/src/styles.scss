@@ -254,17 +254,17 @@ body {
   gap: 0.25rem;
   font-size: 0.85rem;
   margin: 0;
-  color: #ccc;
+  color: #5f6368;
 }
 
 .stat-subtext p {
   margin: 0;
   font-weight: 600;
-  color: #d1495b;
+  color: #c62828;
 }
 
 .text-green {
-  color: #d1495b;
+  color: #c62828;
 }
 
 // ======================================
@@ -310,7 +310,7 @@ html {
 
 // Error-snackbar variant styling
 .mat-mdc-snack-bar-container.error-snackbar {
-  --mdc-snackbar-container-color: #2196f3 !important;
+  --mdc-snackbar-container-color: #1565c0 !important;
   --mat-mdc-snack-bar-button-color: #fff !important;
   --mdc-snackbar-supporting-text-color: #fff !important;
 }
