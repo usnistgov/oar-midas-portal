@@ -122,48 +122,80 @@ $da-dark  : mat.m2-define-dark-theme((
 // ======================================
 // 3) Emit component color styles per theme+variant
 // ======================================
+// --portal-accent-text: accent-coloured text (table links, dialog titles) needs 4.5:1
+// against the surface it sits on, which
+// a theme's primary does not give at its default shade — blue reads 3.1:1 on white
+// and cyan 2.3:1.  Each theme therefore names a shade of its own hue that clears the
+// threshold in that mode.  Ratios in the comments are against #fff (light) and the
+// Material dark surface #424242 (dark).
+
 .theme-light.light {
   @include mat.all-component-colors($pb-light);
   --info-bubble-bg:  #fff;
+  --portal-accent-text: #1565c0;   // 5.75:1
 }
 .theme-light.dark {
   @include mat.all-component-colors($pb-dark);
   --info-bubble-bg: #333;
+  --portal-accent-text: #90caf9;   // 5.74:1
 }
 
 .theme-1.light {
   @include mat.all-component-colors($ip-light);
-  --info-bubble-bg:#fff
+  --info-bubble-bg:#fff;
+  --portal-accent-text: #3f51b5;   // 6.87:1
 }
 .theme-1.dark {
   @include mat.all-component-colors($ip-dark);
   --info-bubble-bg: #333;
+  --portal-accent-text: #c5cae9;   // 6.22:1
 }
 
 .theme-2.light {
   @include mat.all-component-colors($co-light);
+  --portal-accent-text: #006064;   // 7.35:1
 }
 .theme-2.dark {
   @include mat.all-component-colors($co-dark);
+  --portal-accent-text: #4dd0e1;   // 5.47:1
 }
 
 .theme-3.light {
   @include mat.all-component-colors($tc-light);
+  --portal-accent-text: #00695c;   // 6.61:1
 }
 .theme-3.dark {
   @include mat.all-component-colors($tc-dark);
+  --portal-accent-text: #80cbc4;   // 5.39:1
 }
 
 .theme-4.light {
   @include mat.all-component-colors($da-light);
+  --portal-accent-text: #673ab7;   // 7.33:1
 }
 .theme-4.dark {
   @include mat.all-component-colors($da-dark);
+  --portal-accent-text: #d1c4e9;   // 6.12:1
 }
 
 // ======================================
 // Utility classes
 // ======================================
+
+// Exposed to assistive technology but not shown: page headings and control
+// names that would be redundant on screen.
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
 
 // Prevent background scroll when sidebar open
 .no-scroll {
@@ -171,6 +203,10 @@ $da-dark  : mat.m2-define-dark-theme((
   width: 100%;
   height: 100%;
   overflow: hidden !important;
+}
+
+:root {
+  --portal-accent-text: #1565c0;
 }
 
 // Remove default margins & horizontal overflow
@@ -218,17 +254,17 @@ body {
   gap: 0.25rem;
   font-size: 0.85rem;
   margin: 0;
-  color: #ccc;
+  color: #5f6368;
 }
 
 .stat-subtext p {
   margin: 0;
   font-weight: 600;
-  color: #d1495b;
+  color: #c62828;
 }
 
 .text-green {
-  color: #d1495b;
+  color: #c62828;
 }
 
 // ======================================
@@ -274,7 +310,7 @@ html {
 
 // Error-snackbar variant styling
 .mat-mdc-snack-bar-container.error-snackbar {
-  --mdc-snackbar-container-color: #2196f3 !important;
+  --mdc-snackbar-container-color: #1565c0 !important;
   --mat-mdc-snack-bar-button-color: #fff !important;
   --mdc-snackbar-supporting-text-color: #fff !important;
 }
@@ -292,16 +328,20 @@ mat-chip.status-chip {
     text-align: center;
 }
 
+// White text needs 4.5:1 against these at 12px.  The previous values gave 2.8,
+// 1.8 and 3.1, so the green and blue are darkened and the amber — which no
+// light text can sit on — takes dark text instead.  Ratios: 5.1, 11.7, 5.8.
 .status-success {
-    background-color: #4caf50;
+    background-color: #2e7d32;
 }
 
 .status-warning {
     background-color: #ffb300;
+    color: #000;
 }
 
 .status-info {
-    background-color: #2196f3;
+    background-color: #1565c0;
 }
 
 // ======================================

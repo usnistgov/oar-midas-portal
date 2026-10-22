@@ -188,7 +188,9 @@ mat-panel-title {
 }
 
 .advanced-search-table a {
-    color: var(--mat-badge-background-color);
+    // not the badge background: that token is a theme primary chosen as a surface
+    // colour, and several themes fail contrast when it is used as text
+    color: var(--portal-accent-text);
     text-decoration: none;
     font-weight: bold;
 }
@@ -313,7 +315,7 @@ mat-panel-title {
 }
 
 .drag-icon {
-    color: #999;
+    color: #5f6368;
     cursor: grab;
     margin-right: 4px;
 }
@@ -384,7 +386,7 @@ mat-panel-title {
     &::before {
         content: "•";
         margin-right: 8px;
-        color: #ccc;
+        color: #5f6368;
     }
 }
 

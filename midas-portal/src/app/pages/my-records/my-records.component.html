@@ -17,7 +17,7 @@
             <div class="search-controls">
               <mat-form-field appearance="outline" class="search-field small large">
                 <mat-icon matPrefix>search</mat-icon>
-                <input matInput placeholder="Filter my records…"
+                <input matInput aria-label="Filter my records" placeholder="Filter my records…"
                        [(ngModel)]="searchTerm"
                        (ngModelChange)="applyFilters()" />
               </mat-form-field>

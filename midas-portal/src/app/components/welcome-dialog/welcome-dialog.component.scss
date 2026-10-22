@@ -2,8 +2,11 @@
   display: block;
 }
 
+// the accent is kept, but from the token that is verified against the dialog
+// surface in both modes; the hardcoded blue it replaces read far below 4.5:1 on
+// a dark surface
 h2[mat-dialog-title] {
-  color: #2196f3;
+  color: var(--portal-accent-text);
   margin-bottom: 1rem;
 }
 
@@ -11,7 +14,6 @@ mat-dialog-content {
   p {
     margin-bottom: 1rem;
     line-height: 1.6;
-    color: rgba(0, 0, 0, 0.87);
 
     &:last-child {
       margin-bottom: 0;

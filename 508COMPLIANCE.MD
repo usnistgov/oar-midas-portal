@@ -43,6 +43,47 @@ Section 508, which aligns with WCAG 2.0 Level AA, sets the legal standard for th
 - Contrast Ratio: 7.2:1
 
 
+### Dashboard widgets
+#### Sub-text
+- Foreground Color : #5F6368
+- Background Color : #FFFFFF
+- Contrast Ratio: 6.1:1
+
+#### Highlighted count
+- Foreground Color : #C62828
+- Background Color : #FFFFFF
+- Contrast Ratio: 5.6:1
+
+### Notifications
+#### Snackbar text
+- Foreground Color : #FFFFFF
+- Background Color : #1565C0
+- Contrast Ratio: 5.8:1
+
+### System status icons
+The glyph differs per status (check, schedule, warning), so colour is not the only
+signal. These are non-text content, needing 3:1, but are set well past it.
+
+#### All OK
+- Foreground Color : #2E7D32
+- Background Color : #FFFFFF
+- Contrast Ratio: 5.1:1
+
+#### Maintenance scheduled
+- Foreground Color : #A35200
+- Background Color : #FFFFFF
+- Contrast Ratio: 5.6:1
+
+#### Under maintenance
+- Foreground Color : #C62828
+- Background Color : #FFFFFF
+- Contrast Ratio: 5.6:1
+
+### Column drag handle
+- Foreground Color : #757575
+- Background Color : #FFFFFF
+- Contrast Ratio: 4.6:1
+
 ### Sidebar
 #### Header
 - Foreground Color : #EFF6FB
