@@ -213,6 +213,7 @@
                         <mat-checkbox class="checkbox" color="primary" labelPosition="before"
                             [(ngModel)]="hasPaperPublication"
                             aria-labelledby="paper-publication-label">
+                        <span class="visually-hidden">Associated Paper Publication</span>
                         </mat-checkbox>
                     </div>
 
@@ -315,6 +316,7 @@
                             [checked]="isAllSelected()"
                             [indeterminate]="isPartlySelected()"
                             aria-label="Select all records">
+                            <span class="visually-hidden">Select all records</span>
                             </mat-checkbox>
                         </th>
                         <td mat-cell *matCellDef="let row">
@@ -323,6 +325,7 @@
                             (change)="toggleRow(row)"
                             [checked]="selection.isSelected(row)"
                             [aria-label]="'Select ' + (row.name || row.id)">
+                            <span class="visually-hidden">Select {{ row.name || row.id }}</span>
                             </mat-checkbox>
                         </td>
                         </ng-container>

@@ -109,9 +109,9 @@
                             class="filter-field filter-field--daterange small">
               <mat-label>Date range</mat-label>
               <mat-date-range-input [rangePicker]="pickerRange">
-                <input matStartDate placeholder="Start"
+                <input matStartDate aria-label="Start date" placeholder="Start"
                        [(ngModel)]="dateRange.start" (ngModelChange)="applyFilters()" />
-                <input matEndDate placeholder="End"
+                <input matEndDate aria-label="End date" placeholder="End"
                        [(ngModel)]="dateRange.end" (ngModelChange)="applyFilters()" />
               </mat-date-range-input>
               <mat-datepicker-toggle matSuffix [for]="pickerRange"></mat-datepicker-toggle>
