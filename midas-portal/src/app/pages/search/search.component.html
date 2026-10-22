@@ -10,7 +10,7 @@
                 <div class="search-controls">
                     <mat-form-field appearance="outline" class="search-field small large" data-tour="search-input">
                         <mat-icon matPrefix>search</mat-icon>
-                        <input matInput placeholder="Search dmp, dap..." [(ngModel)]="searchTerm"
+                        <input matInput aria-label="Search records" placeholder="Search dmp, dap..." [(ngModel)]="searchTerm"
                             (keydown.enter)="performSearch()" />
                     </mat-form-field>
 
