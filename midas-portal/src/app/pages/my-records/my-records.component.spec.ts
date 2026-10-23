@@ -559,6 +559,31 @@ describe('onPermissionsChanged()', () => {
     })
   );
 
+  // mdm1:0004 held rperlner in write only. The panel listed him, the Update tab
+  // did not, so granting someone write looked like it had not taken effect.
+  it('shows a newly granted write-only subject in the update tab', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    const granted = { ...defaultAcls['dmp-1'], write: ['rperlner'] };
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockImplementation((record: { id: string }) =>
+      of(record.id === 'dmp-1' ? granted : defaultAcls[record.id]).pipe(delay(1))
+    );
+
+    openDrawerFor(component, 'dmp-1');
+    of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
+    tick(10);
+
+    expect(component.aclsMap()['dmp-1'].write).toContain('rperlner');
+    expect(component.getSubjectsForLevel('dmp-1', 'update')).toContain('rperlner');
+
+    // and nothing the record names may go unlisted
+    const placed = component.recordSubjectsByLevel('dmp-1').flatMap(g => g.subjects);
+    expect(placed.sort()).toEqual(component.recordSubjects('dmp-1').sort());
+  }));
+
   it('refreshes again on a second edit of the same record', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
