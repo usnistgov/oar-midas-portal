@@ -87,4 +87,33 @@ describe('DownloadService', () => {
     const messages = snack.open.mock.calls.map(c => c[0]).join(' | ');
     expect(messages).not.toContain('Downloaded PDF files');
   });
+
+  // the suite above mocks createJsonDownload away, so its body was never run;
+  // this exercises the real one, which writes the API-response file
+  describe('createJsonDownload (real implementation)', () => {
+    let written: string;
+
+    beforeEach(() => {
+      (service as any).createJsonDownload.mockRestore();
+      written = '';
+      jest.spyOn(service as any, 'downloadBlob').mockImplementation((blob: any) => {
+        written = (blob as any)._text ?? '';
+      });
+      (global as any).Blob = class {
+        _text: string;
+        constructor(parts: string[]) { this._text = parts.join(''); }
+      };
+    });
+
+    it('writes the whole record, acls included', () => {
+      const records = [
+        { id: 'mdm1:1', name: 'One', acls: { read: ['atl1', 'grp0:public'], write: ['atl1'] } },
+        { id: 'mdm1:2', name: 'Two', acls: { read: ['bob'] } }
+      ];
+
+      (service as any).createJsonDownload(records, 'records.json');
+
+      expect(JSON.parse(written)).toEqual(records);
+    });
+  });
 });

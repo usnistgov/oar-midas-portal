@@ -217,8 +217,7 @@ export class DownloadService {
    */
   private createJsonDownload(data: any[], filename: string): void {
     try {
-      // acls carry user and group IDs; they don't belong in a downloaded file.
-      const jsonData = JSON.stringify(data.map(({ acls, ...rest }) => rest), null, 2);
+      const jsonData = JSON.stringify(data, null, 2);
       const blob = new Blob([jsonData], { type: 'application/json' });
       this.downloadBlob(blob, filename);
     } catch {
