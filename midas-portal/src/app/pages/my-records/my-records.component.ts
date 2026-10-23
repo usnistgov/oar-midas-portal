@@ -448,8 +448,10 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     const w = (acls.write  ?? []).includes(subject);
     const a = (acls.admin  ?? []).includes(subject);
     const d = (acls.delete ?? []).includes(subject);
+    // write alone is enough to be an updater: the permission manager grants
+    // write without read, and requiring both dropped those subjects entirely
     if (a) return 'admin';
-    if (w && r) return 'update';
+    if (w) return 'update';
     if (r) return 'view';
     return null;
   }

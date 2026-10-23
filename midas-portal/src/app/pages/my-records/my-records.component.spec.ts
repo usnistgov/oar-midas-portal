@@ -280,12 +280,39 @@ describe('subjectPermLevel()', () => {
     expect(component.subjectPermLevel('dmp-1', 'alice')).toBeNull();
   }));
 
-  it('returns null when subject has write but not read (partial ACL)', fakeAsync(() => {
+  // the permission manager grants write without read, and the panel shows such a
+  // subject under Update; requiring read here hid them from the record's tabs
+  it('treats write without read as update, as the permission manager does', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
     tick();
     component.aclsMap.set({ 'dmp-1': { read: [], write: ['alice'], admin: [], delete: [] } });
-    expect(component.subjectPermLevel('dmp-1', 'alice')).toBeNull();
+    expect(component.subjectPermLevel('dmp-1', 'alice')).toBe('update');
+  }));
+
+  // mdm1:0004: rperlner held write only and vanished from the Update tab while
+  // the access control panel listed him
+  it('keeps every subject of a real record, at the level the panel shows', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+    component.aclsMap.set({
+      'mdm1:0004': {
+        read:   ['TestId', 'grp0:public', 'cnd7', 'grg2'],
+        write:  ['rperlner', 'cnd7', 'grg2'],
+        admin:  ['TestId', 'mnm16', 'cnd7'],
+        delete: ['cnd7']
+      }
+    });
+
+    expect(component.subjectPermLevel('mdm1:0004', 'rperlner')).toBe('update');
+    expect(component.subjectPermLevel('mdm1:0004', 'grg2')).toBe('update');
+    expect(component.subjectPermLevel('mdm1:0004', 'cnd7')).toBe('admin');
+    expect(component.subjectPermLevel('mdm1:0004', 'grp0:public')).toBe('view');
+
+    // no subject of the record may be dropped
+    const placed = component.recordSubjectsByLevel('mdm1:0004').flatMap(g => g.subjects);
+    expect(placed.sort()).toEqual(component.recordSubjects('mdm1:0004').sort());
   }));
 });
 
@@ -382,17 +409,16 @@ describe('recordSubjectsByLevel()', () => {
     expect(viewEntry?.subjects).toContain('carol');
   }));
 
-  it('excludes subjects with partial ACL state (null level)', fakeAsync(() => {
+  it('groups a write-only subject under update rather than dropping it', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
     tick();
-    // dave has write but not read — should be excluded
+    // dave has write but not read, which the permission manager allows
     component.aclsMap.set({
       'dmp-1': { read: [], write: ['dave'], admin: [], delete: [] }
     });
     const grouped = component.recordSubjectsByLevel('dmp-1');
-    const allSubjects = grouped.flatMap(g => g.subjects);
-    expect(allSubjects).not.toContain('dave');
+    expect(grouped.find(g => g.level === 'update')?.subjects).toContain('dave');
   }));
 });
 
