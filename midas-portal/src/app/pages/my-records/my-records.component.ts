@@ -28,7 +28,10 @@ import { CredentialsService } from '../../services/credentials.service';
 import { PeopleService } from '../../services/people.service';
 import { SearchFilterService, FilterCriteria } from '../../services/search-filter.service';
 import { Dmp, Dap } from '../../models/dashboard';
-import { RecordRef, PermissionsService, GroupsService, Acls, SubjectLabelService } from 'oarng';
+import {
+  RecordRef, PermissionsService, GroupsService, Acls, SubjectLabelService,
+  PermissionLevel, aclSubjects, subjectPermissionLevel
+} from 'oarng';
 import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
 
 type OwnedRecord = (Dmp | Dap) & { type: string };
@@ -435,25 +438,11 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
 
 
   recordSubjects(id: string): string[] {
-    const acls = this.aclsMap()[id];
-    if (!acls) return [];
-    const all = [...(acls.read ?? []), ...(acls.write ?? []), ...(acls.admin ?? []), ...(acls.delete ?? [])];
-    return [...new Set(all)];
+    return aclSubjects(this.aclsMap()[id]);
   }
 
-  subjectPermLevel(id: string, subject: string): 'admin' | 'update' | 'view' | null {
-    const acls = this.aclsMap()[id];
-    if (!acls) return null;
-    const r = (acls.read   ?? []).includes(subject);
-    const w = (acls.write  ?? []).includes(subject);
-    const a = (acls.admin  ?? []).includes(subject);
-    const d = (acls.delete ?? []).includes(subject);
-    // write alone is enough to be an updater: the permission manager grants
-    // write without read, and requiring both dropped those subjects entirely
-    if (a) return 'admin';
-    if (w) return 'update';
-    if (r) return 'view';
-    return null;
+  subjectPermLevel(id: string, subject: string): PermissionLevel | null {
+    return subjectPermissionLevel(this.aclsMap()[id], subject);
   }
 
   recordSubjectsByLevel(id: string): { level: 'admin' | 'update' | 'view'; subjects: string[] }[] {
