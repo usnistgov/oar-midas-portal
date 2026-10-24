@@ -67,6 +67,10 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
 
   private myGroups: { id: string; name: string }[] = [];
   private pendingAclRefresh = new Map<string, RecordRef>();
+  // Records whose acls were refetched after a permission edit.  The record
+  // listings carry acls too, but a listing fetched before the edit would put
+  // the old ones back, which is how the table came to disagree with the panel.
+  private freshlyEdited = new Set<string>();
 
   readonly drawerOpen = signal(false);
   readonly activeDrawerTab = signal(0);
@@ -85,7 +89,10 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       const dmps = this.dataService.dmps();
       const daps = this.dataService.daps();
       if (!dmps.length && !daps.length) return;
-      untracked(() => this.rebuildFromRecords());
+      untracked(() => {
+        this.freshlyEdited.clear();
+        this.rebuildFromRecords();
+      });
     }, { allowSignalWrites: true });
 
     this.selection.changed.pipe(
@@ -394,6 +401,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
         const next = { ...m };
         for (const { id, acls } of resolved) {
           next[id] = acls;
+          this.freshlyEdited.add(id);
           for (const s of [...(acls.read ?? []), ...(acls.write ?? []),
                            ...(acls.admin ?? []), ...(acls.delete ?? [])]) {
             subjects.add(s);
@@ -431,7 +439,13 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       console.warn(`${missing} record(s) returned without acls; they cannot be shown here.`);
     }
 
-    this.aclsMap.set(acls);
+    this.aclsMap.update(m => {
+      const next = { ...m, ...acls };
+      for (const id of this.freshlyEdited) {
+        if (m[id]) next[id] = m[id];
+      }
+      return next;
+    });
     this.buildAdminRecords();
     this.labelSvc.resolve([...subjects], this.myGroups);
   }

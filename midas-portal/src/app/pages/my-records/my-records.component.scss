@@ -352,10 +352,16 @@ mat-chip-option {
     font-size: 0.82rem;
     color: rgba(0, 0, 0, 0.78);
     word-break: break-word;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    // each name is itself "Last, First", so they cannot share a line
+    li { display: block; }
 
     &--view   { color: #1565c0; }
     &--update { color: #2e7d32; }
-    &--admin  { color: #e65100; }
+    &--admin  { color: #a35200; }  // #e65100 read 3.8:1 on white
 }
 
 // ─── Permissions drawer ───────────────────────────────────────────────────

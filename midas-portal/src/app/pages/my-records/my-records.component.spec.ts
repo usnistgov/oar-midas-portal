@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { SubjectLabelService } from 'oarng';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -363,6 +364,46 @@ describe('recordSubjects()', () => {
   }));
 });
 
+describe('getSubjectsForLevel() — one entry per person', () => {
+  let component: MyRecordsComponent;
+  let fixture: ComponentFixture<MyRecordsComponent>;
+  const labelsSignal = signal<Record<string, string>>({});
+
+  beforeEach(async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      declarations: [MyRecordsComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule, NoopAnimationsModule,
+                FormsModule, ReactiveFormsModule, MatAutocompleteModule],
+      providers: [
+        ...makeProviders(),
+        { provide: SubjectLabelService, useValue: { labels: labelsSignal, resolve: jest.fn() } }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+    fixture = TestBed.createComponent(MyRecordsComponent);
+    component = fixture.componentInstance;
+  });
+
+  // Labels are "Last, First", so the table must keep them as separate entries.
+  // Joining them produced "TestId, Lu, John, Smith, Ashley", which cannot be read.
+  it('keeps each label a separate entry even when labels contain commas', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    component.aclsMap.set({
+      'dmp-1': { read: [], write: [], admin: ['TestId', 'jl1', 'as2'], delete: [] }
+    });
+    labelsSignal.set({ jl1: 'Lu, John', as2: 'Smith, Ashley' });
+
+    const names = component.getSubjectsForLevel('dmp-1', 'admin');
+
+    expect(names).toEqual(['TestId', 'Lu, John', 'Smith, Ashley']);
+    expect(names.length).toBe(3);
+  }));
+});
+
 describe('recordSubjectsByLevel()', () => {
   let component: MyRecordsComponent;
   let fixture: ComponentFixture<MyRecordsComponent>;
@@ -582,6 +623,32 @@ describe('onPermissionsChanged()', () => {
     // and nothing the record names may go unlisted
     const placed = component.recordSubjectsByLevel('dmp-1').flatMap(g => g.subjects);
     expect(placed.sort()).toEqual(component.recordSubjects('dmp-1').sort());
+  }));
+
+  // The record listings carry acls as well.  A listing fetched before the edit
+  // used to replace the whole map and put the old permissions back, which is how
+  // the table came to show a different level from the panel beside it.
+  it('does not let a stale record listing revert a refreshed record', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    const granted = { ...defaultAcls['dmp-1'], admin: ['newadmin'] };
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockImplementation((record: { id: string }) =>
+      of(record.id === 'dmp-1' ? granted : defaultAcls[record.id]).pipe(delay(1))
+    );
+
+    openDrawerFor(component, 'dmp-1');
+    of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
+    tick(10);
+    expect(component.getSubjectsForLevel('dmp-1', 'admin')).toContain('newadmin');
+
+    // a rebuild from the listing already in memory must not undo it
+    (component as any).rebuildFromRecords();
+
+    expect(component.aclsMap()['dmp-1'].admin).toContain('newadmin');
+    expect(component.getSubjectsForLevel('dmp-1', 'admin')).toContain('newadmin');
   }));
 
   it('refreshes again on a second edit of the same record', fakeAsync(() => {

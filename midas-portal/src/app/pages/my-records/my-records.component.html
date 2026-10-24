@@ -270,7 +270,11 @@
                 <th mat-header-cell *matHeaderCellDef class="perm-th">View</th>
                 <td mat-cell *matCellDef="let d" class="perm-td">
                   @if (getSubjectsForLevel(d.id, 'view').length) {
-                    <span class="perm-names perm-names--view">{{ getSubjectsForLevel(d.id, 'view').join(', ') }}</span>
+                    <ul class="perm-names perm-names--view">
+                      @for (name of getSubjectsForLevel(d.id, 'view'); track name) {
+                        <li>{{ name }}</li>
+                      }
+                    </ul>
                   } @else {
                     <span class="perm-empty" aria-hidden="true">—</span>
                   }
@@ -282,7 +286,11 @@
                 <th mat-header-cell *matHeaderCellDef class="perm-th">Update</th>
                 <td mat-cell *matCellDef="let d" class="perm-td">
                   @if (getSubjectsForLevel(d.id, 'update').length) {
-                    <span class="perm-names perm-names--update">{{ getSubjectsForLevel(d.id, 'update').join(', ') }}</span>
+                    <ul class="perm-names perm-names--update">
+                      @for (name of getSubjectsForLevel(d.id, 'update'); track name) {
+                        <li>{{ name }}</li>
+                      }
+                    </ul>
                   } @else {
                     <span class="perm-empty" aria-hidden="true">—</span>
                   }
@@ -294,7 +302,11 @@
                 <th mat-header-cell *matHeaderCellDef class="perm-th">Admin</th>
                 <td mat-cell *matCellDef="let d" class="perm-td">
                   @if (getSubjectsForLevel(d.id, 'admin').length) {
-                    <span class="perm-names perm-names--admin">{{ getSubjectsForLevel(d.id, 'admin').join(', ') }}</span>
+                    <ul class="perm-names perm-names--admin">
+                      @for (name of getSubjectsForLevel(d.id, 'admin'); track name) {
+                        <li>{{ name }}</li>
+                      }
+                    </ul>
                   } @else {
                     <span class="perm-empty" aria-hidden="true">—</span>
                   }
