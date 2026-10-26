@@ -14,8 +14,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { HttpClient } from '@angular/common/http';
-import { catchError, finalize, map, Observable, of, startWith, forkJoin } from 'rxjs';
+import { finalize, map, Observable, of, Subject, switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { HelpDialogComponent } from '../../components/help-dialog/help-dialog.component';
@@ -27,7 +27,7 @@ import { ExportService } from '../../services/export.service';
 import { DownloadService } from '../../services/download.service';
 import { DataService } from '../../services/data.service';
 import { PeopleService } from '../../services/people.service';
-import { FilterCriteria, SearchFilterService } from '../../services/search-filter.service';
+import { FilterCriteria, SearchFilterService, buildSearchFilter, searchTargets } from '../../services/search-filter.service';
 import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
 import { SelectionModel } from '@angular/cdk/collections';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -80,6 +80,9 @@ export class SearchComponent {
 
   /** Whether data or filters are currently loading */
   isLoading = false;
+  /** true while server results are on screen, so live updates do not replace them */
+  private searchActive = false;
+  private searchRequests = new Subject<FilterCriteria>();
   /** flag indicating if user hit search. TODO: make this a signal? */
   searchPerformed = false;
   /** Controls visibility of the export menu */
@@ -249,26 +252,52 @@ export class SearchComponent {
     return this.config['dapEDIT']?.value
   }
 
-  length = computed(() => {
-  return this.dataService.dmps().length + this.dataService.daps().length;
-});
+  length = 0;
+  /** set when a collection could not be searched, so a failure is not shown as no results */
+  searchError = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private http: HttpClient,
-    private dataService: DataService,
+  constructor(private dataService: DataService,
     private peopleService: PeopleService,
     private exportService: ExportService,
     private downloadService: DownloadService,
     private filterService: SearchFilterService,
     private liveAnnouncer: LiveAnnouncer) {
-    this.dataSource.filterPredicate = (d: Dmp, filter: string) =>
-      d.name.toLowerCase().includes(filter) ||
-      d.owner.toLowerCase().includes(filter) ||
-      d.primaryContact.toLowerCase().includes(filter);
     effect(() => {
-      this.updateDataSource();
+      const dmps = this.dataService.dmps();
+      const daps = this.dataService.daps();
+      if (this.searchActive) return;
+      this.setRows([...dmps, ...daps]);
+    });
+
+    this.searchRequests.pipe(
+      switchMap(crit => {
+        const filters = this.filtersFor(crit);
+        return Object.keys(filters).length
+          ? this.dataService.advancedSearch(filters)
+          : of({ rows: [...this.dataService.dmps(), ...this.dataService.daps()],
+                 failed: [] as ('dmp' | 'dap')[] });
+      }),
+      takeUntilDestroyed()
+    ).subscribe({
+      next: ({ rows, failed }) => {
+        this.isLoading = false;
+        this.setRows(rows);
+        if (failed.length) {
+          this.searchError = `Could not search ${failed.map(f => f.toUpperCase()).join(' and ')} records.`;
+          this.liveAnnouncer.announce(this.searchError, 'assertive');
+        } else {
+          this.searchError = '';
+          this.liveAnnouncer.announce(`Found ${rows.length} records`, 'polite');
+        }
+      },
+      error: () => {
+        this.isLoading = false;
+        this.searchError = 'The search could not be completed.';
+        this.liveAnnouncer.announce(this.searchError, 'assertive');
+      }
     });
   }
 
@@ -548,22 +577,24 @@ searchOrgIndex(queryString: string): void {
    * or toggles the "has paper publication" filter.
    */
   applyFilters() {
-  const crit = this.currentCriteria();
-  //console.log('Applying filters:', crit);
-  const merged: DmpOrDap[] = [
-    ...this.dataService.dmps(),
-    ...this.dataService.daps()
-  ];
-  const filtered = this.filterService.filterDmpOrDapList(merged, crit);
-  this.dataSource.data = filtered;
-  this.paginator?.firstPage();
+    const crit = this.currentCriteria();
+    // everything goes through the subject, so an in-flight search is always superseded
+    this.searchActive = Object.keys(this.filtersFor(crit)).length > 0;
+    this.searchError = '';
+    this.isLoading = this.searchActive;
+    if (this.searchActive) this.liveAnnouncer.announce('Searching', 'polite');
+    this.searchRequests.next(crit);
+  }
 
-  // Announce results to screen readers (508 compliance - Issue #3)
-  this.liveAnnouncer.announce(
-    `Found ${filtered.length} of ${merged.length} records`,
-    'polite'
-  );
-}
+  /** The contact name sits in a different field per collection, so each gets its own filter. */
+  private filtersFor(c: FilterCriteria): Partial<Record<'dmp' | 'dap', object>> {
+    const filters: Partial<Record<'dmp' | 'dap', object>> = {};
+    for (const target of searchTargets(c)) {
+      const filter = buildSearchFilter(c, target);
+      if (filter) filters[target] = filter;
+    }
+    return filters;
+  }
 
   /**
    * Clears all filters and simulates loading (used by "Clear Filters" button).
@@ -727,37 +758,6 @@ searchOrgIndex(queryString: string): void {
   }
 
 
-  searchWithTextQuery(url: string, searchTerm: string, type: string, authToken: string): Observable<any[]> {
-    const searchJSON = {
-      filter: {
-        $and: [
-          {
-            $text: {
-              $search: searchTerm
-            }
-          }
-        ]
-      },
-      permissions: ['read', 'write']
-    };
-
-    return this.http.post(url, searchJSON, {
-      headers: {
-        Authorization: 'Bearer ' + authToken
-      }
-    }).pipe(
-      map((responseData: any) => {
-        if (responseData) {
-          console.log(`Loaded ${responseData.length} ${type} records`);
-          console.log(responseData);
-          return responseData;
-        } else {
-          console.log(`No ${type} records found`);
-          return [];
-        }
-      })
-    );
-  }
 
   ngOnInit() {
   this.isLoading = true;
@@ -815,14 +815,18 @@ searchOrgIndex(queryString: string): void {
   }
 
   private updateDataSource() {
-    const merged: DmpOrDap[] = [
-      ...this.dataService.dmps(),
-      ...this.dataService.daps()
-    ];
-    //console.log('Merged data:', merged);
-    this.dataSource.data = merged;
+    this.searchActive = false;
+    this.setRows([...this.dataService.dmps(), ...this.dataService.daps()]);
+  }
+
+  /** Rows are new objects on every search, so selection by reference has to be dropped. */
+  private setRows(rows: DmpOrDap[]) {
+    this.dataSource.data = rows;
+    this.length = rows.length;
+    this.selection.clear();
     if (this.paginator) this.dataSource.paginator = this.paginator;
     if (this.sort) this.dataSource.sort = this.sort;
+    this.paginator?.firstPage();
   }
 
 
@@ -844,30 +848,4 @@ searchOrgIndex(queryString: string): void {
   }
 
 
-  /** Re‐fetch from the server and re‐apply current filters */
-  refreshResults() {
-    this.isLoading = true;
-
-    this.dataService.getDmps().pipe(
-      finalize(() => this.isLoading = false)
-    ).subscribe({
-      next: list => {
-        // update the master list
-        this.updateDataSource();
-
-        // if we have already applied filters at least once, re‐apply them
-        if (this.hasFilters()) {
-          this.applyFilters();
-        }
-      },
-      error: err => {
-        console.error('Refresh failed', err);
-        this._snackBar.open(
-          'Failed to refresh from MDSTest server.',
-          'Dismiss',
-          { duration: 3000 }
-        );
-      }
-    });
-  }
 }
