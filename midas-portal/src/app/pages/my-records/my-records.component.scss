@@ -356,8 +356,23 @@ mat-chip-option {
     margin: 0;
     padding: 0;
 
-    // each name is itself "Last, First", so they cannot share a line
-    li { display: block; }
+    li {
+        display: flex;
+        align-items: flex-start;
+        gap: 4px;
+        line-height: 19px;
+    }
+
+    // the icon box matches the line box so it sits on the first line of a name
+    // long enough to wrap
+    .perm-kind-icon {
+        flex: none;
+        font-size: 15px;
+        width: 15px;
+        height: 19px;
+        line-height: 19px;
+        opacity: 0.75;
+    }
 
     &--view   { color: #1565c0; }
     &--update { color: #2e7d32; }

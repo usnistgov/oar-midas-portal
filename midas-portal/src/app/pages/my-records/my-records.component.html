@@ -271,8 +271,12 @@
                 <td mat-cell *matCellDef="let d" class="perm-td">
                   @if (getSubjectsForLevel(d.id, 'view').length) {
                     <ul class="perm-names perm-names--view">
-                      @for (name of getSubjectsForLevel(d.id, 'view'); track name) {
-                        <li>{{ name }}</li>
+                      @for (s of getSubjectsForLevel(d.id, 'view'); track s.id) {
+                        <li>
+                          <mat-icon class="perm-kind-icon" aria-hidden="true">{{ s.group ? 'corporate_fare' : 'person' }}</mat-icon>
+                          @if (s.group) { <span class="cdk-visually-hidden">Group:</span> }
+                          <span>{{ s.label }}</span>
+                        </li>
                       }
                     </ul>
                   } @else {
@@ -287,8 +291,12 @@
                 <td mat-cell *matCellDef="let d" class="perm-td">
                   @if (getSubjectsForLevel(d.id, 'update').length) {
                     <ul class="perm-names perm-names--update">
-                      @for (name of getSubjectsForLevel(d.id, 'update'); track name) {
-                        <li>{{ name }}</li>
+                      @for (s of getSubjectsForLevel(d.id, 'update'); track s.id) {
+                        <li>
+                          <mat-icon class="perm-kind-icon" aria-hidden="true">{{ s.group ? 'corporate_fare' : 'person' }}</mat-icon>
+                          @if (s.group) { <span class="cdk-visually-hidden">Group:</span> }
+                          <span>{{ s.label }}</span>
+                        </li>
                       }
                     </ul>
                   } @else {
@@ -303,8 +311,12 @@
                 <td mat-cell *matCellDef="let d" class="perm-td">
                   @if (getSubjectsForLevel(d.id, 'admin').length) {
                     <ul class="perm-names perm-names--admin">
-                      @for (name of getSubjectsForLevel(d.id, 'admin'); track name) {
-                        <li>{{ name }}</li>
+                      @for (s of getSubjectsForLevel(d.id, 'admin'); track s.id) {
+                        <li>
+                          <mat-icon class="perm-kind-icon" aria-hidden="true">{{ s.group ? 'corporate_fare' : 'person' }}</mat-icon>
+                          @if (s.group) { <span class="cdk-visually-hidden">Group:</span> }
+                          <span>{{ s.label }}</span>
+                        </li>
                       }
                     </ul>
                   } @else {

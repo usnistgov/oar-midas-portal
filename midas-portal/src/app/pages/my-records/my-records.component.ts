@@ -30,11 +30,14 @@ import { SearchFilterService, FilterCriteria } from '../../services/search-filte
 import { Dmp, Dap } from '../../models/dashboard';
 import {
   RecordRef, PermissionsService, GroupsService, Acls, SubjectLabelService,
-  PermissionLevel, aclSubjects, subjectPermissionLevel
+  PermissionLevel, aclSubjects, subjectPermissionLevel, isGroupSubject
 } from 'oarng';
 import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
 
 type OwnedRecord = (Dmp | Dap) & { type: string };
+
+/** A subject as the permission columns show it: a name, and whether it names a group. */
+type SubjectEntry = { id: string; label: string; group: boolean };
 
 @Component({
   selector: 'app-my-records',
@@ -470,11 +473,15 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       .map(l => ({ level: l, subjects: groups[l] }));
   }
 
-  getSubjectsForLevel(id: string, level: 'view' | 'update' | 'admin'): string[] {
+  getSubjectsForLevel(id: string, level: 'view' | 'update' | 'admin'): SubjectEntry[] {
     const group = this.recordSubjectsByLevel(id).find(g => g.level === level);
     if (!group) return [];
     const labels = this.subjectLabels();
-    return group.subjects.map(s => labels[s] || s);
+    return group.subjects.map(s => ({
+      id: s,
+      label: labels[s] || s,
+      group: isGroupSubject(s, this.myGroups),
+    }));
   }
 
   linkto(id: string, rectype: string): string {

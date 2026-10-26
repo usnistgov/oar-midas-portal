@@ -364,7 +364,7 @@ describe('recordSubjects()', () => {
   }));
 });
 
-describe('getSubjectsForLevel() — one entry per person', () => {
+describe('getSubjectsForLevel() — one entry per subject', () => {
   let component: MyRecordsComponent;
   let fixture: ComponentFixture<MyRecordsComponent>;
   const labelsSignal = signal<Record<string, string>>({});
@@ -385,22 +385,46 @@ describe('getSubjectsForLevel() — one entry per person', () => {
     component = fixture.componentInstance;
   });
 
-  // Labels are "Last, First", so the table must keep them as separate entries.
-  // Joining them produced "TestId, Lu, John, Smith, Ashley", which cannot be read.
+  // A group's name holds a comma of its own — "Security Test, Validation and
+  // Measurement Group (77305)" is one group — so the table must keep every
+  // subject a separate entry. Joining them read as one run of unrelated names.
   it('keeps each label a separate entry even when labels contain commas', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
     tick();
 
     component.aclsMap.set({
-      'dmp-1': { read: [], write: [], admin: ['TestId', 'jl1', 'as2'], delete: [] }
+      'dmp-1': { read: [], write: [], admin: ['TestId', '77305', 'as2'], delete: [] }
     });
-    labelsSignal.set({ jl1: 'Lu, John', as2: 'Smith, Ashley' });
+    labelsSignal.set({
+      '77305': 'Security Test, Validation and Measurement Group (77305)',
+      as2: 'Ashley Smith'
+    });
 
-    const names = component.getSubjectsForLevel('dmp-1', 'admin');
+    const names = component.getSubjectsForLevel('dmp-1', 'admin').map(s => s.label);
 
-    expect(names).toEqual(['TestId', 'Lu, John', 'Smith, Ashley']);
-    expect(names.length).toBe(3);
+    expect(names).toEqual([
+      'TestId', 'Security Test, Validation and Measurement Group (77305)', 'Ashley Smith'
+    ]);
+  }));
+
+  it('says which entries are groups so the comma in a group name reads as its own', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    component.aclsMap.set({
+      'dmp-1': { read: [], write: [], admin: ['77305', 'as2'], delete: [] }
+    });
+    labelsSignal.set({
+      '77305': 'Security Test, Validation and Measurement Group (77305)',
+      as2: 'Ashley Smith'
+    });
+
+    const entries = component.getSubjectsForLevel('dmp-1', 'admin');
+
+    expect(entries.find(e => e.label.endsWith('(77305)'))!.group).toBe(true);
+    expect(entries.find(e => e.label === 'Ashley Smith')!.group).toBe(false);
   }));
 });
 
@@ -596,7 +620,7 @@ describe('onPermissionsChanged()', () => {
       tick(10);
 
       expect(component.aclsMap()['dmp-1']).toEqual(updatedAcls);
-      expect(component.getSubjectsForLevel('dmp-1', 'view')).toContain('newuser');
+      expect(component.getSubjectsForLevel('dmp-1', 'view').map(s => s.label)).toContain('newuser');
     })
   );
 
@@ -618,7 +642,7 @@ describe('onPermissionsChanged()', () => {
     tick(10);
 
     expect(component.aclsMap()['dmp-1'].write).toContain('rperlner');
-    expect(component.getSubjectsForLevel('dmp-1', 'update')).toContain('rperlner');
+    expect(component.getSubjectsForLevel('dmp-1', 'update').map(s => s.label)).toContain('rperlner');
 
     // and nothing the record names may go unlisted
     const placed = component.recordSubjectsByLevel('dmp-1').flatMap(g => g.subjects);
@@ -642,13 +666,13 @@ describe('onPermissionsChanged()', () => {
     openDrawerFor(component, 'dmp-1');
     of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
     tick(10);
-    expect(component.getSubjectsForLevel('dmp-1', 'admin')).toContain('newadmin');
+    expect(component.getSubjectsForLevel('dmp-1', 'admin').map(s => s.label)).toContain('newadmin');
 
     // a rebuild from the listing already in memory must not undo it
     (component as any).rebuildFromRecords();
 
     expect(component.aclsMap()['dmp-1'].admin).toContain('newadmin');
-    expect(component.getSubjectsForLevel('dmp-1', 'admin')).toContain('newadmin');
+    expect(component.getSubjectsForLevel('dmp-1', 'admin').map(s => s.label)).toContain('newadmin');
   }));
 
   it('refreshes again on a second edit of the same record', fakeAsync(() => {
