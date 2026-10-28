@@ -4,7 +4,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { SearchComponent } from './pages/search/search.component';
 import { MyRecordsComponent } from './pages/my-records/my-records.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
