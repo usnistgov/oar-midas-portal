@@ -750,3 +750,136 @@ describe('onPermissionsChanged()', () => {
     expect(component.aclsMap()['dmp-1'].read).toEqual(['newuser']);
   }));
 });
+
+// Issue: after editing a role the row checkboxes stop tracking the drawer — a
+// refresh rebuilds every row as a new object, so anything keyed on identity breaks.
+describe('selection survives a record refresh', () => {
+  let component: MyRecordsComponent;
+  let fixture: ComponentFixture<MyRecordsComponent>;
+
+  beforeEach(async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      declarations: [MyRecordsComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule, NoopAnimationsModule,
+                FormsModule, ReactiveFormsModule, MatAutocompleteModule],
+      providers: makeProviders(),
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+    fixture = TestBed.createComponent(MyRecordsComponent);
+    component = fixture.componentInstance;
+  });
+
+  const rebuild = () => { (component as any).buildAdminRecords(); tick(); };
+
+  it('keeps a row checked after the records are rebuilt', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    component.selection.select(component.dataSource.data.find((r: any) => r.id === 'dmp-1')!);
+    rebuild();
+
+    const rebuilt = component.dataSource.data.find((r: any) => r.id === 'dmp-1')!;
+    expect(component.selection.isSelected(rebuilt)).toBe(true);
+  }));
+
+  it('does not leave the drawer claiming more records than the table shows checked', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    for (const r of component.dataSource.data) component.selection.select(r);
+    const before = component.selectedRecords().length;
+    rebuild();
+
+    const checked = component.dataSource.data.filter((r: any) => component.selection.isSelected(r));
+    expect(checked.length).toBe(before);
+    expect(component.selectedRecords().length).toBe(checked.length);
+  }));
+
+  // the header checkbox read "mixed" over rows that were all ticked, and clicking it
+  // could then neither check nor clear them
+  it('keeps the header checkbox and select-all working after a rebuild', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    for (const r of component.dataSource.filteredData) component.selection.select(r);
+    rebuild();
+
+    expect(component.dataSource.filteredData.every(r => component.selection.isSelected(r))).toBe(true);
+    expect(component.isAllSelected()).toBe(true);
+
+    component.toggleAllRows();
+    expect(component.isAllSelected()).toBe(false);
+    expect(component.dataSource.filteredData.some(r => component.selection.isSelected(r))).toBe(false);
+
+    component.toggleAllRows();
+    expect(component.isAllSelected()).toBe(true);
+  }));
+
+  // an edit can take away the user's own admin, dropping the record from the table
+  const revokeOwnAdminOn = (id: string) => {
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockImplementation((r: { id: string }) =>
+      of(r.id === id ? { read: [], write: [], admin: [], delete: [] } : defaultAcls[r.id])
+        .pipe(delay(1)));
+  };
+
+  it('drops a record from the selection once it is no longer the user to share', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    for (const id of ['dmp-1', 'dmp-2']) {
+      component.selection.select(component.dataSource.data.find((r: any) => r.id === id)!);
+    }
+    revokeOwnAdminOn('dmp-1');
+    of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
+    tick(10);
+
+    expect(component.dataSource.data.map((r: any) => r.id)).not.toContain('dmp-1');
+    expect(component.selectedRecords().map(r => r.id)).not.toContain('dmp-1');
+    expect(component.selectedRecords().map(r => r.id)).toContain('dmp-2');
+  }));
+
+  // dropping a record is not the user asking for the panel back
+  it('leaves the drawer closed when a refresh takes a record away', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    for (const id of ['dmp-1', 'dmp-2']) {
+      component.selection.select(component.dataSource.data.find((r: any) => r.id === id)!);
+    }
+    component.drawerOpen.set(false);
+    revokeOwnAdminOn('dmp-1');
+    of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
+    tick(10);
+
+    expect(component.selectedRecords().map(r => r.id)).toEqual(['dmp-2']);
+    expect(component.drawerOpen()).toBe(false);
+  }));
+
+  // a listing that fails comes back empty; that says nothing about who may share what
+  it('keeps the selection when a record merely stops being listed', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    for (const r of component.dataSource.data) component.selection.select(r);
+    const before = component.selectedRecords().map(r => r.id).sort();
+
+    (component as any).dataService.dmps.set([]);
+    rebuild();
+
+    expect(component.selectedRecords().map(r => r.id).sort()).toEqual(before);
+  }));
+
+  // A selection change reopens the drawer, so a background refresh must not report
+  // one. Rebuilding by clearing and re-selecting would, and would spring open a
+  // drawer the user had just closed.
+  it('reports no selection change when a refresh keeps the same records', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    component.selection.select(component.dataSource.data[0]);
+    component.drawerOpen.set(false);
+
+    let announced = 0;
+    const sub = component.selection.changed.subscribe(() => announced++);
+    rebuild();
+    sub.unsubscribe();
+
+    expect(announced).toBe(0);
+    expect(component.drawerOpen()).toBe(false);
+  }));
+});

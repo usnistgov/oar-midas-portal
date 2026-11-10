@@ -61,7 +61,10 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private adminData: OwnedRecord[] = [];
 
   dataSource = new MatTableDataSource<OwnedRecord>([]);
-  selection = new SelectionModel<OwnedRecord>(true, []);
+  // Every refresh rebuilds the rows as new objects, so identity cannot be what
+  // decides whether a row is selected: the checkbox would come back cleared while
+  // the drawer went on counting the record.
+  selection = new SelectionModel<OwnedRecord>(true, [], true, (a, b) => a.id === b.id);
 
   displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate', 'permView', 'permUpdate', 'permAdmin'];
 
@@ -100,32 +103,25 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
 
     this.selection.changed.pipe(
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(() => {
-      // Deduplicate by ID — data refreshes create new object instances for the same record,
-      // and both the old and new references can briefly coexist in SelectionModel.
-      const seen = new Set<string>();
-      const unique: RecordRef[] = [];
-      for (const r of this.selection.selected) {
-        if (!seen.has(r.id)) {
-          seen.add(r.id);
-          unique.push({
-            id: r.id,
-            apiBase: r.type?.toLowerCase() === 'dap'
-              ? this.dataService.resolveApiUrl('dapAPI')
-              : this.dataService.resolveApiUrl('dmpAPI')
-          });
-        }
-      }
+    ).subscribe(change => {
+      const unique: RecordRef[] = this.selection.selected.map(r => ({
+        id: r.id,
+        apiBase: r.type?.toLowerCase() === 'dap'
+          ? this.dataService.resolveApiUrl('dapAPI')
+          : this.dataService.resolveApiUrl('dmpAPI')
+      }));
       this.selectedRecords.set(unique);
       // The drawer saves asynchronously and reports no ids, so by the time it says it is
       // done the selection may have moved on. Remember everything opened since the last
       // refresh; that is a superset of whatever it edited.
       for (const r of unique) this.pendingAclRefresh.set(r.id, r);
 
-      if (this.selection.selected.length > 0) {
+      // Opening is a response to the user picking something: refreshes drop records
+      // too, and those must not raise a panel the user has just dismissed.
+      if (change.added.length) {
         this.drawerOpen.set(true);
         this.permDrawer?.open();
-      } else if (this.activeDrawerTab() !== 1) {
+      } else if (!this.selection.selected.length && this.activeDrawerTab() !== 1) {
         // Close the drawer when all records are deselected (unless user is managing groups)
         this.drawerOpen.set(false);
         this.permDrawer?.close();
@@ -333,11 +329,6 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  deselectRecord(id: string): void {
-    const record = this.selection.selected.find(r => r.id === id);
-    if (record) this.selection.deselect(record);
-  }
-
   onRowClick(row: OwnedRecord): void {
     // If this row is already the only selection, keep it — don't re-add it
     if (this.selection.isSelected(row) && this.selection.selected.length === 1) {
@@ -414,6 +405,15 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       });
 
       this.buildAdminRecords();
+
+      // Only these records were re-read, so only these can be known to have been
+      // given away. A record missing for any other reason — a listing that failed,
+      // a filter — is still the user's and stays selected.
+      const mine = new Set(this.adminData.map(r => r.id));
+      const given = this.selection.selected.filter(
+        r => resolved.some(x => x.id === r.id) && !mine.has(r.id)
+      );
+      if (given.length) this.selection.deselect(...given);
       this.labelSvc.resolve([...subjects], this.myGroups);
     });
   }
