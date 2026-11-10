@@ -178,6 +178,82 @@ describe('SearchComponent', () => {
     expect(component.displayedColumns.length).toBe(initialSize);
   });
 
+  // The selection drives Download and Export. Refreshing the results rebuilds every
+  // record as a new object, so anything keyed on identity silently sends the wrong set.
+  describe('selection survives a results refresh', () => {
+    const rowsFor = (ids: string[]) =>
+      ids.map(id => ({ id, name: `Record ${id}`, owner: 'o', type: 'dmp' } as any));
+
+    const refreshWith = (ids: string[]) => {
+      const ds = TestBed.inject(DataService) as any;
+      ds.dmps.set(rowsFor(ids));
+      ds.daps.set([]);
+      (component as any).updateDataSource();
+    };
+
+    beforeEach(() => refreshWith(['a', 'b', 'c']));
+
+    it('keeps a row selected when the records are refetched', () => {
+      component.selection.select(component.dataSource.data[0]);
+      expect(component.selection.isSelected(component.dataSource.data[0])).toBe(true);
+
+      refreshWith(['a', 'b', 'c']);   // same records, new objects
+
+      expect(component.selection.isSelected(component.dataSource.data[0])).toBe(true);
+    });
+
+    // ticking a row again after a refresh used to add a second entry for the one
+    // record, and the export then carried it twice
+    it('exports a record once when it is ticked either side of a refresh', () => {
+      component.selection.select(component.dataSource.data[0]);
+      refreshWith(['a', 'b', 'c']);
+      component.selection.select(component.dataSource.data[0]);
+
+      const download = TestBed.inject(DownloadService) as any;
+      download.validateSelection = jest.fn().mockReturnValue(true);
+      download.downloadRecords = jest.fn().mockReturnValue(of(null));
+
+      component.downloadData('json');
+
+      const sent = download.downloadRecords.mock.calls[0][0].map((r: any) => r.id);
+      expect(sent).toEqual(['a']);
+    });
+
+    it('still exports the records the user ticked after a refresh', () => {
+      for (const row of component.dataSource.data) component.selection.select(row);
+      refreshWith(['a', 'b', 'c']);
+
+      const download = TestBed.inject(DownloadService) as any;
+      download.validateSelection = jest.fn().mockReturnValue(true);
+      download.downloadRecords = jest.fn().mockReturnValue(of(null));
+
+      component.downloadData('json');
+
+      const sent = download.downloadRecords.mock.calls[0][0].map((r: any) => r.id).sort();
+      expect(sent).toEqual(['a', 'b', 'c']);
+    });
+
+    it('does not call an empty table fully selected', () => {
+      refreshWith([]);
+      expect(component.isAllSelected()).toBe(false);
+      expect(component.isPartlySelected()).toBe(false);
+    });
+
+    it('reports mixed only while some of the rows are ticked', () => {
+      component.selection.select(component.dataSource.data[0]);
+      expect(component.isPartlySelected()).toBe(true);
+      expect(component.isAllSelected()).toBe(false);
+
+      component.toggleAllRows();
+      expect(component.isAllSelected()).toBe(true);
+      expect(component.isPartlySelected()).toBe(false);
+
+      component.toggleAllRows();
+      expect(component.isAllSelected()).toBe(false);
+      expect(component.isPartlySelected()).toBe(false);
+    });
+  });
+
   it('should clear filters', () => {
     component.searchTerm = 'test';
     component.clearFilters();

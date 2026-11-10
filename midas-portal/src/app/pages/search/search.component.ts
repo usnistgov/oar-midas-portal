@@ -172,7 +172,10 @@ export class SearchComponent {
 
   
   dataSource = new MatTableDataSource<DmpOrDap>([]);
-  selection = new SelectionModel<DmpOrDap>(true, []); // true = multiple selection
+  // Refreshing the results rebuilds the records as new objects, so identity cannot
+  // be what decides whether a row is selected — this selection is what Download and
+  // Export act on, and a stale one sends the wrong records.
+  selection = new SelectionModel<DmpOrDap>(true, [], true, (a, b) => a.id === b.id);
 
   /** Master list of table columns */
   allColumns = [
@@ -217,16 +220,24 @@ export class SearchComponent {
   }
 
   isAllSelected(): boolean {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.filteredData.length;
-    return numSelected === numRows;
+    // counting rather than asking left an empty table reporting everything selected
+    const rows = this.dataSource.filteredData;
+    return rows.length > 0 && rows.every(row => this.selection.isSelected(row));
+  }
+
+  /** Some but not all of the filtered rows — what the header checkbox shows as mixed. */
+  isPartlySelected(): boolean {
+    const rows = this.dataSource.filteredData;
+    return rows.some(row => this.selection.isSelected(row)) && !this.isAllSelected();
   }
 
   toggleAllRows() {
+    // the filtered set, which spans the pages: a row the filter hides keeps what it had
+    const rows = this.dataSource.filteredData;
     if (this.isAllSelected()) {
-      this.selection.clear();
+      this.selection.deselect(...rows);
     } else {
-      this.dataSource.filteredData.forEach(row => this.selection.select(row));
+      this.selection.select(...rows);
     }
   }
 
