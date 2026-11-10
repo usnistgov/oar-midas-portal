@@ -196,8 +196,8 @@
                 <th mat-header-cell *matHeaderCellDef>
                   <mat-checkbox (change)="toggleAllRows()"
                     [checked]="isAllSelected()"
-                    [indeterminate]="selection.hasValue() && !isAllSelected()"
-                    aria-label="Select all records">
+                    [indeterminate]="isPartlySelected()"
+                    aria-label="Select all records matching the current filters">
                   </mat-checkbox>
                 </th>
                 <td mat-cell *matCellDef="let row">

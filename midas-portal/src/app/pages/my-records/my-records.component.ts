@@ -317,16 +317,30 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   }
 
   isAllSelected(): boolean {
-    return this.selection.selected.length === this.dataSource.filteredData.length
-      && this.dataSource.filteredData.length > 0;
+    const rows = this.dataSource.filteredData;
+    return rows.length > 0 && rows.every(r => this.selection.isSelected(r));
+  }
+
+  /** Some but not all of the filtered rows — what the header checkbox shows as mixed. */
+  isPartlySelected(): boolean {
+    const rows = this.dataSource.filteredData;
+    return rows.some(r => this.selection.isSelected(r)) && !this.isAllSelected();
   }
 
   toggleAllRows(): void {
+    // the filtered set, which spans the pages: what a record filtered out of it holds
+    // is not this checkbox's to change
+    const rows = this.dataSource.filteredData;
     if (this.isAllSelected()) {
-      this.selection.clear();
+      this.selection.deselect(...rows);
     } else {
-      this.dataSource.filteredData.forEach(r => this.selection.select(r));
+      this.selection.select(...rows);
     }
+  }
+
+  deselectRecord(id: string): void {
+    const record = this.selection.selected.find(r => r.id === id);
+    if (record) this.selection.deselect(record);
   }
 
   onRowClick(row: OwnedRecord): void {

@@ -865,6 +865,46 @@ describe('selection survives a record refresh', () => {
     expect(component.selectedRecords().map(r => r.id).sort()).toEqual(before);
   }));
 
+  // The header checkbox speaks for the filtered rows. With a record selected but
+  // filtered out of view it used to read mixed over rows that were all ticked, and
+  // clicking it could neither check nor clear them.
+  describe('with a record selected but filtered out of view', () => {
+    const showOnly = (id: string) => {
+      const svc = (component as any).filterService.filterDmpOrDapList as jest.Mock;
+      svc.mockImplementation((list: any[]) => list.filter(r => r.id === id));
+    };
+
+    it('judges the header checkbox on the rows the filter leaves', fakeAsync(() => {
+      component.ngOnInit(); tick(500); tick();
+
+      for (const r of component.dataSource.data) component.selection.select(r);
+      showOnly('dmp-1');
+      component.applyFilters();
+
+      expect(component.dataSource.filteredData.map((r: any) => r.id)).toEqual(['dmp-1']);
+      expect(component.isAllSelected()).toBe(true);
+      expect(component.isPartlySelected()).toBe(false);
+    }));
+
+    it('clears and re-checks the filtered rows, and says so', fakeAsync(() => {
+      component.ngOnInit(); tick(500); tick();
+
+      for (const r of component.dataSource.data) component.selection.select(r);
+      showOnly('dmp-1');
+      component.applyFilters();
+
+      component.toggleAllRows();
+      expect(component.isAllSelected()).toBe(false);
+      // nothing on view is ticked, so the header must not claim a mixed state
+      expect(component.isPartlySelected()).toBe(false);
+      // and a record the filter hides keeps whatever it had
+      expect(component.selectedRecords().map(r => r.id)).toContain('dmp-2');
+
+      component.toggleAllRows();
+      expect(component.isAllSelected()).toBe(true);
+    }));
+  });
+
   // A selection change reopens the drawer, so a background refresh must not report
   // one. Rebuilding by clearing and re-selecting would, and would spring open a
   // drawer the user had just closed.
