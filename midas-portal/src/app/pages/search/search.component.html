@@ -301,16 +301,14 @@
                             <mat-checkbox
                             (change)="toggleAllRows()"
                             [checked]="isAllSelected()"
-                            [indeterminate]="isPartlySelected()"
-                            aria-label="Select all records matching the current filters">
+                            [indeterminate]="isPartlySelected()">
                             </mat-checkbox>
                         </th>
                         <td mat-cell *matCellDef="let row">
                             <mat-checkbox
                             (click)="$event.stopPropagation()"
                             (change)="toggleRow(row)"
-                            [checked]="selection.isSelected(row)"
-                            [attr.aria-label]="'Select ' + (row.name || row.id)">
+                            [checked]="selection.isSelected(row)">
                             </mat-checkbox>
                         </td>
                         </ng-container>

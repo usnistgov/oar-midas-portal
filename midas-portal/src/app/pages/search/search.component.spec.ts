@@ -134,10 +134,8 @@ describe('SearchComponent', () => {
         {
           provide: DownloadService,
           useValue: {
-            downloadJSON: jest.fn(),
-            downloadCSV: jest.fn(),
-            downloadPDF: jest.fn(),
-            downloadmarkdown: jest.fn()
+            validateSelection: jest.fn().mockReturnValue(true),
+            downloadRecords: jest.fn().mockReturnValue(of(null))
           }
         },
         {
@@ -178,77 +176,105 @@ describe('SearchComponent', () => {
     expect(component.displayedColumns.length).toBe(initialSize);
   });
 
-  // The selection drives Download and Export. Refreshing the results rebuilds every
-  // record as a new object, so anything keyed on identity silently sends the wrong set.
-  describe('selection survives a results refresh', () => {
-    const rowsFor = (ids: string[]) =>
-      ids.map(id => ({ id, name: `Record ${id}`, owner: 'o', type: 'dmp' } as any));
 
-    const refreshWith = (ids: string[]) => {
+  // Download sends whatever is ticked, and refreshing the results rebuilds every
+  // record as a new object — so a selection keyed on identity sends the wrong set.
+  describe('selection survives a results refresh', () => {
+    const rowsFor = (ids: string[], type = 'dmp') =>
+      ids.map(id => ({ id, name: `Record ${id}`, owner: 'o', type } as any));
+
+    const showResults = (ids: string[], daps: string[] = []) => {
       const ds = TestBed.inject(DataService) as any;
       ds.dmps.set(rowsFor(ids));
-      ds.daps.set([]);
-      (component as any).updateDataSource();
+      ds.daps.set(rowsFor(daps, 'dap'));
+      fixture.detectChanges();          // the effect drives updateDataSource, as in the app
     };
 
-    beforeEach(() => refreshWith(['a', 'b', 'c']));
+    const sentToDownload = () => {
+      const download = TestBed.inject(DownloadService) as any;
+      component.downloadData('json');
+      return download.downloadRecords.mock.calls.at(-1)![0];
+    };
 
-    it('keeps a row selected when the records are refetched', () => {
+    beforeEach(() => showResults(['a', 'b', 'c']));
+
+    it('keeps a row ticked when the records are refetched', () => {
       component.selection.select(component.dataSource.data[0]);
-      expect(component.selection.isSelected(component.dataSource.data[0])).toBe(true);
-
-      refreshWith(['a', 'b', 'c']);   // same records, new objects
-
+      showResults(['a', 'b', 'c']);     // same records, new objects
       expect(component.selection.isSelected(component.dataSource.data[0])).toBe(true);
     });
 
-    // ticking a row again after a refresh used to add a second entry for the one
-    // record, and the export then carried it twice
-    it('exports a record once when it is ticked either side of a refresh', () => {
+    it('sends a record once when it is ticked either side of a refresh', () => {
       component.selection.select(component.dataSource.data[0]);
-      refreshWith(['a', 'b', 'c']);
+      showResults(['a', 'b', 'c']);
       component.selection.select(component.dataSource.data[0]);
 
-      const download = TestBed.inject(DownloadService) as any;
-      download.validateSelection = jest.fn().mockReturnValue(true);
-      download.downloadRecords = jest.fn().mockReturnValue(of(null));
-
-      component.downloadData('json');
-
-      const sent = download.downloadRecords.mock.calls[0][0].map((r: any) => r.id);
-      expect(sent).toEqual(['a']);
+      expect(sentToDownload().map((r: any) => r.id)).toEqual(['a']);
     });
 
-    it('still exports the records the user ticked after a refresh', () => {
-      for (const row of component.dataSource.data) component.selection.select(row);
-      refreshWith(['a', 'b', 'c']);
+    it('sends the record as the table holds it now, not as it was ticked', () => {
+      component.selection.select(component.dataSource.data[0]);
+      const ds = TestBed.inject(DataService) as any;
+      ds.dmps.set([{ id: 'a', name: 'Renamed', owner: 'o', type: 'dmp' } as any]);
+      ds.daps.set([]);
+      fixture.detectChanges();
 
-      const download = TestBed.inject(DownloadService) as any;
-      download.validateSelection = jest.fn().mockReturnValue(true);
-      download.downloadRecords = jest.fn().mockReturnValue(of(null));
+      expect(sentToDownload()[0].name).toBe('Renamed');
+    });
 
-      component.downloadData('json');
+    // the fallback records bundled with the app reuse one set of ids across both
+    it('does not treat a dap as the dmp of the same id', () => {
+      showResults(['a'], ['a']);
 
-      const sent = download.downloadRecords.mock.calls[0][0].map((r: any) => r.id).sort();
-      expect(sent).toEqual(['a', 'b', 'c']);
+      const dmpRow = component.dataSource.data.find((r: any) => r.type === 'dmp')!;
+      component.selection.select(dmpRow);
+
+      const dapRow = component.dataSource.data.find((r: any) => r.type === 'dap')!;
+      expect(component.selection.isSelected(dapRow)).toBe(false);
+      expect(component.isAllSelected()).toBe(false);
     });
 
     it('does not call an empty table fully selected', () => {
-      refreshWith([]);
+      showResults([]);
       expect(component.isAllSelected()).toBe(false);
       expect(component.isPartlySelected()).toBe(false);
     });
+  });
 
-    it('reports mixed only while some of the rows are ticked', () => {
-      component.selection.select(component.dataSource.data[0]);
-      expect(component.isPartlySelected()).toBe(true);
-      expect(component.isAllSelected()).toBe(false);
+  // Nothing on this page shows a selected record that is not in the table, so one
+  // left behind would be invisible until Download sent it.
+  describe('when the results no longer hold a selected record', () => {
+    const rowsFor = (ids: string[]) =>
+      ids.map(id => ({ id, name: `Record ${id}`, owner: 'o', type: 'dmp' } as any));
+    const showResults = (ids: string[]) => {
+      const ds = TestBed.inject(DataService) as any;
+      ds.dmps.set(rowsFor(ids)); ds.daps.set([]);
+      fixture.detectChanges();
+    };
 
+    it('forgets it, so the header and Download agree with the table', () => {
+      showResults(['a', 'b', 'c']);
       component.toggleAllRows();
+      expect(component.isAllSelected()).toBe(true);
+
+      showResults(['a']);
+
+      expect(component.selection.selected.map(r => r.id)).toEqual(['a']);
       expect(component.isAllSelected()).toBe(true);
       expect(component.isPartlySelected()).toBe(false);
 
-      component.toggleAllRows();
+      const download = TestBed.inject(DownloadService) as any;
+      component.downloadData('json');
+      expect(download.downloadRecords.mock.calls.at(-1)![0].map((r: any) => r.id)).toEqual(['a']);
+    });
+
+    it('leaves the header unticked rather than mixed when none remain', () => {
+      showResults(['a', 'b']);
+      component.selection.select(component.dataSource.data[0]);
+
+      showResults(['c']);
+
+      expect(component.selection.selected).toEqual([]);
       expect(component.isAllSelected()).toBe(false);
       expect(component.isPartlySelected()).toBe(false);
     });

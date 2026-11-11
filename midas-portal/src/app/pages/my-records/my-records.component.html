@@ -204,7 +204,7 @@
                   <mat-checkbox (click)="$event.stopPropagation()"
                     (change)="selection.toggle(row)"
                     [checked]="selection.isSelected(row)"
-                    [attr.aria-label]="'Select ' + (row.name || row.id)">
+                    [aria-label]="'Select ' + (row.name || row.id)">
                   </mat-checkbox>
                 </td>
               </ng-container>
