@@ -121,6 +121,25 @@ describe('MyRecordsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('status filter and badge', () => {
+    it('offers every state the backend defines, in workflow order', () => {
+      expect(component.statuses.map(s => s.value)).toEqual(
+        ['edit', 'ready', 'processing', 'submitted', 'accepted', 'in press', 'published', 'unwell']);
+    });
+
+    it('colours and labels a state the old mapping ignored', () => {
+      expect(component.getStatusClass('in press')).toBe('status-neutral');
+      expect(component.statusLabel('in press')).toBe('In Press');
+    });
+
+    // the chip the user ticks and the badge on the row must read the same
+    it('keeps the chip label and the badge text in step', () => {
+      for (const s of component.statuses) {
+        expect(component.statusLabel(s.value)).toBe(s.label);
+      }
+    });
+  });
+
   describe('admin records filter', () => {
     it('includes records where user is in acls.admin and is not owner', fakeAsync(() => {
       component.ngOnInit();

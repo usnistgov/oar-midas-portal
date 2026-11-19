@@ -82,4 +82,26 @@ describe('ExpandedTableDialogComponent', () => {
     const { component } = makeComponent({ id: 8, label: 'Files Table' });
     expect(component.linkto({ id: 'x1', location: '/files/example' })).toBe('/files/example');
   });
+
+  describe('status badge helpers', () => {
+    it('matches the badge the widget tables render', () => {
+      const { component } = makeComponent({ id: 5, label: 'DMP Table' });
+      expect(component.getStatusClass('in press')).toBe('status-neutral');
+      expect(component.statusLabel('in press')).toBe('In Press');
+    });
+
+    it('groups by who the record waits on', () => {
+      const { component } = makeComponent({ id: 5, label: 'DMP Table' });
+      expect(component.getStatusClass('ready')).toBe(component.getStatusClass('edit'));
+      expect(component.getStatusClass('unwell'))
+        .not.toBe(component.getStatusClass('processing'));
+    });
+
+    it('shows a state it does not know rather than blanking the badge', () => {
+      const { component } = makeComponent({ id: 5, label: 'DMP Table' });
+      expect(component.getStatusClass('a-state-added-later')).toBe('status-neutral');
+      expect(component.statusLabel('a-state-added-later')).toBe('a-state-added-later');
+    });
+  });
+
 });
