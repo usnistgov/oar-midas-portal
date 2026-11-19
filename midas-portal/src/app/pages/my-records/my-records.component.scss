@@ -352,10 +352,31 @@ mat-chip-option {
     font-size: 0.82rem;
     color: rgba(0, 0, 0, 0.78);
     word-break: break-word;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+        display: flex;
+        align-items: flex-start;
+        gap: 4px;
+        line-height: 19px;
+    }
+
+    // the icon box matches the line box so it sits on the first line of a name
+    // long enough to wrap
+    .perm-kind-icon {
+        flex: none;
+        font-size: 15px;
+        width: 15px;
+        height: 19px;
+        line-height: 19px;
+        opacity: 0.75;
+    }
 
     &--view   { color: #1565c0; }
     &--update { color: #2e7d32; }
-    &--admin  { color: #e65100; }
+    &--admin  { color: #a35200; }  // #e65100 read 3.8:1 on white
 }
 
 // ─── Permissions drawer ───────────────────────────────────────────────────

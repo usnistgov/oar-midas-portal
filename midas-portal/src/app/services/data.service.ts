@@ -1,4 +1,5 @@
 import { Injectable, inject,effect,signal } from '@angular/core';
+import menuConfigFallback from '../../assets/sidebar/menu-config.json';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, catchError, map, of,forkJoin,tap } from 'rxjs';
@@ -486,15 +487,10 @@ getMenuConfig(): Observable<MenuConfig> {
   return this.http.get<MenuConfig>(url).pipe(
     catchError(err => {
       console.error('Failed to load menu config:', err);
-      // Fallback to default menu config
-      return of<MenuConfig>({
-        menuItems: [
-          { key: 'dashboard', name: 'Dashboard', icon: 'dashboard', link: '/dashboard', enabled: true, order: 1 },
-          { key: 'searchExport', name: 'Search and Export', icon: 'search', link: '/search', enabled: true, order: 2 }
-        ],
-        version: '1.0-fallback',
-        lastUpdated: new Date().toISOString()
-      });
+      // The same file the request above asks for, bundled in. A hand-written
+      // fallback drifted to two items and silently dropped the rest of the
+      // sidebar whenever the fetch failed.
+      return of<MenuConfig>(menuConfigFallback as unknown as MenuConfig);
     }),
     map(config => this.processMenuConfig(config))
   );
