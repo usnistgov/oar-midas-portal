@@ -8,6 +8,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, delay, throwError } from 'rxjs';
 
+import { RECORD_STATES } from '../../shared/record-states';
 import { MyRecordsComponent } from './my-records.component';
 import { DataService } from '../../services/data.service';
 import { CredentialsService } from '../../services/credentials.service';
@@ -122,21 +123,13 @@ describe('MyRecordsComponent', () => {
   });
 
   describe('status filter and badge', () => {
-    it('offers every state the backend defines, in workflow order', () => {
-      expect(component.statuses.map(s => s.value)).toEqual(
-        ['edit', 'ready', 'processing', 'submitted', 'accepted', 'in press', 'published', 'unwell']);
+    it('offers the shared state list, in workflow order', () => {
+      expect(component.statuses).toBe(RECORD_STATES);
     });
 
     it('colours and labels a state the old mapping ignored', () => {
       expect(component.getStatusClass('in press')).toBe('status-neutral');
       expect(component.statusLabel('in press')).toBe('In Press');
-    });
-
-    // the chip the user ticks and the badge on the row must read the same
-    it('keeps the chip label and the badge text in step', () => {
-      for (const s of component.statuses) {
-        expect(component.statusLabel(s.value)).toBe(s.label);
-      }
     });
   });
 

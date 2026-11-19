@@ -166,14 +166,14 @@ describe('DmpTableComponent', () => {
     };
 
     const CASES: [string, string, string][] = [
-      ['edit', 'status-warning', 'EDIT'],
-      ['ready', 'status-warning', 'READY'],
-      ['processing', 'status-neutral', 'PROCESSING'],
-      ['submitted', 'status-neutral', 'SUBMITTED'],
-      ['accepted', 'status-neutral', 'ACCEPTED'],
-      ['in press', 'status-neutral', 'IN PRESS'],
-      ['published', 'status-success', 'PUBLISHED'],
-      ['unwell', 'status-attention', 'UNWELL'],
+      ['edit', 'status-warning', 'Edit'],
+      ['ready', 'status-warning', 'Ready'],
+      ['processing', 'status-neutral', 'Processing'],
+      ['submitted', 'status-neutral', 'Submitted'],
+      ['accepted', 'status-neutral', 'Accepted'],
+      ['in press', 'status-neutral', 'In Press'],
+      ['published', 'status-success', 'Published'],
+      ['unwell', 'status-attention', 'Unwell'],
     ];
 
     for (const [status, cls, text] of CASES) {
@@ -194,7 +194,7 @@ describe('DmpTableComponent', () => {
     it('still paints a badge for a state this build has not heard of', () => {
       const badge = badgeFor('a-state-added-later');
       expect(badge.classList.contains('status-neutral')).toBe(true);
-      expect(badge.textContent!.trim()).toBe('A-STATE-ADDED-LATER');
+      expect(badge.textContent!.trim()).toBe('a-state-added-later');
     });
 
     it('falls back to a dash when the record carries no state', () => {

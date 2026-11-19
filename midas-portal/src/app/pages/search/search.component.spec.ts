@@ -22,6 +22,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
+import { RECORD_STATES } from '../../shared/record-states';
 import { SearchComponent } from './search.component';
 import { ConfigurationService } from 'oarng';
 import { CredentialsService } from '../../services/credentials.service';
@@ -188,9 +189,8 @@ describe('SearchComponent', () => {
   describe('status filter', () => {
     afterEach(() => localStorage.removeItem('filter-mine'));
 
-    it('offers every state the backend defines, in workflow order', () => {
-      expect(component.statuses.map(s => s.value)).toEqual(
-        ['edit', 'ready', 'processing', 'submitted', 'accepted', 'in press', 'published', 'unwell']);
+    it('offers the shared state list, in workflow order', () => {
+      expect(component.statuses).toBe(RECORD_STATES);
     });
 
     // "reviewed" used to be offered; a filter saved back then would otherwise

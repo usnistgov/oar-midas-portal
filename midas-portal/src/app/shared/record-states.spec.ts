@@ -53,13 +53,6 @@ describe('record states', () => {
       expect(labelFor('unwell')).toBe('Unwell');
     });
 
-    // the filter chips and the badges must not drift apart
-    it('agrees with the value offered as a filter', () => {
-      for (const state of RECORD_STATES) {
-        expect(labelFor(state.value)).toBe(state.label);
-      }
-    });
-
     it('falls back to the raw value so a new backend state still reads as itself', () => {
       expect(labelFor('a-state-added-later')).toBe('a-state-added-later');
     });

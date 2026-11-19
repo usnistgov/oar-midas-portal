@@ -157,7 +157,7 @@ describe('DapTableComponent', () => {
     it('colours and labels a state the old mapping ignored', () => {
       const badge = badgeFor('in press');
       expect(badge.classList.contains('status-neutral')).toBe(true);
-      expect(badge.textContent!.trim()).toBe('IN PRESS');
+      expect(badge.textContent!.trim()).toBe('In Press');
     });
 
     // unwell needs somebody to act, so it must not look like the waiting states

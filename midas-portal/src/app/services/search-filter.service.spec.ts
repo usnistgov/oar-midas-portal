@@ -290,7 +290,7 @@ describe('SearchFilterService', () => {
 
     it('names every selected status, spaces and all', () => {
       expect(service.buildParts({ ...BASE_CRITERIA, statuses: ['edit', 'in press'] }))
-        .toEqual(['Status: edit, in press']);
+        .toEqual(['Status: Edit, In Press']);
     });
 
     it('summarises the non-date criteria in order', () => {
@@ -314,7 +314,7 @@ describe('SearchFilterService', () => {
 
     it('joins the parts into the one-line summary', () => {
       expect(service.buildText({ ...BASE_CRITERIA, types: ['dmp'], statuses: ['edit'] }))
-        .toBe('Type: dmp, Status: edit');
+        .toBe('Type: dmp, Status: Edit');
     });
 
     it('describes each kind of date filter', () => {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { knownStates } from '../shared/record-states';
+import { knownStates, labelFor } from '../shared/record-states';
 import { Dmp } from '../pages/search/search.component';
 import { Dap } from '../pages/search/search.component'
 
@@ -173,7 +173,7 @@ export class SearchFilterService {
     }
     // 6) statuses
     if (c.statuses.length) {
-      parts.push(`Status: ${c.statuses.join(', ')}`);
+      parts.push(`Status: ${c.statuses.map(labelFor).join(', ')}`);
     }
     // 7) has publication
     if (c.hasPublication) {
