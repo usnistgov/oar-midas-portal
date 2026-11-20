@@ -32,7 +32,7 @@ import {
   RecordRef, PermissionsService, GroupsService, Acls, SubjectLabelService,
   PermissionLevel, aclSubjects, subjectPermissionLevel, isGroupSubject
 } from 'oarng';
-import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
+import { RECORD_STATES, statusClassFor, labelFor } from '../../shared/record-states';
 
 type OwnedRecord = (Dmp | Dap) & { type: string };
 
@@ -150,11 +150,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   orgSuggestions: string[] = [];
 
   readonly resourceTypes = ['DMP', 'DAP'];
-  readonly statuses = [
-    { label: 'Published', value: 'published' },
-    { label: 'Edit', value: 'edit' },
-    { label: 'Reviewed', value: 'reviewed' }
-  ];
+  readonly statuses = RECORD_STATES;
 
   filterPills: string[] = [];
 
@@ -369,8 +365,12 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     this.permDrawer.close();
   }
 
-  getStatusClass(status: string): string {
-    return statusClassUtil(status);
+  getStatusClass(status?: string): string {
+    return statusClassFor(status);
+  }
+
+  statusLabel(status?: string): string {
+    return labelFor(status);
   }
 
   private loadGroupsForLabels(): void {

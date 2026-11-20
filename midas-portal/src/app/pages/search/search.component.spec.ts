@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,6 +22,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
+import { RECORD_STATES } from '../../shared/record-states';
 import { SearchComponent } from './search.component';
 import { ConfigurationService } from 'oarng';
 import { CredentialsService } from '../../services/credentials.service';
@@ -285,5 +286,41 @@ describe('SearchComponent', () => {
     component.clearFilters();
     expect(component.searchTerm).toBe('');
     expect(component.hasFilters()).toBe(false);
+  });
+
+  describe('status filter', () => {
+    afterEach(() => localStorage.removeItem('filter-mine'));
+
+    it('offers the shared state list, in workflow order', () => {
+      expect(component.statuses).toBe(RECORD_STATES);
+    });
+
+    // "reviewed" used to be offered; a filter saved back then would otherwise
+    // restore a value that matches no record and has no chip to switch it off
+    it('drops a saved status it can no longer show', () => {
+      localStorage.setItem('filter-mine', JSON.stringify({
+        query: '', keywords: [], types: [], statuses: ['edit', 'reviewed'],
+        hasPublication: false, dateFilterType: 'between',
+      }));
+      jest.spyOn(TestBed.inject(MatDialog), 'open')
+        .mockReturnValue({ afterClosed: () => of('mine') } as any);
+
+      component.loadFilters();
+
+      expect(component.statusControl.value).toEqual(['edit']);
+    });
+
+    it('restores the statuses it does recognise', () => {
+      localStorage.setItem('filter-mine', JSON.stringify({
+        query: '', keywords: [], types: [], statuses: ['in press', 'unwell'],
+        hasPublication: false, dateFilterType: 'between',
+      }));
+      jest.spyOn(TestBed.inject(MatDialog), 'open')
+        .mockReturnValue({ afterClosed: () => of('mine') } as any);
+
+      component.loadFilters();
+
+      expect(component.statusControl.value).toEqual(['in press', 'unwell']);
+    });
   });
 });

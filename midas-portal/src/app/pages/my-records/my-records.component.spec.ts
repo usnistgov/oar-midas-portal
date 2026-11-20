@@ -9,6 +9,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, delay, throwError } from 'rxjs';
 
+import { RECORD_STATES } from '../../shared/record-states';
 import { MyRecordsComponent } from './my-records.component';
 import { DataService } from '../../services/data.service';
 import { CredentialsService } from '../../services/credentials.service';
@@ -119,6 +120,17 @@ describe('MyRecordsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('status filter and badge', () => {
+    it('offers the shared state list, in workflow order', () => {
+      expect(component.statuses).toBe(RECORD_STATES);
+    });
+
+    it('colours and labels a state the old mapping ignored', () => {
+      expect(component.getStatusClass('in press')).toBe('status-neutral');
+      expect(component.statusLabel('in press')).toBe('In Press');
+    });
   });
 
   describe('admin records filter', () => {
