@@ -301,7 +301,7 @@
                             <mat-checkbox
                             (change)="toggleAllRows()"
                             [checked]="isAllSelected()"
-                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                            [indeterminate]="isPartlySelected()">
                             </mat-checkbox>
                         </th>
                         <td mat-cell *matCellDef="let row">

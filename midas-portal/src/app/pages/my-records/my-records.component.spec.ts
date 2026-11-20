@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { SubjectLabelService } from 'oarng';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -71,7 +72,6 @@ function makeProviders(aclOverride?: Record<string, any>) {
     {
       provide: PeopleService,
       useValue: {
-        resolveEidLabel: jest.fn().mockReturnValue(of(null)),
         getNISTOrganizations: jest.fn().mockReturnValue(of({}))
       }
     },
@@ -281,12 +281,39 @@ describe('subjectPermLevel()', () => {
     expect(component.subjectPermLevel('dmp-1', 'alice')).toBeNull();
   }));
 
-  it('returns null when subject has write but not read (partial ACL)', fakeAsync(() => {
+  // the permission manager grants write without read, and the panel shows such a
+  // subject under Update; requiring read here hid them from the record's tabs
+  it('treats write without read as update, as the permission manager does', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
     tick();
     component.aclsMap.set({ 'dmp-1': { read: [], write: ['alice'], admin: [], delete: [] } });
-    expect(component.subjectPermLevel('dmp-1', 'alice')).toBeNull();
+    expect(component.subjectPermLevel('dmp-1', 'alice')).toBe('update');
+  }));
+
+  // mdm1:0004: rperlner held write only and vanished from the Update tab while
+  // the access control panel listed him
+  it('keeps every subject of a real record, at the level the panel shows', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+    component.aclsMap.set({
+      'mdm1:0004': {
+        read:   ['TestId', 'grp0:public', 'cnd7', 'grg2'],
+        write:  ['rperlner', 'cnd7', 'grg2'],
+        admin:  ['TestId', 'mnm16', 'cnd7'],
+        delete: ['cnd7']
+      }
+    });
+
+    expect(component.subjectPermLevel('mdm1:0004', 'rperlner')).toBe('update');
+    expect(component.subjectPermLevel('mdm1:0004', 'grg2')).toBe('update');
+    expect(component.subjectPermLevel('mdm1:0004', 'cnd7')).toBe('admin');
+    expect(component.subjectPermLevel('mdm1:0004', 'grp0:public')).toBe('view');
+
+    // no subject of the record may be dropped
+    const placed = component.recordSubjectsByLevel('mdm1:0004').flatMap(g => g.subjects);
+    expect(placed.sort()).toEqual(component.recordSubjects('mdm1:0004').sort());
   }));
 });
 
@@ -337,6 +364,70 @@ describe('recordSubjects()', () => {
   }));
 });
 
+describe('getSubjectsForLevel() — one entry per subject', () => {
+  let component: MyRecordsComponent;
+  let fixture: ComponentFixture<MyRecordsComponent>;
+  const labelsSignal = signal<Record<string, string>>({});
+
+  beforeEach(async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      declarations: [MyRecordsComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule, NoopAnimationsModule,
+                FormsModule, ReactiveFormsModule, MatAutocompleteModule],
+      providers: [
+        ...makeProviders(),
+        { provide: SubjectLabelService, useValue: { labels: labelsSignal, resolve: jest.fn() } }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+    fixture = TestBed.createComponent(MyRecordsComponent);
+    component = fixture.componentInstance;
+  });
+
+  // A group's name holds a comma of its own — "Security Test, Validation and
+  // Measurement Group (77305)" is one group — so the table must keep every
+  // subject a separate entry. Joining them read as one run of unrelated names.
+  it('keeps each label a separate entry even when labels contain commas', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    component.aclsMap.set({
+      'dmp-1': { read: [], write: [], admin: ['TestId', '77305', 'as2'], delete: [] }
+    });
+    labelsSignal.set({
+      '77305': 'Security Test, Validation and Measurement Group (77305)',
+      as2: 'Ashley Smith'
+    });
+
+    const names = component.getSubjectsForLevel('dmp-1', 'admin').map(s => s.label);
+
+    expect(names).toEqual([
+      'TestId', 'Security Test, Validation and Measurement Group (77305)', 'Ashley Smith'
+    ]);
+  }));
+
+  it('says which entries are groups so the comma in a group name reads as its own', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    component.aclsMap.set({
+      'dmp-1': { read: [], write: [], admin: ['77305', 'as2'], delete: [] }
+    });
+    labelsSignal.set({
+      '77305': 'Security Test, Validation and Measurement Group (77305)',
+      as2: 'Ashley Smith'
+    });
+
+    const entries = component.getSubjectsForLevel('dmp-1', 'admin');
+
+    expect(entries.find(e => e.label.endsWith('(77305)'))!.group).toBe(true);
+    expect(entries.find(e => e.label === 'Ashley Smith')!.group).toBe(false);
+  }));
+});
+
 describe('recordSubjectsByLevel()', () => {
   let component: MyRecordsComponent;
   let fixture: ComponentFixture<MyRecordsComponent>;
@@ -383,17 +474,16 @@ describe('recordSubjectsByLevel()', () => {
     expect(viewEntry?.subjects).toContain('carol');
   }));
 
-  it('excludes subjects with partial ACL state (null level)', fakeAsync(() => {
+  it('groups a write-only subject under update rather than dropping it', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
     tick();
-    // dave has write but not read — should be excluded
+    // dave has write but not read, which the permission manager allows
     component.aclsMap.set({
       'dmp-1': { read: [], write: ['dave'], admin: [], delete: [] }
     });
     const grouped = component.recordSubjectsByLevel('dmp-1');
-    const allSubjects = grouped.flatMap(g => g.subjects);
-    expect(allSubjects).not.toContain('dave');
+    expect(grouped.find(g => g.level === 'update')?.subjects).toContain('dave');
   }));
 });
 
@@ -530,9 +620,60 @@ describe('onPermissionsChanged()', () => {
       tick(10);
 
       expect(component.aclsMap()['dmp-1']).toEqual(updatedAcls);
-      expect(component.getSubjectsForLevel('dmp-1', 'view')).toContain('newuser');
+      expect(component.getSubjectsForLevel('dmp-1', 'view').map(s => s.label)).toContain('newuser');
     })
   );
+
+  // mdm1:0004 held rperlner in write only. The panel listed him, the Update tab
+  // did not, so granting someone write looked like it had not taken effect.
+  it('shows a newly granted write-only subject in the update tab', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    const granted = { ...defaultAcls['dmp-1'], write: ['rperlner'] };
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockImplementation((record: { id: string }) =>
+      of(record.id === 'dmp-1' ? granted : defaultAcls[record.id]).pipe(delay(1))
+    );
+
+    openDrawerFor(component, 'dmp-1');
+    of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
+    tick(10);
+
+    expect(component.aclsMap()['dmp-1'].write).toContain('rperlner');
+    expect(component.getSubjectsForLevel('dmp-1', 'update').map(s => s.label)).toContain('rperlner');
+
+    // and nothing the record names may go unlisted
+    const placed = component.recordSubjectsByLevel('dmp-1').flatMap(g => g.subjects);
+    expect(placed.sort()).toEqual(component.recordSubjects('dmp-1').sort());
+  }));
+
+  // The record listings carry acls as well.  A listing fetched before the edit
+  // used to replace the whole map and put the old permissions back, which is how
+  // the table came to show a different level from the panel beside it.
+  it('does not let a stale record listing revert a refreshed record', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    tick();
+
+    const granted = { ...defaultAcls['dmp-1'], admin: ['newadmin'] };
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockImplementation((record: { id: string }) =>
+      of(record.id === 'dmp-1' ? granted : defaultAcls[record.id]).pipe(delay(1))
+    );
+
+    openDrawerFor(component, 'dmp-1');
+    of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
+    tick(10);
+    expect(component.getSubjectsForLevel('dmp-1', 'admin').map(s => s.label)).toContain('newadmin');
+
+    // a rebuild from the listing already in memory must not undo it
+    (component as any).rebuildFromRecords();
+
+    expect(component.aclsMap()['dmp-1'].admin).toContain('newadmin');
+    expect(component.getSubjectsForLevel('dmp-1', 'admin').map(s => s.label)).toContain('newadmin');
+  }));
 
   it('refreshes again on a second edit of the same record', fakeAsync(() => {
     component.ngOnInit();
@@ -607,5 +748,178 @@ describe('onPermissionsChanged()', () => {
     tick(10);
 
     expect(component.aclsMap()['dmp-1'].read).toEqual(['newuser']);
+  }));
+});
+
+// Issue: after editing a role the row checkboxes stop tracking the drawer — a
+// refresh rebuilds every row as a new object, so anything keyed on identity breaks.
+describe('selection survives a record refresh', () => {
+  let component: MyRecordsComponent;
+  let fixture: ComponentFixture<MyRecordsComponent>;
+
+  beforeEach(async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      declarations: [MyRecordsComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule, NoopAnimationsModule,
+                FormsModule, ReactiveFormsModule, MatAutocompleteModule],
+      providers: makeProviders(),
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+    fixture = TestBed.createComponent(MyRecordsComponent);
+    component = fixture.componentInstance;
+  });
+
+  const rebuild = () => { (component as any).buildAdminRecords(); tick(); };
+
+  it('keeps a row checked after the records are rebuilt', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    component.selection.select(component.dataSource.data.find((r: any) => r.id === 'dmp-1')!);
+    rebuild();
+
+    const rebuilt = component.dataSource.data.find((r: any) => r.id === 'dmp-1')!;
+    expect(component.selection.isSelected(rebuilt)).toBe(true);
+  }));
+
+  it('does not leave the drawer claiming more records than the table shows checked', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    for (const r of component.dataSource.data) component.selection.select(r);
+    const before = component.selectedRecords().length;
+    rebuild();
+
+    const checked = component.dataSource.data.filter((r: any) => component.selection.isSelected(r));
+    expect(checked.length).toBe(before);
+    expect(component.selectedRecords().length).toBe(checked.length);
+  }));
+
+  // the header checkbox read "mixed" over rows that were all ticked, and clicking it
+  // could then neither check nor clear them
+  it('keeps the header checkbox and select-all working after a rebuild', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    for (const r of component.dataSource.filteredData) component.selection.select(r);
+    rebuild();
+
+    expect(component.dataSource.filteredData.every(r => component.selection.isSelected(r))).toBe(true);
+    expect(component.isAllSelected()).toBe(true);
+
+    component.toggleAllRows();
+    expect(component.isAllSelected()).toBe(false);
+    expect(component.dataSource.filteredData.some(r => component.selection.isSelected(r))).toBe(false);
+
+    component.toggleAllRows();
+    expect(component.isAllSelected()).toBe(true);
+  }));
+
+  // an edit can take away the user's own admin, dropping the record from the table
+  const revokeOwnAdminOn = (id: string) => {
+    const getAcls = (component as any).permsSvc.getAcls as jest.Mock;
+    getAcls.mockImplementation((r: { id: string }) =>
+      of(r.id === id ? { read: [], write: [], admin: [], delete: [] } : defaultAcls[r.id])
+        .pipe(delay(1)));
+  };
+
+  it('drops a record from the selection once it is no longer the user to share', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    for (const id of ['dmp-1', 'dmp-2']) {
+      component.selection.select(component.dataSource.data.find((r: any) => r.id === id)!);
+    }
+    revokeOwnAdminOn('dmp-1');
+    of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
+    tick(10);
+
+    expect(component.dataSource.data.map((r: any) => r.id)).not.toContain('dmp-1');
+    expect(component.selectedRecords().map(r => r.id)).not.toContain('dmp-1');
+    expect(component.selectedRecords().map(r => r.id)).toContain('dmp-2');
+  }));
+
+  // dropping a record is not the user asking for the panel back
+  it('leaves the drawer closed when a refresh takes a record away', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    for (const id of ['dmp-1', 'dmp-2']) {
+      component.selection.select(component.dataSource.data.find((r: any) => r.id === id)!);
+    }
+    component.drawerOpen.set(false);
+    revokeOwnAdminOn('dmp-1');
+    of(void 0).pipe(delay(5)).subscribe(() => component.onPermissionsChanged());
+    tick(10);
+
+    expect(component.selectedRecords().map(r => r.id)).toEqual(['dmp-2']);
+    expect(component.drawerOpen()).toBe(false);
+  }));
+
+  // a listing that fails comes back empty; that says nothing about who may share what
+  it('keeps the selection when a record merely stops being listed', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    for (const r of component.dataSource.data) component.selection.select(r);
+    const before = component.selectedRecords().map(r => r.id).sort();
+
+    (component as any).dataService.dmps.set([]);
+    rebuild();
+
+    expect(component.selectedRecords().map(r => r.id).sort()).toEqual(before);
+  }));
+
+  // The header checkbox speaks for the filtered rows. With a record selected but
+  // filtered out of view it used to read mixed over rows that were all ticked, and
+  // clicking it could neither check nor clear them.
+  describe('with a record selected but filtered out of view', () => {
+    const showOnly = (id: string) => {
+      const svc = (component as any).filterService.filterDmpOrDapList as jest.Mock;
+      svc.mockImplementation((list: any[]) => list.filter(r => r.id === id));
+    };
+
+    it('judges the header checkbox on the rows the filter leaves', fakeAsync(() => {
+      component.ngOnInit(); tick(500); tick();
+
+      for (const r of component.dataSource.data) component.selection.select(r);
+      showOnly('dmp-1');
+      component.applyFilters();
+
+      expect(component.dataSource.filteredData.map((r: any) => r.id)).toEqual(['dmp-1']);
+      expect(component.isAllSelected()).toBe(true);
+      expect(component.isPartlySelected()).toBe(false);
+    }));
+
+    it('clears and re-checks the filtered rows, and says so', fakeAsync(() => {
+      component.ngOnInit(); tick(500); tick();
+
+      for (const r of component.dataSource.data) component.selection.select(r);
+      showOnly('dmp-1');
+      component.applyFilters();
+
+      component.toggleAllRows();
+      expect(component.isAllSelected()).toBe(false);
+      // nothing on view is ticked, so the header must not claim a mixed state
+      expect(component.isPartlySelected()).toBe(false);
+      // and a record the filter hides keeps whatever it had
+      expect(component.selectedRecords().map(r => r.id)).toContain('dmp-2');
+
+      component.toggleAllRows();
+      expect(component.isAllSelected()).toBe(true);
+    }));
+  });
+
+  // A selection change reopens the drawer, so a background refresh must not report
+  // one. Rebuilding by clearing and re-selecting would, and would spring open a
+  // drawer the user had just closed.
+  it('reports no selection change when a refresh keeps the same records', fakeAsync(() => {
+    component.ngOnInit(); tick(500); tick();
+
+    component.selection.select(component.dataSource.data[0]);
+    component.drawerOpen.set(false);
+
+    let announced = 0;
+    const sub = component.selection.changed.subscribe(() => announced++);
+    rebuild();
+    sub.unsubscribe();
+
+    expect(announced).toBe(0);
+    expect(component.drawerOpen()).toBe(false);
   }));
 });
