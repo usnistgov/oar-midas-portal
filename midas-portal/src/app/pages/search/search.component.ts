@@ -168,7 +168,11 @@ export class SearchComponent {
 
   
   dataSource = new MatTableDataSource<DmpOrDap>([]);
-  selection = new SelectionModel<DmpOrDap>(true, []); // true = multiple selection
+  // Refreshing the results rebuilds the records as new objects, so identity cannot
+  // be what decides whether a row is selected. The type is part of the key because
+  // the bundled fallback records reuse one set of ids across dmps and daps.
+  selection = new SelectionModel<DmpOrDap>(
+    true, [], true, (a, b) => a.id === b.id && a.type === b.type);
 
   /** Master list of table columns */
   allColumns = [
@@ -213,17 +217,39 @@ export class SearchComponent {
   }
 
   isAllSelected(): boolean {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.filteredData.length;
-    return numSelected === numRows;
+    // an empty table is not fully selected; comparing counts said it was
+    const rows = this.dataSource.filteredData;
+    return rows.length > 0 && rows.every(row => this.selection.isSelected(row));
+  }
+
+  /** Some but not all of the filtered rows — what the header checkbox shows as mixed. */
+  isPartlySelected(): boolean {
+    const rows = this.dataSource.filteredData;
+    return rows.some(row => this.selection.isSelected(row)) && !this.isAllSelected();
   }
 
   toggleAllRows() {
+    // the whole result set, across the pages, rather than the page on screen.
+    // Clearing is enough to untick it: the selection never outlives the results.
     if (this.isAllSelected()) {
       this.selection.clear();
     } else {
-      this.dataSource.filteredData.forEach(row => this.selection.select(row));
+      this.selection.select(...this.dataSource.filteredData);
     }
+  }
+
+  /**
+   * Forget anything the results no longer contain.
+   *
+   * Nothing on this page reports a selected record that is not in the table — no
+   * count, no chips, no way to untick it — so one left behind would be invisible
+   * right up until Download sent it.
+   */
+  private dropSelectionMissingFrom(rows: DmpOrDap[]): void {
+    const gone = this.selection.selected.filter(
+      s => !rows.some(r => r.id === s.id && r.type === s.type)
+    );
+    if (gone.length) this.selection.deselect(...gone);
   }
 
   toggleRow(row: DmpOrDap) {
@@ -498,7 +524,9 @@ searchOrgIndex(queryString: string): void {
   }
 
   downloadData(format: 'json' | 'csv' | 'pdf' | 'markdown'): void {
-    const selectedRecords = this.selection.selected;
+    const selectedRecords = this.selection.selected.map(
+      s => this.dataSource.data.find(r => r.id === s.id && r.type === s.type) ?? s
+    );
 
     if (!this.downloadService.validateSelection(selectedRecords)) {
       return;
@@ -552,6 +580,7 @@ searchOrgIndex(queryString: string): void {
   ];
   const filtered = this.filterService.filterDmpOrDapList(merged, crit);
   this.dataSource.data = filtered;
+  this.dropSelectionMissingFrom(filtered);
   this.paginator?.firstPage();
 
   // Announce results to screen readers (508 compliance - Issue #3)
@@ -815,8 +844,8 @@ searchOrgIndex(queryString: string): void {
       ...this.dataService.dmps(),
       ...this.dataService.daps()
     ];
-    //console.log('Merged data:', merged);
     this.dataSource.data = merged;
+    this.dropSelectionMissingFrom(merged);
     if (this.paginator) this.dataSource.paginator = this.paginator;
     if (this.sort) this.dataSource.sort = this.sort;
   }
