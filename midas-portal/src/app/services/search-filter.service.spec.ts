@@ -25,7 +25,10 @@ const makeDmp = (overrides: any = {}) => ({
   status: 'edit',
   hasPublication: false,
   keywords: ['testd'],
-  modifiedDate: new Date('2026-03-24'),
+  // The API sends "2025-02-27T19:21:23" with no offset, which JS parses as local
+  // time.  A bare "2026-03-24" would parse as UTC and land on the previous day
+  // west of Greenwich, putting every date assertion here a day out.
+  modifiedDate: new Date('2026-03-24T12:00:00'),
   ...overrides,
 });
 
@@ -210,6 +213,14 @@ describe('SearchFilterService', () => {
       );
       expect(result).toHaveLength(0);
     });
+
+    it('matches the capitalisation the type chips actually emit', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp()],
+        { ...BASE_CRITERIA, types: ['DMP'] }
+      );
+      expect(result).toHaveLength(1);
+    });
   });
 
   describe('status filter', () => {
@@ -221,10 +232,187 @@ describe('SearchFilterService', () => {
       expect(result).toHaveLength(1);
     });
 
+    it('matches a state whose name contains a space', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp({ status: 'in press' })],
+        { ...BASE_CRITERIA, statuses: ['in press'] }
+      );
+      expect(result).toHaveLength(1);
+    });
+
+    it('matches a state however the record spells it', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp({ status: 'Published' })],
+        { ...BASE_CRITERIA, statuses: ['published'] }
+      );
+      expect(result).toHaveLength(1);
+    });
+
     it('excludes record not matching status', () => {
       const result = service.filterDmpOrDapList(
         [makeDmp()],
         { ...BASE_CRITERIA, statuses: ['published'] }
+      );
+      expect(result).toHaveLength(0);
+    });
+  });
+
+  describe('saved filters', () => {
+    afterEach(() => localStorage.clear());
+
+    it('drops a saved status this build no longer offers', () => {
+      service.saveCriteria('mine', { ...BASE_CRITERIA, statuses: ['edit', 'reviewed'] });
+      expect(service.loadCriteria('mine')!.statuses).toEqual(['edit']);
+    });
+
+    it('returns null when there is nothing saved under that name', () => {
+      expect(service.loadCriteria('never-saved')).toBeNull();
+    });
+
+    it('lists the names it has saved', () => {
+      service.saveCriteria('mine', BASE_CRITERIA);
+      service.saveCriteria('other', BASE_CRITERIA);
+      expect(service.listSavedNames().sort()).toEqual(['mine', 'other']);
+    });
+
+    it('lists nothing before anything is saved', () => {
+      expect(service.listSavedNames()).toEqual([]);
+    });
+  });
+
+  describe('filter summary', () => {
+    const d = (iso: string) => new Date(iso + 'T12:00:00');
+
+    it('says nothing when no filter is set', () => {
+      expect(service.buildParts(BASE_CRITERIA)).toEqual([]);
+      expect(service.buildText(BASE_CRITERIA)).toBe('');
+    });
+
+    it('names every selected status, spaces and all', () => {
+      expect(service.buildParts({ ...BASE_CRITERIA, statuses: ['edit', 'in press'] }))
+        .toEqual(['Status: Edit, In Press']);
+    });
+
+    it('summarises the non-date criteria in order', () => {
+      expect(service.buildParts({
+        ...BASE_CRITERIA,
+        query: '  soil  ',
+        keywords: ['erosion', 'runoff'],
+        orgUnit: 'Material Measurement Laboratory',
+        owner: 'atl1',
+        types: ['dmp'],
+        hasPublication: true,
+      })).toEqual([
+        'Search: \u201csoil\u201d',
+        'Keywords: erosion, runoff',
+        'Org Unit: Material Measurement Laboratory',
+        'Owner/Contact: atl1',
+        'Type: dmp',
+        'Has Publication',
+      ]);
+    });
+
+    it('joins the parts into the one-line summary', () => {
+      expect(service.buildText({ ...BASE_CRITERIA, types: ['dmp'], statuses: ['edit'] }))
+        .toBe('Type: dmp, Status: Edit');
+    });
+
+    it('describes each kind of date filter', () => {
+      expect(service.buildParts(
+        { ...BASE_CRITERIA, dateFilterType: 'exact', exactDate: d('2026-03-24') }
+      )).toEqual(['Date: Mar 24 2026']);
+
+      expect(service.buildParts(
+        { ...BASE_CRITERIA, dateFilterType: 'before', beforeDate: d('2026-03-24') }
+      )).toEqual(['Before: Mar 24 2026']);
+
+      expect(service.buildParts(
+        { ...BASE_CRITERIA, dateFilterType: 'after', afterDate: d('2026-03-24') }
+      )).toEqual(['After: Mar 24 2026']);
+
+      expect(service.buildParts({
+        ...BASE_CRITERIA, dateFilterType: 'between',
+        rangeStart: d('2026-01-01'), rangeEnd: d('2026-03-24'),
+      })).toEqual(['Date: Jan 1 2026 \u2013 Mar 24 2026']);
+    });
+
+    // a half-set range must not render a broken pill
+    it('leaves a range out until both ends are chosen', () => {
+      expect(service.buildParts(
+        { ...BASE_CRITERIA, dateFilterType: 'between', rangeStart: d('2026-01-01') }
+      )).toEqual([]);
+    });
+  });
+
+  describe('date filter', () => {
+    const d = (iso: string) => new Date(iso + 'T12:00:00');
+    const matches = (c: Partial<FilterCriteria>) =>
+      service.filterDmpOrDapList([makeDmp()], { ...BASE_CRITERIA, ...c } as FilterCriteria).length;
+
+    it('matches an exact day and rejects its neighbours', () => {
+      expect(matches({ dateFilterType: 'exact', exactDate: d('2026-03-24') })).toBe(1);
+      expect(matches({ dateFilterType: 'exact', exactDate: d('2026-03-25') })).toBe(0);
+      expect(matches({ dateFilterType: 'exact', exactDate: d('2026-03-23') })).toBe(0);
+    });
+
+    it('matches before a cut-off', () => {
+      expect(matches({ dateFilterType: 'before', beforeDate: d('2026-06-01') })).toBe(1);
+      expect(matches({ dateFilterType: 'before', beforeDate: d('2026-01-01') })).toBe(0);
+    });
+
+    it('matches after a cut-off', () => {
+      expect(matches({ dateFilterType: 'after', afterDate: d('2026-01-01') })).toBe(1);
+      expect(matches({ dateFilterType: 'after', afterDate: d('2026-06-01') })).toBe(0);
+    });
+
+    it('matches inside a range and rejects outside it', () => {
+      expect(matches({
+        dateFilterType: 'between', rangeStart: d('2026-01-01'), rangeEnd: d('2026-06-01'),
+      })).toBe(1);
+      expect(matches({
+        dateFilterType: 'between', rangeStart: d('2025-01-01'), rangeEnd: d('2025-06-01'),
+      })).toBe(0);
+    });
+
+    // one mapping in data.service leaves modifiedDate as the raw API string
+    it('filters a record whose date never got parsed into a Date', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp({ modifiedDate: '2026-03-24T12:00:00' })],
+        { ...BASE_CRITERIA, dateFilterType: 'exact', exactDate: d('2026-03-24') }
+      );
+      expect(result).toHaveLength(1);
+    });
+
+    it('ignores a date mode whose date was never picked', () => {
+      expect(matches({ dateFilterType: 'exact' })).toBe(1);
+      expect(matches({ dateFilterType: 'before' })).toBe(1);
+      expect(matches({ dateFilterType: 'after' })).toBe(1);
+      expect(matches({ dateFilterType: 'between', rangeStart: d('2026-01-01') })).toBe(1);
+    });
+  });
+
+  describe('owner search', () => {
+    // the people picker hands back "Last, First"; records store "First Last"
+    it('matches a contact entered as "Last, First"', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp()],
+        { ...BASE_CRITERIA, owner: 'Chiang, Martin' }
+      );
+      expect(result).toHaveLength(1);
+    });
+
+    it('still matches a contact entered the way it is stored', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp()],
+        { ...BASE_CRITERIA, owner: 'Martin Chiang' }
+      );
+      expect(result).toHaveLength(1);
+    });
+
+    it('rejects a contact that is not on the record', () => {
+      const result = service.filterDmpOrDapList(
+        [makeDmp()],
+        { ...BASE_CRITERIA, owner: 'Nobody, Real' }
       );
       expect(result).toHaveLength(0);
     });

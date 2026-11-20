@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,6 +22,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
+import { RECORD_STATES } from '../../shared/record-states';
 import { SearchComponent } from './search.component';
 import { ConfigurationService } from 'oarng';
 import { CredentialsService } from '../../services/credentials.service';
@@ -141,10 +142,8 @@ describe('SearchComponent', () => {
         {
           provide: DownloadService,
           useValue: {
-            downloadJSON: jest.fn(),
-            downloadCSV: jest.fn(),
-            downloadPDF: jest.fn(),
-            downloadmarkdown: jest.fn()
+            validateSelection: jest.fn().mockReturnValue(true),
+            downloadRecords: jest.fn().mockReturnValue(of(null))
           }
         },
         {
@@ -185,6 +184,110 @@ describe('SearchComponent', () => {
     expect(component.displayedColumns.length).toBe(initialSize);
   });
 
+
+  // Download sends whatever is ticked, and refreshing the results rebuilds every
+  // record as a new object — so a selection keyed on identity sends the wrong set.
+  describe('selection survives a results refresh', () => {
+    const rowsFor = (ids: string[], type = 'dmp') =>
+      ids.map(id => ({ id, name: `Record ${id}`, owner: 'o', type } as any));
+
+    const showResults = (ids: string[], daps: string[] = []) => {
+      const ds = TestBed.inject(DataService) as any;
+      ds.dmps.set(rowsFor(ids));
+      ds.daps.set(rowsFor(daps, 'dap'));
+      fixture.detectChanges();          // the effect drives updateDataSource, as in the app
+    };
+
+    const sentToDownload = () => {
+      const download = TestBed.inject(DownloadService) as any;
+      component.downloadData('json');
+      return download.downloadRecords.mock.calls.at(-1)![0];
+    };
+
+    beforeEach(() => showResults(['a', 'b', 'c']));
+
+    it('keeps a row ticked when the records are refetched', () => {
+      component.selection.select(component.dataSource.data[0]);
+      showResults(['a', 'b', 'c']);     // same records, new objects
+      expect(component.selection.isSelected(component.dataSource.data[0])).toBe(true);
+    });
+
+    it('sends a record once when it is ticked either side of a refresh', () => {
+      component.selection.select(component.dataSource.data[0]);
+      showResults(['a', 'b', 'c']);
+      component.selection.select(component.dataSource.data[0]);
+
+      expect(sentToDownload().map((r: any) => r.id)).toEqual(['a']);
+    });
+
+    it('sends the record as the table holds it now, not as it was ticked', () => {
+      component.selection.select(component.dataSource.data[0]);
+      const ds = TestBed.inject(DataService) as any;
+      ds.dmps.set([{ id: 'a', name: 'Renamed', owner: 'o', type: 'dmp' } as any]);
+      ds.daps.set([]);
+      fixture.detectChanges();
+
+      expect(sentToDownload()[0].name).toBe('Renamed');
+    });
+
+    // the fallback records bundled with the app reuse one set of ids across both
+    it('does not treat a dap as the dmp of the same id', () => {
+      showResults(['a'], ['a']);
+
+      const dmpRow = component.dataSource.data.find((r: any) => r.type === 'dmp')!;
+      component.selection.select(dmpRow);
+
+      const dapRow = component.dataSource.data.find((r: any) => r.type === 'dap')!;
+      expect(component.selection.isSelected(dapRow)).toBe(false);
+      expect(component.isAllSelected()).toBe(false);
+    });
+
+    it('does not call an empty table fully selected', () => {
+      showResults([]);
+      expect(component.isAllSelected()).toBe(false);
+      expect(component.isPartlySelected()).toBe(false);
+    });
+  });
+
+  // Nothing on this page shows a selected record that is not in the table, so one
+  // left behind would be invisible until Download sent it.
+  describe('when the results no longer hold a selected record', () => {
+    const rowsFor = (ids: string[]) =>
+      ids.map(id => ({ id, name: `Record ${id}`, owner: 'o', type: 'dmp' } as any));
+    const showResults = (ids: string[]) => {
+      const ds = TestBed.inject(DataService) as any;
+      ds.dmps.set(rowsFor(ids)); ds.daps.set([]);
+      fixture.detectChanges();
+    };
+
+    it('forgets it, so the header and Download agree with the table', () => {
+      showResults(['a', 'b', 'c']);
+      component.toggleAllRows();
+      expect(component.isAllSelected()).toBe(true);
+
+      showResults(['a']);
+
+      expect(component.selection.selected.map(r => r.id)).toEqual(['a']);
+      expect(component.isAllSelected()).toBe(true);
+      expect(component.isPartlySelected()).toBe(false);
+
+      const download = TestBed.inject(DownloadService) as any;
+      component.downloadData('json');
+      expect(download.downloadRecords.mock.calls.at(-1)![0].map((r: any) => r.id)).toEqual(['a']);
+    });
+
+    it('leaves the header unticked rather than mixed when none remain', () => {
+      showResults(['a', 'b']);
+      component.selection.select(component.dataSource.data[0]);
+
+      showResults(['c']);
+
+      expect(component.selection.selected).toEqual([]);
+      expect(component.isAllSelected()).toBe(false);
+      expect(component.isPartlySelected()).toBe(false);
+    });
+  });
+
   it('should clear filters', () => {
     component.searchTerm = 'test';
     component.clearFilters();
@@ -221,15 +324,31 @@ describe('SearchComponent', () => {
       expect(component.length).toBe(1);
     });
 
-    it('drops row selection when the results are replaced', () => {
+    it('forgets a selected row the results no longer contain', () => {
       component.selection.select(component.dataSource.data[0]);
       expect(component.selection.isEmpty()).toBe(false);
 
       component.searchTerm = 'carbon';
       component.performSearch();
 
-      // rows are new objects, so a reference-based selection would silently detach
       expect(component.selection.isEmpty()).toBe(true);
+    });
+
+    // a search returns new objects, so this only holds because rows are matched
+    // by id and type rather than by reference
+    it('keeps a selected row the results still contain', () => {
+      const kept = component.dataSource.data[0];
+      component.selection.select(kept);
+      dataService.advancedSearch.mockReturnValue(of({
+        rows: [{ ...kept }, { id: 'found-2', type: 'dmp' }], failed: []
+      }));
+
+      component.searchTerm = 'carbon';
+      component.performSearch();
+
+      expect(component.selection.selected.map((r: any) => r.id)).toEqual([kept.id]);
+      // and the surviving selection is inside the rows the table is showing
+      expect(component.dataSource.data.some((r: any) => r.id === kept.id)).toBe(true);
     });
 
     it('does not call the endpoint when no criteria are set', () => {
@@ -258,6 +377,41 @@ describe('SearchComponent', () => {
       component.clearFilters();
       expect(component.dataSource.data.map((r: any) => r.id)).toEqual(['dmp1', 'dap1']);
     });
+  });
 
+  describe('status filter', () => {
+    afterEach(() => localStorage.removeItem('filter-mine'));
+
+    it('offers the shared state list, in workflow order', () => {
+      expect(component.statuses).toBe(RECORD_STATES);
+    });
+
+    // "reviewed" used to be offered; a filter saved back then would otherwise
+    // restore a value that matches no record and has no chip to switch it off
+    it('drops a saved status it can no longer show', () => {
+      localStorage.setItem('filter-mine', JSON.stringify({
+        query: '', keywords: [], types: [], statuses: ['edit', 'reviewed'],
+        hasPublication: false, dateFilterType: 'between',
+      }));
+      jest.spyOn(TestBed.inject(MatDialog), 'open')
+        .mockReturnValue({ afterClosed: () => of('mine') } as any);
+
+      component.loadFilters();
+
+      expect(component.statusControl.value).toEqual(['edit']);
+    });
+
+    it('restores the statuses it does recognise', () => {
+      localStorage.setItem('filter-mine', JSON.stringify({
+        query: '', keywords: [], types: [], statuses: ['in press', 'unwell'],
+        hasPublication: false, dateFilterType: 'between',
+      }));
+      jest.spyOn(TestBed.inject(MatDialog), 'open')
+        .mockReturnValue({ afterClosed: () => of('mine') } as any);
+
+      component.loadFilters();
+
+      expect(component.statusControl.value).toEqual(['in press', 'unwell']);
+    });
   });
 });

@@ -15,7 +15,8 @@ import { DataService } from '../../../services/data.service';
 import { Widget } from '../../../models/dashboard';
 import { getMaxVisibleRows } from '../table-utils';
 
-import { getStatusClass as statusClassUtil, recordFilterPredicate } from '../../../shared/table-utils';
+import { recordFilterPredicate } from '../../../shared/table-utils';
+import { statusClassFor, labelFor } from '../../../shared/record-states';
 
 interface Dmp {
   id: string;
@@ -148,8 +149,12 @@ export class DmpTableComponent implements AfterViewInit {
     return this.dataService.resolveApiUrl('dmpEDIT').concat(id)
   }
 
-  getStatusClass(status: string): string {
-    return statusClassUtil(status);
+  getStatusClass(status?: string): string {
+    return statusClassFor(status);
+  }
+
+  statusLabel(status?: string): string {
+    return labelFor(status);
   }
 
   /** open the create‐new page */
