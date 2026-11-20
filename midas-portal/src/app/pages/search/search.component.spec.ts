@@ -111,6 +111,13 @@ describe('SearchComponent', () => {
             ]),
             loadAll: jest.fn().mockReturnValue(of({})),
             getDmps: jest.fn().mockReturnValue(of([])),
+            advancedSearch: jest.fn().mockReturnValue(of({
+              rows: [
+                { id: 'found-1', name: 'Found', owner: 'o', primaryContact: 'c',
+                  modifiedDate: new Date(), type: 'dmp', status: 'edit' }
+              ],
+              failed: []
+            })),
             resolveApiUrl: jest.fn().mockReturnValue('http://mock-api/'),
             credsService: {
               token: () => 'mock-token'
@@ -286,6 +293,90 @@ describe('SearchComponent', () => {
     component.clearFilters();
     expect(component.searchTerm).toBe('');
     expect(component.hasFilters()).toBe(false);
+  });
+
+  describe('server-side search', () => {
+    let dataService: any;
+
+    beforeEach(() => {
+      dataService = TestBed.inject(DataService);
+      dataService.advancedSearch.mockClear();
+    });
+
+    it('sends a built filter and the collections to search', () => {
+      component.searchTerm = 'carbon';
+      component.performSearch();
+
+      expect(dataService.advancedSearch).toHaveBeenCalledTimes(1);
+      const [filters] = dataService.advancedSearch.mock.calls[0];
+      // each collection gets its own filter: the contact name lives in a different field
+      expect(Object.keys(filters)).toEqual(['dmp', 'dap']);
+      expect(JSON.stringify(filters.dmp)).toContain('carbon');
+      expect(JSON.stringify(filters.dmp)).toContain('data.contributors');
+      expect(JSON.stringify(filters.dap)).toContain('data.contactPoint.fn');
+    });
+
+    it('shows the rows the server returned', () => {
+      component.searchTerm = 'carbon';
+      component.performSearch();
+
+      expect(component.dataSource.data.map((r: any) => r.id)).toEqual(['found-1']);
+      expect(component.length).toBe(1);
+    });
+
+    it('forgets a selected row the results no longer contain', () => {
+      component.selection.select(component.dataSource.data[0]);
+      expect(component.selection.isEmpty()).toBe(false);
+
+      component.searchTerm = 'carbon';
+      component.performSearch();
+
+      expect(component.selection.isEmpty()).toBe(true);
+    });
+
+    // a search returns new objects, so this only holds because rows are matched
+    // by id and type rather than by reference
+    it('keeps a selected row the results still contain', () => {
+      const kept = component.dataSource.data[0];
+      component.selection.select(kept);
+      dataService.advancedSearch.mockReturnValue(of({
+        rows: [{ ...kept }, { id: 'found-2', type: 'dmp' }], failed: []
+      }));
+
+      component.searchTerm = 'carbon';
+      component.performSearch();
+
+      expect(component.selection.selected.map((r: any) => r.id)).toEqual([kept.id]);
+      // and the surviving selection is inside the rows the table is showing
+      expect(component.dataSource.data.some((r: any) => r.id === kept.id)).toBe(true);
+    });
+
+    it('does not call the endpoint when no criteria are set', () => {
+      component.searchTerm = '';
+      component.performSearch();
+
+      expect(dataService.advancedSearch).not.toHaveBeenCalled();
+    });
+
+    it('reports a failed collection instead of showing it as no results', () => {
+      dataService.advancedSearch.mockReturnValue(of({ rows: [], failed: ['dap'] }));
+
+      component.searchTerm = 'carbon';
+      component.performSearch();
+
+      expect(component.searchError).toContain('DAP');
+      expect(component.isLoading).toBe(false);
+    });
+
+    it('keeps live record updates out of the table while results are shown', () => {
+      component.searchTerm = 'carbon';
+      component.performSearch();
+      expect(component.dataSource.data.map((r: any) => r.id)).toEqual(['found-1']);
+
+      // clearing the filters hands the table back to the listing
+      component.clearFilters();
+      expect(component.dataSource.data.map((r: any) => r.id)).toEqual(['dmp1', 'dap1']);
+    });
   });
 
   describe('status filter', () => {

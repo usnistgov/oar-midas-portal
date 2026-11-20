@@ -659,4 +659,59 @@ describe('DataService', () => {
       authHttpMock.expectOne(r => r.url.includes('dap') && r.url.includes('?owner=')).flush([]);
     });
   });
+
+  describe('advancedSearch', () => {
+    const rawDmpRec = {
+      id: 'dmp-1', name: 'One', owner: 'alice',
+      data: { title: 'One' },
+      status: { modifiedDate: '2023-01-01T00:00:00Z', state: 'edit' },
+      type: 'dmp'
+    };
+    const rawDapRec = { ...rawDmpRec, id: 'dap-1', name: 'Two', type: 'dap' };
+    const filter = { $and: [{ name: { $regex: 'x', $options: 'i' } }] };
+    const DMP_URL = 'https://localhost/midas/dmp/mdm1/:selected';
+    const DAP_URL = 'https://localhost/midas/dap/mds3/:selected';
+
+    it('queries each collection with the filter and explicit permissions', () => {
+      let res: any = { rows: [], failed: [] };
+      service.advancedSearch({ dmp: filter, dap: filter }).subscribe(r => res = r);
+
+      const dmpReq = httpMock.expectOne(DMP_URL);
+      expect(dmpReq.request.method).toBe('POST');
+      expect(dmpReq.request.body.filter).toEqual(filter);
+      // the endpoint's own default is broken; the portal must not rely on it
+      expect(dmpReq.request.body.permissions).toEqual(['read', 'write', 'admin', 'delete']);
+      dmpReq.flush([rawDmpRec]);
+      httpMock.expectOne(DAP_URL).flush([rawDapRec]);
+
+      expect(res.rows).toHaveLength(2);
+      expect(res.rows.map((r: any) => r.id)).toEqual(['dmp-1', 'dap-1']);
+      expect(res.failed).toEqual([]);
+    });
+
+    it('treats a 204 as no matches', () => {
+      let res: any;
+      service.advancedSearch({ dmp: filter }).subscribe(r => res = r);
+      httpMock.expectOne(DMP_URL).flush(null, { status: 204, statusText: 'No Content' });
+      expect(res).toEqual({ rows: [], failed: [] });
+    });
+
+    it('keeps the results of the collection that succeeded', () => {
+      let res: any = { rows: [], failed: [] };
+      service.advancedSearch({ dmp: filter, dap: filter }).subscribe(r => res = r);
+      httpMock.expectOne(DMP_URL).flush([rawDmpRec]);
+      httpMock.expectOne(DAP_URL).flush('boom', { status: 500, statusText: 'Server Error' });
+      expect(res.rows.map((r: any) => r.id)).toEqual(['dmp-1']);
+      // the caller has to be able to tell this from an empty result
+      expect(res.failed).toEqual(['dap']);
+    });
+
+    it('makes no request when no collection is selected', () => {
+      let res: any;
+      service.advancedSearch({}).subscribe(r => res = r);
+      httpMock.expectNone(() => true);
+      expect(res).toEqual({ rows: [], failed: [] });
+    });
+  });
+
 });
