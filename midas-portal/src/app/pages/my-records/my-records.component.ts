@@ -32,7 +32,6 @@ import {
   RecordRef, PermissionsService, GroupsService, Acls, SubjectLabelService,
   PermissionLevel, aclSubjects, subjectPermissionLevel, isGroupSubject
 } from 'oarng';
-import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
 import { RECORD_STATES, statusClassFor, labelFor } from '../../shared/record-states';
 
 type OwnedRecord = (Dmp | Dap) & { type: string };
