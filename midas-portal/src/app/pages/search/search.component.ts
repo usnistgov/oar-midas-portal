@@ -28,7 +28,7 @@ import { DownloadService } from '../../services/download.service';
 import { DataService } from '../../services/data.service';
 import { PeopleService } from '../../services/people.service';
 import { FilterCriteria, SearchFilterService } from '../../services/search-filter.service';
-import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
+import { RECORD_STATES, knownStates, statusClassFor, labelFor } from '../../shared/record-states';
 import { SelectionModel } from '@angular/cdk/collections';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 
@@ -117,11 +117,7 @@ export class SearchComponent {
   /** Available resource types (for chip list) */
   resourceTypes = ['DMP', 'DAP'];
   /** Fixed list of status options */
-  statuses = [
-    { label: 'Published', value: 'published' },
-    { label: 'Edit', value: 'edit' },
-    { label: 'Reviewed', value: 'reviewed' }
-  ];
+  statuses = RECORD_STATES;
   /** Selected resource types */
   selectedResourceTypes: string[] = [];
   /** ChipControl for resource-types */
@@ -726,7 +722,7 @@ searchOrgIndex(queryString: string): void {
         this.orgUnitControl.setValue(f.orgUnit || '');
         this.ownerControl.setValue(f.owner || '');
         this.resourceTypeControl.setValue(f.types || []);
-        this.statusControl.setValue(f.statuses || []);
+        this.statusControl.setValue(knownStates(f.statuses || []));
         this.hasPaperPublication = !!f.hasPublication;
         this.dateFilterType = f.dateFilterType;
 
@@ -868,8 +864,12 @@ searchOrgIndex(queryString: string): void {
     this.applyFilters(); // reuse existing logic
   }
 
-  getStatusClass(status: string): string {
-    return statusClassUtil(status);
+  getStatusClass(status?: string): string {
+    return statusClassFor(status);
+  }
+
+  statusLabel(status?: string): string {
+    return labelFor(status);
   }
 
 
