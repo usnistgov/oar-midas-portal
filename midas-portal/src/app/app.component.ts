@@ -5,8 +5,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { Subject } from 'rxjs';
-import { auditTime, filter, switchMap } from 'rxjs/operators';
+import { EMPTY, Subject } from 'rxjs';
+import { auditTime, catchError, filter, switchMap } from 'rxjs/operators';
 import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
 import { ThemeSelectorData, ThemeSelectorDialogComponent } from './components/theme-selector-dialog/theme-selector-dialog.component';
 import { DashboardService } from './services/dashboard.service';
@@ -161,8 +161,15 @@ export class AppComponent implements OnInit {
         recordChanges.pipe(
           auditTime(1000),
           // loadAll() also refreshes myDmps/myDaps, which the dashboard widgets read;
-          // setDmps/setDaps never touch those
-          switchMap(() => this.dataService.loadAll())
+          // setDmps/setDaps never touch those.  Catch inside the switchMap: an error
+          // reaching the subscriber would end it for the life of the page, leaving
+          // notifications still popping up while the tables quietly stopped refreshing.
+          switchMap(() => this.dataService.loadAll().pipe(
+            catchError(err => {
+              console.error('Record refresh after a change notification failed:', err);
+              return EMPTY;
+            })
+          ))
         ).subscribe();
 
         // Subscribe to WebSocket messages
