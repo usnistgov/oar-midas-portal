@@ -43,14 +43,19 @@ export class PeopleService {
 
   constructor() {
     const config = this.configSvc.getConfig<any>();
-    const nsdBase = (config?.staffdir?.serviceEndpoint as string ?? '').replace(/\/?$/, '/');
-    this.peopleAPI = nsdBase ? `${nsdBase}people/index` : '';
-    this.orgAPI = nsdBase ? `${nsdBase}orgs` : '';
-    this.personAPI = nsdBase ? `${nsdBase}people/` : '';
-    // Optionally log for debugging
-    // console.log('peopleAPI:', this.peopleAPI);
-    // console.log('orgAPI:', this.orgAPI);
-    // console.log('personAPI:', this.personAPI);
+    const nsd = (config?.staffdir?.serviceEndpoint as string) ?? '';
+
+    if (nsd) {
+      const base = nsd.replace(/\/?$/, '/');
+      this.peopleAPI = `${base}people/index`;
+      this.orgAPI = `${base}orgs/index`;
+      this.personAPI = `${base}people/`;
+    } else {
+      // config servers predating staffdir.serviceEndpoint publish the three URLs flat
+      this.peopleAPI = config['peopleURL'] || '';
+      this.orgAPI = config['orgURL'] || '';
+      this.personAPI = config['personURL'] || '';
+    }
   }
 
   /**
