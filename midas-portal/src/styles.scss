@@ -129,6 +129,22 @@ $da-dark  : mat.m2-define-dark-theme((
 // threshold in that mode.  Ratios in the comments are against #fff (light) and the
 // Material dark surface #424242 (dark).
 
+// Greys and status colours carry the same hue in every theme; only the surface
+// under them changes, so they are set per mode rather than per theme.  Ratios are
+// against #fff (light) and the Material dark surface #424242 (dark).
+.light {
+  --portal-muted-text:  #5f6368;   // 6.05:1
+  --portal-status-ok:   #2e7d32;   // 5.13:1
+  --portal-status-warn: #a35200;   // 5.58:1
+  --portal-status-err:  #c62828;   // 5.62:1
+}
+.dark {
+  --portal-muted-text:  #bdbdbd;   // 5.35:1
+  --portal-status-ok:   #81c784;   // 4.99:1
+  --portal-status-warn: #ffb74d;   // 5.81:1
+  --portal-status-err:  #ef9a9a;   // 4.67:1
+}
+
 .theme-light.light {
   @include mat.all-component-colors($pb-light);
   --info-bubble-bg:  #fff;
@@ -254,17 +270,19 @@ body {
   gap: 0.25rem;
   font-size: 0.85rem;
   margin: 0;
-  color: #5f6368;
+  // the widget sets its own dark background inline (widget-registry.ts), so these
+  // two are measured against #102C57 rather than the page: 8.6:1 and 6.4:1
+  color: #ccc;
 }
 
 .stat-subtext p {
   margin: 0;
   font-weight: 600;
-  color: #c62828;
+  color: #ef9a9a;
 }
 
 .text-green {
-  color: #c62828;
+  color: #ef9a9a;
 }
 
 // ======================================

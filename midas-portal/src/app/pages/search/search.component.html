@@ -1,16 +1,17 @@
 <div class="search-container">
-    <h1 class="visually-hidden">Search Page and Export</h1>
+    <h1 class="visually-hidden">Search and Export</h1>
     <div class="search-panel" [class.loading]="isLoading">
-        <div class="loading-overlay" *ngIf="isLoading" aria-hidden="true">
-            <mat-progress-spinner mode="indeterminate" diameter="50" color="primary" aria-label="Loading"></mat-progress-spinner>
+        <div class="loading-overlay" *ngIf="isLoading"
+             role="status" aria-live="polite" aria-label="Loading search results">
+            <mat-progress-spinner mode="indeterminate" diameter="50" color="primary"></mat-progress-spinner>
         </div>
 
         <div class="search-content">
             <div class="search-bar">
                 <div class="search-controls">
                     <mat-form-field appearance="outline" class="search-field small large" data-tour="search-input">
-                        <mat-icon matPrefix>search</mat-icon>
-                        <input matInput aria-label="Search records" placeholder="Search dmp, dap..." [(ngModel)]="searchTerm"
+                        <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+                        <input matInput aria-label="Search dmp, dap" placeholder="Search dmp, dap..." [(ngModel)]="searchTerm"
                             (keydown.enter)="performSearch()" />
                     </mat-form-field>
 
