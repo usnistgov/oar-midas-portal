@@ -196,15 +196,15 @@
                 <th mat-header-cell *matHeaderCellDef>
                   <mat-checkbox (change)="toggleAllRows()"
                     [checked]="isAllSelected()"
-                    [indeterminate]="selection.hasValue() && !isAllSelected()"
-                    aria-label="Select all records">
+                    [indeterminate]="isPartlySelected()"
+                    aria-label="Select all records matching the current filters">
                   </mat-checkbox>
                 </th>
                 <td mat-cell *matCellDef="let row">
                   <mat-checkbox (click)="$event.stopPropagation()"
                     (change)="selection.toggle(row)"
                     [checked]="selection.isSelected(row)"
-                    [attr.aria-label]="'Select ' + (row.name || row.id)">
+                    [aria-label]="'Select ' + (row.name || row.id)">
                   </mat-checkbox>
                 </td>
               </ng-container>
@@ -249,7 +249,7 @@
                 </th>
                 <td mat-cell *matCellDef="let d">
                   <span class="status-chip" [ngClass]="getStatusClass(d.status)">
-                    {{ d.status?.toUpperCase() || '—' }}
+                    {{ statusLabel(d.status) || '-' }}
                   </span>
                 </td>
               </ng-container>
@@ -270,7 +270,15 @@
                 <th mat-header-cell *matHeaderCellDef class="perm-th">View</th>
                 <td mat-cell *matCellDef="let d" class="perm-td">
                   @if (getSubjectsForLevel(d.id, 'view').length) {
-                    <span class="perm-names perm-names--view">{{ getSubjectsForLevel(d.id, 'view').join(', ') }}</span>
+                    <ul class="perm-names perm-names--view">
+                      @for (s of getSubjectsForLevel(d.id, 'view'); track s.id) {
+                        <li>
+                          <mat-icon class="perm-kind-icon" aria-hidden="true">{{ s.group ? 'corporate_fare' : 'person' }}</mat-icon>
+                          @if (s.group) { <span class="cdk-visually-hidden">Group:</span> }
+                          <span>{{ s.label }}</span>
+                        </li>
+                      }
+                    </ul>
                   } @else {
                     <span class="perm-empty" aria-hidden="true">—</span>
                   }
@@ -282,7 +290,15 @@
                 <th mat-header-cell *matHeaderCellDef class="perm-th">Update</th>
                 <td mat-cell *matCellDef="let d" class="perm-td">
                   @if (getSubjectsForLevel(d.id, 'update').length) {
-                    <span class="perm-names perm-names--update">{{ getSubjectsForLevel(d.id, 'update').join(', ') }}</span>
+                    <ul class="perm-names perm-names--update">
+                      @for (s of getSubjectsForLevel(d.id, 'update'); track s.id) {
+                        <li>
+                          <mat-icon class="perm-kind-icon" aria-hidden="true">{{ s.group ? 'corporate_fare' : 'person' }}</mat-icon>
+                          @if (s.group) { <span class="cdk-visually-hidden">Group:</span> }
+                          <span>{{ s.label }}</span>
+                        </li>
+                      }
+                    </ul>
                   } @else {
                     <span class="perm-empty" aria-hidden="true">—</span>
                   }
@@ -294,7 +310,15 @@
                 <th mat-header-cell *matHeaderCellDef class="perm-th">Admin</th>
                 <td mat-cell *matCellDef="let d" class="perm-td">
                   @if (getSubjectsForLevel(d.id, 'admin').length) {
-                    <span class="perm-names perm-names--admin">{{ getSubjectsForLevel(d.id, 'admin').join(', ') }}</span>
+                    <ul class="perm-names perm-names--admin">
+                      @for (s of getSubjectsForLevel(d.id, 'admin'); track s.id) {
+                        <li>
+                          <mat-icon class="perm-kind-icon" aria-hidden="true">{{ s.group ? 'corporate_fare' : 'person' }}</mat-icon>
+                          @if (s.group) { <span class="cdk-visually-hidden">Group:</span> }
+                          <span>{{ s.label }}</span>
+                        </li>
+                      }
+                    </ul>
                   } @else {
                     <span class="perm-empty" aria-hidden="true">—</span>
                   }

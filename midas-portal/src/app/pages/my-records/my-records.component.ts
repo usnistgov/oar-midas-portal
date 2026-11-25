@@ -23,16 +23,21 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { take, catchError, map } from 'rxjs/operators';
 import { of, forkJoin } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { DataService } from '../../services/data.service';
 import { CredentialsService } from '../../services/credentials.service';
 import { PeopleService } from '../../services/people.service';
 import { SearchFilterService, FilterCriteria } from '../../services/search-filter.service';
 import { Dmp, Dap } from '../../models/dashboard';
-import { RecordRef, PermissionsService, GroupsService, Acls, ConfigurationService } from 'oarng';
-import { getStatusClass as statusClassUtil } from '../../shared/table-utils';
+import {
+  RecordRef, PermissionsService, GroupsService, Acls, SubjectLabelService,
+  PermissionLevel, aclSubjects, subjectPermissionLevel, isGroupSubject
+} from 'oarng';
+import { RECORD_STATES, statusClassFor, labelFor } from '../../shared/record-states';
 
 type OwnedRecord = (Dmp | Dap) & { type: string };
+
+/** A subject as the permission columns show it: a name, and whether it names a group. */
+type SubjectEntry = { id: string; label: string; group: boolean };
 
 @Component({
   selector: 'app-my-records',
@@ -46,8 +51,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private filterService = inject(SearchFilterService);
   private permsSvc = inject(PermissionsService);
   private groupsSvc = inject(GroupsService);
-  private configSvc = inject(ConfigurationService);
-  private http = inject(HttpClient);
+  private labelSvc = inject(SubjectLabelService);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
   private snackBar = inject(MatSnackBar);
@@ -57,16 +61,22 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   private adminData: OwnedRecord[] = [];
 
   dataSource = new MatTableDataSource<OwnedRecord>([]);
-  selection = new SelectionModel<OwnedRecord>(true, []);
+  // Every refresh rebuilds the rows as new objects, so identity cannot be what
+  // decides whether a row is selected: the checkbox would come back cleared while
+  // the drawer went on counting the record.
+  selection = new SelectionModel<OwnedRecord>(true, [], true, (a, b) => a.id === b.id);
 
   displayedColumns = ['select', 'id', 'name', 'type', 'status', 'modifiedDate', 'permView', 'permUpdate', 'permAdmin'];
 
   readonly aclsMap = signal<{ [id: string]: Acls }>({});
-  readonly subjectLabels = signal<{ [subject: string]: string }>({});
+  readonly subjectLabels = this.labelSvc.labels;
 
-  private groupNamesCache: { [id: string]: string } = {};
-  private resolvedSubjects = new Set<string>();
+  private myGroups: { id: string; name: string }[] = [];
   private pendingAclRefresh = new Map<string, RecordRef>();
+  // Records whose acls were refetched after a permission edit.  The record
+  // listings carry acls too, but a listing fetched before the edit would put
+  // the old ones back, which is how the table came to disagree with the panel.
+  private freshlyEdited = new Set<string>();
 
   readonly drawerOpen = signal(false);
   readonly activeDrawerTab = signal(0);
@@ -85,37 +95,33 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       const dmps = this.dataService.dmps();
       const daps = this.dataService.daps();
       if (!dmps.length && !daps.length) return;
-      untracked(() => this.rebuildFromRecords());
+      untracked(() => {
+        this.freshlyEdited.clear();
+        this.rebuildFromRecords();
+      });
     }, { allowSignalWrites: true });
 
     this.selection.changed.pipe(
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(() => {
-      // Deduplicate by ID — data refreshes create new object instances for the same record,
-      // and both the old and new references can briefly coexist in SelectionModel.
-      const seen = new Set<string>();
-      const unique: RecordRef[] = [];
-      for (const r of this.selection.selected) {
-        if (!seen.has(r.id)) {
-          seen.add(r.id);
-          unique.push({
-            id: r.id,
-            apiBase: r.type?.toLowerCase() === 'dap'
-              ? this.dataService.resolveApiUrl('dapAPI')
-              : this.dataService.resolveApiUrl('dmpAPI')
-          });
-        }
-      }
+    ).subscribe(change => {
+      const unique: RecordRef[] = this.selection.selected.map(r => ({
+        id: r.id,
+        apiBase: r.type?.toLowerCase() === 'dap'
+          ? this.dataService.resolveApiUrl('dapAPI')
+          : this.dataService.resolveApiUrl('dmpAPI')
+      }));
       this.selectedRecords.set(unique);
       // The drawer saves asynchronously and reports no ids, so by the time it says it is
       // done the selection may have moved on. Remember everything opened since the last
       // refresh; that is a superset of whatever it edited.
       for (const r of unique) this.pendingAclRefresh.set(r.id, r);
 
-      if (this.selection.selected.length > 0) {
+      // Opening is a response to the user picking something: refreshes drop records
+      // too, and those must not raise a panel the user has just dismissed.
+      if (change.added.length) {
         this.drawerOpen.set(true);
         this.permDrawer?.open();
-      } else if (this.activeDrawerTab() !== 1) {
+      } else if (!this.selection.selected.length && this.activeDrawerTab() !== 1) {
         // Close the drawer when all records are deselected (unless user is managing groups)
         this.drawerOpen.set(false);
         this.permDrawer?.close();
@@ -144,11 +150,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   orgSuggestions: string[] = [];
 
   readonly resourceTypes = ['DMP', 'DAP'];
-  readonly statuses = [
-    { label: 'Published', value: 'published' },
-    { label: 'Edit', value: 'edit' },
-    { label: 'Reviewed', value: 'reviewed' }
-  ];
+  readonly statuses = RECORD_STATES;
 
   filterPills: string[] = [];
 
@@ -311,15 +313,24 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
   }
 
   isAllSelected(): boolean {
-    return this.selection.selected.length === this.dataSource.filteredData.length
-      && this.dataSource.filteredData.length > 0;
+    const rows = this.dataSource.filteredData;
+    return rows.length > 0 && rows.every(r => this.selection.isSelected(r));
+  }
+
+  /** Some but not all of the filtered rows — what the header checkbox shows as mixed. */
+  isPartlySelected(): boolean {
+    const rows = this.dataSource.filteredData;
+    return rows.some(r => this.selection.isSelected(r)) && !this.isAllSelected();
   }
 
   toggleAllRows(): void {
+    // the filtered set, which spans the pages: what a record filtered out of it holds
+    // is not this checkbox's to change
+    const rows = this.dataSource.filteredData;
     if (this.isAllSelected()) {
-      this.selection.clear();
+      this.selection.deselect(...rows);
     } else {
-      this.dataSource.filteredData.forEach(r => this.selection.select(r));
+      this.selection.select(...rows);
     }
   }
 
@@ -354,25 +365,21 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
     this.permDrawer.close();
   }
 
-  getStatusClass(status: string): string {
-    return statusClassUtil(status);
+  getStatusClass(status?: string): string {
+    return statusClassFor(status);
+  }
+
+  statusLabel(status?: string): string {
+    return labelFor(status);
   }
 
   private loadGroupsForLabels(): void {
     this.groupsSvc.getGroups().subscribe({
       next: groups => {
-        groups.forEach(g => { this.groupNamesCache[g.id] = g.name; });
-        // Re-resolve any subjects already loaded that may be group IDs
-        const current = this.subjectLabels();
-        const updates: { [s: string]: string } = {};
-        for (const [subject, label] of Object.entries(current)) {
-          if (label === subject && this.groupNamesCache[subject]) {
-            updates[subject] = this.groupNamesCache[subject];
-          }
-        }
-        if (Object.keys(updates).length) {
-          this.subjectLabels.update(m => ({ ...m, ...updates }));
-        }
+        this.myGroups = groups.map(g => ({ id: g.id, name: g.name }));
+        // group ids seen before the groups arrived are still unlabelled; rebuilding
+        // re-resolves them from the records already loaded, with no extra requests
+        this.rebuildFromRecords();
       },
       error: () => {}
     });
@@ -402,6 +409,7 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
         const next = { ...m };
         for (const { id, acls } of resolved) {
           next[id] = acls;
+          this.freshlyEdited.add(id);
           for (const s of [...(acls.read ?? []), ...(acls.write ?? []),
                            ...(acls.admin ?? []), ...(acls.delete ?? [])]) {
             subjects.add(s);
@@ -411,135 +419,17 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       });
 
       this.buildAdminRecords();
-      this.resolveSubjectLabels([...subjects]);
+
+      // Only these records were re-read, so only these can be known to have been
+      // given away. A record missing for any other reason — a listing that failed,
+      // a filter — is still the user's and stays selected.
+      const mine = new Set(this.adminData.map(r => r.id));
+      const given = this.selection.selected.filter(
+        r => resolved.some(x => x.id === r.id) && !mine.has(r.id)
+      );
+      if (given.length) this.selection.deselect(...given);
+      this.labelSvc.resolve([...subjects], this.myGroups);
     });
-  }
-
-  private readonly ORG_ENDPOINT: Record<string, string> = {
-    nistou: 'OU', nistdiv: 'Div', nistgrp: 'Group',
-  };
-
-  private resolveSubjectLabels(subjects: string[]): void {
-    const orgBaseUrl = ((this.configSvc.getConfig<any>()['orgURL'] ?? '') as string).replace(/\/index$/, '');
-
-    subjects.forEach(subject => {
-      if (this.resolvedSubjects.has(subject)) return;
-      this.resolvedSubjects.add(subject);
-
-      if (this.groupNamesCache[subject]) {
-        this.subjectLabels.update(m => ({ ...m, [subject]: this.groupNamesCache[subject] }));
-        return;
-      }
-
-      const colonIdx = subject.indexOf(':');
-      const prefix = colonIdx > 0 ? subject.substring(0, colonIdx) : '';
-      const afterColon = colonIdx > 0 ? subject.substring(colonIdx + 1) : '';
-
-      if (/^nist(ou|div|grp)$/.test(prefix)) {
-        // New format "nistdiv:13289" — query typed endpoint, use outer key (org code) for display
-        const endpoint = this.ORG_ENDPOINT[prefix];
-        if (endpoint && orgBaseUrl) {
-          this.http.get<any>(`${orgBaseUrl}/${endpoint}/index`).pipe(
-            catchError(() => of({}))
-          ).subscribe((raw: any) => {
-            const info = this.extractOrgInfo(raw, afterColon);
-            this.subjectLabels.update(m => ({
-              ...m,
-              [subject]: info ? `${info.name} (${info.code})` : subject
-            }));
-          });
-        }
-        return;
-      }
-
-      if (/^\d+$/.test(prefix) && /^\d+$/.test(afterColon)) {
-        // Legacy format "775:13289" (orgCode:orgId) — try all 3 types
-        const orgCode = prefix;
-        const orgId = afterColon;
-        if (orgBaseUrl) {
-          const endpoints = ['OU', 'Div', 'Group'];
-          forkJoin(
-            endpoints.map(ep =>
-              this.http.get<any>(`${orgBaseUrl}/${ep}/index`).pipe(
-                catchError(() => of({}))
-              )
-            )
-          ).subscribe((responses: any[]) => {
-            for (const raw of responses) {
-              const info = this.extractOrgInfoByCode(raw, orgCode, orgId);
-              if (info) {
-                this.subjectLabels.update(m => ({ ...m, [subject]: `${info.name} (${orgCode})` }));
-                return;
-              }
-            }
-          });
-        }
-        return;
-      }
-
-      if (/^[a-z]+$/.test(prefix) && /^\d+$/.test(afterColon)) {
-        // Org abbreviation format "mml:13213" — scan all 3 endpoints by orgId, get code from outer key
-        const orgId = afterColon;
-        if (orgBaseUrl) {
-          const endpoints = ['OU', 'Div', 'Group'];
-          forkJoin(
-            endpoints.map(ep =>
-              this.http.get<any>(`${orgBaseUrl}/${ep}/index`).pipe(
-                catchError(() => of({}))
-              )
-            )
-          ).subscribe((responses: any[]) => {
-            for (const raw of responses) {
-              const info = this.extractOrgInfo(raw, orgId);
-              if (info) {
-                this.subjectLabels.update(m => ({ ...m, [subject]: `${info.name} (${info.code})` }));
-                return;
-              }
-            }
-          });
-        }
-        return;
-      }
-
-      if (/^\d+$/.test(subject)) {
-        this.subjectLabels.update(m => ({ ...m, [subject]: `Org (${subject})` }));
-        return;
-      }
-
-      // Search the people API with the EID as query; look for an exact key match in the response
-      this.peopleService.resolveEidLabel(subject).subscribe(name => {
-        this.subjectLabels.update(m => ({ ...m, [subject]: name ?? subject }));
-      });
-    });
-  }
-
-  // Find org by its numeric ID; returns { name, code } where code is the outer key (org number)
-  private extractOrgInfo(raw: any, numericId: string): { name: string; code: string } | null {
-    if (!raw || typeof raw !== 'object') return null;
-    for (const [code, group] of Object.entries(raw)) {
-      if (group && typeof group === 'object') {
-        const raw_name = (group as any)[numericId];
-        if (raw_name) {
-          const name = (raw_name as string).replace(/\s*\(\d+\)\s*$/, '');
-          return { name, code };
-        }
-      }
-    }
-    return null;
-  }
-
-  // Find org by both outer key (orgCode) and inner key (orgId) — for legacy "code:id" subjects
-  private extractOrgInfoByCode(raw: any, orgCode: string, orgId: string): { name: string } | null {
-    if (!raw || typeof raw !== 'object') return null;
-    const group = raw[orgCode];
-    if (group && typeof group === 'object') {
-      const raw_name = group[orgId];
-      if (raw_name) {
-        const name = (raw_name as string).replace(/\s*\(\d+\)\s*$/, '');
-        return { name };
-      }
-    }
-    return null;
   }
 
   private loadAllAcls(): void {
@@ -566,30 +456,24 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       console.warn(`${missing} record(s) returned without acls; they cannot be shown here.`);
     }
 
-    this.aclsMap.set(acls);
+    this.aclsMap.update(m => {
+      const next = { ...m, ...acls };
+      for (const id of this.freshlyEdited) {
+        if (m[id]) next[id] = m[id];
+      }
+      return next;
+    });
     this.buildAdminRecords();
-    this.resolveSubjectLabels([...subjects]);
+    this.labelSvc.resolve([...subjects], this.myGroups);
   }
 
 
   recordSubjects(id: string): string[] {
-    const acls = this.aclsMap()[id];
-    if (!acls) return [];
-    const all = [...(acls.read ?? []), ...(acls.write ?? []), ...(acls.admin ?? []), ...(acls.delete ?? [])];
-    return [...new Set(all)];
+    return aclSubjects(this.aclsMap()[id]);
   }
 
-  subjectPermLevel(id: string, subject: string): 'admin' | 'update' | 'view' | null {
-    const acls = this.aclsMap()[id];
-    if (!acls) return null;
-    const r = (acls.read   ?? []).includes(subject);
-    const w = (acls.write  ?? []).includes(subject);
-    const a = (acls.admin  ?? []).includes(subject);
-    const d = (acls.delete ?? []).includes(subject);
-    if (a) return 'admin';
-    if (w && r) return 'update';
-    if (r) return 'view';
-    return null;
+  subjectPermLevel(id: string, subject: string): PermissionLevel | null {
+    return subjectPermissionLevel(this.aclsMap()[id], subject);
   }
 
   recordSubjectsByLevel(id: string): { level: 'admin' | 'update' | 'view'; subjects: string[] }[] {
@@ -603,11 +487,15 @@ export class MyRecordsComponent implements OnInit, AfterViewInit {
       .map(l => ({ level: l, subjects: groups[l] }));
   }
 
-  getSubjectsForLevel(id: string, level: 'view' | 'update' | 'admin'): string[] {
+  getSubjectsForLevel(id: string, level: 'view' | 'update' | 'admin'): SubjectEntry[] {
     const group = this.recordSubjectsByLevel(id).find(g => g.level === level);
     if (!group) return [];
     const labels = this.subjectLabels();
-    return group.subjects.map(s => labels[s] || s);
+    return group.subjects.map(s => ({
+      id: s,
+      label: labels[s] || s,
+      group: isGroupSubject(s, this.myGroups),
+    }));
   }
 
   linkto(id: string, rectype: string): string {

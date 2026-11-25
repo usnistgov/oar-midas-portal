@@ -1,7 +1,7 @@
 <div class="search-container">
     <h1 class="visually-hidden">Search Page and Export</h1>
     <div class="search-panel" [class.loading]="isLoading">
-        <div class="loading-overlay" *ngIf="isLoading" role="status" aria-live="polite" aria-label="Loading search results">
+        <div class="loading-overlay" *ngIf="isLoading" aria-hidden="true">
             <mat-progress-spinner mode="indeterminate" diameter="50" color="primary" aria-label="Loading"></mat-progress-spinner>
         </div>
 
@@ -15,7 +15,8 @@
                     </mat-form-field>
 
 
-                    <button mat-flat-button color="primary" style="height: 40px" (click)="performSearch()">
+                    <button mat-flat-button color="primary" style="height: 40px" [disabled]="isLoading"
+                        (click)="performSearch()">
                         <mat-icon aria-hidden="true">search</mat-icon>
                         Search
                     </button>
@@ -232,7 +233,7 @@
                                 <mat-icon aria-hidden="true">cancel</mat-icon>Cancel
                             </button>
                             <button mat-raised-button color="primary" style="height: 40px"
-                                [disabled]="pendingFilterCount === 0" (click)="applyAdvancedSearch()">
+                                [disabled]="pendingFilterCount === 0 || isLoading" (click)="applyAdvancedSearch()">
                                 <mat-icon aria-hidden="true">check</mat-icon>Apply Filters
                             </button>
                         </div>
@@ -293,6 +294,14 @@
                 </div>
 
 
+                @if (searchError) {
+                    <div class="search-error" role="alert">
+                        <mat-icon aria-hidden="true">error_outline</mat-icon>
+                        <span>{{ searchError }}</span>
+                        <button mat-button color="primary" (click)="performSearch()">Retry</button>
+                    </div>
+                }
+
                 <table mat-table [dataSource]="dataSource" matSort class="advanced-search-table" cdkDropList
                     cdkDropListOrientation="horizontal" [cdkDropListData]="displayedColumns"
                     (cdkDropListDropped)="dropColumn($event)"
@@ -303,7 +312,7 @@
                             <mat-checkbox
                             (change)="toggleAllRows()"
                             [checked]="isAllSelected()"
-                            [indeterminate]="selection.hasValue() && !isAllSelected()"
+                            [indeterminate]="isPartlySelected()"
                             aria-label="Select all records">
                             </mat-checkbox>
                         </th>
@@ -404,7 +413,7 @@
                         </th>
                         <td mat-cell *matCellDef="let item">
                             <span class="status-chip" [ngClass]="getStatusClass(item.status)">
-                                {{ item.status?.toUpperCase() || '-' }}
+                                {{ statusLabel(item.status) || '-' }}
                             </span>
                         </td>
                     </ng-container>
@@ -429,7 +438,7 @@
                         (cdkDropListDropped)="dropColumn($event)"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
-                <mat-paginator [length]="length()" [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons [pageSize]="50">
+                <mat-paginator [length]="length" [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons [pageSize]="10">
                 </mat-paginator>
             </div>
 

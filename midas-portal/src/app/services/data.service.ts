@@ -1,4 +1,5 @@
 import { Injectable, inject,effect,signal } from '@angular/core';
+import menuConfigFallback from '../../assets/sidebar/menu-config.json';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, catchError, map, of,forkJoin,tap } from 'rxjs';
@@ -107,6 +108,43 @@ export class DataService {
    * so both models come from one download of the DAP collection. Their static
    * fallbacks remain separate because dapJSON does not contain file_space data.
    */
+  /**
+   * Run the given per-collection filters through the DBIO advanced-search endpoint.
+   * Reports which collections failed so the caller can tell a broken search from an empty one.
+   * permissions is sent explicitly: the endpoint's own default passes a tuple through as a
+   * single permission name and fails.
+   */
+  advancedSearch(filters: Partial<Record<'dmp' | 'dap', object>>):
+      Observable<{ rows: (Dmp | Dap)[]; failed: ('dmp' | 'dap')[] }> {
+    const targets = Object.keys(filters) as ('dmp' | 'dap')[];
+    // forkJoin over an empty list completes without emitting, which would leave the caller
+    // showing whatever it had before
+    if (!targets.length) return of({ rows: [], failed: [] });
+
+    const headers = { Authorization: `Bearer ${this.credsService.token()}` };
+
+    const calls = targets.map(target => {
+      const base = this.resolveApiUrl(target === 'dap' ? 'dapAPI' : 'dmpAPI').replace(/\/$/, '');
+      const body = { filter: filters[target], permissions: ['read', 'write', 'admin', 'delete'] };
+      return this.http.post<any[]>(`${base}/:selected`, body, { headers }).pipe(
+        // no matches is a 204 with no body
+        map(res => ({
+          rows: (res || []).map(r => target === 'dap' ? this.mapToDap(r) : this.mapToDmp(r)),
+          failed: [] as ('dmp' | 'dap')[]
+        })),
+        catchError(err => {
+          console.error(`[advancedSearch] ${target} search failed:`, err);
+          return of({ rows: [] as (Dmp | Dap)[], failed: [target] });
+        })
+      );
+    });
+
+    return forkJoin(calls).pipe(map(results => ({
+      rows: results.flatMap(r => r.rows),
+      failed: results.flatMap(r => r.failed)
+    })));
+  }
+
   getDapsAndFiles(): Observable<{ daps: Dap[]; files: File[] }> {
     const api = this.resolveApiUrl('dapAPI');
     const headers = { Authorization: `Bearer ${this.credsService.token()}` };
@@ -486,15 +524,10 @@ getMenuConfig(): Observable<MenuConfig> {
   return this.http.get<MenuConfig>(url).pipe(
     catchError(err => {
       console.error('Failed to load menu config:', err);
-      // Fallback to default menu config
-      return of<MenuConfig>({
-        menuItems: [
-          { key: 'dashboard', name: 'Dashboard', icon: 'dashboard', link: '/dashboard', enabled: true, order: 1 },
-          { key: 'searchExport', name: 'Search and Export', icon: 'search', link: '/search', enabled: true, order: 2 }
-        ],
-        version: '1.0-fallback',
-        lastUpdated: new Date().toISOString()
-      });
+      // The same file the request above asks for, bundled in. A hand-written
+      // fallback drifted to two items and silently dropped the rest of the
+      // sidebar whenever the fetch failed.
+      return of<MenuConfig>(menuConfigFallback as unknown as MenuConfig);
     }),
     map(config => this.processMenuConfig(config))
   );

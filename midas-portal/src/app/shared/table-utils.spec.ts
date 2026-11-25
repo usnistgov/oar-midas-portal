@@ -1,4 +1,4 @@
-import { recordFilterPredicate, getStatusClass } from './table-utils';
+import { recordFilterPredicate } from './table-utils';
 
 describe('recordFilterPredicate', () => {
   const record = {
@@ -38,11 +38,5 @@ describe('recordFilterPredicate', () => {
 
   it('returns false when nothing matches', () => {
     expect(recordFilterPredicate(record, 'zzz')).toBe(false);
-  });
-});
-
-describe('getStatusClass', () => {
-  it('maps a known status', () => {
-    expect(getStatusClass('published')).toBeTruthy();
   });
 });

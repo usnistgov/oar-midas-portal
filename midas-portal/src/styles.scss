@@ -344,6 +344,16 @@ mat-chip.status-chip {
     background-color: #1565c0;
 }
 
+// waiting on the system: nothing for the owner to do
+.status-neutral {
+    background-color: #616161;
+}
+
+// stopped and needs somebody to look at it
+.status-attention {
+    background-color: #c62828;
+}
+
 // ======================================
 // Driver.js Tour Styles (uses indigo #3f51b5 to match Material primary)
 // ======================================
