@@ -122,48 +122,90 @@ $da-dark  : mat.m2-define-dark-theme((
 // ======================================
 // 3) Emit component color styles per theme+variant
 // ======================================
+// --portal-accent-text: accent-coloured text (table links, dialog titles) needs 4.5:1
+// against the surface it sits on, which
+// a theme's primary does not give at its default shade — blue reads 3.1:1 on white
+// and cyan 2.3:1.  Each theme therefore names a shade of its own hue that clears the
+// threshold in that mode.  Ratios in the comments are against #fff (light) and the
+// Material dark surface #424242 (dark).
+
 .theme-light.light {
   @include mat.all-component-colors($pb-light);
   --info-bubble-bg:  #fff;
+  --portal-accent-text: #1565c0;   // 5.75:1
+    --portal-primary-solid: #1565c0;  // white label 5.75:1
 }
 .theme-light.dark {
   @include mat.all-component-colors($pb-dark);
   --info-bubble-bg: #333;
+  --portal-accent-text: #90caf9;   // 5.74:1
+    --portal-primary-solid: #1565c0;  // white label 5.75:1
 }
 
 .theme-1.light {
   @include mat.all-component-colors($ip-light);
-  --info-bubble-bg:#fff
+  --info-bubble-bg:#fff;
+  --portal-accent-text: #3f51b5;   // 6.87:1
+    --portal-primary-solid: #303f9f;  // white label 8.98:1
 }
 .theme-1.dark {
   @include mat.all-component-colors($ip-dark);
   --info-bubble-bg: #333;
+  --portal-accent-text: #c5cae9;   // 6.22:1
+    --portal-primary-solid: #303f9f;  // white label 8.98:1
 }
 
 .theme-2.light {
   @include mat.all-component-colors($co-light);
+  --portal-accent-text: #006064;   // 7.35:1
+    --portal-primary-solid: #006064;  // white label 7.35:1
 }
 .theme-2.dark {
   @include mat.all-component-colors($co-dark);
+  --portal-accent-text: #4dd0e1;   // 5.47:1
+    --portal-primary-solid: #006064;  // white label 7.35:1
 }
 
 .theme-3.light {
   @include mat.all-component-colors($tc-light);
+  --portal-accent-text: #00695c;   // 6.61:1
+    --portal-primary-solid: #00695c;  // white label 6.61:1
 }
 .theme-3.dark {
   @include mat.all-component-colors($tc-dark);
+  --portal-accent-text: #80cbc4;   // 5.39:1
+    --portal-primary-solid: #00695c;  // white label 6.61:1
 }
 
 .theme-4.light {
   @include mat.all-component-colors($da-light);
+  --portal-accent-text: #673ab7;   // 7.33:1
+    --portal-primary-solid: #512da8;  // white label 9.17:1
 }
 .theme-4.dark {
   @include mat.all-component-colors($da-dark);
+  --portal-accent-text: #d1c4e9;   // 6.12:1
+    --portal-primary-solid: #512da8;  // white label 9.17:1
 }
 
 // ======================================
 // Utility classes
 // ======================================
+
+// Exposed to assistive technology but not shown: page headings and control
+// names that would be redundant on screen.
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
 
 // Prevent background scroll when sidebar open
 .no-scroll {
@@ -171,6 +213,18 @@ $da-dark  : mat.m2-define-dark-theme((
   width: 100%;
   height: 100%;
   overflow: hidden !important;
+}
+
+:root {
+  --portal-accent-text: #1565c0;
+  --portal-primary-solid: #1565c0;
+  --portal-icon-muted: #5f6368;
+  // semantic text colours, each verified against the surface it sits on so
+  // components stop copying hex values that were never checked
+  --portal-text-muted: #5f6368;    // 6.05:1 on white
+  --portal-success-text: #2e7d32;  // 5.13:1
+  --portal-warning-text: #a35200;  // 5.58:1
+  --portal-danger-text: #c62828;   // 5.62:1
 }
 
 // Remove default margins & horizontal overflow
@@ -218,17 +272,19 @@ body {
   gap: 0.25rem;
   font-size: 0.85rem;
   margin: 0;
+  // the widget sets its own dark background inline (widget-registry.ts), so these
+  // two are measured against #102C57 rather than the page: 8.6:1 and 6.4:1
   color: #ccc;
 }
 
 .stat-subtext p {
   margin: 0;
   font-weight: 600;
-  color: #d1495b;
+  color: #ef9a9a;
 }
 
 .text-green {
-  color: #d1495b;
+  color: #ef9a9a;
 }
 
 // ======================================
@@ -274,7 +330,7 @@ html {
 
 // Error-snackbar variant styling
 .mat-mdc-snack-bar-container.error-snackbar {
-  --mdc-snackbar-container-color: #2196f3 !important;
+  --mdc-snackbar-container-color: #1565c0 !important;
   --mat-mdc-snack-bar-button-color: #fff !important;
   --mdc-snackbar-supporting-text-color: #fff !important;
 }
@@ -292,16 +348,20 @@ mat-chip.status-chip {
     text-align: center;
 }
 
+// White text needs 4.5:1 against these at 12px.  The previous values gave 2.8,
+// 1.8 and 3.1, so the green and blue are darkened and the amber — which no
+// light text can sit on — takes dark text instead.  Ratios: 5.1, 11.7, 5.8.
 .status-success {
-    background-color: #4caf50;
+    background-color: #2e7d32;
 }
 
 .status-warning {
     background-color: #ffb300;
+    color: #000;
 }
 
 .status-info {
-    background-color: #2196f3;
+    background-color: #1565c0;
 }
 
 // waiting on the system: nothing for the owner to do
@@ -366,5 +426,59 @@ mat-chip.status-chip {
   .driver-popover-arrow-side-top,
   .driver-popover-arrow-side-bottom {
     border-color: #3f51b5 !important;
+  }
+}
+
+// ======================================
+// Contrast overrides for Material's primary at its default shade
+// ======================================
+// Blue 500 reads 3.1:1 on white in either direction, so everything the theme
+// paints with it fails: the active nav item, filled buttons and their icons.
+// Material emits its colour rules inside .theme-x.light/.dark, so an override
+// has to carry the same scope or it loses the cascade regardless of order.
+.dark {
+  // ratios below are against the Material dark surface #424242
+  --portal-icon-muted: #bdbdbd;
+  --portal-text-muted: #bdbdbd;    // 5.35:1
+  --portal-success-text: #81c784;  // 4.99:1
+  --portal-warning-text: #ffb74d;  // 5.81:1
+  --portal-danger-text: #ef9a9a;   // 4.67:1
+}
+
+.theme-light, .theme-1, .theme-2, .theme-3, .theme-4 {
+  &.light, &.dark {
+    // Material's list icons default to rgba(0, 0, 0, .38), which is 2.7:1
+    --mdc-list-list-item-leading-icon-color: var(--portal-icon-muted);
+    --mdc-list-list-item-trailing-icon-color: var(--portal-icon-muted);
+
+    // the status icons in the sidenav set their own colour with !important
+    .mat-mdc-list-item .mat-icon {
+      color: var(--portal-icon-muted);
+    }
+
+    .mat-mdc-list-base.mat-mdc-list-base .mdc-list-item--selected .mdc-list-item__primary-text,
+    .mat-mdc-list-base.mat-mdc-list-base .mdc-list-item--activated .mdc-list-item__primary-text {
+      color: var(--portal-accent-text);
+    }
+
+    // stroked and text buttons use the primary as their label, not a background
+    .mat-mdc-outlined-button.mat-primary,
+    .mat-mdc-button.mat-primary {
+      --mdc-outlined-button-label-text-color: var(--portal-accent-text);
+      --mdc-outlined-button-outline-color: var(--portal-accent-text);
+      --mdc-text-button-label-text-color: var(--portal-accent-text);
+      color: var(--portal-accent-text);
+    }
+
+    .mat-mdc-unelevated-button.mat-primary,
+    .mat-mdc-raised-button.mat-primary,
+    .mat-mdc-fab.mat-primary,
+    .mat-mdc-mini-fab.mat-primary {
+      --mdc-filled-button-container-color: var(--portal-primary-solid);
+      --mdc-protected-button-container-color: var(--portal-primary-solid);
+      --mdc-fab-container-color: var(--portal-primary-solid);
+      --mdc-filled-button-label-text-color: #fff;
+      --mdc-protected-button-label-text-color: #fff;
+    }
   }
 }

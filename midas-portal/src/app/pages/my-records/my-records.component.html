@@ -16,8 +16,8 @@
           <div class="search-bar">
             <div class="search-controls">
               <mat-form-field appearance="outline" class="search-field small large">
-                <mat-icon matPrefix>search</mat-icon>
-                <input matInput placeholder="Filter my records…"
+                <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+                <input matInput aria-label="Filter my records" placeholder="Filter my records…"
                        [(ngModel)]="searchTerm"
                        (ngModelChange)="applyFilters()" />
               </mat-form-field>
@@ -109,9 +109,9 @@
                             class="filter-field filter-field--daterange small">
               <mat-label>Date range</mat-label>
               <mat-date-range-input [rangePicker]="pickerRange">
-                <input matStartDate placeholder="Start"
+                <input matStartDate aria-label="Start date" placeholder="Start"
                        [(ngModel)]="dateRange.start" (ngModelChange)="applyFilters()" />
-                <input matEndDate placeholder="End"
+                <input matEndDate aria-label="End date" placeholder="End"
                        [(ngModel)]="dateRange.end" (ngModelChange)="applyFilters()" />
               </mat-date-range-input>
               <mat-datepicker-toggle matSuffix [for]="pickerRange"></mat-datepicker-toggle>

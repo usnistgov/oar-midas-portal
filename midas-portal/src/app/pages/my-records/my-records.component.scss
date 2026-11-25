@@ -300,7 +300,7 @@ mat-chip-option {
     &::before {
         content: "•";
         margin-right: 8px;
-        color: #ccc;
+        color: var(--portal-text-muted);
     }
 }
 
@@ -308,7 +308,7 @@ mat-chip-option {
     width: 100%;
 
     a {
-        color: var(--mat-badge-background-color);
+        color: var(--portal-accent-text);
         text-decoration: none;
         font-weight: bold;
     }
@@ -344,7 +344,7 @@ mat-chip-option {
 }
 
 .perm-empty {
-    color: rgba(0, 0, 0, 0.25);
+    color: var(--portal-text-muted);
     font-size: 0.9rem;
 }
 
@@ -374,9 +374,9 @@ mat-chip-option {
         opacity: 0.75;
     }
 
-    &--view   { color: #1565c0; }
-    &--update { color: #2e7d32; }
-    &--admin  { color: #a35200; }  // #e65100 read 3.8:1 on white
+    &--view   { color: var(--portal-accent-text); }
+    &--update { color: var(--portal-success-text); }
+    &--admin  { color: var(--portal-warning-text); }
 }
 
 // ─── Permissions drawer ───────────────────────────────────────────────────

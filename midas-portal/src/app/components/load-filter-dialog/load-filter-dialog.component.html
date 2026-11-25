@@ -4,7 +4,8 @@
   <mat-radio-group [(ngModel)]="selected" class="filter-radio-group">
     <div *ngFor="let name of data.filterNames" class="filter-item">
       <!-- 1) radio on the left -->
-      <mat-radio-button class="filter-radio" [value]="name"></mat-radio-button>
+      <mat-radio-button class="filter-radio" [value]="name" [aria-label]="name"><span class="visually-hidden">{{ name }}</span>
+</mat-radio-button>
 
       <!-- 2) name spans the center -->
       <span class="filter-label">{{ name }}</span>

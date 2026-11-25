@@ -30,7 +30,7 @@
       margin: 0;
       font-size: 1rem;
       line-height: 1.5rem;
-      color: var(--mat-badge-background-color);
+      color: var(--portal-accent-text);
     }
 
     p {
@@ -93,7 +93,7 @@ mat-nav-list {
 
   mat-icon {
     margin-left: 11px;
-    color: var(--mat-badge-background-color);
+    color: var(--portal-accent-text);
   }
 }
 
@@ -127,7 +127,7 @@ mat-nav-list {
   padding: 0;
 
   mat-icon {
-    color: var(--mat-badge-background-color);
+    color: var(--portal-accent-text);
     font-size: 28px;
     line-height: 1;
     width: 1em;
@@ -139,19 +139,19 @@ mat-nav-list {
   mat-icon {
       // Status-specific icon colors (matching MaintenanceNoticeComponent)
       &.success-icon {
-        color: #4CAF50 !important; // Green - All OK
+        color: var(--portal-success-text) !important;    // All OK
       }
       
       &.warning-icon {
-        color: #FF9800 !important; // Orange - Maintenance Scheduled
+        color: var(--portal-warning-text) !important;  // Maintenance scheduled
       }
       
       &.error-icon {
-        color: #F44336 !important; // Red - Under Maintenance
+        color: var(--portal-danger-text) !important;   // Under maintenance
       }
       
       &.info-icon {
-        color:var(--mat-badge-background-color)
+        color:var(--portal-accent-text)
       }
 
       // Ensure proper icon rendering

@@ -2,10 +2,10 @@
 
 :host {
   /* Define color variables for different statuses */
-  --success-color: #4CAF50;      /* Green - All OK */
-  --warning-color: #FF9800;      /* Orange - Maintenance Scheduled */
-  --error-color: #F44336;        /* Red - Under Maintenance */
-  --primary-color: #1976D2;      /* Blue - Default/Info */
+  --success-color: var(--portal-success-text);  /* Green - All OK */
+  --warning-color: var(--portal-warning-text);  /* Orange - Maintenance Scheduled */
+  --error-color: var(--portal-danger-text);     /* Red - Under Maintenance */
+  --primary-color: var(--portal-accent-text);   /* Blue - Default/Info */
   --status-icon-size: 1.75rem;
 }
 

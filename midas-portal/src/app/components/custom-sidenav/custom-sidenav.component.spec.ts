@@ -150,7 +150,7 @@ describe('CustomSidenavComponent', () => {
     });
 
     it('should stack the tour trigger above the profile avatar when collapsed', () => {
-      const expandedAvatar = fixture.nativeElement.querySelector('img[alt="profile avatar"]');
+      const expandedAvatar = fixture.nativeElement.querySelector('img[src*="profile-avatar"]');
       expect(expandedAvatar).toBeTruthy();
       expect(expandedAvatar.getAttribute('width')).toBe('86');
       expect(expandedAvatar.getAttribute('height')).toBe('86');
@@ -160,7 +160,7 @@ describe('CustomSidenavComponent', () => {
 
       const header = fixture.nativeElement.querySelector('.sidenav-header');
       const tourTrigger = header.querySelector('[data-tour="help-icon"]');
-      const collapsedAvatar = header.querySelector('img[alt="profile avatar"]');
+      const collapsedAvatar = header.querySelector('img[src*="profile-avatar"]');
 
       expect(header.classList.contains('collapsed')).toBe(true);
       expect(tourTrigger).toBeTruthy();
